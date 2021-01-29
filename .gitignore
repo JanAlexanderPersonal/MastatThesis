@@ -1,6 +1,7 @@
 *.pdf
 /Data/*
 /literature_review/*.pdf
+/meetings/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
