@@ -1,0 +1,89 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 2.9 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{Nett2008}{inproceedings}{}
+      \name{author}{4}{}{%
+        {{hash=803dd241d74260420f316c02ae43b729}{%
+           family={Nett},
+           familyi={N\bibinitperiod},
+           given={Brian},
+           giveni={B\bibinitperiod}}}%
+        {{hash=d0b3008e85b1a8b38f46556abf1791c7}{%
+           family={Tang},
+           familyi={T\bibinitperiod},
+           given={Jie},
+           giveni={J\bibinitperiod}}}%
+        {{hash=5d65db7068b9497d7789481bc386a254}{%
+           family={Leng},
+           familyi={L\bibinitperiod},
+           given={Shuai},
+           giveni={S\bibinitperiod}}}%
+        {{hash=8d960c85e5171fcdd4565a48c85b80db}{%
+           family={Chen},
+           familyi={C\bibinitperiod},
+           given={Guang-Hong},
+           giveni={G\bibinithyphendelim H\bibinitperiod}}}%
+      }
+      \name{editor}{2}{}{%
+        {{hash=b12d5b6448bc2c94998952abf103ac58}{%
+           family={Hsieh},
+           familyi={H\bibinitperiod},
+           given={Jiang},
+           giveni={J\bibinitperiod}}}%
+        {{hash=90e1df9f1539d9a4be3272cea9ffae42}{%
+           family={Samei},
+           familyi={S\bibinitperiod},
+           given={Ehsan},
+           giveni={E\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {SPIE}%
+      }
+      \strng{namehash}{4fe24e6553f615011588ffede78be53d}
+      \strng{fullhash}{41ddc0aa60d191e5ed0d5034ac99e1a5}
+      \strng{bibnamehash}{4fe24e6553f615011588ffede78be53d}
+      \strng{authorbibnamehash}{4fe24e6553f615011588ffede78be53d}
+      \strng{authornamehash}{4fe24e6553f615011588ffede78be53d}
+      \strng{authorfullhash}{41ddc0aa60d191e5ed0d5034ac99e1a5}
+      \strng{editorbibnamehash}{07712ac9dea6de9ae0e7411f40a3d8ae}
+      \strng{editornamehash}{07712ac9dea6de9ae0e7411f40a3d8ae}
+      \strng{editorfullhash}{07712ac9dea6de9ae0e7411f40a3d8ae}
+      \field{sortinit}{N}
+      \field{sortinithash}{f7242c3ed3dc50029fca1be76c497c7c}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Medical Imaging 2008: Physics of Medical Imaging}
+      \field{title}{{Tomosynthesis via total variation minimization reconstruction and prior image constrained compressed sensing ({\{}PICCS{\}}) on a C-arm system}}
+      \field{year}{2008}
+      \verb{doi}
+      \verb 10.1117/12.771294
+      \endverb
+      \verb{urlraw}
+      \verb https://doi.org/10.1117/12.771294
+      \endverb
+      \verb{url}
+      \verb https://doi.org/10.1117/12.771294
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+
