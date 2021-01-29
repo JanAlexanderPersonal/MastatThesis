@@ -1,0 +1,14 @@
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
+
+RUN apt update -y
+RUN apt install python3-dev python3-pip python3-venv -y
+
+RUN pip3 install --upgrade pip
+RUN pip3 install torch
+RUN pip3 install pytorch-lightning
+RUN pip3 install numpy
+RUN pip3 install pandas
+RUN pip3 install matplotlib
+RUN pip3 install scikit-learn
+RUN pip3 install torchvision
+RUN pip3 install jupyter
