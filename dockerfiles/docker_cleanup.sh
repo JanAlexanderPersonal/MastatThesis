@@ -1,4 +1,4 @@
 #!/bin/bash
-# Build a new image for reiss
+# clean up idle docker images & containers
 echo "clean up docker"
 docker system prune -a
