@@ -1,4 +1,5 @@
 FROM ubuntu:18.04
+MAINTAINER Jan Alexander "jan.alexander@verhaert.com"
 
 ENV TZ=Europe/Brussels
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
