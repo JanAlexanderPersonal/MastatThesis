@@ -1,9 +1,25 @@
+"""
+Adapted by Jan Alexander to work with .nii dataset.
+"""
+
 import os
+import re
 
 from torch.utils.data import Dataset
 import SimpleITK as sitk
 
 from utils.utils import extract_random_patch
+import logging
+
+# The following regex will parse "mask002.raw" to "mask002" "002" "raw"
+IMAGE_NR = re.compile(r'(^[a-zA-Z]+(\d+)).(\w+)')
+
+
+logging.basicConfig(
+    format='%(asctime)s : %(levelname)s : %(message)s',
+    level=logging.DEBUG,
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
 
 
 class CSIDataset(Dataset):
@@ -32,15 +48,21 @@ class CSIDataset(Dataset):
         self.mask_path = os.path.join(dataset_path, subset, 'seg')
         self.weight_path = os.path.join(dataset_path, subset, 'weight')
 
-        self.img_names = [f for f in os.listdir(self.img_path) if f.endswith('.mhd')]
+        self.img_names = [f for f in os.listdir(self.img_path) if f.endswith(('.nii', '.mhd'))]
 
     def __len__(self):
         return len(self.img_names)
 
+    def __str__(self):
+        return f"image path : {self.img_path}\tmask path : {self.mask_path}\tweight path : {self.weight_path}.\n"
+
     def __getitem__(self, idx):
         img_name = self.img_names[idx]
-        mask_name = self.img_names[idx].split('.')[0] + '_label.mhd'
-        weight_name = self.img_names[idx].split('.')[0] + '_weight.nrrd'
+        parse_img_name = IMAGE_NR.findall(img_name)[0]
+        mask_name = f'{parse_img_name[0]}_Labels.{parse_img_name[2]}'
+        weight_name = f'{parse_img_name[0]}_weight.nrrd'
+
+        logging.debug(f'image name : {img_name}\tmask_name : {mask_name}')
 
         img_file = os.path.join(self.img_path, img_name)
         mask_file = os.path.join(self.mask_path, mask_name)
@@ -50,6 +72,8 @@ class CSIDataset(Dataset):
         mask = sitk.GetArrayFromImage(sitk.ReadImage(mask_file))
         weight = sitk.GetArrayFromImage(sitk.ReadImage(weight_file))
 
+        logging.debug(f'image size : {img.shape}')
+
         """
         linear transformation from 12bit reconstruction img to HU unit 
         depend on the original data (CSI data value is from 0 ~ 4095)
@@ -57,7 +81,7 @@ class CSIDataset(Dataset):
         if self.flag_linear:
             img = img * self.linear_att - self.offset
 
-        # extract a traning patche
+        # extract a training patch
         img_patch, ins_patch, gt_patch, weight_patch, c_label = extract_random_patch(img,
                                                                                      mask,
                                                                                      weight,

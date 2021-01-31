@@ -1,6 +1,13 @@
 import torch
 import torch.nn as nn
 
+import logging
+
+logging.basicConfig(
+    format='%(asctime)s : %(levelname)s : %(message)s',
+    level=logging.DEBUG,
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
 
 class IterativeFCN(nn.Module):
     """
@@ -36,6 +43,7 @@ class IterativeFCN(nn.Module):
         self.dense = nn.Linear(num_channels, 1)
 
     def forward(self, x):
+        logging.debug(f'start contracting path {x.size()}')
         # 2*128*128*128 to 64*128*128*128
         x_128 = self.conv_initial(x)
 
@@ -54,7 +62,9 @@ class IterativeFCN(nn.Module):
         # 64*16*16*16 to 64*8*8*8
         x_16 = self.conv_rest(x_16)
 
-        # upsmapling path
+        logging.debug(f'Contracting path result {x_16.size()}')
+
+        # upsampling path
         u_32 = self.expand(x_16)
         u_32 = self.conv_up(torch.cat((x_32, u_32), 1))
 

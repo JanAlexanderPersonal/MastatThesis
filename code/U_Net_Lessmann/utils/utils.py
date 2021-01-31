@@ -1,7 +1,13 @@
 import random
 import numpy as np
+import logging
 from data.data_augmentation import elastic_transform, gaussian_blur, gaussian_noise, random_crop
 
+logging.basicConfig(
+    format='%(asctime)s : %(levelname)s : %(message)s',
+    level=logging.DEBUG,
+    datefmt="%Y-%m-%d %H:%M:%S"
+)
 
 def force_inside_img(x, patch_size, img_shape):
     x_low = int(x - patch_size / 2)
@@ -20,7 +26,9 @@ def extract_random_patch(img, mask, weight, i, subset, empty_interval=5, patch_s
 
     # list available vertebrae
     verts = np.unique(mask)
+    logging.debug(f'vertebrae present : {verts}')
     chosen_vert = verts[random.randint(1, len(verts) - 1)]
+    logging.debug(f'chosen vertebrae : {chosen_vert}')
 
     # create corresponde instance memory and ground truth
     ins_memory = np.copy(mask)
@@ -60,6 +68,15 @@ def extract_random_patch(img, mask, weight, i, subset, empty_interval=5, patch_s
     ins_patch = ins_memory[z_low:z_up, y_low:y_up, x_low:x_up]
     gt_patch = gt[z_low:z_up, y_low:y_up, x_low:x_up]
     weight_patch = weight[z_low:z_up, y_low:y_up, x_low:x_up]
+
+    debug_lines = ['After cropping', 
+                    f'\timage patch shape :\t{img_patch.shape}',
+                    f'\tinstance memory patch shape :\t{ins_patch.shape}',
+                    f'\tground truth patch :\t{gt_patch.shape}', 
+                    f'\tweight patch shape :\t{weight_patch.shape}']
+
+    for line in debug_lines:
+        logging.debug(line)
 
     #  if the label is empty mask
     if flag_empty:

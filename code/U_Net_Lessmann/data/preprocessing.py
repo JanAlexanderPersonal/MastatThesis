@@ -8,11 +8,15 @@ import numpy as np
 from scipy import ndimage
 import SimpleITK as sitk
 
-logging.basicConfig(level=logging.info())
+logging.basicConfig(level=logging.INFO)
+
+# The following regex will parse "image002.mhd" to "image002" "002" "mhd"
+IMAGE_NR = re.compile(r'(^[a-zA-Z]+(\d+)).(\w+)')
 
 
 # resample the CT images to isotropic
 def isotropic_resampler(input_path, output_path):
+    logging.info(output_path)
     raw_img = sitk.ReadImage(input_path)
     new_spacing = [1, 1, 1]
 
@@ -28,6 +32,8 @@ def isotropic_resampler(input_path, output_path):
     new_size = np.ceil(new_size).astype(np.int)  # Image dimensions are in integers
     new_size = [int(s) for s in new_size]
     resampler.SetSize(new_size)
+
+    logging.debug(f'original size {orig_size} --> new size {new_size}.\n')
 
     isotropic_img = resampler.Execute(raw_img)
     sitk.WriteImage(isotropic_img, output_path, True)
@@ -50,7 +56,7 @@ def findZRange(img, mask):
     vert_up = verts[-1]
 
     z_range = [z_mid(mask, vert_low), z_mid(mask, vert_up)]
-    logging.info('Range of Z axis %s' % z_range)
+    logging.debug('Range of Z axis %s' % z_range)
     return z_range
 
 
@@ -58,12 +64,18 @@ def crop_unref_vert(path, out_path, subset):
     img_path = os.path.join(path, subset, 'img')
     mask_path = os.path.join(path, subset, 'seg')
     weight_path = os.path.join(path, subset, 'weight')
-    img_names = [f for f in os.listdir(img_path) if f.endswith('.mhd')]
+    
+    img_names = [f for f in os.listdir(img_path) if f.endswith('.mhd') or f.endswith('.nii')]
+
+    logging.debug(f'Images to be cropped : {img_names}')
 
     for img_name in img_names:
         logging.info('Cropping non-reference vertebrae of %s' % img_name)
         img_name = img_name
-        mask_name = img_name.split('.')[0] + '_label.mhd'
+        ms = IMAGE_NR.findall(img_name)[0]
+        logging.debug(f'image name {img_name} is parsed as {ms}')
+        mask_name = f'{ms[0]}_Labels.{ms[2]}'
+        logging.debug(f'mask name is {mask_name}')
         weight_name = img_name.split('.')[0] + '_weight.nrrd'
 
         img_file = os.path.join(img_path, img_name)
@@ -75,6 +87,9 @@ def crop_unref_vert(path, out_path, subset):
         weight = sitk.GetArrayFromImage(sitk.ReadImage(weight_file))
 
         z_range = findZRange(img, mask)
+
+        logging.debug(f'z-range found: {z_range}')
+        logging.debug(f'type image {img.dtype}')
 
         sitk.WriteImage(sitk.GetImageFromArray(img[z_range[0]:z_range[1], :, :]),
                         os.path.join(out_path, subset, 'img', img_name), True)
@@ -102,12 +117,14 @@ def calculate_weight(isotropic_path, subset):
     Path(mask_path).mkdir(parents=True, exist_ok=True)
     Path(weight_path).mkdir(parents=True, exist_ok=True)
 
-    for f in [f for f in os.listdir(mask_path) if f.endswith('.mhd')]:
+    for f in [f for f in os.listdir(mask_path) if f.endswith('.mhd') or f.endswith('.nii')]:
         seg_mask = sitk.GetArrayFromImage(sitk.ReadImage(os.path.join(mask_path, f)))
         weight = compute_distance_weight_matrix(seg_mask)
-        sitk.WriteImage(sitk.GetImageFromArray(weight), os.path.join(weight_path, f.split('_')[0] + '_weight.nrrd'),
+        sitk.WriteImage(sitk.GetImageFromArray(weight), 
+                        os.path.join(weight_path, re.findall(r"(^[\d\w]+)_[\w]+", f)[0] + '_weight.nrrd'),
                         True)
         logging.info("Calculating weight of %s" % f)
+    logging.debug(f'Weights have been saved under {weight_path}')
 
 
 def create_folders(root, subsets, folders):
@@ -134,16 +151,20 @@ def main():
 
     # resample the CSI dataset to isotropic dataset
     files = [x for x in os.listdir(os.path.join(args.dataset)) if 'raw' not in x]
+    files.sort()
+    logging.debug('datafiles discovered:')
+    logging.debug('\n'.join([f'\t{file}' for file in files]))
+    
     for f in files:
         case_id = re.findall(r'\d+', f)[0]
         logging.info('Resampling ' + f + '...')
         if int(case_id) < int(len(files)/2 * args.split_ratio):
-            if '_label' in f:
+            if '_Labels' in f:
                 file_output = os.path.join(args.output_isotropic, 'train/seg', f)
             else:
                 file_output = os.path.join(args.output_isotropic, 'train/img', f)
         else:
-            if '_label' in f:
+            if '_Labels' in f:
                 file_output = os.path.join(args.output_isotropic, 'test/seg', f)
             else:
                 file_output = os.path.join(args.output_isotropic, 'test/img', f)

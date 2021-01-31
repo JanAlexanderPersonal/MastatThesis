@@ -16,12 +16,15 @@ from iterativeFCN import IterativeFCN
 
 logging.basicConfig(
     format='%(asctime)s : %(levelname)s : %(message)s',
-    level=logging.INFO,
+    level=logging.DEBUG,
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 
 
 def train_single(model, device, img_patch, ins_patch, gt_patch, weight, c_label, optimizer):
+
+    logging.debug('Start single training step')
+
     torch.cuda.empty_cache()
 
     model.train()
@@ -144,6 +147,7 @@ if __name__ == "__main__":
 
     # Use GPU if it is available
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    logging.debug(f'device : {device}')
 
     # Create model and check if we want to resume training
     model = IterativeFCN(num_channels=4).to('cuda')
@@ -153,6 +157,8 @@ if __name__ == "__main__":
 
     train_dataset = CSIDataset(args.dataset, subset='train')
     test_dataset = CSIDataset(args.dataset, subset='test')
+    logging.info(f'train dataset : {train_dataset}')
+    logging.info(f'test dataset : {test_dataset}')
 
     train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True)
@@ -183,6 +189,7 @@ if __name__ == "__main__":
         test_acc = checkpoint['test_acc']
 
     # Start Training
+    logging.info('START TRAINING')
     while iteration < args.iterations + 1:
         start_time = time.time()
         epoch_train_dice = []
