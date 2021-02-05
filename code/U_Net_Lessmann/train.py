@@ -3,6 +3,7 @@ import time
 import argparse
 import numpy as np
 import logging
+from pathlib import Path
 
 import matplotlib.pyplot as plt
 import torch
@@ -58,7 +59,7 @@ def train_single(model, device, img_patch, ins_patch, gt_patch, weight, c_label,
     c_loss = F.binary_cross_entropy(torch.unsqueeze(C, dim=0), c_label)
     train_loss = s_loss + c_loss
 
-    logging.info("train_dice_coef: %s, S Loss: %s, C Loss: %s" % (train_dice_coef, s_loss.item(), c_loss.item()))
+    logging.debug("train_dice_coef: %s, S Loss: %s, C Loss: %s" % (train_dice_coef, s_loss.item(), c_loss.item()))
 
     if C.round() == c_label:
         correct = 1
@@ -99,7 +100,7 @@ def test_single(model, device, img_patch, ins_patch, gt_patch, weight, c_label):
     s_loss = lamda * FP + FN
     c_loss = F.binary_cross_entropy(torch.unsqueeze(C, dim=0), c_label)
 
-    logging.info("train_dice_coef: %s, S Loss: %s, C Loss: %s" % (test_dice_coef, s_loss.item(), c_loss.item()))
+    logging.debug("test_dice_coef: %s, S Loss: %s, C Loss: %s" % (test_dice_coef, s_loss.item(), c_loss.item()))
 
     if C.round() == c_label:
         correct = 1
@@ -127,11 +128,11 @@ if __name__ == "__main__":
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=1, metavar='N',
                         help='input batch size for testing (default: 1)')
-    parser.add_argument('--iterations', type=int, default=20, metavar='N',
+    parser.add_argument('--iterations', type=int, default=20000, metavar='N',
                         help='number of iterations to train (default: 80000)')
-    parser.add_argument('--log_interval', type=int, default=2, metavar='N',
+    parser.add_argument('--log_interval', type=int, default=500, metavar='N',
                         help='number of iterations to log (default: 1000)')
-    parser.add_argument('--eval_iters', type=int, default=1, metavar='N',
+    parser.add_argument('--eval_iters', type=int, default=100, metavar='N',
                         help='number of iterations to train (default: 20)')
     parser.add_argument('--lr', type=float, default=1e-3, metavar='LR',
                         help='learning rate (default: 0.01)')
@@ -144,6 +145,14 @@ if __name__ == "__main__":
     # set random seed for reproducibility
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
+
+    # Assure folders for storing weights are checkpoints are ready:
+    weightdir = os.path.abspath(args.weight)
+    weightfile = os.path.join(weightdir, 'IterativeFCN_best_valid.pth')
+    checkpointdir = os.path.join(args.checkpoints)
+    checkpointfile = os.path.join(checkpointdir, 'latest_checkpoints.pth')
+    Path(weightdir).mkdir(parents=True, exist_ok=True)
+    Path(checkpointdir).mkdir(parents=True, exist_ok=True)
 
     # Use GPU if it is available
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -160,8 +169,8 @@ if __name__ == "__main__":
     logging.info(f'train dataset : {train_dataset}')
     logging.info(f'test dataset : {test_dataset}')
 
-    train_loader = DataLoader(train_dataset, batch_size=1, shuffle=True)
-    test_loader = DataLoader(test_dataset, batch_size=1, shuffle=True)
+    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=True)
 
     # optimizer
     optimizer = optim.Adam(model.parameters(), lr=args.lr)
@@ -190,29 +199,29 @@ if __name__ == "__main__":
 
     # Start Training
     logging.info('START TRAINING')
-    while iteration < args.iterations + 1:
-        start_time = time.time()
-        epoch_train_dice = []
-        epoch_test_dice = []
-        epoch_train_loss = []
-        epoch_test_loss = []
-        epoch_train_accuracy = 0.
-        epoch_test_accuracy = 0.
-        correct_train_count = 0
-        correct_test_count = 0
+    start_time = time.time()
+    epoch_train_dice = []
+    epoch_test_dice = []
+    epoch_train_loss = []
+    epoch_test_loss = []
+    epoch_train_accuracy = 0.
+    epoch_test_accuracy = 0.
+    correct_train_count = 0
+    correct_test_count = 0
 
+    while iteration <= args.iterations:
         img_patch, ins_patch, gt_patch, weight, c_label = next(iter(train_loader))
         t_loss, t_c, t_dice = train_single(model, device, img_patch, ins_patch, gt_patch, weight, c_label, optimizer)
         epoch_train_loss.append(t_loss)
         epoch_train_dice.append(t_dice)
         correct_train_count += t_c
 
-        if iteration > 1 and iteration % args.log_interval:
+        if iteration > 1 and not iteration % args.log_interval:
             avg_train_loss = sum(epoch_train_loss) / len(epoch_train_loss)
             avg_train_dice = (sum(epoch_train_dice) / len(epoch_train_dice)) * 100
             epoch_train_accuracy = (correct_train_count / train_interval) * 100
 
-            logging.info('Iter {}-{}: \t Loss: {:.6f}\t acc: {:.6f}%\t dice: {:.6f}%'.format(
+            logging.info('Iter {}-{} train score: \t Loss: {:.2f}\t acc: {:.2f}%\t dice: {:.2f}%'.format(
                 iteration - args.log_interval,
                 iteration,
                 avg_train_loss,
@@ -222,7 +231,7 @@ if __name__ == "__main__":
             if avg_train_loss < best_train_loss:
                 best_train_loss = avg_train_loss
                 logging.info('--- Saving model at Avg Train Dice:{:.2f}%  ---'.format(avg_train_dice))
-                torch.save(model.state_dict(), os.path.join(args.weight, '.IterativeFCN_best_train.pth'))
+                torch.save(model.state_dict(), weightfile)
 
             # validation process
             for i in range(args.eval_iters):
@@ -236,7 +245,7 @@ if __name__ == "__main__":
             avg_test_dice = (sum(epoch_test_dice) / len(epoch_test_dice)) * 100
             epoch_test_accuracy = (correct_test_count / eval_interval) * 100
 
-            logging.info('Iter {}-{} eval: \t Loss: {:.6f}\t acc: {:.6f}%\t dice: {:.6f}%'.format(
+            logging.info('Iter {}-{} test score: \t Loss: {:.2f}\t acc: {:.2f}%\t dice: {:.2f}%'.format(
                 iteration - args.log_interval,
                 iteration,
                 avg_test_loss,
@@ -245,8 +254,8 @@ if __name__ == "__main__":
 
             if avg_test_dice > best_test_dice:
                 best_test_dice = avg_test_dice
-                logging.info('--- Saving model at Avg Train Dice:{:.2f}%  ---'.format(avg_test_dice))
-                torch.save(model.state_dict(), os.path.join(args.weight, './IterativeFCN_best_valid.pth'))
+                logging.info('--- Saving model at Avg Test Dice:{:.2f}%  ---'.format(avg_test_dice))
+                torch.save(model.state_dict(), weightfile)
 
             train_loss.append(epoch_train_loss)
             test_loss.append(epoch_test_loss)
@@ -254,7 +263,7 @@ if __name__ == "__main__":
             test_acc.append(epoch_test_accuracy)
 
             # save snapshot for resume training
-            logging.info('--- Saving snapshot ---')
+            logging.debug('--- Saving snapshot ---')
             torch.save({
                 'iteration': iteration,
                 'model_state_dict': model.state_dict(),
@@ -266,8 +275,20 @@ if __name__ == "__main__":
                 'train_dice': train_dice,
                 'test_dice': test_dice,
                 'best_train_loss': best_train_loss,
-                'best_test_dice': best_test_dice}, os.path.join(args.checkpoints, 'latest_checkpoints.pth'))
+                'best_test_dice': best_test_dice}, checkpointfile)
 
-            logging.info("--- %s seconds ---" % (time.time() - start_time))
+            logging.info(f' *** Time {int(time.time() - start_time)} seconds *** ')
+            epoch_train_dice = []
+            epoch_test_dice = []
+            epoch_train_loss = []
+            epoch_test_loss = []
+            epoch_train_accuracy = 0.
+            epoch_test_accuracy = 0.
+            correct_train_count = 0
+            correct_test_count = 0
 
         iteration += 1
+        if not iteration % 10:
+            logging.info(f'iteration {iteration}')
+
+    print(epoch_test_dice)

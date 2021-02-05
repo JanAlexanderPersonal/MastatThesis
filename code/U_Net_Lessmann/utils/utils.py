@@ -5,19 +5,20 @@ from data.data_augmentation import elastic_transform, gaussian_blur, gaussian_no
 
 logging.basicConfig(
     format='%(asctime)s : %(levelname)s : %(message)s',
-    level=logging.DEBUG,
+    level=logging.INFO,
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 
 def force_inside_img(x, patch_size, img_shape):
-    x_low = int(x - patch_size / 2)
-    x_up = int(x + patch_size / 2)
-    if x_low < 0:
-        x_up -= x_low
-        x_low = 0
-    elif x_up > img_shape[2]:
-        x_low -= (x_up - img_shape[2])
-        x_up = img_shape[2]
+    assert img_shape >= patch_size, f'path size {patch_size} is too large for this image'
+
+    x_low = max(0, int(x - patch_size / 2))
+    x_up = x_low + patch_size
+    if x_up > img_shape:
+        x_up = min(img_shape, int(x + patch_size / 2))
+        x_low = x_up - patch_size
+
+    logging.debug(f'img_dim = {img_shape} * x={x} * x_low = {x_low} * x_up = {x_up} * diff={x_up-x_low}')
     return x_low, x_up
 
 
@@ -58,10 +59,13 @@ def extract_random_patch(img, mask, weight, i, subset, empty_interval=5, patch_s
         y = random.randint(lower[1], upper[1])
         z = random.randint(lower[0], upper[0])
 
+    logging.debug(f'image shape : {img.shape}')
+
     # force random patches' range within the image
-    x_low, x_up = force_inside_img(x, patch_size, img.shape)
-    y_low, y_up = force_inside_img(y, patch_size, img.shape)
-    z_low, z_up = force_inside_img(z, patch_size, img.shape)
+    # Pay attention to the sequency of the axis!
+    x_low, x_up = force_inside_img(x, patch_size, img.shape[2])
+    y_low, y_up = force_inside_img(y, patch_size, img.shape[1])
+    z_low, z_up = force_inside_img(z, patch_size, img.shape[0])
 
     # crop the patch
     img_patch = img[z_low:z_up, y_low:y_up, x_low:x_up]
@@ -77,6 +81,11 @@ def extract_random_patch(img, mask, weight, i, subset, empty_interval=5, patch_s
 
     for line in debug_lines:
         logging.debug(line)
+
+    if not all([i==patch_size for i in img_patch.shape]):
+        logging.error('Bad cropping!')
+        for line in debug_lines:
+            logging.error(line)
 
     #  if the label is empty mask
     if flag_empty:

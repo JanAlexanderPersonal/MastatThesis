@@ -22,5 +22,5 @@ echo   # (optional) move to a new line
 if [ $REPLY = "y" ]
 then
     tree
-    python3 /root/space/U_Net_Lessmann/train.py --dataset /root/space/temp/iso/
+    python3 /root/space/U_Net_Lessmann/train.py --dataset /root/space/temp/iso/ --weight /root/space/temp/weight/ --checkpoints /root/space/temp/checkpoints --save-model
 fi
