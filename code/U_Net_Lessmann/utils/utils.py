@@ -73,15 +73,6 @@ def extract_random_patch(img, mask, weight, i, subset, empty_interval=5, patch_s
     gt_patch = gt[z_low:z_up, y_low:y_up, x_low:x_up]
     weight_patch = weight[z_low:z_up, y_low:y_up, x_low:x_up]
 
-    debug_lines = ['After cropping', 
-                    f'\timage patch shape :\t{img_patch.shape}',
-                    f'\tinstance memory patch shape :\t{ins_patch.shape}',
-                    f'\tground truth patch :\t{gt_patch.shape}', 
-                    f'\tweight patch shape :\t{weight_patch.shape}']
-
-    for line in debug_lines:
-        logging.debug(line)
-
     if not all([i==patch_size for i in img_patch.shape]):
         logging.error('Bad cropping!')
         for line in debug_lines:

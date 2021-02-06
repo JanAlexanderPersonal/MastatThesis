@@ -228,6 +228,18 @@ if __name__ == "__main__":
         writer.add_scalar('train_loss', t_loss, global_step=iteration)
         writer.add_scalar('train_dice', t_dice, global_step=iteration)
 
+        img_batch = np.zeros((3,1,128, 128))
+
+        logging.debug(f'image patch shape {img_patch.shape}')
+
+        img_batch[0,0,:,:] = img_patch[0, 0, int(128/2), : ,:]
+        img_batch[1,0,:,:] = img_patch[0, 0, :, int(128/2),:]
+        img_batch[2,0,:,:] = img_patch[0, 0, :,:, int(128/2)]
+
+        logging.debug(f'tensorboard output {img_batch.shape}')
+
+        writer.add_images('image_patches', img_batch, global_step=iteration, dataformats='NCHW')
+
         if iteration % args.log_interval == args.log_interval - 1:
             avg_train_loss = sum(epoch_train_loss) / len(epoch_train_loss)
             avg_train_dice = (sum(epoch_train_dice) / len(epoch_train_dice)) * 100
@@ -252,9 +264,9 @@ if __name__ == "__main__":
             avg_test_dice = (sum(epoch_test_dice) / len(epoch_test_dice)) * 100
             epoch_test_accuracy = (correct_test_count / eval_interval) * 100
 
-            writer.add_scalars('avg_evaluation_loss', {'train' : avg_train_loss, 'test', : avg_test_loss})
-            writer.add_scalars('avg_evaluation_dice', {'train' : avg_train_dice, 'test', : avg_test_dice})
-            writer.add_scalars('avg_evaluation_accuracy', {'train' : epoch_train_accuracy, 'test', : epoch_test_accuracy})
+            writer.add_scalars('avg_evaluation_loss', {'train' : avg_train_loss, 'test' : avg_test_loss})
+            writer.add_scalars('avg_evaluation_dice', {'train' : avg_train_dice, 'test' : avg_test_dice})
+            writer.add_scalars('avg_evaluation_accuracy', {'train' : epoch_train_accuracy, 'test' : epoch_test_accuracy})
 
             if avg_test_dice > best_test_dice:
                 best_test_dice = avg_test_dice
