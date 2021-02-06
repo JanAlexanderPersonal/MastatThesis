@@ -11,6 +11,9 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
+# import the torch tensorboard 
+from torch.utils.tensorboard import SummaryWriter
+
 from data.dataset import CSIDataset
 from utils.metrics import DiceCoeff, Segloss
 from iterativeFCN import IterativeFCN
@@ -114,6 +117,7 @@ if __name__ == "__main__":
     # Version of Pytorch
     logging.info("Pytorch Version:%s" % torch.__version__)
 
+
     # Training args
     parser = argparse.ArgumentParser(description='Iterative Fully Convolutional Network')
     parser.add_argument('--dataset', type=str, default='./crop_isotropic_dataset',
@@ -122,15 +126,17 @@ if __name__ == "__main__":
                         help='path of processed dataset')
     parser.add_argument('--checkpoints', type=str, default='./checkpoints',
                         help='path of training snapshot')
+    parser.add_argument('--tensorboard', type=str, default='./experiment', 
+                        help='foldername for the tensorboard logging information')
     parser.add_argument('--resume', type=bool, default=False,
                         help='resume training by loading last snapshot')
     parser.add_argument('--batch-size', type=int, default=1, metavar='N',
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=1, metavar='N',
                         help='input batch size for testing (default: 1)')
-    parser.add_argument('--iterations', type=int, default=20000, metavar='N',
+    parser.add_argument('--iterations', type=int, default=1000, metavar='N',
                         help='number of iterations to train (default: 80000)')
-    parser.add_argument('--log_interval', type=int, default=500, metavar='N',
+    parser.add_argument('--log_interval', type=int, default=100, metavar='N',
                         help='number of iterations to log (default: 1000)')
     parser.add_argument('--eval_iters', type=int, default=100, metavar='N',
                         help='number of iterations to train (default: 20)')
@@ -142,6 +148,9 @@ if __name__ == "__main__":
                         help='For Saving the current Model')
     args = parser.parse_args()
 
+    # open de summarywriter
+    writer = SummaryWriter(args.tensorboard)
+
     # set random seed for reproducibility
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)
@@ -149,7 +158,7 @@ if __name__ == "__main__":
     # Assure folders for storing weights are checkpoints are ready:
     weightdir = os.path.abspath(args.weight)
     weightfile = os.path.join(weightdir, 'IterativeFCN_best_valid.pth')
-    checkpointdir = os.path.join(args.checkpoints)
+    checkpointdir = os.path.abspath(args.checkpoints)
     checkpointfile = os.path.join(checkpointdir, 'latest_checkpoints.pth')
     Path(weightdir).mkdir(parents=True, exist_ok=True)
     Path(checkpointdir).mkdir(parents=True, exist_ok=True)
@@ -216,7 +225,14 @@ if __name__ == "__main__":
         epoch_train_dice.append(t_dice)
         correct_train_count += t_c
 
-        if iteration > 1 and not iteration % args.log_interval:
+        writer.add_scalars('train_score', {
+                'iteration' : iteration,
+                'train_loss' : t_loss,
+                'train_dice' : t_dice
+                'train_count' : t_c
+            })
+
+        if iteration % args.log_interval == args.log_interval - 1:
             avg_train_loss = sum(epoch_train_loss) / len(epoch_train_loss)
             avg_train_dice = (sum(epoch_train_dice) / len(epoch_train_dice)) * 100
             epoch_train_accuracy = (correct_train_count / train_interval) * 100
@@ -227,6 +243,8 @@ if __name__ == "__main__":
                 avg_train_loss,
                 epoch_train_accuracy,
                 avg_train_dice))
+
+            
 
             if avg_train_loss < best_train_loss:
                 best_train_loss = avg_train_loss
@@ -292,3 +310,4 @@ if __name__ == "__main__":
             logging.info(f'iteration {iteration}')
 
     print(epoch_test_dice)
+    writer.close()
