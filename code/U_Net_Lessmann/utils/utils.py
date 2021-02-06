@@ -5,7 +5,7 @@ from data.data_augmentation import elastic_transform, gaussian_blur, gaussian_no
 
 logging.basicConfig(
     format='%(asctime)s : %(levelname)s : %(message)s',
-    level=logging.INFO,
+    level=logging.DEBUG,
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 
@@ -98,17 +98,21 @@ def extract_random_patch(img, mask, weight, i, subset, empty_interval=5, patch_s
     # 50% chance elastic deformation
     if subset == 'train':
         if np.random.rand() > 0.5:
+            logging.debug('apply elastic deformation')
             img_patch, gt_patch, ins_patch, weight_patch = elastic_transform(img_patch, gt_patch, ins_patch,
                                                                              weight_patch, alpha=20, sigma=5)
         # 50% chance gaussian blur
         if np.random.rand() > 0.5:
+            logging.debug('apply gaussian blur')
             img_patch = gaussian_blur(img_patch)
         # 50% chance gaussian noise
         if np.random.rand() > 0.5:
+            logging.debug('apply gaussian noise')
             img_patch = gaussian_noise(img_patch)
 
         # 50% random crop along z-axis
         if np.random.rand() > 0.5:
+            logging.debug('apply random crop')
             img_patch, ins_patch, gt_patch, weight_patch = random_crop(img_patch, ins_patch, gt_patch
                                                                        , weight_patch)
 
@@ -122,5 +126,15 @@ def extract_random_patch(img, mask, weight, i, subset, empty_interval=5, patch_s
     gt_patch = np.expand_dims(gt_patch, axis=0)
     weight_patch = np.expand_dims(weight_patch, axis=0)
     c_label = np.expand_dims(c_label, axis=0)
+
+    debug_lines = ['Final result', 
+                    f'\timage patch shape :\t{img_patch.shape}',
+                    f'\timage patch type \t{type(img_patch)}',
+                    f'\tinstance memory patch shape :\t{ins_patch.shape}',
+                    f'\tground truth patch :\t{gt_patch.shape}', 
+                    f'\tweight patch shape :\t{weight_patch.shape}']
+
+    for line in debug_lines:
+        logging.debug(line)
 
     return img_patch, ins_patch, gt_patch, weight_patch, c_label
