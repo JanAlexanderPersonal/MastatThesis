@@ -225,24 +225,15 @@ if __name__ == "__main__":
         epoch_train_dice.append(t_dice)
         correct_train_count += t_c
 
-        writer.add_scalars('train_score', {
-                'train_loss' : t_loss,
-                'train_dice' : t_dice,
-            }, global_step=iteration)
+        writer.add_scalar('train_loss', t_loss, global_step=iteration)
+        writer.add_scalar('train_dice', t_dice, global_step=iteration)
 
         if iteration % args.log_interval == args.log_interval - 1:
             avg_train_loss = sum(epoch_train_loss) / len(epoch_train_loss)
             avg_train_dice = (sum(epoch_train_dice) / len(epoch_train_dice)) * 100
             epoch_train_accuracy = (correct_train_count / train_interval) * 100
 
-            logging.info('Iter {}-{} train score: \t Loss: {:.2f}\t acc: {:.2f}%\t dice: {:.2f}%'.format(
-                iteration - args.log_interval,
-                iteration,
-                avg_train_loss,
-                epoch_train_accuracy,
-                avg_train_dice))
-
-            
+            writer.add_scalar('train_accuracy', epoch_train_accuracy, global_step=iteration)
 
             if avg_train_loss < best_train_loss:
                 best_train_loss = avg_train_loss
@@ -261,12 +252,9 @@ if __name__ == "__main__":
             avg_test_dice = (sum(epoch_test_dice) / len(epoch_test_dice)) * 100
             epoch_test_accuracy = (correct_test_count / eval_interval) * 100
 
-            logging.info('Iter {}-{} test score: \t Loss: {:.2f}\t acc: {:.2f}%\t dice: {:.2f}%'.format(
-                iteration - args.log_interval,
-                iteration,
-                avg_test_loss,
-                epoch_test_accuracy,
-                avg_test_dice))
+            writer.add_scalars('avg_evaluation_loss', {'train' : avg_train_loss, 'test', : avg_test_loss})
+            writer.add_scalars('avg_evaluation_dice', {'train' : avg_train_dice, 'test', : avg_test_dice})
+            writer.add_scalars('avg_evaluation_accuracy', {'train' : epoch_train_accuracy, 'test', : epoch_test_accuracy})
 
             if avg_test_dice > best_test_dice:
                 best_test_dice = avg_test_dice
@@ -304,7 +292,7 @@ if __name__ == "__main__":
             correct_test_count = 0
 
         iteration += 1
-        if not iteration % 10:
+        if not iteration % 25:
             logging.info(f'iteration {iteration}')
 
     print(epoch_test_dice)
