@@ -3,6 +3,7 @@
 /Data/*/*
 /literature_review/*.pdf
 /meetings/
+/code/*/tensorboard/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

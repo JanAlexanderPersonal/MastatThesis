@@ -226,11 +226,9 @@ if __name__ == "__main__":
         correct_train_count += t_c
 
         writer.add_scalars('train_score', {
-                'iteration' : iteration,
                 'train_loss' : t_loss,
-                'train_dice' : t_dice
-                'train_count' : t_c
-            })
+                'train_dice' : t_dice,
+            }, global_step=iteration)
 
         if iteration % args.log_interval == args.log_interval - 1:
             avg_train_loss = sum(epoch_train_loss) / len(epoch_train_loss)
