@@ -8,26 +8,25 @@ import numpy as np
 from scipy import ndimage
 import SimpleITK as sitk
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.DEBUG)
 
 # The following regex will parse "image002.mhd" to "image002" "002" "mhd"
 IMAGE_NR = re.compile(r'(^[a-zA-Z]+(\d+)).(\w+)')
 
 
 # resample the CT images to isotropic
-def isotropic_resampler(input_path, output_path):
-    logging.info(output_path)
-    raw_img = sitk.ReadImage(input_path)
+def isotropic_resampler(image):
+    
     new_spacing = [1, 1, 1]
 
     resampler = sitk.ResampleImageFilter()
     resampler.SetInterpolator(sitk.sitkNearestNeighbor)
-    resampler.SetOutputDirection(raw_img.GetDirection())
-    resampler.SetOutputOrigin(raw_img.GetOrigin())
+    resampler.SetOutputDirection(image.GetDirection())
+    resampler.SetOutputOrigin(image.GetOrigin())
     resampler.SetOutputSpacing(new_spacing)
 
-    orig_size = np.array(raw_img.GetSize(), dtype=np.int)
-    orig_spacing = raw_img.GetSpacing()
+    orig_size = np.array(image.GetSize(), dtype=np.int)
+    orig_spacing = image.GetSpacing()
     new_size = np.array([x * (y / z) for x, y, z in zip(orig_size, orig_spacing, new_spacing)])
     new_size = np.ceil(new_size).astype(np.int)  # Image dimensions are in integers
     new_size = [int(s) for s in new_size]
@@ -35,8 +34,19 @@ def isotropic_resampler(input_path, output_path):
 
     logging.debug(f'original size {orig_size} --> new size {new_size}.\n')
 
-    isotropic_img = resampler.Execute(raw_img)
-    sitk.WriteImage(isotropic_img, output_path, True)
+    isotropic_img = resampler.Execute(image)
+
+    return isotropic_img
+
+def mask_convert(mask):
+    # For the xVertSeg dataset, the masks are indicated with numbers between 200 and 240:
+    logging.debug('Convert mask')
+    mask_array = sitk.GetArrayFromImage(mask)
+    old_mask = [200 + i * 10 for i in range(5)]
+    new_mask = [i+1 for i in range(5)]
+    for old, new in zip(old_mask, new_mask):
+        mask_array = np.where(mask_array == old_mask, new_mask, mask_array)
+    return sitk.GetImageFromArray(mask_array)
 
 
 # Function for cropping
@@ -51,6 +61,8 @@ def z_mid(mask, chosen_vert):
 def findZRange(img, mask):
     # list available vertebrae
     verts = np.unique(mask)
+
+    logging.debug(f'Vertebrae found {verts}')
 
     vert_low = verts[1]
     vert_up = verts[-1]
@@ -168,8 +180,14 @@ def main():
                 file_output = os.path.join(args.output_isotropic, 'test/seg', f)
             else:
                 file_output = os.path.join(args.output_isotropic, 'test/img', f)
+        
+        logging.info(output_path)
+        raw_img = sitk.ReadImage(os.path.join(args.dataset, f)) 
+        if '_Labels' in f:
+            raw_img = mask_convert(raw_img)
 
-        isotropic_resampler(os.path.join(args.dataset, f), file_output)
+        isotropic_img = isotropic_resampler(raw_img)
+        sitk.WriteImage(isotropic_img, output_path, True)
 
     # Pre Calculate the weight
     calculate_weight(args.output_isotropic, 'train')

@@ -4,6 +4,9 @@
 /literature_review/*.pdf
 /meetings/
 /code/*/tensorboard/
+tests/
+
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
