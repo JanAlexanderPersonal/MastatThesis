@@ -113,6 +113,17 @@ def test_single(model, device, img_patch, ins_patch, gt_patch, weight, c_label):
     return test_loss.item(), correct, test_dice_coef
 
 
+def get_patch_slices(patch):
+    
+    batch = np.zeros((3,1,128, 128))
+    
+    batch[0,0,:,:] = patch[0, 0, int(128/2), : ,:]
+    batch[1,0,:,:] = patch[0, 0, :, int(128/2),:]
+    batch[2,0,:,:] = patch[0, 0, :,:, int(128/2)]
+
+    return batch
+
+
 if __name__ == "__main__":
     # Version of Pytorch
     logging.info("Pytorch Version:%s" % torch.__version__)
@@ -228,17 +239,19 @@ if __name__ == "__main__":
         writer.add_scalar('train_loss', t_loss, global_step=iteration)
         writer.add_scalar('train_dice', t_dice, global_step=iteration)
 
-        img_batch = np.zeros((3,1,128, 128))
-
         logging.debug(f'image patch shape {img_patch.shape}')
+        logging.debug(f'ins patch shape {ins_patch.shape}')
+        logging.debug(f'ground truth patch shape {gt_patch.shape}')
 
-        img_batch[0,0,:,:] = img_patch[0, 0, int(128/2), : ,:]
-        img_batch[1,0,:,:] = img_patch[0, 0, :, int(128/2),:]
-        img_batch[2,0,:,:] = img_patch[0, 0, :,:, int(128/2)]
+        img_batch = get_patch_slices(img_patch)
+        ins_batch = get_patch_slices(ins_patch)
+        gt_batch = get_patch_slices(gt_patch)
 
         logging.debug(f'tensorboard output {img_batch.shape}')
 
         writer.add_images('image_patches', img_batch, global_step=iteration, dataformats='NCHW')
+        writer.add_images('ins_patches', ins_batch, global_step=iteration, dataformats='NCHW')
+        writer.add_images('gt_patches', gt_batch, global_step=iteration, dataformats='NCHW')
 
         if iteration % args.log_interval == args.log_interval - 1:
             avg_train_loss = sum(epoch_train_loss) / len(epoch_train_loss)
