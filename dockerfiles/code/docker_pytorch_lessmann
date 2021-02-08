@@ -1,0 +1,15 @@
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
+MAINTAINER Jan Alexander "jan.alexander@verhaert.com"
+
+COPY requirements_lessman.txt /opt/app/requirements.txt
+WORKDIR /opt/app/
+
+RUN apt update -y && \
+    apt install python3-dev python3-pip python3-venv -y && \
+    apt-get install tree && \
+    pip3 install --upgrade pip && \
+    pip3 install -r requirements.txt && \
+    mkdir /root/space && \
+    mkdir /root/space/temp/
+WORKDIR /root/space/
+CMD ["tree"]
