@@ -1,11 +1,25 @@
-\documentclass[11pt]{memoir}
+\documentclass[
+    a4paper, % Stock and paper size.
+    9pt, % Type size.
+    article,
+    oneside, 
+    onecolumn, % Only one column of text on a page.
+    % openright, % Each chapter will start on a recto page.
+    % openleft, % Each chapter will start on a verso page.
+    openany, % A chapter may start on either a recto or verso page.
+    ]{memoir}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage{microtype}
+\usepackage[final]{microtype}
 \usepackage[dvips]{graphicx}
 \usepackage{xcolor}
+\usepackage{tikz}
 %\usepackage{times}
+
+% Comment in final version
+\usepackage{todonotes}
+\usepackage{soul}
 
 \usepackage[
 breaklinks=true,colorlinks=true,
@@ -20,15 +34,25 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 % bindingoffset=0mm, top=25mm,bottom=25mm}
 % PRINT
 \geometry{total={210mm,297mm},
-left=20mm,right=20mm,
+left=20mm,right=50mm,
 bindingoffset=10mm, top=25mm,bottom=25mm}
 
 \OnehalfSpacing
 %\linespread{1.3}
 
+% disable by disabling the todo notes
+\makeatletter
+ \if@todonotes@disabled
+ \newcommand{\hlnote}[2]{#1}
+ \else
+ \newcommand{\hlnote}[2]{\todo{#2}\texthl{#1}}
+ \fi
+ \makeatother
+
 %%% CHAPTER'S STYLE
-\chapterstyle{bianchi}
+%\chapterstyle{bianchi}
 %\chapterstyle{ger}
+\chapterstyle{dash}
 %\chapterstyle{madsen}
 %\chapterstyle{ell}
 %%% STYLE OF SECTIONS, SUBSECTIONS, AND SUBSUBSECTIONS
@@ -38,15 +62,37 @@ bindingoffset=10mm, top=25mm,bottom=25mm}
 
 
 %%% STYLE OF PAGES NUMBERING
-%\pagestyle{companion}\nouppercaseheads 
-%\pagestyle{headings}
-%\pagestyle{Ruled}
-\pagestyle{plain}
+\pagestyle{companion}\nouppercaseheads 
+\pagestyle{headings}
+\pagestyle{Ruled}
+%\pagestyle{plain}
 \makepagestyle{plain}
 \makeevenfoot{plain}{\thepage}{}{}
 \makeoddfoot{plain}{}{}{\thepage}
 \makeevenhead{plain}{}{}{}
 \makeoddhead{plain}{}{}{}
+
+%%% For parts with abstracts on the page
+
+\usepackage{xpatch}
+
+\makeatletter
+\xpatchcmd{\part}{\null\vfil}{\vspace*{.1\textheight}}{}{}
+
+\providecommand{\abstractname}{Content of this part}
+\newenvironment{partwithabstract}
+  {\begingroup\let\@endpart\relax\part@withabstract}
+  {\endquotation\endgroup\@endpart}
+\newcommand{\part@withabstract}{\@dblarg\part@@withabstract}
+\def\part@@withabstract[#1]#2{%
+  \part[#1]{#2}%
+  \vfil
+  \begin{center}\bfseries\abstractname\vspace{-.5em}\vspace{\z@}\end{center}
+  \quotation
+}
+\makeatother
+
+
 
 
 \maxsecnumdepth{subsection} % chapters, sections, and subsections are numbered
@@ -56,16 +102,16 @@ bindingoffset=10mm, top=25mm,bottom=25mm}
 \addbibresource{main.bib}
 
 %% make a glossary
-\usepackage[acronym, xindy]{glossaries}
+\usepackage[acronym, xindy, nonumberlist]{glossaries}
 \makeglossaries
 
-\input{/home/thesis/1_Intro/Abbreviation}
+\input{/home/thesis/0_Main/Abbreviation}
 
 %%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%
 
 \begin{document}
 
-\input{titlepage}
+\input{/home/thesis/0_Main/titlepage}
 
 \cleardoublepage
 %%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%
@@ -79,22 +125,38 @@ bindingoffset=10mm, top=25mm,bottom=25mm}
 %%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%
 
 \glsaddall
-\glossarystyle{listgroup}
+\setglossarystyle{listdotted}
 \printglossary[type=\acronymtype]
-\glossarystyle{altlistgroup}
+\glossarystyle{altlist}
 \printglossary
 
-\cleardoublepage
+\clearpage
 
-\chapter{Background}
+%\cleardoublepage
 
-\input{/home/thesis/1_Intro/Problem_description}
-\input{/home/thesis/1_Intro/medical_imaging}
-\input{/home/thesis/1_Intro/AI_for_medicine}
-\input{/home/thesis/1_Intro/Literature}
+\input{/home/thesis/0_Main/main_abstract}
 
-\section{Methodology}
-\input{/home/thesis/2_Methodology/data}
+\begin{partwithabstract}{Problem Introduction \& Motivation}
+    The objective of this project is the development of a model for the automated vertebrae instance segmentation of \acrshort{mri} and \acrshort{ct} scans of the lumbar part of the human spine based on point annotated training data.
+    
+    This part of the book aims to clarify these terms. 
+    I start off with some information regarding the human spine and the medical imaging techniques to investigate it.
+    Secondly, I define and clarify different machine learning problems and techniques when working with two and three dimensional images.
+    This part of the book ends with a discussion of previous work. 
+    First the previous work to tackle the problem of instance segmentation of the human spine from medical images.
+    Then prevous work in the field of \Gls{weaklysupervisedl} \Gls{machinevision}.
+\end{partwithabstract}
+
+\input{/home/thesis/1_ProblemIntro/Medical}
+\input{/home/thesis/1_ProblemIntro/MachineVision}
+\input{/home/thesis/1_ProblemIntro/PreviousWork}
+
+\section{Analysis and modelling}
+\input{/home/thesis/2_Analysis/data}
+
+\part{Analysis \& Modelling}
+
+\part{Results}
 
 \appendix
 
