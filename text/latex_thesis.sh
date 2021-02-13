@@ -1,7 +1,7 @@
 #!/bin/bash
 # run the latest pdf container (interactive)
 
-latex main.tex
+pdflatex main.tex
 bibtex main.tex
 pdflatex main.tex
 makeglossaries main

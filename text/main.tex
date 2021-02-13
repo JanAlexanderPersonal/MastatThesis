@@ -1,8 +1,8 @@
 \documentclass[
     a4paper, % Stock and paper size.
     9pt, % Type size.
-    article,
-    oneside, 
+    % article,
+    % oneside, 
     onecolumn, % Only one column of text on a page.
     % openright, % Each chapter will start on a recto page.
     % openleft, % Each chapter will start on a verso page.
@@ -15,6 +15,7 @@
 \usepackage[dvips]{graphicx}
 \usepackage{xcolor}
 \usepackage{tikz}
+\usepackage{caption}
 %\usepackage{times}
 
 % Comment in final version
@@ -33,9 +34,82 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 % left=25mm,right=25mm,%
 % bindingoffset=0mm, top=25mm,bottom=25mm}
 % PRINT
-\geometry{total={210mm,297mm},
-left=20mm,right=50mm,
-bindingoffset=10mm, top=25mm,bottom=25mm}
+% \geometry{total={210mm,297mm},left=20mm,right=50mm,bindingoffset=10mm, top=25mm,bottom=25mm}
+
+% Code from https://tex.stackexchange.com/questions/275565/tufte-layout-in-painless-memoir
+
+% Start code
+
+% MEMOIR LAYOUT
+\setlength{\baselineskip}{14pt}
+\setlength{\normalbaselineskip}{14pt}
+
+% GEOMETRY
+\settrims{0pt}{0pt}
+\settypeblocksize{49\baselineskip}{107mm}{*}
+\setlrmargins{24.8mm}{*}{*}
+\setulmargins{27.4mm}{*}{*}
+\setheadfoot{\baselineskip}{\baselineskip}
+\setheaderspaces{*}{2\baselineskip}{*}
+\setmarginnotes{8.2mm}{49.4mm}{\onelineskip}
+\checkandfixthelayout
+
+
+% TEXT
+% ragged2e provides ragged justification with hyphenation
+\RequirePackage{ragged2e}
+\AtBeginDocument{\RaggedRight}
+\setmpjustification{\RaggedLeft}{\RaggedRight}
+\setlength{\RaggedRightParindent}{1.0pc}
+\setlength{\parindent}{1pc}
+\setlength{\parskip}{0pt}
+% linespacing ~ 14pt
+\linespread{1.17}
+
+% text styling of all side footnotes
+\renewcommand{\footnotesize}{\fontsize{8pt}{10pt}\selectfont}
+\renewcommand{\foottextfont}{\footnotesize}
+% styling and placement of mark
+\footmarkstyle{{#1. }}
+\setlength{\footmarkwidth}{0em}
+\setlength{\footmarksep}{-\footmarkwidth}
+% memoir command - do all footnotes in margin
+\footnotesinmargin
+
+
+% SIDECAPTIONS
+\setsidecaps{\marginparsep}{\marginparwidth}
+\sidecapmargin{outer}
+\setsidecappos{t}
+\renewcommand*{\sidecapstyle}{%
+\captionnamefont{\foottextfont\scshape}
+\ifscapmargleft
+\captionstyle{\RaggedLeft\footnotesize\foottextfont}%
+\else
+\captionstyle{\RaggedRight\footnotesize\foottextfont}%
+\fi}
+
+% FULLWIDTH environment
+% The following code should be used *after* any changes to the margins and
+% page layout are made (e.g., after the geometry package has been loaded).
+\newlength{\fullwidthlen}
+\setlength{\fullwidthlen}{\marginparwidth}
+\addtolength{\fullwidthlen}{\marginparsep}
+
+% \newlength{\fullwidthlen}
+% \setlength{\fullwidthlen}{\marginparwidth}
+% \addtolength{\fullwidthlen}{\marginparsep}
+
+\newenvironment{fullwidth}{%
+  \begin{adjustwidth*}{}{-\fullwidthlen}%
+}{%
+  \end{adjustwidth*}%
+}
+
+
+% End code
+
+%
 
 \OnehalfSpacing
 %\linespread{1.3}
@@ -111,6 +185,7 @@ bindingoffset=10mm, top=25mm,bottom=25mm}
 
 \begin{document}
 
+\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
 \input{/home/thesis/0_Main/titlepage}
 
 \cleardoublepage
@@ -133,9 +208,9 @@ bindingoffset=10mm, top=25mm,bottom=25mm}
 \clearpage
 
 %\cleardoublepage
-
+\restoregeometry
 \input{/home/thesis/0_Main/main_abstract}
-
+\newgeometry{total={210mm,297mm},left=20mm,right=20mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
 \begin{partwithabstract}{Problem Introduction \& Motivation}
     The objective of this project is the development of a model for the automated vertebrae instance segmentation of \acrshort{mri} and \acrshort{ct} scans of the lumbar part of the human spine based on point annotated training data.
     
@@ -147,6 +222,7 @@ bindingoffset=10mm, top=25mm,bottom=25mm}
     Then prevous work in the field of \Gls{weaklysupervisedl} \Gls{machinevision}.
 \end{partwithabstract}
 
+\restoregeometry
 \input{/home/thesis/1_ProblemIntro/Medical}
 \input{/home/thesis/1_ProblemIntro/MachineVision}
 \input{/home/thesis/1_ProblemIntro/PreviousWork}
@@ -154,14 +230,36 @@ bindingoffset=10mm, top=25mm,bottom=25mm}
 \section{Analysis and modelling}
 \input{/home/thesis/2_Analysis/data}
 
-\part{Analysis \& Modelling}
+\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
+\begin{partwithabstract}{Modelling \& Analysis}
+    This part of the document details the used datasets and the modelling and evaluation methodology.
+\end{partwithabstract}
+\restoregeometry
 
-\part{Results}
+\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm}
+\begin{partwithabstract}{Results}
+  This part of the document 
+\end{partwithabstract}
+\restoregeometry
+
+\input{/home/thesis/2_Analysis/data}
 
 \appendix
 
-\chapter{Additional}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm}
+\begin{partwithabstract}{Appendix}
+  Apendices to the document:
+  \begin{enumerate}
+    \item Software environment used
+    \item Agreement documents for use of two datasets.
+  \end{enumerate}
+\end{partwithabstract}
+
+\chapter{Used software}
+
+
+\chapter{Agreements for the use of the datasets}
+
 
 
 

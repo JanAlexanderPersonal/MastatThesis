@@ -11,17 +11,18 @@ Since point level annotation is faster and cheaper than labelling complete volum
 \section{Data \& Methodology}
 
 \subsection{Data}
-All datasets used in this work are publicly available. 
+All datasets used in this work are publicly available\footnote{A list of all datasets used can be found in appendix xxx.}. 
 The scope of this work did not include medical data gathering.
-A list of all datasets used can be found in \hlnote{xxx}{Write appendix}.
-
 
 These datasets contain both \acrshort{ct} and \acrshort{mri} scans. 
-In \hlnote{100}{Update for final version} of these scans, 
+In \hlnote{100}{Update for final version} of these scans, complete volume masks of the vertebrae are available. 
+For 200 volumes, point level annotation is available\footnotetext{There are also 5 volumes for which no segmentation data is available and 20 volumes for which only semantic labels are available. These were not used in this study.}.
 
 \subsection{Methodology}
 The performance of the models trained on \Gls{weaklysupervisedl} data is compared to the performance of a model trained on \Gls{supervisedl} data.
-
+This latter model, trained on fully \Gls{supervisedl} data, is an established model from \hlnote{literature}{cite lessmann}. 
+This architecture serves as a reference.
+The reference model is trained from random initiation on the part of the dataset for which full volume masks are available\footnote{After train-test split.}.  
 
 \section{Results}
 \todo[inline]{Complete this section}
