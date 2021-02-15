@@ -22,6 +22,11 @@
 \usepackage{todonotes}
 \usepackage{soul}
 
+%\usepackage[margincaption,outercaption,ragged,wide]{sidecap}
+\usepackage[margincaption,ragged]{sidecap}
+\sidecaptionvpos{figure}{t} 
+\sidecaptionvpos{table}{t}
+
 \usepackage[
 breaklinks=true,colorlinks=true,
 %linkcolor=blue,urlcolor=blue,citecolor=blue,% PDF VIEW
@@ -173,7 +178,7 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 \maxtocdepth{subsection} % chapters, sections, and subsections are in the Table of Contents
 
 \usepackage[backend=biber]{biblatex}
-\addbibresource{main.bib}
+\addbibresource{library.bib}
 
 %% make a glossary
 \usepackage[acronym, xindy, nonumberlist]{glossaries}
@@ -227,8 +232,6 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 \input{/home/thesis/1_ProblemIntro/MachineVision}
 \input{/home/thesis/1_ProblemIntro/PreviousWork}
 
-\section{Analysis and modelling}
-\input{/home/thesis/2_Analysis/data}
 
 \newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
 \begin{partwithabstract}{Modelling \& Analysis}
@@ -236,13 +239,30 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 \end{partwithabstract}
 \restoregeometry
 
-\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm}
-\begin{partwithabstract}{Results}
-  This part of the document 
-\end{partwithabstract}
-\restoregeometry
-
 \input{/home/thesis/2_Analysis/data}
+
+
+\chapter{Proposed methods}
+
+\section{Comparison between Fully supervised and Weakly supervised models}
+
+\section{Fully supervised model}
+
+\section{Weakly supervised model}
+
+\chapter{Experiments}
+
+\section{Experimental results of the fully supervised model}
+
+\section{Experimental results of the weakly supervised model}
+
+\section{Comparison between fully \& weakly supervised model}
+
+\section{Final model proposal}
+
+\section{Experimental results of the final model}
+
+\chapter{Conclusion}
 
 \appendix
 
@@ -258,10 +278,9 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 \chapter{Used software}
 
 
-\chapter{Agreements for the use of the datasets}
+\chapter{Dataset agreements}
 
-
-
+\includegraphics[width=15cm]{/home/thesis/images/AgreementxVertSeg.png}
 
 \printbibliography
 
