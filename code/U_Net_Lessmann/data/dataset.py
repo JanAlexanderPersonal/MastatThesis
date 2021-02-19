@@ -17,7 +17,7 @@ IMAGE_NR = re.compile(r'(^[a-zA-Z]+(\d+)).(\w+)')
 
 logging.basicConfig(
     format='%(asctime)s : %(levelname)s : %(message)s',
-    level=logging.DEBUG,
+    level=logging.INFO,
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 
@@ -72,7 +72,10 @@ class CSIDataset(Dataset):
         mask = sitk.GetArrayFromImage(sitk.ReadImage(mask_file))
         weight = sitk.GetArrayFromImage(sitk.ReadImage(weight_file))
 
-        logging.debug(f'image size : {img.shape}')
+        logging.debug(f'shapes: image shape {img.shape}\tmask shape {mask.shape}\tweight shape {weight.shape}')
+        for i in range(3):
+            if (img.shape[i] != mask.shape[i]) or (img.shape[i] != weight.shape[i]):
+                logging.error(f'unequal shapes: image shape {img.shape}\tmask shape {mask.shape}\tweight shape {weight.shape}')
 
         """
         linear transformation from 12bit reconstruction img to HU unit 

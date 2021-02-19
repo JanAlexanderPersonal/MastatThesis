@@ -20,7 +20,7 @@ from iterativeFCN import IterativeFCN
 
 logging.basicConfig(
     format='%(asctime)s : %(levelname)s : %(message)s',
-    level=logging.DEBUG,
+    level=logging.INFO,
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 
@@ -277,9 +277,9 @@ if __name__ == "__main__":
             avg_test_dice = (sum(epoch_test_dice) / len(epoch_test_dice)) * 100
             epoch_test_accuracy = (correct_test_count / eval_interval) * 100
 
-            writer.add_scalars('avg_evaluation_loss', {'train' : avg_train_loss, 'test' : avg_test_loss})
-            writer.add_scalars('avg_evaluation_dice', {'train' : avg_train_dice, 'test' : avg_test_dice})
-            writer.add_scalars('avg_evaluation_accuracy', {'train' : epoch_train_accuracy, 'test' : epoch_test_accuracy})
+            writer.add_scalars('avg_evaluation_loss', {'train' : avg_train_loss, 'test' : avg_test_loss}, global_step=iteration)
+            writer.add_scalars('avg_evaluation_dice', {'train' : avg_train_dice, 'test' : avg_test_dice}, global_step=iteration)
+            writer.add_scalars('avg_evaluation_accuracy', {'train' : epoch_train_accuracy, 'test' : epoch_test_accuracy}, global_step=iteration)
 
             if avg_test_dice > best_test_dice:
                 best_test_dice = avg_test_dice

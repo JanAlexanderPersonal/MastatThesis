@@ -12,7 +12,8 @@ import argparse
 import logging
 
 from pathlib import Path
-import mathplotlib.pyplot as plt
+import matplotlib.pyplot as plt
+import numpy as np
 
 import SimpleITK as sitk
 
@@ -20,18 +21,18 @@ logging.basicConfig(level=logging.DEBUG)
 
 def plot_figures(image, folder, name):
     array = sitk.GetArrayFromImage(image)
-    mid_mask = mid_mask(array)
+    mid = mid_mask(array)
 
     name, ext = name.split('.')
 
     slices = [
-        array[mid_mask[0], :, :], 
-        array[:, mid_mask[1], :], 
-        array[:, :, mid_mask[2]]
+        array[mid[0], :, :], 
+        array[:, mid[1], :], 
+        array[:, :, mid[2]]
     ]
 
     for i in range(3):
-        filename = os.path.join(folder, f'{name}_dim{i}.{ext}')
+        filename = os.path.join(folder, f'{name}_dim{i}.png')
         logging.debug(f'make plot {filename}')
         plt.imshow(slices[i])
         plt.title(f'slice {name} dim {i}')

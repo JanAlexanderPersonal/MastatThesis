@@ -5,7 +5,7 @@ from data.data_augmentation import elastic_transform, gaussian_blur, gaussian_no
 
 logging.basicConfig(
     format='%(asctime)s : %(levelname)s : %(message)s',
-    level=logging.DEBUG,
+    level=logging.INFO,
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 
@@ -22,7 +22,7 @@ def force_inside_img(x, patch_size, img_shape):
     return x_low, x_up
 
 
-def extract_random_patch(img, mask, weight, i, subset, empty_interval=5, patch_size=128):
+def extract_random_patch(img, mask, weight, i, subset, empty_interval=5, patch_size=128, augmentation = False):
     flag_empty = False
 
     # list available vertebrae
@@ -67,6 +67,13 @@ def extract_random_patch(img, mask, weight, i, subset, empty_interval=5, patch_s
     y_low, y_up = force_inside_img(y, patch_size, img.shape[1])
     z_low, z_up = force_inside_img(z, patch_size, img.shape[0])
 
+    debug_line = list()
+    for vol in [img, ins_memory, gt, weight]:
+        debug_line.append(f'type {type(vol)} - shape {vol.shape}')
+
+    for line in debug_line:
+        logging.debug(line)
+
     # crop the patch
     img_patch = img[z_low:z_up, y_low:y_up, x_low:x_up]
     ins_patch = ins_memory[z_low:z_up, y_low:y_up, x_low:x_up]
@@ -85,27 +92,28 @@ def extract_random_patch(img, mask, weight, i, subset, empty_interval=5, patch_s
         gt_patch = np.zeros_like(ins_patch)
         weight_patch = np.ones_like(ins_patch)
 
-    # Randomly on-the-fly Data Augmentation
-    # 50% chance elastic deformation
-    if subset == 'train':
-        if np.random.rand() > 0.5:
-            logging.debug('apply elastic deformation')
-            img_patch, gt_patch, ins_patch, weight_patch = elastic_transform(img_patch, gt_patch, ins_patch,
-                                                                             weight_patch, alpha=20, sigma=5)
-        # 50% chance gaussian blur
-        if np.random.rand() > 0.5:
-            logging.debug('apply gaussian blur')
-            img_patch = gaussian_blur(img_patch)
-        # 50% chance gaussian noise
-        if np.random.rand() > 0.5:
-            logging.debug('apply gaussian noise')
-            img_patch = gaussian_noise(img_patch)
+    if augmentation:
+        # Randomly on-the-fly Data Augmentation
+        # 50% chance elastic deformation
+        if subset == 'train':
+            if np.random.rand() > 0.5:
+                logging.debug('apply elastic deformation')
+                img_patch, gt_patch, ins_patch, weight_patch = elastic_transform(img_patch, gt_patch, ins_patch,
+                                                                                weight_patch, alpha=20, sigma=5)
+            # 50% chance gaussian blur
+            if np.random.rand() > 0.5:
+                logging.debug('apply gaussian blur')
+                img_patch = gaussian_blur(img_patch)
+            # 50% chance gaussian noise
+            if np.random.rand() > 0.5:
+                logging.debug('apply gaussian noise')
+                img_patch = gaussian_noise(img_patch)
 
-        # 50% random crop along z-axis
-        if np.random.rand() > 0.5:
-            logging.debug('apply random crop')
-            img_patch, ins_patch, gt_patch, weight_patch = random_crop(img_patch, ins_patch, gt_patch
-                                                                       , weight_patch)
+            # 50% random crop along z-axis
+            if np.random.rand() > 0.5:
+                logging.debug('apply random crop')
+                img_patch, ins_patch, gt_patch, weight_patch = random_crop(img_patch, ins_patch, gt_patch
+                                                                        , weight_patch)
 
     # decide label of completeness(partial or complete)
     vol = np.count_nonzero(gt == 1)
@@ -120,10 +128,11 @@ def extract_random_patch(img, mask, weight, i, subset, empty_interval=5, patch_s
 
     debug_lines = ['Final result', 
                     f'\timage patch shape :\t{img_patch.shape}',
-                    f'\timage patch type \t{type(img_patch)}',
                     f'\tinstance memory patch shape :\t{ins_patch.shape}',
                     f'\tground truth patch :\t{gt_patch.shape}', 
                     f'\tweight patch shape :\t{weight_patch.shape}']
+
+    
 
     for line in debug_lines:
         logging.debug(line)

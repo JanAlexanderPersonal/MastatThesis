@@ -41,12 +41,18 @@ def isotropic_resampler(image):
 def mask_convert(mask):
     # For the xVertSeg dataset, the masks are indicated with numbers between 200 and 240:
     logging.debug('Convert mask')
+    
     mask_array = sitk.GetArrayFromImage(mask)
+    logging.debug(f'mask values {np.unique(mask_array)}')
+
     old_mask = [200 + i * 10 for i in range(5)]
     new_mask = [i+1 for i in range(5)]
     for old, new in zip(old_mask, new_mask):
-        mask_array = np.where(mask_array == old_mask, new_mask, mask_array)
-    return sitk.GetImageFromArray(mask_array)
+        mask_array = np.where(mask_array == old, new, mask_array)
+    logging.debug(f'new mask values {np.unique(mask_array)}')
+    new_image = sitk.GetImageFromArray(mask_array)
+    new_image.CopyInformation(mask)
+    return new_image
 
 
 # Function for cropping
@@ -171,27 +177,31 @@ def main():
         case_id = re.findall(r'\d+', f)[0]
         logging.info('Resampling ' + f + '...')
         if int(case_id) < int(len(files)/2 * args.split_ratio):
-            if '_Labels' in f:
-                file_output = os.path.join(args.output_isotropic, 'train/seg', f)
-            else:
-                file_output = os.path.join(args.output_isotropic, 'train/img', f)
+            subset = 'train'
         else:
-            if '_Labels' in f:
-                file_output = os.path.join(args.output_isotropic, 'test/seg', f)
-            else:
-                file_output = os.path.join(args.output_isotropic, 'test/img', f)
-        
-        logging.info(output_path)
-        raw_img = sitk.ReadImage(os.path.join(args.dataset, f)) 
-        if '_Labels' in f:
+            subset = 'test'
+        folder = 'seg' if '_Labels' in f else 'img'
+
+        file_output = os.path.join(args.output_isotropic, subset, folder, f)
+        weight_path = os.path.join(args.output_isotropic, subset, 'weight')
+        logging.info(file_output)
+        raw_img = sitk.ReadImage(os.path.join(args.dataset, f))  
+
+        logging.debug(f'loaded file {f} with dimensions {raw_img.GetSize()} and spacing {raw_img.GetSpacing()}.')
+
+        if folder == 'seg':
             raw_img = mask_convert(raw_img)
 
         isotropic_img = isotropic_resampler(raw_img)
-        sitk.WriteImage(isotropic_img, output_path, True)
 
-    # Pre Calculate the weight
-    calculate_weight(args.output_isotropic, 'train')
-    calculate_weight(args.output_isotropic, 'test')
+        if folder == 'seg':
+            seg_mask = sitk.GetArrayFromImage(isotropic_img)
+            weight = compute_distance_weight_matrix(seg_mask)
+            logging.debug('calculate weight matrix')
+            sitk.WriteImage(sitk.GetImageFromArray(weight), 
+                        os.path.join(weight_path, re.findall(r"(^[\d\w]+)_[\w]+", f)[0] + '_weight.nrrd'),
+                        True)
+        sitk.WriteImage(isotropic_img, file_output, True)
 
     # Crop the image to remove the vertebrae that are not labeled in ground truth
     crop_unref_vert(args.output_isotropic, args.output_crop, 'train')

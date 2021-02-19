@@ -38,6 +38,16 @@ read -p "start training? (y/n) " REPLY
 echo   # (optional) move to a new line
 if [ $REPLY = "y" ]
 then
+    # rm -rf /root/space/U_Net_Lessmann/tensorboard
     tree
-    python3 /root/space/U_Net_Lessmann/train.py --dataset /root/space/temp/iso/ --weight /root/space/temp/weight/ --checkpoints /root/space/temp/checkpoints --tensorboard /root/space/U_Net_Lessmann/tensorboard --save-model
+    python3 /root/space/U_Net_Lessmann/train.py \
+        --dataset /root/space/temp/iso/ \
+        --weight /root/space/temp/weight/ \
+        --checkpoints /root/space/temp/checkpoints \
+        --tensorboard /root/space/U_Net_Lessmann/tensorboard \
+        --lr 1e-4 \
+        --iterations 100000 \
+        --log_interval 1000 \
+        --eval_iters 250 \
+        --resume True
 fi
