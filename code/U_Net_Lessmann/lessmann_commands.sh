@@ -42,12 +42,12 @@ then
     tree
     python3 /root/space/U_Net_Lessmann/train.py \
         --dataset /root/space/temp/iso/ \
+        --batch-size 2 \
         --weight /root/space/temp/weight/ \
         --checkpoints /root/space/temp/checkpoints \
         --tensorboard /root/space/U_Net_Lessmann/tensorboard \
         --lr 1e-4 \
-        --iterations 100000 \
-        --log_interval 1000 \
-        --eval_iters 250 \
-        --resume True
+        --iterations 10000 \
+        --log_interval 10 \
+        --eval_iters 250 
 fi

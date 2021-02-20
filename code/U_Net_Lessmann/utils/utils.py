@@ -5,7 +5,6 @@ from data.data_augmentation import elastic_transform, gaussian_blur, gaussian_no
 
 logging.basicConfig(
     format='%(asctime)s : %(levelname)s : %(message)s',
-    level=logging.INFO,
     datefmt="%Y-%m-%d %H:%M:%S"
 )
 

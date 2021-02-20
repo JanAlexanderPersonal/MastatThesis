@@ -18,12 +18,15 @@ from data.dataset import CSIDataset
 from utils.metrics import DiceCoeff, Segloss
 from iterativeFCN import IterativeFCN
 
+
+
 logging.basicConfig(
     format='%(asctime)s : %(levelname)s : %(message)s',
-    level=logging.INFO,
     datefmt="%Y-%m-%d %H:%M:%S"
 )
-
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger('logger')
+logging.info(f'Logging level {logging.getLevelName(logger.getEffectiveLevel())}')
 
 def train_single(model, device, img_patch, ins_patch, gt_patch, weight, c_label, optimizer):
 
@@ -59,13 +62,15 @@ def train_single(model, device, img_patch, ins_patch, gt_patch, weight, c_label,
     lamda = 0.1
     FP, FN = Segloss(S, gt_patch, weight)
     s_loss = lamda * FP + FN
-    c_loss = F.binary_cross_entropy(torch.unsqueeze(C, dim=0), c_label)
+
+    print(f'Calculate binary cross entropy between {c_label} and {torch.unsqueeze(C, dim=1)}')
+    c_loss = F.binary_cross_entropy(torch.unsqueeze(C, dim=1), c_label)
     train_loss = s_loss + c_loss
 
     logging.debug("train_dice_coef: %s, S Loss: %s, C Loss: %s" % (train_dice_coef, s_loss.item(), c_loss.item()))
 
-    if C.round() == c_label:
-        correct = 1
+    correct = sum([int(round(e) == g) for e, g in zip(torch.flatten(C).tolist(), torch.flatten(c_label).tolist())])
+    print(f'correct : {correct}')
 
     # optimize the parameters
     train_loss.backward()
@@ -101,12 +106,14 @@ def test_single(model, device, img_patch, ins_patch, gt_patch, weight, c_label):
     lamda = 0.1
     FP, FN = Segloss(S, gt_patch, weight)
     s_loss = lamda * FP + FN
-    c_loss = F.binary_cross_entropy(torch.unsqueeze(C, dim=0), c_label)
+    c_loss = F.binary_cross_entropy(torch.unsqueeze(C, dim=1), c_label)
 
     logging.debug("test_dice_coef: %s, S Loss: %s, C Loss: %s" % (test_dice_coef, s_loss.item(), c_loss.item()))
 
-    if C.round() == c_label:
-        correct = 1
+    #if C.round() == c_label:
+    #    correct = 1
+
+    correct = sum([int(round(e) == g) for e, g in zip(torch.flatten(C).tolist(), torch.flatten(c_label).tolist())])
 
     test_loss = s_loss + c_loss
 
@@ -114,6 +121,8 @@ def test_single(model, device, img_patch, ins_patch, gt_patch, weight, c_label):
 
 
 def get_patch_slices(patch):
+
+    logging.debug('get patch slices')
     
     batch = np.zeros((3,1,128, 128))
     
@@ -125,6 +134,9 @@ def get_patch_slices(patch):
 
 
 if __name__ == "__main__":
+
+    logging.basicConfig(level=logging.DEBUG)
+
     # Version of Pytorch
     logging.info("Pytorch Version:%s" % torch.__version__)
 
@@ -179,7 +191,7 @@ if __name__ == "__main__":
     logging.debug(f'device : {device}')
 
     # Create model and check if we want to resume training
-    model = IterativeFCN(num_channels=4).to('cuda')
+    model = IterativeFCN(num_channels=32).to('cuda')
 
     batch_size = args.batch_size
     batch_size_valid = batch_size
@@ -231,6 +243,9 @@ if __name__ == "__main__":
 
     while iteration <= args.iterations:
         img_patch, ins_patch, gt_patch, weight, c_label = next(iter(train_loader))
+
+        logging.info(f'Sizes extracted patches\n\timg patch : {img_patch.size()}\n\tins patch : {ins_patch.size()}')
+
         t_loss, t_c, t_dice = train_single(model, device, img_patch, ins_patch, gt_patch, weight, c_label, optimizer)
         epoch_train_loss.append(t_loss)
         epoch_train_dice.append(t_dice)

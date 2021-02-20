@@ -3,12 +3,6 @@ import torch.nn as nn
 
 import logging
 
-logging.basicConfig(
-    format='%(asctime)s : %(levelname)s : %(message)s',
-    level=logging.DEBUG,
-    datefmt="%Y-%m-%d %H:%M:%S"
-)
-
 class IterativeFCN(nn.Module):
     """
     Structure of Iterative FCN Model
@@ -43,9 +37,11 @@ class IterativeFCN(nn.Module):
         self.dense = nn.Linear(num_channels, 1)
 
     def forward(self, x):
-        logging.debug(f'start contracting path {x.size()}')
+        logging.info(f'start contracting path {x.size()}')
         # 2*128*128*128 to 64*128*128*128
         x_128 = self.conv_initial(x)
+
+        logging.info(f'After first convolution {x_128.size()}')
 
         # 64*128*128*128 to 64*64*64*64
         x_128 = self.conv_rest(x_128)
@@ -59,10 +55,10 @@ class IterativeFCN(nn.Module):
         x_32 = self.conv_rest(x_32)
         x_16 = self.contract(x_32)
 
-        # 64*16*16*16 to 64*8*8*8
+        # B*
         x_16 = self.conv_rest(x_16)
 
-        logging.debug(f'Contracting path result {x_16.size()}')
+        logging.info(f'Contracting path result {x_16.size()}')
 
         # upsampling path
         u_32 = self.expand(x_16)
@@ -85,7 +81,15 @@ class IterativeFCN(nn.Module):
 
         x_1 = self.contract(x_2)
 
+        logging.info(f'input for the segmentation sigmoid function {u_128.size()}')
         seg = torch.sigmoid(u_128)
-        cls = torch.sigmoid(self.dense(torch.flatten(x_1)))
 
-        return seg, cls
+        logging.info(f'input for the classification sigmoid function : {x_1.size()}')
+        logging.info(f'I try to put this through this layer : {self.dense}')
+        clas_input = self.dense(torch.flatten(x_1, start_dim=1))
+        logging.info(f'Converted to {clas_input.size()}')
+        clas = torch.sigmoid(torch.flatten(clas_input))
+
+        logging.info(f'Resulting segmentation size : {seg.size()} \nand classification : {clas}')
+
+        return seg, clas

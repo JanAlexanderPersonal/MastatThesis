@@ -14,14 +14,6 @@ import logging
 # The following regex will parse "mask002.raw" to "mask002" "002" "raw"
 IMAGE_NR = re.compile(r'(^[a-zA-Z]+(\d+)).(\w+)')
 
-
-logging.basicConfig(
-    format='%(asctime)s : %(levelname)s : %(message)s',
-    level=logging.INFO,
-    datefmt="%Y-%m-%d %H:%M:%S"
-)
-
-
 class CSIDataset(Dataset):
     """MICCAI 2014 Spine Challange Dataset"""
 
