@@ -4,9 +4,17 @@ This project sits at the intersection of two areas of research.
 First there is the application of \Gls{ai} in medical applications, specifically for segmentation problems.
 Then, there is the active area of research of \Gls{weaklysupervisedl} machine learning.
 
+
+Specifically I build strongly upon two existing results:
+
+\begin{enumerate}
+    \item The U-Net based approach for building a vertebra instance segmentation model by dr. N. Lessmann et al. \cite{Lessmann2018} based on fully supervised data. This model was developed further in \cite{Chuang2019}
+    \item The \acrfull{wise} approach developped by dr. I. Laradji \cite{Laradji2020,Laradji2018}. 
+\end{enumerate}
+
 \section{Artificial intelligence for medical applications}
 
-\todo[inline]{Start with short overview of other AI problems (~5 lines)}
+\todo[inline]{Start with short overview of other AI problems (1/2 page)}
 
 \Gls{ai} has proven to be a valuable contribution to medical practice to reduce the burden of repetitive tasks on the medical caregiver.
 
@@ -33,7 +41,11 @@ It consists of
 
 \subsection{Segmentation of the human spine}
 
-\todo[inline]{other authors, approaches --> priors used, metrics used}
+\todo[inline]{other authors, approaches --> priors used, metrics used, datasets used}
+
+In this work, the network developed in \cite{Lessmann2018} is used.
+
+\todo[inline]{Concept behind Lessmann, datasets used and results}
 
 \section{Weakly supervised segmentation}
 
@@ -41,9 +53,14 @@ It consists of
 
 \todo[inline]{How is this problem generally solved: PCAMS, WISE, ...}
 
-\includegraphics[width=10cm]{/home/thesis/images/Laradji_architecture.png}
-\captionof{figure}{Architecture of the U-net based segmentation}
-\label{fig:laradji}
+In this work, the \acrshort{wise} concept is applied for vertebra segmentation.
+
+
+\begin{SCfigure}[][htb]
+    \includegraphics[width=10cm]{/home/thesis/images/Laradji_architecture.png}
+    \caption{Illustration from \cite{Laradji2020}. The \acrshort{wise} approach consists of two branches: The Embedding branch and the Localization branch.}
+    \label{fig:Laradji}
+\end{SCfigure}
 
 \subsection{Weakly supervised segmentation for Medical applications}
 
