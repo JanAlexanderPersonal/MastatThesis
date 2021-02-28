@@ -2,7 +2,7 @@
     a4paper, % Stock and paper size.
     9pt, % Type size.
     % article,
-    % oneside, 
+    oneside, 
     onecolumn, % Only one column of text on a page.
     % openright, % Each chapter will start on a recto page.
     % openleft, % Each chapter will start on a verso page.
@@ -244,11 +244,37 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 \chapter{Proposed methods}
 
-\section{Comparison between Fully supervised and Weakly supervised models}
-
 \section{Fully supervised model}
 
+\subsection{Model}
+
+Lessmann, discussed in xxx.
+The specific implementation is based on github repo xxx.
+
+\subsection{Data}
+
+Discussion on approach for using the datasets I have with the Lessmann model.
+How to preprocess the different datasets?
+What data augmentation steps used?
+
+\subsection{Hyperparameters}
+
+Hyperparameters for model and training from \cite{Lessmann2018}
+
 \section{Weakly supervised model}
+
+\subsection{Model}
+
+Model is based on Laradji \cite{Laradji2020}
+
+\subsection{Data}
+
+2D model -> volumes are sliced.
+Discussion of this procedure
+
+\subsection{Hyperparameters}
+
+
 
 \chapter{Experiments}
 
@@ -277,6 +303,23 @@ Comparison between results with weakly supervised model and fully supervised mod
   \end{enumerate}
 \end{partwithabstract}
 \restoregeometry
+\chapter{Medical terms}
+
+Clarification of the medical lingo used.
+
+\begin{SCfigure}[][htb]
+  \centering
+  \includegraphics[width=10cm]{/home/thesis/images/Anatomical_Planes.png}
+  \caption{Clarification of the terms regarding the anatomical planes
+  }
+\end{SCfigure}
+
+\begin{SCfigure}[][htb]
+  \centering
+  \includegraphics[width=10cm]{/home/thesis/images/prone_supine.png}
+  \caption{Supine (face-up) and Prone (face-down) position of a patient.}
+\end{SCfigure}
+
 \chapter{Used software}
 
 \todo[inline]{Software environments can be build with dockerfiles available in folder \textit{/dockerfiles/code/} of the git.}
