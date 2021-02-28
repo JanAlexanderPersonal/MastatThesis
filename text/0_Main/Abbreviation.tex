@@ -34,7 +34,6 @@
         description={
                 In an \textit{Unsupervised} machine learning problem, no labels are present. 
                 The aim is not to model the relationship between an \textit{input} and an \textit{output}, the aim is to model the structure of the data.
-                \todo[inline]{Add examples of algorithms? KNN, MoG}
                 }
 }
 
@@ -44,7 +43,6 @@
         description={
                 (Fully) Supervised Machine Learning task where target labels are present. 
                 The objective of these problems is to model the relationship between an \textit{input} and an \textit{output}.
-                \todo[inline]{Add examples of algorithms?}
                 }
 }
 
@@ -87,11 +85,33 @@
 
 \newglossaryentry{caml}
 {
-        name={Class Activation Maps},
+        name={Class Activation Map},
         description={
                 Technique to identify region of an image \textit{responsible} for the classification result.
-                }
+        },
+        first={Class Activation Map (CAM)},
+        text={CAM}
 }
+
+\newglossaryentry{lc-fcn}{
+        name={LC-FCN},
+        description={
+                \acrfull{fcn} with a \acrfull{lc} as optimization loss.
+                This technique was introduced by I. Laradji et al in \cite{Laradji2018} for the training of an automated instance counting network on point-supervised data.
+                Later it is applied in \cite{Laradji2020} as the Location branch of the WISE network.
+                },
+        first={Fully Convolutional Network with Location based Counting loss (LC-FCN)},
+        text={LC-FCN}
+}
+
+\newglossaryentry{wise}{
+        name={WISE},
+        description={Weakly-supervised Instance SEgmentation model (\cite{Laradji2020})},
+        first={Weakly-supervised Instance SEgmentation model (WISE)},
+        text={WISE}
+        }
+
+
 
 
 \newacronym{cnn}{CNN}{Convolutional Neural Network}
@@ -102,4 +122,6 @@
 \newacronym{mil}{MIL}{Multi-Instance Learning}
 \newacronym{rnn}{RNN}{Recurrent Neural Network}
 \newacronym{us}{US}{Ultra Sound imaging}
-\newacronym{wise}{WISE}{Weakly-supervised Instance SEgmentation model (\cite{Laradji2020})}
+\newacronym{fcn}{FCN}{Fully Convolutional Neural Network}
+\newacronym{lc}{LC}{Location based Counting loss}
+\newacronym{iou}{IoU}{Intersection over Union}

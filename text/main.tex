@@ -188,6 +188,13 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 %%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%
 
+% Reset chapter numbering in each part
+
+\makeatletter
+\@addtoreset{chapter}{part}
+\makeatother  
+
+
 \begin{document}
 
 \newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
@@ -244,35 +251,9 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 \chapter{Proposed methods}
 
-\section{Fully supervised model}
+\input{/home/thesis/2_Analysis/PropMethods_FullSupervision}
 
-\subsection{Model}
-
-Lessmann, discussed in xxx.
-The specific implementation is based on github repo xxx.
-
-\subsection{Data}
-
-Discussion on approach for using the datasets I have with the Lessmann model.
-How to preprocess the different datasets?
-What data augmentation steps used?
-
-\subsection{Hyperparameters}
-
-Hyperparameters for model and training from \cite{Lessmann2018}
-
-\section{Weakly supervised model}
-
-\subsection{Model}
-
-Model is based on Laradji \cite{Laradji2020}
-
-\subsection{Data}
-
-2D model -> volumes are sliced.
-Discussion of this procedure
-
-\subsection{Hyperparameters}
+\input{/home/thesis/2_Analysis/PropMethods_WeakSupervision}
 
 
 
