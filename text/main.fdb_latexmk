@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1613811966 "/home/jan/Documents/Projects/MastatThesis/text/main.tex" "/home/jan/Documents/Projects/MastatThesis/text/main.pdf" "main" 1613811966
+["pdflatex"] 1613811966 "/home/jan/Documents/Projects/MastatThesis/text/main.tex" "/home/jan/Documents/Projects/MastatThesis/text/main.pdf" "main" 1614712674
   "/home/jan/.TinyTeX/texmf-dist/fonts/tfm/jknappen/ec/ecrm1095.tfm" 1136768653 3584 929cdff2b7a8c11bd4d49fd68cb0ae70 ""
   "/home/jan/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmr10.tfm" 1136768653 1296 45809c5a464d5f32c8f98ba97c1bb47f ""
   "/home/jan/.TinyTeX/texmf-dist/fonts/tfm/public/cm/cmr9.tfm" 1136768653 1292 6b21b9c2c7bebb38aa2273f7ca0fb3af ""
@@ -71,11 +71,11 @@
   "/home/jan/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1596056880 1156015 69272ad6d5053db81fe2ab0082cdfb2f ""
   "/home/jan/.TinyTeX/texmf.cnf" 1596056524 614 6ac0f7114afdf26402b4fc286485d5f9 ""
   "/home/jan/Documents/Projects/MastatThesis/text/glossaries.sty" 0 -1 0 ""
-  "/home/jan/Documents/Projects/MastatThesis/text/main.aux" 1613811966 8 a94a2480d3289e625eea47cd1b285758 ""
-  "/home/jan/Documents/Projects/MastatThesis/text/main.tex" 1613811964 3019 cec77879da672fa6f8b328dfe09e478e ""
+  "/home/jan/Documents/Projects/MastatThesis/text/main.aux" 1614712673 8 a94a2480d3289e625eea47cd1b285758 ""
+  "/home/jan/Documents/Projects/MastatThesis/text/main.tex" 1614712673 3019 cec77879da672fa6f8b328dfe09e478e ""
   "glossaries.sty" 0 -1 0 ""
-  "main.tex" 1613811964 3019 cec77879da672fa6f8b328dfe09e478e ""
+  "main.tex" 1614712673 3019 cec77879da672fa6f8b328dfe09e478e ""
   (generated)
+  "/home/jan/Documents/Projects/MastatThesis/text/main.log"
   "main.log"
   "/home/jan/Documents/Projects/MastatThesis/text/main.pdf"
-  "/home/jan/Documents/Projects/MastatThesis/text/main.log"

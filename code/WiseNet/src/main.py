@@ -62,6 +62,7 @@ def main():
   mode = args.mode 
   exp_name = args.exp
 
+  # Get dict {'modelList' : List[str,...], 'configList', 'lossList', 'datasetList', 'metricList'}
   exp_dict = experiments.get_experiment_dict(args, exp_name)
   
   pp_main = None
@@ -119,7 +120,7 @@ def main():
                             dataset_name, loss_name, args.reset,
                             predictList_str)
 
-        continue
+        continue # continue: skip rest of code in for loop for this iteration
 
       if args.kill:   
         results[key] = borgy.borgy_kill(mode, config_name, 

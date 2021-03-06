@@ -7,6 +7,7 @@ import ann_utils as au
 import torch.nn.functional as F
 from . import base_model as bm
 from skimage import morphology as morph
+
 class LCFCN_BO(bm.BaseModel):
     def __init__(self, train_set, **model_options):
         super().__init__(train_set, **model_options)
@@ -34,7 +35,8 @@ class LCFCN_BO(bm.BaseModel):
             for l in np.unique(p_labels[i]):
                 if l == 0:
                     continue
-                
+                # Convert image to image of label masks:
+                # https://scikit-image.org/docs/dev/api/skimage.morphology.html#skimage.morphology.label
                 blobs[i,l-1] = morph.label(p_labels==l)
                 counts[i, l-1] = (np.unique(blobs[i,l-1]) != 0).sum()
 
@@ -48,6 +50,7 @@ class LCFCN_BO(bm.BaseModel):
     def predict(self, batch, predict_method="blobs", proposal_type="sharp"):
         # self.sanity_checks(batch)
         self.eval()
+        # Todo: Why is this? --> this is overruled in child classes
         predict_method = "blob_annList"
         n,c,h,w = batch["images"].shape
         
@@ -114,6 +117,7 @@ class LCFCN_Regularized(LCFCN_BO):
         self.regressor = nn.Linear(in_features=512,  out_features=self.n_classes);
 
     def replace_relu_with_prelu(self) :
+        # PReLU looks the same as leaky ReLU
         id_relu = [1,3,6,8,11,13,15,18,20,22];
         for i in id_relu :
             self.tmp[i] = nn.PReLU(self.tmp[i-1].out_channels);
