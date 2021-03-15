@@ -1,0 +1,32 @@
+\chapter{Datasets}
+
+\section{Dataset origin and characteristics}
+\todo[inline]{Overview of the datasets gathered. MRI / CT, number of images, type of annotation}
+
+\begin{SCtable}[\sidecaptionrelwidth][h]
+ 
+    \begin{tabular}{ l l l l l} 
+     \hline
+     \hline
+     Name & reference & imaging & Quantity & Annotation \\
+          &           & technology & [images] & \\
+     \hline 
+    UWSpine & \cite{Glocker}  & \acrshort{ct} & 125 & point  \\ 
+    xVertSeg & \cite{Yoa2015} & \acrshort{ct} & 15 & full \\
+    UniSiegen  &  & \acrshort{mri} & 17 & full \\
+    Zenobo & & \acrshort{mri} & 23 & semantic \\
+    MyoSegmenTUM & S. Schlaeger & \acrshort{mri} &  54 & full \\
+     \hline
+     \hline
+    \end{tabular}
+    \caption{List of dataset references. For more details on the data quantity, please consult chapter \ref{seg:datasetcomparison}. Notably the fact that some images were taken from the same patient is important. This means the dataset is grouped. The agreement with prof. T. Vrtovec regarding the xVertSeg dataset can be found in appendix \ref{seg:datasetagreement}.}
+
+\end{SCtable}
+
+\section{Comparison of the different datasets\label{seg:datasetcomparison}}
+
+Patient Comparison: Gender, age, health and pathologies in the spine.
+
+Image comparison: 
+Distribution of image intensities. Histogram of intensities.
+Information about original image grid shape.

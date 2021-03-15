@@ -1,0 +1,18 @@
+\section{Weakly supervised model}
+
+The weakly supervised model is based on \gls{wise}, introduced in \cite{Laradji2020}.
+This network consists of a Localization branch, based on \gls{lc-fcn} and an Embedding branch.
+
+\subsection{Model}
+
+Model is based on \gls{wise}.
+
+The Localization network \gls{lc-fcn} is a \acrfull{fcn} trained with a \acrfull{lc}.
+this \acrshort{lc} constists of 4 sublosses: image level loss, point level loss, split level loss, split level loss.d
+
+\subsection{Data}
+
+2D model -> volumes are sliced.
+Discussion of this procedure
+
+\subsection{Hyperparameters}
