@@ -1,0 +1,106 @@
+% This file was created by tikzplotlib v0.9.8.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
+\definecolor{color1}{rgb}{0.298039215686275,0.447058823529412,0.690196078431373}
+\definecolor{color2}{rgb}{0.768627450980392,0.305882352941176,0.32156862745098}
+
+\begin{axis}[
+axis background/.style={fill=color0},
+axis line style={white},
+tick align=outside,
+tick pos=left,
+x grid style={white},
+xlabel={Gender},
+xmajorgrids,
+xmin=0.5, xmax=2.5,
+xtick style={color=white!15!black},
+xtick={1,2},
+xticklabels={Female (39 patients),Male (15 patients)},
+y grid style={white},
+ylabel={Patient Height [m]},
+ymajorgrids,
+ymin=1.559, ymax=2.021,
+ytick style={color=white!15!black}
+]
+\addplot [color1, opacity=1]
+table {%
+0.925 1.63
+1.075 1.63
+1.075 1.7
+0.925 1.7
+0.925 1.63
+};
+\addplot [color1, opacity=1]
+table {%
+1 1.63
+1 1.58
+};
+\addplot [color1, opacity=1]
+table {%
+1 1.7
+1 1.79
+};
+\addplot [black, opacity=1]
+table {%
+0.9625 1.58
+1.0375 1.58
+};
+\addplot [black, opacity=1]
+table {%
+0.9625 1.79
+1.0375 1.79
+};
+\addplot [black, mark=o, mark size=3, mark options={solid,fill opacity=0}, only marks]
+table {%
+1 1.81
+};
+\addplot [color1, opacity=1]
+table {%
+1.925 1.755
+2.075 1.755
+2.075 1.875
+1.925 1.875
+1.925 1.755
+};
+\addplot [color1, opacity=1]
+table {%
+2 1.755
+2 1.71
+};
+\addplot [color1, opacity=1]
+table {%
+2 1.875
+2 2
+};
+\addplot [black, opacity=1]
+table {%
+1.9625 1.71
+2.0375 1.71
+};
+\addplot [black, opacity=1]
+table {%
+1.9625 2
+2.0375 2
+};
+\addplot [color2, opacity=1]
+table {%
+0.925 1.65
+1.075 1.65
+};
+\addplot [color2, opacity=1]
+table {%
+1.925 1.79
+2.075 1.79
+};
+\end{axis}
+
+\draw ({$(current bounding box.south west)!0.5!(current bounding box.south east)$}|-{$(current bounding box.south west)!0.98!(current bounding box.north west)$}) node[
+  scale=0.6,
+  anchor=north,
+  text=white!15!black,
+  rotate=0.0,
+  align=center
+]{OSF dataset
+height distribution};
+\end{tikzpicture}

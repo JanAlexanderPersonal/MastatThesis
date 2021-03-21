@@ -1,0 +1,154 @@
+% This file was created by tikzplotlib v0.9.8.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
+\definecolor{color1}{rgb}{0.298039215686275,0.447058823529412,0.690196078431373}
+\definecolor{color2}{rgb}{0.768627450980392,0.305882352941176,0.32156862745098}
+
+\begin{axis}[
+axis background/.style={fill=color0},
+axis line style={white},
+tick align=outside,
+tick pos=left,
+title={Distribution of the USiegen volume dimensions},
+x grid style={white},
+xmajorgrids,
+xmin=0.5, xmax=3.5,
+xtick style={color=white!15!black},
+xtick={1,2,3},
+xticklabels={left-right (x),anteroposterior (y),craniocaudal (z)},
+y grid style={white},
+ylabel={dimension [mm]},
+ymajorgrids,
+ymin=41.28125, ymax=741.84375,
+ytick style={color=white!15!black}
+]
+\addplot [color1, opacity=1]
+table {%
+0.85 160
+1.15 160
+1.15 188.000259399414
+0.85 188.000259399414
+0.85 160
+};
+\addplot [color1, opacity=1]
+table {%
+1 160
+1 120
+};
+\addplot [color1, opacity=1]
+table {%
+1 188.000259399414
+1 225.999877929688
+};
+\addplot [black, opacity=1]
+table {%
+0.925 120
+1.075 120
+};
+\addplot [black, opacity=1]
+table {%
+0.925 225.999877929688
+1.075 225.999877929688
+};
+\addplot [black, mark=o, mark size=3, mark options={solid,fill opacity=0}, only marks]
+table {%
+1 115.999740600586
+1 233.999877929688
+1 242.999801635742
+1 242.999801635742
+1 259.999755859375
+1 236.000259399414
+1 238.000122070312
+1 232
+};
+\addplot [color1, opacity=1]
+table {%
+1.85 160
+2.15 160
+2.15 188.000259399414
+1.85 188.000259399414
+1.85 160
+};
+\addplot [color1, opacity=1]
+table {%
+2 160
+2 120
+};
+\addplot [color1, opacity=1]
+table {%
+2 188.000259399414
+2 225.999877929688
+};
+\addplot [black, opacity=1]
+table {%
+1.925 120
+2.075 120
+};
+\addplot [black, opacity=1]
+table {%
+1.925 225.999877929688
+2.075 225.999877929688
+};
+\addplot [black, mark=o, mark size=3, mark options={solid,fill opacity=0}, only marks]
+table {%
+2 115.999740600586
+2 233.999877929688
+2 242.999801635742
+2 242.999801635742
+2 259.999755859375
+2 236.000259399414
+2 238.000122070312
+2 232
+};
+\addplot [color1, opacity=1]
+table {%
+2.85 228.125
+3.15 228.125
+3.15 406.25
+2.85 406.25
+2.85 228.125
+};
+\addplot [color1, opacity=1]
+table {%
+3 228.125
+3 73.125
+};
+\addplot [color1, opacity=1]
+table {%
+3 406.25
+3 638.75
+};
+\addplot [black, opacity=1]
+table {%
+2.925 73.125
+3.075 73.125
+};
+\addplot [black, opacity=1]
+table {%
+2.925 638.75
+3.075 638.75
+};
+\addplot [black, mark=o, mark size=3, mark options={solid,fill opacity=0}, only marks]
+table {%
+3 710
+3 710
+};
+\addplot [color2, opacity=1]
+table {%
+0.85 169.999877929688
+1.15 169.999877929688
+};
+\addplot [color2, opacity=1]
+table {%
+1.85 169.999877929688
+2.15 169.999877929688
+};
+\addplot [color2, opacity=1]
+table {%
+2.85 288.75
+3.15 288.75
+};
+\end{axis}
+
+\end{tikzpicture}

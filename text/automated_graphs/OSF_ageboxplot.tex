@@ -1,0 +1,102 @@
+% This file was created by tikzplotlib v0.9.8.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
+\definecolor{color1}{rgb}{0.298039215686275,0.447058823529412,0.690196078431373}
+\definecolor{color2}{rgb}{0.768627450980392,0.305882352941176,0.32156862745098}
+
+\begin{axis}[
+axis background/.style={fill=color0},
+axis line style={white},
+tick align=outside,
+tick pos=left,
+x grid style={white},
+xlabel={Gender},
+xmajorgrids,
+xmin=0.5, xmax=2.5,
+xtick style={color=white!15!black},
+xtick={1,2},
+xticklabels={Female (39 patients),Male (15 patients)},
+y grid style={white},
+ylabel={Patient age (y)},
+ymajorgrids,
+ymin=18.1666324435318, ymax=80.5007186858316,
+ytick style={color=white!15!black}
+]
+\addplot [color1, opacity=1]
+table {%
+0.925 32.5
+1.075 32.5
+1.075 62.7652292950034
+0.925 62.7652292950034
+0.925 32.5
+};
+\addplot [color1, opacity=1]
+table {%
+1 32.5
+1 21
+};
+\addplot [color1, opacity=1]
+table {%
+1 62.7652292950034
+1 77.6673511293635
+};
+\addplot [black, opacity=1]
+table {%
+0.9625 21
+1.0375 21
+};
+\addplot [black, opacity=1]
+table {%
+0.9625 77.6673511293635
+1.0375 77.6673511293635
+};
+\addplot [color1, opacity=1]
+table {%
+1.925 27
+2.075 27
+2.075 33
+1.925 33
+1.925 27
+};
+\addplot [color1, opacity=1]
+table {%
+2 27
+2 23
+};
+\addplot [color1, opacity=1]
+table {%
+2 33
+2 41
+};
+\addplot [black, opacity=1]
+table {%
+1.9625 23
+2.0375 23
+};
+\addplot [black, opacity=1]
+table {%
+1.9625 41
+2.0375 41
+};
+\addplot [color2, opacity=1]
+table {%
+0.925 58.2888432580424
+1.075 58.2888432580424
+};
+\addplot [color2, opacity=1]
+table {%
+1.925 31
+2.075 31
+};
+\end{axis}
+
+\draw ({$(current bounding box.south west)!0.5!(current bounding box.south east)$}|-{$(current bounding box.south west)!0.98!(current bounding box.north west)$}) node[
+  scale=0.6,
+  anchor=north,
+  text=white!15!black,
+  rotate=0.0,
+  align=center
+]{OSF dataset
+age distribution};
+\end{tikzpicture}

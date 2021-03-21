@@ -1,0 +1,104 @@
+% This file was created by tikzplotlib v0.9.8.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
+\definecolor{color1}{rgb}{0.298039215686275,0.447058823529412,0.690196078431373}
+\definecolor{color2}{rgb}{0.768627450980392,0.305882352941176,0.32156862745098}
+
+\begin{axis}[
+axis background/.style={fill=color0},
+axis line style={white},
+height=6cm,
+tick align=outside,
+tick pos=left,
+width=5cm,
+x grid style={white},
+xlabel={Gender},
+xmajorgrids,
+xmin=0.5, xmax=2.5,
+xtick style={color=white!15!black},
+xtick={1,2},
+xticklabels={F (8),M (7)},
+y grid style={white},
+ylabel={Patient age (y)},
+ymajorgrids,
+ymin=37.5, ymax=92.5,
+ytick style={color=white!15!black}
+]
+\addplot [color1, opacity=1]
+table {%
+0.925 66
+1.075 66
+1.075 79.25
+0.925 79.25
+0.925 66
+};
+\addplot [color1, opacity=1]
+table {%
+1 66
+1 60
+};
+\addplot [color1, opacity=1]
+table {%
+1 79.25
+1 90
+};
+\addplot [black, opacity=1]
+table {%
+0.9625 60
+1.0375 60
+};
+\addplot [black, opacity=1]
+table {%
+0.9625 90
+1.0375 90
+};
+\addplot [black, mark=o, mark size=3, mark options={solid,fill opacity=0}, only marks]
+table {%
+1 40
+};
+\addplot [color1, opacity=1]
+table {%
+1.925 73.5
+2.075 73.5
+2.075 78.5
+1.925 78.5
+1.925 73.5
+};
+\addplot [color1, opacity=1]
+table {%
+2 73.5
+2 73
+};
+\addplot [color1, opacity=1]
+table {%
+2 78.5
+2 82
+};
+\addplot [black, opacity=1]
+table {%
+1.9625 73
+2.0375 73
+};
+\addplot [black, opacity=1]
+table {%
+1.9625 82
+2.0375 82
+};
+\addplot [black, mark=o, mark size=3, mark options={solid,fill opacity=0}, only marks]
+table {%
+2 56
+};
+\addplot [color2, opacity=1]
+table {%
+0.925 72.5
+1.075 72.5
+};
+\addplot [color2, opacity=1]
+table {%
+1.925 77
+2.075 77
+};
+\end{axis}
+
+\end{tikzpicture}
