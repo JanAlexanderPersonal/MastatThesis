@@ -1,25 +1,49 @@
 
 \subsection{UniSiegen}
 
-This dataset is made available by the University of Siegen, Germany.
+This dataset is made available in 2014 by the University of Siegen, Germany.
 It was constructed by dr. D. Zukic \cite{Zukic2014} as part of his PhD project.
-
-This dataset contains 17 \acrshort{mri} scans of xxx patients
-
-The dataset con
-
-\subsubsection{Original Objective of the Dataset}
-
-This dataset was 
-
-\subsubsection{Patient statistics}
 
 \marginpar{
         \input{automated_graphs/USiegen_ageboxplot.tex}
-        \captionof{figure}{Distribution of patient age in the USiegen dataset.}
-        \label{fig:xVertSeg_Transverse}
+        \captionof{figure}{USiegen patients age distribution}
+        \label{fig:USiegen_Age}
     }
 
+This dataset contains 26 \acrshort{mri} scans of 17 different patients. 
+The fact that scans of the same patient are correlated will be taken into account 
+
+\subsubsection{Original Objective of the Dataset}
+
+This dataset was collected from several hospitals (Sarajevo, Marburg, Brisbane, Schwabach, Bad Wildungen \& Prague). The MRI scanner settings were varied between the scans (T1, T2, TIRM).
+The PhD project objective was to build a segmentation model to automate the segmentation of the lumbar vertebrae in the \acrshort{mri} scans to facilitate the diagnosis of several spine pathologies 
+such as scoliosis, spondylolisthesis \footnote{Spondylolisthesis is the displacement of one spinal vertebra compared to another.} and vertebral fractures.
+The final model developed by dr. D. Zukic consisted of a Viola-Jones detector for detection and vertebral body size approximation.
+The average Dice score compared to the manual reference was reported to be 79.3\%.
+
+\subsubsection{Patient statistics}
+
+Figure \ref{fig:USiegen_Age} illustrates that the USiegen dataset contains almost double the amount of female patients compared to male patients.
+These patients are relatively young compared to the patients in the \textit{xVertSeg} dataset.
+
+\begin{SCfigure}[][htb]
+    \centering
+    \begin{minipage}{.5\textwidth}
+        \input{automated_graphs/USiegen_Aka3_SagitalSlice.tex}
+    \end{minipage}%
+    \begin{minipage}{0.5\textwidth}
+        \input{automated_graphs/USiegen_Aka3_TransversalSlice.tex}
+    \end{minipage}
+    \caption{Scan \textit{Aka3} of the USiegen dataset. Sagittal slice on the left and Transverse slice on the right.\label{fig:xVertSeg_image002}}
+\end{SCfigure}
+
+The scans were cropped in the \textit{left-right} direction. 
+
+\begin{SCfigure}[][htb]
+    \centering
+    \input{automated_graphs/USiegen_dimensionboxplot.tex}
+    \caption{Distribution of the dimensions of the USiegen images. \label{fig:USiegen_Dims}}
+\end{SCfigure}
 
 \subsubsection{Technical information}
 
