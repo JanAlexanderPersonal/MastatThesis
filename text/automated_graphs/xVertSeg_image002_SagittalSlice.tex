@@ -1,0 +1,27 @@
+% This file was created by tikzplotlib v0.9.8.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
+
+\begin{axis}[
+axis background/.style={fill=color0},
+axis line style={white},
+height=6cm,
+tick align=outside,
+tick pos=left,
+title={Slice perpendicular to z-axis},
+width=5cm,
+x grid style={white},
+xlabel={Anteroposterior axis (y)[mm]},
+xmin=-0.5, xmax=442.5,
+xtick style={color=white!15!black},
+y dir=reverse,
+y grid style={white},
+ylabel={Craniocaudal axis (z) [mm]},
+ymin=-0.5, ymax=322.5,
+ytick style={color=white!15!black}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=442.5, ymin=322.5, ymax=-0.5] {automated_graphs/xVertSeg_image002_SagittalSlice-000.png};
+\end{axis}
+
+\end{tikzpicture}

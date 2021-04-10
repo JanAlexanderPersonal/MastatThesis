@@ -1,0 +1,26 @@
+% This file was created by tikzplotlib v0.9.8.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
+
+\begin{axis}[
+axis background/.style={fill=color0},
+axis line style={white},
+height=5cm,
+tick align=outside,
+tick pos=left,
+width=5cm,
+x grid style={white},
+xlabel={Left-right axis (x) [mm]},
+xmin=-0.5, xmax=442.5,
+xtick style={color=white!15!black},
+y dir=reverse,
+y grid style={white},
+ylabel={Anteroposterior axis (y) [mm]},
+ymin=-0.5, ymax=442.5,
+ytick style={color=white!15!black}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=442.5, ymin=442.5, ymax=-0.5] {automated_graphs/xVertSeg_image002_TransverseSlice-000.png};
+\end{axis}
+
+\end{tikzpicture}
