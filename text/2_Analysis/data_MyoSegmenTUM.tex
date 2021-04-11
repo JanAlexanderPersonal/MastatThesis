@@ -1,21 +1,29 @@
-\subsection{MyoSegmenTUM}
+\subsection{MyoSegmenTUM datset}
 
-This dataset is made available by the Technische Universität München.
+This dataset is made available by S. Schläger from the Technische Universität München via the \acrfull{osf} \footnote{see \url{ https://osf.io/3j54b/?view_only=f5089274d4a449cda2fef1d2df0ecc56 }}.
+It was constructed for the MyoSegmenTUM project \cite{Durian2019}.
+It consists of 53 \acrshort{mri} scans of the spine.
+
+\subsubsection{Original Objective of the Dataset}
+
+The MyoSegmenTUM Spine dataset is compiled as a reference dataset for development of segmentation algorithms of the lumbar spine vertebral bodies and  muscle groups.
 
 \subsubsection{Patient statistics}
+
+In figure \ref{fig:OSF_ageboxplot}, the age distribution of the patients in the MyoSegmenTUM dataset is shown.
 
 \marginpar{
         \input{automated_graphs/OSF_ageboxplot.tex}
         \captionof{figure}{Distribution of patient age in the dataset from the MyoSegmenTUM project.}
-        \label{fig:xVertSeg_Transverse}
+        \label{fig:OSF_ageboxplot}
     }
 
-\begin{SCfigure}[][htb]
-    \centering
-    \input{automated_graphs/OSF_BMIboxplot.tex}
-    \caption{Distribution of patient BMI in the dataset from the MyoSegmenTUM project.}
-\end{SCfigure}
+
 
 \subsubsection{Technical information}
 
-\subsubsection{Original Objective of the Dataset}
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{automated_graphs/OSF_02.png}
+    \caption{MyoSegmenTUM dataset scan \textit{02}. \label{fig:OSF_02}}
+\end{SCfigure}

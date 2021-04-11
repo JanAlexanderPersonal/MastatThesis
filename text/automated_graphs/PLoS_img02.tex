@@ -1,0 +1,44 @@
+% This file was created by tikzplotlib v0.9.8.
+\begin{tikzpicture}
+
+\begin{groupplot}[group style={group size=2 by 1}]
+\nextgroupplot[
+axis line style={white!15!black},
+height=5cm,
+tick align=outside,
+width=9cm,
+x grid style={white!80!black},
+xlabel={left-right axis (x) [mm]},
+xmajorticks=false,
+xmin=-0.5, xmax=77.5,
+xtick style={color=white!15!black},
+y dir=reverse,
+y grid style={white!80!black},
+ylabel={Anteroposterior axis (y) [mm]},
+ymajorticks=false,
+ymin=-0.5, ymax=381.5,
+ytick style={color=white!15!black}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=77.5, ymin=381.5, ymax=-0.5] {PLoS_img02-000.png};
+
+\nextgroupplot[
+axis line style={white!15!black},
+height=5cm,
+tick align=outside,
+width=9cm,
+x grid style={white!80!black},
+xlabel={Anteroposterior axis (x) [mm]},
+xmajorticks=false,
+xmin=-0.5, xmax=381.5,
+xtick style={color=white!15!black},
+y dir=reverse,
+y grid style={white!80!black},
+ylabel={Craniocaudal axis (z) [mm]},
+ymajorticks=false,
+ymin=-0.5, ymax=381.5,
+ytick style={color=white!15!black}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=381.5, ymin=381.5, ymax=-0.5] {PLoS_img02-001.png};
+\end{groupplot}
+
+\end{tikzpicture}

@@ -1,317 +1,357 @@
 % This file was created by tikzplotlib v0.9.8.
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
-\definecolor{color1}{rgb}{0.0906862745098039,0.425980392156863,0.611274509803922}
-\definecolor{color2}{rgb}{0.76421568627451,0.531862745098039,0.125980392156863}
-\definecolor{color3}{rgb}{0.084313725490196,0.543137254901961,0.416666666666667}
-\definecolor{color4}{rgb}{0.730882352941177,0.380882352941177,0.104411764705882}
-
-\begin{axis}[
-axis background/.style={fill=color0},
-axis line style={white},
+\begin{groupplot}[group style={group size=4 by 1}]
+\nextgroupplot[
+axis line style={white!15!black},
 height=5cm,
-legend cell align={left},
+tick align=outside,
+title={Dataset = xVertSeg},
+width=9cm,
+x grid style={white!80!black},
+xlabel={Gender},
+xmajorticks=false,
+xmin=-0.5, xmax=1.5,
+xtick style={color=white!15!black},
+xtick={0,1},
+xticklabels={F,M},
+y grid style={white!80!black},
+ylabel={Age},
+ymajorticks=false,
+ymin=11.05, ymax=97.95,
+ytick style={color=white!15!black}
+]
+\path [draw=white!30.1960784313725!black, fill=white!50.1960784313725!black, semithick]
+(axis cs:-0.4,68)
+--(axis cs:0.4,68)
+--(axis cs:0.4,79.25)
+--(axis cs:-0.4,79.25)
+--(axis cs:-0.4,68)
+--cycle;
+\path [draw=white!30.1960784313725!black, fill=white!82.7450980392157!black, semithick]
+(axis cs:0.6,64)
+--(axis cs:1.4,64)
+--(axis cs:1.4,78)
+--(axis cs:0.6,78)
+--(axis cs:0.6,64)
+--cycle;
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0 68
+0 60
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0 79.25
+0 90
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+-0.2 60
+0.2 60
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+-0.2 90
+0.2 90
+};
+\addplot [black, mark=diamond*, mark size=2.5, mark options={solid,fill=white!30.1960784313725!black}, only marks]
+table {%
+0 40
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+1 64
+1 53
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+1 78
+1 86
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0.8 53
+1.2 53
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0.8 86
+1.2 86
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+-0.4 72
+0.4 72
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0.6 73
+1.4 73
+};
+
+\nextgroupplot[
+axis line style={white!15!black},
+height=5cm,
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
+tick align=outside,
+title={Dataset = USiegen},
+width=9cm,
+x grid style={white!80!black},
+xlabel={Gender},
+xmajorticks=false,
+xmin=-0.5, xmax=1.5,
+xtick style={color=white!15!black},
+xtick={0,1},
+xticklabels={F,M},
+y grid style={white!80!black},
+ymajorticks=false,
+ymin=11.05, ymax=97.95,
+ytick style={color=white!15!black},
+yticklabels={}
+]
+\path [draw=white!30.1960784313725!black, fill=white!50.1960784313725!black, semithick]
+(axis cs:-0.4,22)
+--(axis cs:0.4,22)
+--(axis cs:0.4,69)
+--(axis cs:-0.4,69)
+--(axis cs:-0.4,22)
+--cycle;
+\path [draw=white!30.1960784313725!black, fill=white!82.7450980392157!black, semithick]
+(axis cs:0.6,45)
+--(axis cs:1.4,45)
+--(axis cs:1.4,71.25)
+--(axis cs:0.6,71.25)
+--(axis cs:0.6,45)
+--cycle;
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0 22
+0 21
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0 69
+0 74
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+-0.2 21
+0.2 21
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+-0.2 74
+0.2 74
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+1 45
+1 27
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+1 71.25
+1 72
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0.8 27
+1.2 27
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0.8 72
+1.2 72
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+-0.4 55
+0.4 55
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0.6 61
+1.4 61
+};
+
+\nextgroupplot[
+axis line style={white!15!black},
+height=5cm,
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
+tick align=outside,
+title={Dataset = MyoSegment\_TUM},
+width=9cm,
+x grid style={white!80!black},
+xlabel={Gender},
+xmajorticks=false,
+xmin=-0.5, xmax=1.5,
+xtick style={color=white!15!black},
+xtick={0,1},
+xticklabels={F,M},
+y grid style={white!80!black},
+ymajorticks=false,
+ymin=11.05, ymax=97.95,
+ytick style={color=white!15!black},
+yticklabels={}
+]
+\path [draw=white!30.1960784313725!black, fill=white!50.1960784313725!black, semithick]
+(axis cs:-0.4,32.25)
+--(axis cs:0.4,32.25)
+--(axis cs:0.4,62)
+--(axis cs:-0.4,62)
+--(axis cs:-0.4,32.25)
+--cycle;
+\path [draw=white!30.1960784313725!black, fill=white!82.7450980392157!black, semithick]
+(axis cs:0.6,27)
+--(axis cs:1.4,27)
+--(axis cs:1.4,33)
+--(axis cs:0.6,33)
+--(axis cs:0.6,27)
+--cycle;
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0 32.25
+0 21
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0 62
+0 77
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+-0.2 21
+0.2 21
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+-0.2 77
+0.2 77
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+1 27
+1 23
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+1 33
+1 41
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0.8 23
+1.2 23
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0.8 41
+1.2 41
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+-0.4 58
+0.4 58
+};
+\addplot [semithick, white!30.1960784313725!black]
+table {%
+0.6 31
+1.4 31
+};
+
+\nextgroupplot[
+axis line style={white!15!black},
+height=5cm,
 legend style={
   fill opacity=0.8,
   draw opacity=1,
   text opacity=1,
   at={(1.05,1)},
   anchor=north west,
-  draw=none,
-  fill=color0
+  draw=white!80!black
 },
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
 tick align=outside,
-tick pos=left,
+title={Dataset = UWashington},
 width=9cm,
-x grid style={white},
+x grid style={white!80!black},
 xlabel={Gender},
+xmajorticks=false,
 xmin=-0.5, xmax=1.5,
 xtick style={color=white!15!black},
 xtick={0,1},
 xticklabels={F,M},
-y grid style={white},
-ylabel={patient age [y]},
-ymajorgrids,
+y grid style={white!80!black},
+ymajorticks=false,
 ymin=11.05, ymax=97.95,
-ytick style={color=white!15!black}
+ytick style={color=white!15!black},
+yticklabels={}
 ]
-\path [draw=white!18.8235294117647!black, fill=color1, line width=0.7pt]
-(axis cs:-0.398,68)
---(axis cs:-0.202,68)
---(axis cs:-0.202,79.25)
---(axis cs:-0.398,79.25)
---(axis cs:-0.398,68)
+\path [draw=white!30.1960784313725!black, fill=white!50.1960784313725!black, semithick]
+(axis cs:-0.4,42.75)
+--(axis cs:0.4,42.75)
+--(axis cs:0.4,64.75)
+--(axis cs:-0.4,64.75)
+--(axis cs:-0.4,42.75)
 --cycle;
-\path [draw=white!18.8235294117647!black, fill=color2, line width=0.7pt]
-(axis cs:-0.198,22)
---(axis cs:-0.002,22)
---(axis cs:-0.002,69)
---(axis cs:-0.198,69)
---(axis cs:-0.198,22)
+\path [draw=white!30.1960784313725!black, fill=white!82.7450980392157!black, semithick]
+(axis cs:0.6,41.5)
+--(axis cs:1.4,41.5)
+--(axis cs:1.4,65.5)
+--(axis cs:0.6,65.5)
+--(axis cs:0.6,41.5)
 --cycle;
-\path [draw=white!18.8235294117647!black, fill=color3, line width=0.7pt]
-(axis cs:0.00200000000000003,32.25)
---(axis cs:0.198,32.25)
---(axis cs:0.198,62)
---(axis cs:0.00200000000000003,62)
---(axis cs:0.00200000000000003,32.25)
---cycle;
-\path [draw=white!18.8235294117647!black, fill=color4, line width=0.7pt]
-(axis cs:0.202,42.75)
---(axis cs:0.398,42.75)
---(axis cs:0.398,64.75)
---(axis cs:0.202,64.75)
---(axis cs:0.202,42.75)
---cycle;
-\path [draw=white!18.8235294117647!black, fill=color1, line width=0.7pt]
-(axis cs:0.602,64)
---(axis cs:0.798,64)
---(axis cs:0.798,78)
---(axis cs:0.602,78)
---(axis cs:0.602,64)
---cycle;
-\path [draw=white!18.8235294117647!black, fill=color2, line width=0.7pt]
-(axis cs:0.802,45)
---(axis cs:0.998,45)
---(axis cs:0.998,71.25)
---(axis cs:0.802,71.25)
---(axis cs:0.802,45)
---cycle;
-\path [draw=white!18.8235294117647!black, fill=color3, line width=0.7pt]
-(axis cs:1.002,27)
---(axis cs:1.198,27)
---(axis cs:1.198,33)
---(axis cs:1.002,33)
---(axis cs:1.002,27)
---cycle;
-\path [draw=white!18.8235294117647!black, fill=color4, line width=0.7pt]
-(axis cs:1.202,41.5)
---(axis cs:1.398,41.5)
---(axis cs:1.398,65.5)
---(axis cs:1.202,65.5)
---(axis cs:1.202,41.5)
---cycle;
-\draw[draw=white!18.8235294117647!black,fill=color1,line width=0.35pt] (axis cs:0,0) rectangle (axis cs:0,0);
-\addlegendimage{ybar,ybar legend,draw=white!18.8235294117647!black,fill=color1,line width=0.35pt};
-\addlegendentry{xVertSeg}
-
-\draw[draw=white!18.8235294117647!black,fill=color2,line width=0.35pt] (axis cs:0,0) rectangle (axis cs:0,0);
-\addlegendimage{ybar,ybar legend,draw=white!18.8235294117647!black,fill=color2,line width=0.35pt};
-\addlegendentry{USiegen}
-
-\draw[draw=white!18.8235294117647!black,fill=color3,line width=0.35pt] (axis cs:0,0) rectangle (axis cs:0,0);
-\addlegendimage{ybar,ybar legend,draw=white!18.8235294117647!black,fill=color3,line width=0.35pt};
-\addlegendentry{MyoSegment_TUM}
-
-\draw[draw=white!18.8235294117647!black,fill=color4,line width=0.35pt] (axis cs:0,0) rectangle (axis cs:0,0);
-\addlegendimage{ybar,ybar legend,draw=white!18.8235294117647!black,fill=color4,line width=0.35pt};
-\addlegendentry{UWashington}
-
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
+\addplot [semithick, white!30.1960784313725!black, forget plot]
 table {%
--0.3 68
--0.3 60
+0 42.75
+0 15
 };
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
+\addplot [semithick, white!30.1960784313725!black, forget plot]
 table {%
--0.3 79.25
--0.3 90
+0 64.75
+0 94
 };
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
+\addplot [semithick, white!30.1960784313725!black, forget plot]
 table {%
--0.349 60
--0.251 60
+-0.2 15
+0.2 15
 };
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
+\addplot [semithick, white!30.1960784313725!black, forget plot]
 table {%
--0.349 90
--0.251 90
+-0.2 94
+0.2 94
 };
-\addplot [black, mark=diamond*, mark size=2.5, mark options={solid,fill=white!18.8235294117647!black}, only marks, forget plot]
+\addplot [semithick, white!30.1960784313725!black, forget plot]
 table {%
--0.3 40
+1 41.5
+1 15
 };
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
+\addplot [semithick, white!30.1960784313725!black, forget plot]
 table {%
--0.1 22
--0.1 21
+1 65.5
+1 90
 };
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
+\addplot [semithick, white!30.1960784313725!black, forget plot]
 table {%
--0.1 69
--0.1 74
+0.8 15
+1.2 15
 };
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
+\addplot [semithick, white!30.1960784313725!black, forget plot]
 table {%
--0.149 21
--0.051 21
+0.8 90
+1.2 90
 };
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
+\addplot [semithick, white!30.1960784313725!black, forget plot]
 table {%
--0.149 74
--0.051 74
+-0.4 54
+0.4 54
 };
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
+\addplot [semithick, white!30.1960784313725!black, forget plot]
 table {%
-0.1 32.25
-0.1 21
+0.6 54
+1.4 54
 };
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.1 62
-0.1 77
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.051 21
-0.149 21
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.051 77
-0.149 77
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.3 42.75
-0.3 15
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.3 64.75
-0.3 94
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.251 15
-0.349 15
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.251 94
-0.349 94
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.7 64
-0.7 53
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.7 78
-0.7 86
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.651 53
-0.749 53
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.651 86
-0.749 86
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.9 45
-0.9 27
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.9 71.25
-0.9 72
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.851 27
-0.949 27
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.851 72
-0.949 72
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-1.1 27
-1.1 23
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-1.1 33
-1.1 41
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-1.051 23
-1.149 23
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-1.051 41
-1.149 41
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-1.3 41.5
-1.3 15
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-1.3 65.5
-1.3 90
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-1.251 15
-1.349 15
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-1.251 90
-1.349 90
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
--0.398 72
--0.202 72
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
--0.198 55
--0.002 55
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.00200000000000003 58
-0.198 58
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.202 54
-0.398 54
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.602 73
-0.798 73
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-0.802 61
-0.998 61
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-1.002 31
-1.198 31
-};
-\addplot [line width=0.7pt, white!18.8235294117647!black, forget plot]
-table {%
-1.202 54
-1.398 54
-};
-\end{axis}
+\end{groupplot}
 
 \end{tikzpicture}

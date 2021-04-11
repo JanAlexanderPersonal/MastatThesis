@@ -43,34 +43,16 @@ A box plot of the age distribution between genders is shown in figure \ref{fig:x
 \subsubsection{Technical information}
 
 The xVertSeg dataset contains 15 \acrshort{ct} annotated scans. 
-This dataset is very interesting due to the high quality and resolution of the images.
+This dataset is very interesting due to the high quality and high resolution of the images.
 On figure \ref{fig:xVertSeg_image002}, two slices of the same patient (002) are represented.
 The slices show the complete, uncropped sections of the torso and abdominal region of the patient. 
 There is no \acrshort{roi} cropping.
-The distribution of the scan dimensions is shown in figure \ref{fig:xVertSeg_Dims}.
 
 \begin{SCfigure}[][htb]
     \centering
-    \begin{minipage}{.5\textwidth}
-        \input{automated_graphs/xVertSeg_image002_SagittalSlice.tex}
-    \end{minipage}%
-    \begin{minipage}{0.5\textwidth}
-        \input{automated_graphs/xVertSeg_image002_TransverseSlice.tex}
-    \end{minipage}
-    \caption{Scan \textit{image002} of the xVertSeg dataset. Sagittal slice on the left and Transverse slice on the right.\label{fig:xVertSeg_image002}}
+    \includegraphics[width=.95\textwidth]{automated_graphs/xVertSeg_image002.png}
+    \caption{xVertSeg scan \textit{image002}. \label{fig:xVertSeg_image002}}
 \end{SCfigure}
 
-The scans also have a high base resolutions: in the transverse plane, the grid spacing is lower than 1mm square. 
-On the Craniocaudal axis, the slice spacing is between 1.7025 mm and 1.0408 mm.
+The distribution of the scan dimensions is shown in figure \ref{fig:AllDataset_dims}. This also illustrates the \textit{xVertSeg} dataset consists of large, high resolution images.
 Mind that during pre-processing the scans are resampled on a $1mm \times 1mm \times 1mm$ grid.
-
-\todo[]{quantitative information on resolution.}
-
-\begin{SCfigure}[][htb]
-    \centering
-    \input{automated_graphs/xVertSeg_dimensionboxplot.tex}
-    \caption{Distribution of the dimensions of the xVertSeg images. \label{fig:xVertSeg_Dims}}
-\end{SCfigure}
-
-
-
