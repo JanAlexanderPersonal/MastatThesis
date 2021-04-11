@@ -33,4 +33,5 @@ rm *.aux
 rm *.bcf
 rm *.xml
 rm *.fls
+rm *.bib.bak
 rm *.fdb_latexmk

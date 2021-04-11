@@ -1,27 +1,31 @@
 % This file was created by tikzplotlib v0.9.8.
 \begin{tikzpicture}
 
+\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
+\definecolor{color1}{rgb}{0.298039215686275,0.447058823529412,0.690196078431373}
+\definecolor{color2}{rgb}{0.768627450980392,0.305882352941176,0.32156862745098}
+
 \begin{axis}[
-axis line style={white!15!black},
+axis background/.style={fill=color0},
+axis line style={white},
 height=5cm,
 tick align=outside,
+tick pos=left,
 width=5cm,
-x grid style={white!80!black},
+x grid style={white},
 xlabel={Gender},
 xmajorgrids,
-xmajorticks=false,
 xmin=0.5, xmax=2.5,
 xtick style={color=white!15!black},
 xtick={1,2},
 xticklabels={F(11),M(6)},
-y grid style={white!80!black},
+y grid style={white},
 ylabel={Patient age [y]},
 ymajorgrids,
-ymajorticks=false,
 ymin=0, ymax=100,
 ytick style={color=white!15!black}
 ]
-\addplot [white!29.8039215686275!black, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 0.925 21.5
 1.075 21.5
@@ -29,22 +33,22 @@ table {%
 0.925 38.5
 0.925 21.5
 };
-\addplot [white!29.8039215686275!black, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 1 21.5
 1 21
 };
-\addplot [white!29.8039215686275!black, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 1 38.5
 1 55
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 0.9625 21
 1.0375 21
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 0.9625 55
 1.0375 55
@@ -54,7 +58,7 @@ table {%
 1 74
 1 69
 };
-\addplot [white!29.8039215686275!black, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 1.925 33
 2.075 33
@@ -62,32 +66,32 @@ table {%
 1.925 69.5
 1.925 33
 };
-\addplot [white!29.8039215686275!black, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 2 33
 2 27
 };
-\addplot [white!29.8039215686275!black, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 2 69.5
 2 72
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 1.9625 27
 2.0375 27
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 1.9625 72
 2.0375 72
 };
-\addplot [white!69.0196078431373!black, opacity=1]
+\addplot [color2, opacity=1]
 table {%
 0.925 22
 1.075 22
 };
-\addplot [white!69.0196078431373!black, opacity=1]
+\addplot [color2, opacity=1]
 table {%
 1.925 58
 2.075 58

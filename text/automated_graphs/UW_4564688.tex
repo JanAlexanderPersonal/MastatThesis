@@ -1,40 +1,42 @@
 % This file was created by tikzplotlib v0.9.8.
 \begin{tikzpicture}
 
+\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
+
 \begin{groupplot}[group style={group size=2 by 1}]
 \nextgroupplot[
-axis line style={white!15!black},
+axis background/.style={fill=color0},
+axis line style={white},
 height=5cm,
 tick align=outside,
+tick pos=left,
 width=9cm,
-x grid style={white!80!black},
+x grid style={white},
 xlabel={left-right axis (x) [mm]},
-xmajorticks=false,
 xmin=-0.5, xmax=140.5,
 xtick style={color=white!15!black},
 y dir=reverse,
-y grid style={white!80!black},
+y grid style={white},
 ylabel={Anteroposterior axis (y) [mm]},
-ymajorticks=false,
 ymin=-0.5, ymax=140.5,
 ytick style={color=white!15!black}
 ]
 \addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=140.5, ymin=140.5, ymax=-0.5] {UW_4564688-000.png};
 
 \nextgroupplot[
-axis line style={white!15!black},
+axis background/.style={fill=color0},
+axis line style={white},
 height=5cm,
 tick align=outside,
+tick pos=left,
 width=9cm,
-x grid style={white!80!black},
+x grid style={white},
 xlabel={Anteroposterior axis (y) [mm]},
-xmajorticks=false,
 xmin=-0.5, xmax=140.5,
 xtick style={color=white!15!black},
 y dir=reverse,
-y grid style={white!80!black},
+y grid style={white},
 ylabel={Craniocaudal axis (z) [mm]},
-ymajorticks=false,
 ymin=-0.5, ymax=227.5,
 ytick style={color=white!15!black}
 ]

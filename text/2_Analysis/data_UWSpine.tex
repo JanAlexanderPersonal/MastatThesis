@@ -1,21 +1,38 @@
-\subsection{UWSpine}
-
-This dataset is made available by the University of Washington.
-It has been constructed by dr. Glocker and team \cite{Glocker2012,Glocker2013}.
+\subsection{UWSpine dataset}
+ 
+This dataset is made available by the Department of Radiology of the University of Washington\footnote{Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License, dataset available at \url{
+      https://biomedia.doc.ic.ac.uk/data/spine/  
+    }}.
+It has been constructed by dr. Glocker and team \cite{Glocker2012,Glocker2013} (Microsoft research) in 2012.
+For each scan, manual annotations of vertebrae centroids are provided.
 
 This dataset contains 242 \acrshort{ct} scans of 150 different patients.
-This grouped nature of the data will be taken into account when performing the train-validation-test split.
+This grouped nature of the data will be taken into account when performing the split in a train set, a validation set and a test set to avoid information leakage.
 
 \subsubsection{Original Objective of the Dataset}
 
-\subsubsection{Patient statistics}
+In \cite{Glocker2012,Glocker2013} the development of a model based on regression forests and a \acrfull{hmm} for vertebra localisation without needing strong assumptions on what part of the spine is visible.
 
+\subsubsection{Patient statistics}
 \marginpar{
         \input{automated_graphs/UW_ageboxplot.tex}
         \captionof{figure}{Distribution of patient age in the dataset from Washington University.}
-        \label{fig:xVertSeg_Transverse}
+        \label{fig:UW_ageboxplot}
     }
 
-
+Figure \ref{fig:UW_ageboxplot} illustrated that the patients in the \textit{UWSpine} dataset are relatively varied in age.
+Of most patients in the dataset, multiple scan images are available.
+The highest number of scans taken from a single patient is 5.
 
 \subsubsection{Technical information}
+
+Only point annotations are available for the \textit{UWSpine} dataset. 
+This means this dataset can only be used for weakly supervised model training.
+
+The scans in the \textit{UWSpine} dataset are strongly cropped around the spine, both in the left-right direction and the anteroposterior direction.
+
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{automated_graphs/UW_4564688.png}
+    \caption{University of Washington dataset, scan \textit{4564688}. \label{fig:UW_4564688}}
+\end{SCfigure}

@@ -4,7 +4,7 @@
         name={Weakly Supervised},
         description={Weakly supervised machine learning where the ground truth labels are only partially available. 
         In the context of image segmentation, this can mean that the labels are only provided at image level or that point level annotation in the image is provided.
-        The model is trained on incomplete labels, the desired result remains the complete segmentation of the image.
+        The model is trained on incomplete, noisy or limited labels, the desired result remains the complete segmentation of the image.
         Just like in the case of \textit{Fully Supervised Learning} the objective is to model the relationship between an \textit{input} and an \textit{output}. 
         Due to the labels being incomplete, there is a stronger need to identify the internal structure of the data, as is the case for \textit{Unsupervised learning}.
         }
@@ -19,6 +19,13 @@
                 The difference is that it differentiates between two objects of the same object category in the picture. 
                 }
         }
+
+\newglossaryentry{houndsfieldu}{
+name={Houndsfield Units},
+description={
+        Unit of \todo[inline]{aanvullen} 
+        }
+}
 
 \newglossaryentry{groundtruth}{
         name={Ground Truth},
@@ -132,3 +139,4 @@
 \newacronym{iou}{IoU}{Intersection over Union}
 \newacronym{roi}{RoI}{Region of Interest}
 \newacronym{osf}{OSF}{Open Science Foundation}
+\newacronym{hmm}{HMM}{Hidden Markov Model}

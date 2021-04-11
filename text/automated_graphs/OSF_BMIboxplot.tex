@@ -1,27 +1,31 @@
 % This file was created by tikzplotlib v0.9.8.
 \begin{tikzpicture}
 
+\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
+\definecolor{color1}{rgb}{0.298039215686275,0.447058823529412,0.690196078431373}
+\definecolor{color2}{rgb}{0.768627450980392,0.305882352941176,0.32156862745098}
+
 \begin{axis}[
-axis line style={white!15!black},
+axis background/.style={fill=color0},
+axis line style={white},
 height=5cm,
 tick align=outside,
+tick pos=left,
 width=5cm,
-x grid style={white!80!black},
+x grid style={white},
 xlabel={Gender},
 xmajorgrids,
-xmajorticks=false,
 xmin=0.5, xmax=2.5,
 xtick style={color=white!15!black},
 xtick={1,2},
 xticklabels={F(39),M(15)},
-y grid style={white!80!black},
+y grid style={white},
 ylabel={Patient BMI},
 ymajorgrids,
-ymajorticks=false,
 ymin=18.0024047239566, ymax=36.1459436746559,
 ytick style={color=white!15!black}
 ]
-\addplot [white!29.8039215686275!black, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 0.925 23.8751147842057
 1.075 23.8751147842057
@@ -29,22 +33,22 @@ table {%
 0.925 27.624520195661
 0.925 23.8751147842057
 };
-\addplot [white!29.8039215686275!black, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 1 23.8751147842057
 1 18.8271110398975
 };
-\addplot [white!29.8039215686275!black, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 1 27.624520195661
 1 31.2809218296147
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 0.9625 18.8271110398975
 1.0375 18.8271110398975
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 0.9625 31.2809218296147
 1.0375 31.2809218296147
@@ -53,7 +57,7 @@ table {%
 table {%
 1 35.3212373587151
 };
-\addplot [white!29.8039215686275!black, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 1.925 24.7900784908742
 2.075 24.7900784908742
@@ -61,32 +65,32 @@ table {%
 1.925 30.1080510764016
 1.925 24.7900784908742
 };
-\addplot [white!29.8039215686275!black, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 2 24.7900784908742
 2 24.3024870597147
 };
-\addplot [white!29.8039215686275!black, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 2 30.1080510764016
 2 32.4584126587809
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 1.9625 24.3024870597147
 2.0375 24.3024870597147
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 1.9625 32.4584126587809
 2.0375 32.4584126587809
 };
-\addplot [white!69.0196078431373!black, opacity=1]
+\addplot [color2, opacity=1]
 table {%
 0.925 26.0261748958953
 1.075 26.0261748958953
 };
-\addplot [white!69.0196078431373!black, opacity=1]
+\addplot [color2, opacity=1]
 table {%
 1.925 26.25
 2.075 26.25
