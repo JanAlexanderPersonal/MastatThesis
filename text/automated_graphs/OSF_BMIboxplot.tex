@@ -8,15 +8,17 @@
 \begin{axis}[
 axis background/.style={fill=color0},
 axis line style={white},
+height=5cm,
 tick align=outside,
 tick pos=left,
+width=5cm,
 x grid style={white},
 xlabel={Gender},
 xmajorgrids,
 xmin=0.5, xmax=2.5,
 xtick style={color=white!15!black},
 xtick={1,2},
-xticklabels={Female (39 patients),Male (15 patients)},
+xticklabels={F(39),M(15)},
 y grid style={white},
 ylabel={Patient BMI},
 ymajorgrids,
@@ -95,12 +97,4 @@ table {%
 };
 \end{axis}
 
-\draw ({$(current bounding box.south west)!0.5!(current bounding box.south east)$}|-{$(current bounding box.south west)!0.98!(current bounding box.north west)$}) node[
-  scale=0.6,
-  anchor=north,
-  text=white!15!black,
-  rotate=0.0,
-  align=center
-]{OSF dataset
-BMI distribution};
 \end{tikzpicture}

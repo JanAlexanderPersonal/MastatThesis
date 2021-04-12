@@ -10,7 +10,12 @@ This chapter discusses these datasets based on different criteria:
 \end{description}
 
 \section{Global overview of the different dataset}
+
 \todo[inline]{Overview of the datasets gathered. MRI / CT, number of images, type of annotation + WHO performed the annotation? Was it a medical docter or one of the researchers.}
+
+
+
+bla
 
 \begin{SCtable}[\sidecaptionrelwidth][h]
  
@@ -21,10 +26,10 @@ This chapter discusses these datasets based on different criteria:
           &           & technology & [images] & \\
      \hline 
     UWSpine & \cite{Glocker}  & \acrshort{ct} & 125 & point  \\ 
-    xVertSeg & \cite{Yoa2015} & \acrshort{ct} & 15 & full \\
-    UniSiegen  &  & \acrshort{mri} & 17 & full \\
-    Zenobo & & \acrshort{mri} & 23 & semantic \\
-    MyoSegmenTUM & S. Schlaeger & \acrshort{mri} &  54 & full \\
+    xVertSeg & \cite{Ibragimov2014, Korez2015} & \acrshort{ct} & 15 & full \\
+    UniSiegen  & \cite{Zukic2014} & \acrshort{mri} & 17 & full \\
+    PLoS & \cite{Chu2015} & \acrshort{mri} & 23 & semantic \\
+    MyoSegmenTUM & \cite{Burian2019} & \acrshort{mri} &  54 & full \\
      \hline
      \hline
     \end{tabular}
@@ -44,72 +49,35 @@ This chapter discusses these datasets based on different criteria:
     UWSpine & Left-right & Anteroposterior & Craniocaudal \\
     xVertSeg & Left-right & Anteroposterior & Craniocaudal \\
     UniSiegen  &  Anteroposterior & Craniocaudal & Left-right \\
-    Zenobo & Left-right & Anteroposterior & Craniocaudal (inverted) \\
+    PLoS & Left-right & Anteroposterior & Craniocaudal$^\dagger$ \\
     MyoSegmenTUM &  Anteroposterior & Craniocaudal & Left-right \\
      \hline
      \hline
     \end{tabular}
     \caption{List of dataset references. For more details on the data quantity, please consult chapter \ref{seg:datasetcomparison}. 
     Notably the fact that some images were taken from the same patient is important. This means the dataset is grouped. 
-    The agreement with prof. T. Vrtovec regarding the xVertSeg dataset can be found in appendix \ref{seg:datasetagreement}.}
+    The agreement with prof. T. Vrtovec regarding the xVertSeg dataset can be found in appendix \ref{seg:datasetagreement}.
+    $^\dagger$ The Craniocaudal axis in the PLoS dataset is inverted.}
 
 \end{SCtable}
-
-\section{Comparison of the different datasets\label{seg:datasetcomparison}}
-
-\subsection{xVertSeg}
-
-The xVertSeg \cite{Ibragimov2012,Ibragimov2012} was kindly made available by prof. T. Vrtovec, see appendix \ref{seg:datasetagreement}.
-This dataset contains 15 \acrshort{ct} scans of the lumbar spine. 
-Full instance segmenation masks for all 5 lumbar vertebrae are present.
-\todo[inline]{who did the segmentation}
-
-
-\subsubsection{Patient statistics}
-
-The patients in the xVertSeg dataset consist of 8 females and 7 males.
-The age of these patients is slightly higher than for the other datasets.
-The average patient in this dataset is 71 years old.
-The age distribution between both genders is illustrated in figure \ref{fig:xVertSeg_Age}. 
-
-
-\marginpar{
-        \input{images/xVertSeg_ageboxplot.tex}
-        \captionof{figure}{xVertSeg patients age distribution}
-        \label{fig:xVertSeg_Age}
-    }
-
-\begin{SCtable}[\sidecaptionrelwidth][h]
-    \centering
-        \input{tables/xVertSeg_pathologies_summary.tex}
-        \caption{All of the patients in the xVertSeg dataset suffer from spine pathologies.
-        Most of these pathologies are identified as \textit{mild}.
-        This table counts the spine pathologies and normal vertebrae observed over all 15 patients in the xVertSeg dataset.}
-    
-\end{SCtable}
-
-\subsubsection{Technical information}
-
-The xVertSeg dataset contains 15 \acrshort{ct} scans. 
-These images 
-
-
-\marginpar{
-        \includegraphics[width=5cm]{images/xVertSeg_image002_TransverseSlice.png}
-        \captionof{figure}{Transverse slice: image002 of the xVertSeg dataset. }
-        \label{fig:xVertSeg_Transverse}
-    }
-
-\marginpar{
-        \includegraphics[width=5cm]{images/xVertSeg_image002_SagittalSlice.png}
-        \captionof{figure}{Sagittal slice: image002 of the xVertSeg dataset. }
-        \label{fig:xVertSeg_Sagittal}
-    }
 
 \begin{SCfigure}[][htb]
     \centering
-    \input{images/xVertSeg_dimensionboxplot.tex}
-    \caption{Distribution of the dimensions of the xVertSeg images}
+    \begin{minipage}{.45\textwidth}
+        \includegraphics[width=.98\textwidth]{automated_graphs/AllDataset_DimensionsBoxplot.png}
+    \end{minipage}%
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=.98\textwidth]{automated_graphs/AllDataset_SpacingBoxplot.png}
+    \end{minipage}
+    \caption{Boxplots comparing the scan dimensions and initial resolution of the different datasets.}
+    \label{fig:AllDataset_dims}
 \end{SCfigure}
 
+\section{Comparison of the different datasets\label{seg:datasetcomparison}}
 
+
+\input{/home/thesis/2_Analysis/data_xVertSeg}
+\input{/home/thesis/2_Analysis/data_USiegen}
+\input{/home/thesis/2_Analysis/data_PLoS}
+\input{/home/thesis/2_Analysis/data_MyoSegmenTUM}
+\input{/home/thesis/2_Analysis/data_UWSpine}

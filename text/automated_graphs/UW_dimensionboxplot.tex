@@ -5,23 +5,25 @@
 \definecolor{color1}{rgb}{0.298039215686275,0.447058823529412,0.690196078431373}
 \definecolor{color2}{rgb}{0.768627450980392,0.305882352941176,0.32156862745098}
 
-\begin{axis}[
+\begin{groupplot}[group style={group size=1 by 2}]
+\nextgroupplot[
 axis background/.style={fill=color0},
 axis line style={white},
+height=7cm,
 tick align=outside,
 tick pos=left,
-title={Distribution of the USiegen volume dimensions},
+width=9cm,
 x grid style={white},
 xmajorgrids,
 xmin=0.5, xmax=3.5,
 xtick style={color=white!15!black},
-xtick={1,2,3},
-xticklabels={left-right (x),anteroposterior (y),craniocaudal (z)},
 y grid style={white},
 ylabel={dimension [mm]},
 ymajorgrids,
 ymin=41.28125, ymax=741.84375,
-ytick style={color=white!15!black}
+ytick style={color=white!15!black},
+ytick={0,100,200,300,400,500,600,700,800},
+yticklabels={0,200,400,600,800,,,,}
 ]
 \addplot [color1, opacity=1]
 table {%
@@ -149,6 +151,147 @@ table {%
 2.85 288.75
 3.15 288.75
 };
-\end{axis}
+
+\nextgroupplot[
+axis background/.style={fill=color0},
+axis line style={white},
+height=7cm,
+tick align=outside,
+tick pos=left,
+width=9cm,
+x grid style={white},
+xmajorgrids,
+xmin=0.5, xmax=3.5,
+xtick style={color=white!15!black},
+xtick={1,2,3},
+xticklabels={left-right (x),anteroposterior (y),craniocaudal (z)},
+y grid style={white},
+ylabel={spacing [mm]},
+ymajorgrids,
+ymin=0.112890093028545, ymax=2.61367190033197,
+ytick style={color=white!15!black}
+]
+\addplot [color1, opacity=1]
+table {%
+0.85 0.3125
+1.15 0.3125
+1.15 0.367188006639481
+0.85 0.367188006639481
+0.85 0.3125
+};
+\addplot [color1, opacity=1]
+table {%
+1 0.3125
+1 0.234375
+};
+\addplot [color1, opacity=1]
+table {%
+1 0.367188006639481
+1 0.441406011581421
+};
+\addplot [black, opacity=1]
+table {%
+0.925 0.234375
+1.075 0.234375
+};
+\addplot [black, opacity=1]
+table {%
+0.925 0.441406011581421
+1.075 0.441406011581421
+};
+\addplot [black, mark=o, mark size=3, mark options={solid,fill opacity=0}, only marks]
+table {%
+1 0.226561993360519
+1 0.457031011581421
+1 0.474608987569809
+1 0.474608987569809
+1 0.507812023162842
+1 0.460938006639481
+1 0.464843988418579
+1 0.453125
+};
+\addplot [color1, opacity=1]
+table {%
+1.85 0.3125
+2.15 0.3125
+2.15 0.367188006639481
+1.85 0.367188006639481
+1.85 0.3125
+};
+\addplot [color1, opacity=1]
+table {%
+2 0.3125
+2 0.234375
+};
+\addplot [color1, opacity=1]
+table {%
+2 0.367188006639481
+2 0.441406011581421
+};
+\addplot [black, opacity=1]
+table {%
+1.925 0.234375
+2.075 0.234375
+};
+\addplot [black, opacity=1]
+table {%
+1.925 0.441406011581421
+2.075 0.441406011581421
+};
+\addplot [black, mark=o, mark size=3, mark options={solid,fill opacity=0}, only marks]
+table {%
+2 0.226561993360519
+2 0.457031011581421
+2 0.474608987569809
+2 0.474608987569809
+2 0.507812023162842
+2 0.460938006639481
+2 0.464843988418579
+2 0.453125
+};
+\addplot [color1, opacity=1]
+table {%
+2.85 1.25
+3.15 1.25
+3.15 2.5
+2.85 2.5
+2.85 1.25
+};
+\addplot [color1, opacity=1]
+table {%
+3 1.25
+3 0.625
+};
+\addplot [color1, opacity=1]
+table {%
+3 2.5
+3 2.5
+};
+\addplot [black, opacity=1]
+table {%
+2.925 0.625
+3.075 0.625
+};
+\addplot [black, opacity=1]
+table {%
+2.925 2.5
+3.075 2.5
+};
+\addplot [color2, opacity=1]
+table {%
+0.85 0.332031011581421
+1.15 0.332031011581421
+};
+\addplot [color2, opacity=1]
+table {%
+1.85 0.332031011581421
+2.15 0.332031011581421
+};
+\addplot [color2, opacity=1]
+table {%
+2.85 2.5
+3.15 2.5
+};
+\end{groupplot}
 
 \end{tikzpicture}
