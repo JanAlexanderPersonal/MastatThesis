@@ -7,7 +7,7 @@ import torch
 import pylab as plt
 import numpy as np
 from tqdm import tqdm 
-from pycocotools.coco import COCO
+from addons.pycocotools.coco import COCO
 from torchvision import transforms
 from torchvision.transforms import functional as ft
 import torch.nn.functional as F

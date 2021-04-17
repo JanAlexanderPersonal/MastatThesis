@@ -1,6 +1,6 @@
 import matplotlib
 matplotlib.use('Agg')
-from addons.pycocotools.coco import COCO
+# from addons.pycocotools.coco import COCO
 import torch
 import pandas as pd
 import argparse
@@ -49,6 +49,8 @@ def main():
                       default=None)
 
   args = parser.parse_args()
+
+  print(args)
 
   if args.borgy or args.kill:
     global_prompt = input("Do all? \n(y/n)\n") 

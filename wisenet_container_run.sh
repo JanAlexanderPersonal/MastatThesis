@@ -2,6 +2,7 @@
 # Run the torch container
 docker run --rm --gpus all --net=host --ipc=host -m 24g -e DISPLAY=$DISPLAY \
     -v ${PWD}/code/WiseNet:/root/space/WiseNet \
+    -v ${PWD}/code/DataPreparation:/root/space/DataPreparation \
     -v /media/jan/DataStorage/ProjectData/spine_volumes/xVertSeg/Data1:/root/space/data/ \
     -v /media/jan/DataStorage/ProjectData/temp/:/root/space/temp/ \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
