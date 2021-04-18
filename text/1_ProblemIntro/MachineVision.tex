@@ -3,36 +3,36 @@
 \Gls{machinevision} is the branch of \Gls{ai} focussed on image processing.
 The machine vision task performed in this work is called instance \Gls{segmentation}.
 In this chapter, I explain what this means. 
-The task of segmentation is compared to other machine vision tasks.
+I compare segmentation to other machine vision tasks.
 
-This work investigates the used of \Gls{weaklysupervisedl} data for training an Instance segmentation model. 
-The concept and benefits of \Gls{weaklysupervisedl} machine learning are explained.
+This work investigates the use of \Gls{weaklysupervisedl} data for training an Instance segmentation model. 
+I explain the concept and benefits of \Gls{weaklysupervisedl} machine learning.
 
 \section{Machine vision tasks \label{sec:machinevisiontasks}}
 
 \Gls{machinevision} is a broad discipline. 
-Humans extract information from images almost subconsciously and we are often not aware of the different tasks we perform on images.
+Humans extract information from images almost subconsciously, and we are often not aware of the different tasks we perform on images.
 The objective of this section is to briefly define different machine vision tasks discussed further in this book. 
 Several machine vision tasks consist of \textit{recognizing} objects, animals or humans in an image.
-A model is build for a finite list of \textit{categories} that can be present in an image.
-Depending on the question asked ad inference time, on can distinquish the following tasks.
+A model is built for a finite list of \textit{categories} that can be present in an image.
+Depending on the question asked ad inference time, one can distinguish the following tasks.
 
 \begin{description}
     \item[Image classification] is the task of determining what object category\footnote{or categories} is present in the image. Is there a cat in this image?
-    \item[Object counting] is the task of counting how many instances of each category can be seen in the image. How many cats are there in this picture? 
-    \item[Object detection] consists not only of identification of the object. Also the spatial position is requested. This is often requested in the form of a bounding box. Where is the cat in this picture, if a cat is present?
-    \item[Semantic segmentation] requires that for each image pixel, a class is estimated. Pixels that do not belong to a specific class are called the \textit{background}.
-    \item[Instance segmentation] requires not only that the semantic class is determined for each pixel, but also that two individuals of the same class\footnote{say, two cats.} are distinguished.   
+    \item[Object counting] is the task of counting how many instances of each category are in the image. How many cats are there in this picture? 
+    \item[Object detection] consists not only of identification of the object. Also, the spatial position is requested, often in the form of a bounding box. Where is the cat in this picture if a cat is present?
+    \item[Semantic segmentation] requires a class estimation for each image pixel. Pixels that do not belong to a specific class are called the \textit{background}.
+    \item[Instance segmentation] requires not only that the semantic class determined for each pixel, but also that two individuals of the same class\footnote{say, two cats.} are distinguished.   
 \end{description}
 
-The difference between these machine vision tasks is illustrated in figure \ref{fig:machinevisiontasks}. 
+Figure \ref{fig:machinevisiontasks} illustrates the difference between these machine vision tasks. 
 
 \begin{SCfigure}[][h!]
     \centering
     \includegraphics[width=10cm]{/home/thesis/images/Classification_vs_Segmentation.jpg}
     \caption{Illustration to compare different Machine vision tasks \cite{SemTorch76:online}. 
     Object detection means that the location of several objects is estimated by the model. This is indicated by the \textit{bounding boxes}.
-    Segmentation of an image is the process of classifying each pixel in the correct class or assign it to the \textit{background} class.
+    Segmentation of an image is classifying each pixel in the correct class or assigning it to the \textit{background} class.
     Semantic segmentation makes no difference between different instances of the same semantic class, instance segmentation does.
     \label{fig:machinevisiontasks}}
 \end{SCfigure}
@@ -44,19 +44,44 @@ Other interesting applications of \gls{machinevision} include\footnote{This list
     \item[Image captioning] consists of the creation of full sentences describing the content of an image.    
 \end{description}
 
+\section{Learning from data}
+
+To perform the tasks discussed in chapter \ref{sec:machinevisiontasks}, one needs to build a suitable model.
+For \Gls{machinevision} tasks\footnote{and many other tasks.}, the current standard approach is \Gls{deepl}.
 
 
-\section{Supervision types}
+The cost to generate, store and communicate images and computation power has dropped in the past decades.
+This evolution allows to train a model  on previously unimaginable quantities of data\footnote{The \textit{ImageNet} database (\url{http://image-net.org/challenges/LSVRC/index}) consists of more than $14.10^6$ images.}.
+This technique allows a model with a high number of degrees of freedom to be trainded\footnote{learn by example, so you will} without the need for expert-crafted features. 
+
+
+Collection of this dataset - most importantly, the labels - proves to be a challenge. 
+This chapter tries to explain what \textit{weak labels} and \textit{strong labels} are and what the difference is between both.
+
+\subsection{Training a model}
 
 To build a model to perform the tasks discussed in \ref{sec:machinevisiontasks}, this model needs to be trained.
 This requires a set of \textit{labelled} images. 
-This means that a collection of images needs to be provided where an expert in the intended task has provided correct information the model can \textit{learn} from.
+
+In the classic approach, the supervision type closely resembles the intended model output.
+To train a model that can classify an image\footnote{Given an image, the model outputs if this picture is a representation of class \textit{cat}, \textit{dog} or another animal or object. }, 
+one has to \textit{train} the model on a set of labelled images where a human indicated the class.
+To train a model to perform image segmentation\footnote{segmentation means that the model classifies each pixel.}, an expert needs to provide a set of images in which
+each picture, the objects are delineated, indicating their class.  
+
+
+
+\subsection{Weak supervision types}
+
+
+To build a machine vision model, a collection of images is needed where an expert in the intended task has provided correct information from which the model can \textit{learn}.
 Depending on the model objective, other types of labelling are required.
+
+
 Figure \ref{fig:ImageLabelTypes} illustrates several types of image supervision : 
 Point supervision, squiggle, bounding box and full mask.
-The generation of these labels is very expensive and time-consuming.
+The generation of these labels is costly and time-consuming.
 Especially \gls{deepl} models are known to be very data-hungry. 
-These models have determined unprecedented performance, provided sufficient data has been provided.
 
 \begin{SCfigure}[][htb]
     \centering
@@ -72,23 +97,23 @@ These models have determined unprecedented performance, provided sufficient data
 
 Given the high labelling cost, several researchers have investigated ways to train computer vision models with cheaper labels.
 This branch of research is known as \Gls{weaklysupervisedl}.
-The objective is to construct a strong model based on \textit{cheap} (incomplete, noisy or imprecise) labels. 
+The objective is to construct a robust model based on \textit{cheap} (incomplete, noisy or imprecise) labels. 
 This is sometimes described as \textit{indirect supervision}.
 Numerous creative approaches have been conceived. 
 It is impossible to give an exhaustive list of approaches. 
 In what follows, I will mainly focus on the approaches I chose to investigate myself, but I will also try to give some hints of the remarkable creativity found in the field.
 Since the provided annotations in \Gls{weaklysupervisedl} are not full labels, these are sometimes described as \textit{hints} instead\footnote{
-    This is based on the insightfull talk at \url{
+    This is based on the insightfull talk at \url{ 
         https://youtu.be/4EjYxVVCAaE
     }. For example, the destinction between labels and hints.
 }.
 The basic concept of \Gls{weaklysupervisedl} is that there are two sources of information to draw from: The hints and the prior knowledge about the problem (Priors).
 These \textit{Priors} can be any form of prior knowledge about the object to be segmented\footnote{or any other machine vision task.}.
-Priors can be the object size, shape or location, the number of instances, the similarity across images or the similarity with exernal images.
+Priors can be the object size, shape or location, the number of instances, the similarity across images or the similarity with external images.
 
-Wether an annotation is considered a \textit{weak label} or a \textit{strong label} depends more on the modellers intend than on the annotation itself. 
-Basically, when one aims to construct a model to infer output labels with a higher informative value than the original annotations, these \textit{labels} become \textit{hints}.
-Making a model to predict bounding boxes from a dataset annotated with bounding boxes means considering these as \textit{strong labels}. 
+Whether an annotation is considered a \textit{weak label} or a \textit{strong label} depends more on the modellers intention than on the annotation itself. 
+When one aims to construct a model to infer output labels with a higher informative value than the original annotations, these \textit{labels} become \textit{hints}.
+Making a model predict bounding boxes from a dataset annotated with bounding boxes means considering these as \textit{strong labels}. 
 If one uses the same dataset to construct a model that predicts pixel-wise masks, you use the labels as \textit{weak labels} or \textit{hints}.
 
 For a segmentation task, weak labels can be:

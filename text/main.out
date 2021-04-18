@@ -1,0 +1,46 @@
+\BOOKMARK [-1][-]{part.1}{Problem Introduction \046 Motivation}{}% 1
+\BOOKMARK [0][-]{chapter.1.1}{Aspects of spine orthopedics}{part.1}% 2
+\BOOKMARK [1][-]{section.1.1.1}{Anatomy of the human spine}{chapter.1.1}% 3
+\BOOKMARK [1][-]{section.1.1.2}{Medical imaging of the human spine}{chapter.1.1}% 4
+\BOOKMARK [1][-]{section.1.1.3}{Minimally invasive surgery of spinal hernia}{chapter.1.1}% 5
+\BOOKMARK [0][-]{chapter.1.2}{Machine vision}{part.1}% 6
+\BOOKMARK [1][-]{section.1.2.1}{Machine vision tasks }{chapter.1.2}% 7
+\BOOKMARK [1][-]{section.1.2.2}{Learning from data}{chapter.1.2}% 8
+\BOOKMARK [2][-]{subsection.1.2.2.1}{Training a model}{section.1.2.2}% 9
+\BOOKMARK [2][-]{subsection.1.2.2.2}{Weak supervision types}{section.1.2.2}% 10
+\BOOKMARK [0][-]{chapter.1.3}{Previous work}{part.1}% 11
+\BOOKMARK [1][-]{section.1.3.1}{Artificial intelligence for medical applications}{chapter.1.3}% 12
+\BOOKMARK [1][-]{section.1.3.2}{Segmentation problems for medical applications}{chapter.1.3}% 13
+\BOOKMARK [2][-]{subsection.1.3.2.1}{Segmentation of the human spine}{section.1.3.2}% 14
+\BOOKMARK [1][-]{section.1.3.3}{Weakly supervised segmentation}{chapter.1.3}% 15
+\BOOKMARK [2][-]{subsection.1.3.3.1}{General approaches}{section.1.3.3}% 16
+\BOOKMARK [2][-]{subsection.1.3.3.2}{Weakly supervised segmentation for Medical applications}{section.1.3.3}% 17
+\BOOKMARK [-1][-]{part.2}{Modelling \046 Analysis}{}% 18
+\BOOKMARK [0][-]{chapter.2.1}{Datasets}{part.2}% 19
+\BOOKMARK [1][-]{section.2.1.1}{Global overview of the different dataset}{chapter.2.1}% 20
+\BOOKMARK [1][-]{section.2.1.2}{Comparison of the different datasets}{chapter.2.1}% 21
+\BOOKMARK [2][-]{subsection.2.1.2.1}{xVertSeg}{section.2.1.2}% 22
+\BOOKMARK [2][-]{subsection.2.1.2.2}{UniSiegen dataset}{section.2.1.2}% 23
+\BOOKMARK [2][-]{subsection.2.1.2.3}{PLoS Dataset}{section.2.1.2}% 24
+\BOOKMARK [2][-]{subsection.2.1.2.4}{MyoSegmenTUM datset}{section.2.1.2}% 25
+\BOOKMARK [2][-]{subsection.2.1.2.5}{UWSpine dataset}{section.2.1.2}% 26
+\BOOKMARK [0][-]{chapter.2.2}{Proposed methods}{part.2}% 27
+\BOOKMARK [1][-]{section.2.2.1}{Fully supervised model}{chapter.2.2}% 28
+\BOOKMARK [2][-]{subsection.2.2.1.1}{Model}{section.2.2.1}% 29
+\BOOKMARK [2][-]{subsection.2.2.1.2}{Data}{section.2.2.1}% 30
+\BOOKMARK [2][-]{subsection.2.2.1.3}{Hyperparameters}{section.2.2.1}% 31
+\BOOKMARK [1][-]{section.2.2.2}{Weakly supervised model}{chapter.2.2}% 32
+\BOOKMARK [2][-]{subsection.2.2.2.1}{Model}{section.2.2.2}% 33
+\BOOKMARK [2][-]{subsection.2.2.2.2}{Data}{section.2.2.2}% 34
+\BOOKMARK [2][-]{subsection.2.2.2.3}{Hyperparameters}{section.2.2.2}% 35
+\BOOKMARK [0][-]{chapter.2.3}{Experiments}{part.2}% 36
+\BOOKMARK [1][-]{section.2.3.1}{Experimental results of the fully supervised model}{chapter.2.3}% 37
+\BOOKMARK [1][-]{section.2.3.2}{Experimental results of the weakly supervised model}{chapter.2.3}% 38
+\BOOKMARK [1][-]{section.2.3.3}{Comparison between fully \046 weakly supervised model}{chapter.2.3}% 39
+\BOOKMARK [1][-]{section.2.3.4}{Final model proposal}{chapter.2.3}% 40
+\BOOKMARK [1][-]{section.2.3.5}{Experimental results of the final model}{chapter.2.3}% 41
+\BOOKMARK [0][-]{chapter.2.4}{Conclusion}{part.2}% 42
+\BOOKMARK [-1][-]{part.3}{Appendix}{}% 43
+\BOOKMARK [0][-]{appendix.A}{Medical terms}{part.3}% 44
+\BOOKMARK [0][-]{appendix.B}{Used software}{part.3}% 45
+\BOOKMARK [0][-]{appendix.C}{Dataset agreements}{part.3}% 46

@@ -1,0 +1,123 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\contentsline {part}{\partnumberline {I}Problem Introduction \& Motivation}{6}{part.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {1}Aspects of spine orthopedics}{7}{chapter.1.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.1}Anatomy of the human spine}{7}{section.1.1.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.2}Medical imaging of the human spine}{8}{section.1.1.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.3}Minimally invasive surgery of spinal hernia}{8}{section.1.1.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {2}Machine vision}{9}{chapter.1.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.1}Machine vision tasks }{9}{section.1.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.2}Learning from data}{10}{section.1.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2.1}Training a model}{10}{subsection.1.2.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2.2}Weak supervision types}{10}{subsection.1.2.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {3}Previous work}{13}{chapter.1.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.1}Artificial intelligence for medical applications}{13}{section.1.3.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.2}Segmentation problems for medical applications}{13}{section.1.3.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2.1}Segmentation of the human spine}{14}{subsection.1.3.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.3}Weakly supervised segmentation}{14}{section.1.3.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.1}General approaches}{14}{subsection.1.3.3.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.2}Weakly supervised segmentation for Medical applications}{14}{subsection.1.3.3.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {part}{\partnumberline {II}Modelling \& Analysis}{15}{part.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {1}Datasets}{16}{chapter.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.1}Global overview of the different dataset}{16}{section.2.1.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.2}Comparison of the different datasets}{17}{section.2.1.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.2.1}xVertSeg}{17}{subsection.2.1.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Original Objective of the Dataset}{18}{section*.34}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Patient statistics}{18}{section*.35}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Technical information}{18}{section*.37}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.2.2}UniSiegen dataset}{18}{subsection.2.1.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Original Objective of the Dataset}{19}{section*.39}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Patient statistics}{19}{section*.40}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Technical information}{19}{section*.41}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.2.3}PLoS Dataset}{20}{subsection.2.1.2.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Original Objective of the Dataset}{20}{section*.43}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Patient statistics}{20}{section*.44}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Technical information}{20}{section*.45}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.2.4}MyoSegmenTUM datset}{21}{subsection.2.1.2.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Original Objective of the Dataset}{21}{section*.47}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Patient statistics}{21}{section*.48}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Technical information}{21}{section*.49}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.2.5}UWSpine dataset}{21}{subsection.2.1.2.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Original Objective of the Dataset}{21}{section*.51}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Patient statistics}{22}{section*.52}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{Technical information}{22}{section*.53}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {2}Proposed methods}{23}{chapter.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.1}Fully supervised model}{23}{section.2.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1.1}Model}{23}{subsection.2.2.1.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1.2}Data}{23}{subsection.2.2.1.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1.3}Hyperparameters}{23}{subsection.2.2.1.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.2}Weakly supervised model}{23}{section.2.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2.1}Model}{23}{subsection.2.2.2.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2.2}Data}{23}{subsection.2.2.2.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2.3}Hyperparameters}{23}{subsection.2.2.2.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {3}Experiments}{24}{chapter.2.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.1}Experimental results of the fully supervised model}{24}{section.2.3.1}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.2}Experimental results of the weakly supervised model}{24}{section.2.3.2}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.3}Comparison between fully \& weakly supervised model}{24}{section.2.3.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.4}Final model proposal}{24}{section.2.3.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.5}Experimental results of the final model}{24}{section.2.3.5}
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\chapternumberline {4}Conclusion}{25}{chapter.2.4}
+\defcounter {refsection}{0}\relax 
+\contentsline {part}{\partnumberline {III}Appendix}{26}{part.3}
+\defcounter {refsection}{0}\relax 
+\contentsline {appendix}{\chapternumberline {A}Medical terms}{27}{appendix.A}
+\defcounter {refsection}{0}\relax 
+\contentsline {appendix}{\chapternumberline {B}Used software}{28}{appendix.B}
+\defcounter {refsection}{0}\relax 
+\contentsline {appendix}{\chapternumberline {C}Dataset agreements}{30}{appendix.C}
