@@ -1,0 +1,49 @@
+
+\subsection{UniSiegen dataset}
+
+This dataset is made available in 2014 by the University of Siegen, Germany.
+It was constructed by dr. D. Zukic \cite{Zukic2014} as part of his PhD project.
+
+\marginpar{
+        \input{automated_graphs/USiegen_ageboxplot.tex}
+        \captionof{figure}{USiegen patients age distribution}
+        \label{fig:USiegen_Age}
+    }
+
+This dataset contains 26 \acrshort{mri} scans of 17 different patients. 
+The fact that scans of the same patient are correlated will be taken into account 
+
+\subsubsection{Original Objective of the Dataset}
+
+This dataset was collected from several hospitals (Sarajevo, Marburg, Brisbane, Schwabach, Bad Wildungen \& Prague). The MRI scanner settings were varied between the scans (T1, T2, TIRM).
+The PhD project objective was to build a segmentation model to automate the segmentation of the lumbar vertebrae in the \acrshort{mri} scans to facilitate the diagnosis of several spine pathologies 
+such as scoliosis, spondylolisthesis \footnote{Spondylolisthesis is the displacement of one spinal vertebra compared to another.} and vertebral fractures.
+The final model developed by dr. D. Zukic consisted of a Viola-Jones detector for detection and vertebral body size approximation.
+The average Dice score compared to the manual reference was reported to be 79.3\%.
+
+\subsubsection{Patient statistics}
+
+In \cite{Zukic2014}, it is not fully made clear which scans are taken from the same patient.
+It is made clear however that the 26 scans were not obtained from 26 patients.
+I inferred the information from the naming of the scans and the provided gender en age information\footnote{
+    Wrongfully assuming two scans come from the same patient does not cause data leakage in the used approach.
+}.
+
+Figure \ref{fig:USiegen_Age} illustrates that the USiegen dataset contains almost double the amount of female patients compared to male patients.
+These patients are relatively young compared to the patients in the \textit{xVertSeg} dataset.
+
+Only three of the patients in this dataset were categorized as having no spinal pathologies.
+
+\subsubsection{Technical information}
+
+Several \acrlong{mri} techniques were used to obtain the dataset: T1, T2 \& TIRM.
+I do not take into account this factor in the model development.
+
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{automated_graphs/USiegen_Aka3.png}
+    \caption{USiegen dataset scan \textit{Aka3}. \label{fig:USiegen_Aka3}}
+\end{SCfigure}
+
+The original scans in the \textit{USiegen} dataset were cropped in the \textit{left-right} direction. 
+Although the scan resolution is relatively high in the Sagittal planes, the slice spacing along the left-right axis is coarser (see figure \ref{fig:AllDataset_dims}).  

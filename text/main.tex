@@ -1,11 +1,39 @@
-\documentclass[11pt]{memoir}
+\documentclass[
+    a4paper, % Stock and paper size.
+    9pt, % Type size.
+    % article,
+    oneside, 
+    onecolumn, % Only one column of text on a page.
+    % openright, % Each chapter will start on a recto page.
+    % openleft, % Each chapter will start on a verso page.
+    openany, % A chapter may start on either a recto or verso page.
+    ]{memoir}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage{microtype}
+\usepackage[final]{microtype}
 \usepackage[dvips]{graphicx}
 \usepackage{xcolor}
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepgfplotslibrary{groupplots}
+\usepackage{epstopdf}
+
+\graphicspath{{automated_graphs/}{.}{images/}}
+
+
+\usetikzlibrary{calc}
+\usepackage{caption}
 %\usepackage{times}
+
+% Comment in final version
+\usepackage{todonotes}
+\usepackage{soul}
+
+%\usepackage[margincaption,outercaption,ragged,wide]{sidecap}
+\usepackage[margincaption,ragged]{sidecap}
+\sidecaptionvpos{figure}{t} 
+\sidecaptionvpos{table}{t}
 
 \usepackage[
 breaklinks=true,colorlinks=true,
@@ -19,16 +47,99 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 % left=25mm,right=25mm,%
 % bindingoffset=0mm, top=25mm,bottom=25mm}
 % PRINT
-\geometry{total={210mm,297mm},
-left=20mm,right=20mm,
-bindingoffset=10mm, top=25mm,bottom=25mm}
+% \geometry{total={210mm,297mm},left=20mm,right=50mm,bindingoffset=10mm, top=25mm,bottom=25mm}
+
+% Code from https://tex.stackexchange.com/questions/275565/tufte-layout-in-painless-memoir
+
+% Start code
+
+% MEMOIR LAYOUT
+\setlength{\baselineskip}{14pt}
+\setlength{\normalbaselineskip}{14pt}
+
+% GEOMETRY
+\settrims{0pt}{0pt}
+\settypeblocksize{49\baselineskip}{107mm}{*}
+\setlrmargins{24.8mm}{*}{*}
+\setulmargins{27.4mm}{*}{*}
+\setheadfoot{\baselineskip}{\baselineskip}
+\setheaderspaces{*}{2\baselineskip}{*}
+\setmarginnotes{8.2mm}{49.4mm}{\onelineskip}
+\checkandfixthelayout
+
+
+% TEXT
+% ragged2e provides ragged justification with hyphenation
+\RequirePackage{ragged2e}
+\AtBeginDocument{\RaggedRight}
+\setmpjustification{\RaggedLeft}{\RaggedRight}
+\setlength{\RaggedRightParindent}{1.0pc}
+\setlength{\parindent}{1pc}
+\setlength{\parskip}{0pt}
+% linespacing ~ 14pt
+\linespread{1.17}
+
+% text styling of all side footnotes
+\renewcommand{\footnotesize}{\fontsize{8pt}{10pt}\selectfont}
+\renewcommand{\foottextfont}{\footnotesize}
+% styling and placement of mark
+\footmarkstyle{{#1. }}
+\setlength{\footmarkwidth}{0em}
+\setlength{\footmarksep}{-\footmarkwidth}
+% memoir command - do all footnotes in margin
+\footnotesinmargin
+
+
+% SIDECAPTIONS
+\setsidecaps{\marginparsep}{\marginparwidth}
+\sidecapmargin{outer}
+\setsidecappos{t}
+\renewcommand*{\sidecapstyle}{%
+\captionnamefont{\foottextfont\scshape}
+\ifscapmargleft
+\captionstyle{\RaggedLeft\footnotesize\foottextfont}%
+\else
+\captionstyle{\RaggedRight\footnotesize\foottextfont}%
+\fi}
+
+% FULLWIDTH environment
+% The following code should be used *after* any changes to the margins and
+% page layout are made (e.g., after the geometry package has been loaded).
+\newlength{\fullwidthlen}
+\setlength{\fullwidthlen}{\marginparwidth}
+\addtolength{\fullwidthlen}{\marginparsep}
+
+% \newlength{\fullwidthlen}
+% \setlength{\fullwidthlen}{\marginparwidth}
+% \addtolength{\fullwidthlen}{\marginparsep}
+
+\newenvironment{fullwidth}{%
+  \begin{adjustwidth*}{}{-\fullwidthlen}%
+}{%
+  \end{adjustwidth*}%
+}
+
+
+% End code
+
+%
 
 \OnehalfSpacing
 %\linespread{1.3}
 
+% disable by disabling the todo notes
+\makeatletter
+ \if@todonotes@disabled
+ \newcommand{\hlnote}[2]{#1}
+ \else
+ \newcommand{\hlnote}[2]{\todo{#2}\texthl{#1}}
+ \fi
+ \makeatother
+
 %%% CHAPTER'S STYLE
-\chapterstyle{bianchi}
+%\chapterstyle{bianchi}
 %\chapterstyle{ger}
+\chapterstyle{dash}
 %\chapterstyle{madsen}
 %\chapterstyle{ell}
 %%% STYLE OF SECTIONS, SUBSECTIONS, AND SUBSUBSECTIONS
@@ -38,34 +149,64 @@ bindingoffset=10mm, top=25mm,bottom=25mm}
 
 
 %%% STYLE OF PAGES NUMBERING
-%\pagestyle{companion}\nouppercaseheads 
-%\pagestyle{headings}
-%\pagestyle{Ruled}
-\pagestyle{plain}
+\pagestyle{companion}\nouppercaseheads 
+\pagestyle{headings}
+\pagestyle{Ruled}
+%\pagestyle{plain}
 \makepagestyle{plain}
 \makeevenfoot{plain}{\thepage}{}{}
 \makeoddfoot{plain}{}{}{\thepage}
 \makeevenhead{plain}{}{}{}
 \makeoddhead{plain}{}{}{}
 
+%%% For parts with abstracts on the page
+
+\usepackage{xpatch}
+
+\makeatletter
+\xpatchcmd{\part}{\null\vfil}{\vspace*{.1\textheight}}{}{}
+
+\providecommand{\abstractname}{Content of this part}
+\newenvironment{partwithabstract}
+  {\begingroup\let\@endpart\relax\part@withabstract}
+  {\endquotation\endgroup\@endpart}
+\newcommand{\part@withabstract}{\@dblarg\part@@withabstract}
+\def\part@@withabstract[#1]#2{%
+  \part[#1]{#2}%
+  \vfil
+  \begin{center}\bfseries\abstractname\vspace{-.5em}\vspace{\z@}\end{center}
+  \quotation
+}
+\makeatother
+
+
+
 
 \maxsecnumdepth{subsection} % chapters, sections, and subsections are numbered
 \maxtocdepth{subsection} % chapters, sections, and subsections are in the Table of Contents
 
 \usepackage[backend=biber]{biblatex}
-\addbibresource{main.bib}
+\addbibresource{library.bib}
 
 %% make a glossary
-\usepackage[acronym, xindy]{glossaries}
+\usepackage[acronym, xindy, nonumberlist]{glossaries}
 \makeglossaries
 
-\input{/home/thesis/1_Intro/Abbreviation}
+\input{/home/thesis/0_Main/Abbreviation}
 
 %%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%
 
+% Reset chapter numbering in each part
+
+\makeatletter
+\@addtoreset{chapter}{part}
+\makeatother  
+
+
 \begin{document}
 
-\input{titlepage}
+\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
+\input{/home/thesis/0_Main/titlepage}
 
 \cleardoublepage
 %%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%
@@ -79,29 +220,120 @@ bindingoffset=10mm, top=25mm,bottom=25mm}
 %%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%
 
 \glsaddall
-\glossarystyle{listgroup}
+\setglossarystyle{listdotted}
 \printglossary[type=\acronymtype]
-\glossarystyle{altlistgroup}
+\glossarystyle{altlist}
 \printglossary
 
-\cleardoublepage
+\clearpage
 
-\chapter{Background}
+%\cleardoublepage
+\restoregeometry
+\input{/home/thesis/0_Main/main_abstract}
+\newgeometry{total={210mm,297mm},left=20mm,right=20mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
+\begin{partwithabstract}{Problem Introduction \& Motivation}
+    The objective of this project is the development of a model for the automated vertebrae instance segmentation of \acrshort{mri} and \acrshort{ct} scans of the lumbar part of the human spine based on point annotated training data.
+    
+    This part of the book aims to clarify these terms. 
+    I start off with some information regarding the human spine and the medical imaging techniques to investigate it.
+    Secondly, I define and clarify different machine learning problems and techniques when working with two and three dimensional images.
+    This part of the book ends with a discussion of previous work. 
+    First the previous work to tackle the problem of instance segmentation of the human spine from medical images.
+    Then prevous work in the field of \Gls{weaklysupervisedl} \Gls{machinevision}.
+\end{partwithabstract}
 
-\input{/home/thesis/1_Intro/Problem_description}
-\input{/home/thesis/1_Intro/medical_imaging}
-\input{/home/thesis/1_Intro/AI_for_medicine}
-\input{/home/thesis/1_Intro/Literature}
+\restoregeometry
+\input{/home/thesis/1_ProblemIntro/Medical}
+\input{/home/thesis/1_ProblemIntro/MachineVision}
+\input{/home/thesis/1_ProblemIntro/PreviousWork}
 
-\section{Methodology}
-\input{/home/thesis/2_Methodology/data}
+
+\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
+\begin{partwithabstract}{Modelling \& Analysis}
+    This part of the document details the used datasets and the modelling and evaluation methodology.
+\end{partwithabstract}
+\restoregeometry
+
+\input{/home/thesis/2_Analysis/data}
+
+
+\chapter{Proposed methods}
+
+\input{/home/thesis/2_Analysis/PropMethods_FullSupervision}
+
+\input{/home/thesis/2_Analysis/PropMethods_WeakSupervision}
+
+
+
+\chapter{Experiments}
+
+\section{Experimental results of the fully supervised model}
+
+\section{Experimental results of the weakly supervised model}
+
+\section{Comparison between fully \& weakly supervised model}
+
+\section{Final model proposal}
+
+\section{Experimental results of the final model}
+
+\chapter{Conclusion}
+
+Comparison between results with weakly supervised model and fully supervised model.
 
 \appendix
 
-\chapter{Additional}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm}
+\begin{partwithabstract}{Appendix}
+  Apendices to the document:
+  \begin{enumerate}
+    \item Software environment used
+    \item Agreement documents for use of two datasets.
+  \end{enumerate}
+\end{partwithabstract}
+\restoregeometry
+\chapter{Medical terms}
 
+Clarification of the medical lingo used.
 
+\begin{SCfigure}[][htb]
+  \centering
+  \includegraphics[width=10cm]{/home/thesis/images/Anatomical_Planes.png}
+  \caption{Clarification of the terms regarding the anatomical planes
+  }
+\end{SCfigure}
+
+\begin{SCfigure}[][htb]
+  \centering
+  \includegraphics[width=10cm]{/home/thesis/images/prone_supine.png}
+  \caption{Supine (face-up) and Prone (face-down) position of a patient.}
+\end{SCfigure}
+
+\chapter{Used software}
+
+\todo[inline]{Software environments can be build with dockerfiles available in folder \textit{/dockerfiles/code/} of the git.}
+
+\todo[inline]{Assure proper referencing of all libraries used}
+
+\begin{SCtable}[\sidecaptionrelwidth][h]
+ 
+  \begin{tabular}{ p{6cm} l l } 
+   \hline
+   \hline
+   Library & version & reference  \\
+   \hline 
+   PyTorch & 1.7.1 &  \\ 
+   SimpleITK &  &  \\ 
+   \hline
+   \hline
+  \end{tabular}
+  \caption{Python libraries used}
+
+\end{SCtable}
+\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm}
+\chapter{Dataset agreements\label{seg:datasetagreement}}
+
+\includegraphics[width=17cm]{/home/thesis/images/AgreementxVertSeg.png}
 
 \printbibliography
 

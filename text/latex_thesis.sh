@@ -1,12 +1,16 @@
 #!/bin/bash
 # run the latest pdf container (interactive)
 
-latex main.tex
+pdflatex main.tex
 bibtex main.tex
 pdflatex main.tex
 makeglossaries main
 biber main
 pdflatex main.tex
+bibtex main.tex
+biber main
+bibtex main.tex
+biber main
 pdflatex main.tex
 
 rm *.out
@@ -28,3 +32,6 @@ rm *.bbl
 rm *.aux
 rm *.bcf
 rm *.xml
+rm *.fls
+rm *.bib.bak
+rm *.fdb_latexmk

@@ -1,0 +1,128 @@
+% This file was created by tikzplotlib v0.9.8.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
+\definecolor{color1}{rgb}{0.298039215686275,0.447058823529412,0.690196078431373}
+\definecolor{color2}{rgb}{0.768627450980392,0.305882352941176,0.32156862745098}
+
+\begin{axis}[
+axis background/.style={fill=color0},
+axis line style={white},
+height=5cm,
+tick align=outside,
+tick pos=left,
+width=9cm,
+x grid style={white},
+xmajorgrids,
+xmin=0.5, xmax=3.5,
+xtick style={color=white!15!black},
+xtick={1,2,3},
+xticklabels={left-right (x),anteroposterior (y),craniocaudal (z)},
+y grid style={white},
+ylabel={dimension [mm]},
+ymajorgrids,
+ymin=147.344568, ymax=576.684072,
+ytick style={color=white!15!black}
+]
+\addplot [color1, opacity=1]
+table {%
+0.85 352.99328
+1.15 352.99328
+1.15 464.0768
+0.85 464.0768
+0.85 352.99328
+};
+\addplot [color1, opacity=1]
+table {%
+1 352.99328
+1 295.5264
+};
+\addplot [color1, opacity=1]
+table {%
+1 464.0768
+1 557.16864
+};
+\addplot [black, opacity=1]
+table {%
+0.925 295.5264
+1.075 295.5264
+};
+\addplot [black, opacity=1]
+table {%
+0.925 557.16864
+1.075 557.16864
+};
+\addplot [color1, opacity=1]
+table {%
+1.85 352.99328
+2.15 352.99328
+2.15 491.8562
+1.85 491.8562
+1.85 352.99328
+};
+\addplot [color1, opacity=1]
+table {%
+2 352.99328
+2 295.5264
+};
+\addplot [color1, opacity=1]
+table {%
+2 491.8562
+2 557.16864
+};
+\addplot [black, opacity=1]
+table {%
+1.925 295.5264
+2.075 295.5264
+};
+\addplot [black, opacity=1]
+table {%
+1.925 557.16864
+2.075 557.16864
+};
+\addplot [color1, opacity=1]
+table {%
+2.85 219.777
+3.15 219.777
+3.15 319.5245
+2.85 319.5245
+2.85 219.777
+};
+\addplot [color1, opacity=1]
+table {%
+3 219.777
+3 166.86
+};
+\addplot [color1, opacity=1]
+table {%
+3 319.5245
+3 466.3386
+};
+\addplot [black, opacity=1]
+table {%
+2.925 166.86
+3.075 166.86
+};
+\addplot [black, opacity=1]
+table {%
+2.925 466.3386
+3.075 466.3386
+};
+\addplot [color2, opacity=1]
+table {%
+0.85 410.99776
+1.15 410.99776
+};
+\addplot [color2, opacity=1]
+table {%
+1.85 410.99776
+2.15 410.99776
+};
+\addplot [color2, opacity=1]
+table {%
+2.85 254.196
+3.15 254.196
+};
+\end{axis}
+
+\end{tikzpicture}

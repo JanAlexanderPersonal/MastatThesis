@@ -891,6 +891,14 @@ def stack_images(images):
         
 
 def t2n(x):
+    """Convert from PyTorch tensor to number (int, float)
+
+    Args:
+        x (tensor like object): input
+
+    Returns:
+        numpy array, int or float
+    """
     if isinstance(x, (int, float)):
         return x
     if isinstance(x, torch.autograd.Variable):
