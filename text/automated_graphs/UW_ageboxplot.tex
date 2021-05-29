@@ -10,11 +10,11 @@ axis background/.style={fill=color0},
 axis line style={white},
 height=5cm,
 tick align=outside,
-tick pos=left,
 width=5cm,
 x grid style={white},
 xlabel={Gender},
 xmajorgrids,
+xmajorticks=false,
 xmin=0.5, xmax=2.5,
 xtick style={color=white!15!black},
 xtick={1,2},
@@ -22,6 +22,7 @@ xticklabels={F(54),M(71)},
 y grid style={white},
 ylabel={Patient age (y)},
 ymajorgrids,
+ymajorticks=false,
 ymin=0, ymax=100,
 ytick style={color=white!15!black}
 ]
@@ -43,12 +44,12 @@ table {%
 1 64.75
 1 94
 };
-\addplot [black, opacity=1]
+\addplot [white!10!black, opacity=1]
 table {%
 0.9625 15
 1.0375 15
 };
-\addplot [black, opacity=1]
+\addplot [white!10!black, opacity=1]
 table {%
 0.9625 94
 1.0375 94
@@ -71,12 +72,12 @@ table {%
 2 65.5
 2 90
 };
-\addplot [black, opacity=1]
+\addplot [white!10!black, opacity=1]
 table {%
 1.9625 15
 2.0375 15
 };
-\addplot [black, opacity=1]
+\addplot [white!10!black, opacity=1]
 table {%
 1.9625 90
 2.0375 90

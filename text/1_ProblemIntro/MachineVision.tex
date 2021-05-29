@@ -94,7 +94,7 @@ The \textbf{precision}\footnote{the precision is often also called the \textit{p
 } is the proportion of true labels $C_i$ out of all observations predicted to be $C_i$. 
 For example, the precision for class 1 in table \ref{tab:confusionMatrix} is:
 \begin{equation}
-    \text{Precision}_1 = \frac{a_{1,1}}{a_{1,0} + a_{1,1} + a_{1, 2}} \tag{Precision$_1$ in example}
+    \text{Precision}_1 = \frac{a_{1,1}}{a_{1,0} + a_{1,1} + a_{1, 2}} \tag{Precision$_1$ in table \ref{tab:confusionMatrix}}
 \end{equation}.
 In general, the Precision$_i$ for class $C_i$ in a problem with $k$ classes is given by equation \ref{eq:precision_i}.
 \begin{eqnarray}
@@ -121,7 +121,7 @@ This is called the weighted-mean precision: $Precision_w$.
 The \textbf{recall}\footnote{The recall is also called the \textit{sensitivity}.} is the numer of correctly predicted $C_i$ observations out of the total number of $C_i$ observations.
 For example, the recall for class 1 in table \ref{tab:confusionMatrix} is:
 \begin{equation}
-    \text{Recall}_1 = \frac{a_{1,1}}{a_{0,1} + a_{1,1} + a_{2, 1}} \tag{Recall$_1$ in example}
+    \text{Recall}_1 = \frac{a_{1,1}}{a_{0,1} + a_{1,1} + a_{2, 1}} \tag{Recall$_1$ in table \ref{tab:confusionMatrix}}
 \end{equation}.
 The general expression for recall$_i$ is equation \ref{eq:recall_i}.
 \begin{eqnarray}
@@ -148,7 +148,7 @@ Often, it is useful to combine both metrics in a single new metric: the \textbf{
 Calculation this for Dice$_1$ in the example, we find another expression for the dice score.
 The dice score can also be described as double the intersection between the points predicted as $C_1$ and the points with true label $C_1$ devided by the sum of the number of points predicted as $C_1$ and the number of points with true label $C_1$.
 \begin{equation}
-    \text{Dice}_1 = \frac{2.a_{1,1}}{a_{0,1} + 2.a_{1,1} + a_{2, 1} + a_{1,0} + a_{1,2}} \tag{Dice$_1$ in example}
+    \text{Dice}_1 = \frac{2.a_{1,1}}{a_{0,1} + 2.a_{1,1} + a_{2, 1} + a_{1,0} + a_{1,2}} \tag{Dice$_1$ in table \ref{tab:confusionMatrix}}
 \end{equation}
 
 Now, there are several options for aggregation\footnote{See also \url{https://towardsdatascience.com/a-tale-of-two-macro-f1s-8811ddcf8f04}}:
@@ -168,7 +168,7 @@ Finally, the \textbf{\acrfull{iou}}\footnote{The \acrshort{iou} is also known as
 IoU is the area of overlap between the predicted segmentation and the ground truth divided by the area of union between the predicted segmentation and the ground truth.
 In the given example, the \acrshort{iou} score for $C_1$ is:
 \begin{equation}
-    \text{IoU}_1 = \frac{a_{1,1}}{a_{0,1}+a_{1,1}+a_{2,1}+a_{1,0}+a_{1,2}} \tag{IoU$_1$ in the example}
+    \text{IoU}_1 = \frac{a_{1,1}}{a_{0,1}+a_{1,1}+a_{2,1}+a_{1,0}+a_{1,2}} \tag{IoU$_1$ in the table \ref{tab:confusionMatrix}}
 \end{equation}
 
 In general, the class specific \acrfull{iou} for class $C_i$ is given by:
@@ -182,12 +182,12 @@ Again, a macro IoU score can be calculated by taking the arithmatic mean of the 
 
 Finally, the classifier accuracy is defined as the proportion of the observations that is correcly classified:
 \begin{equation}
-    \text{accuracy} = \frac{a_{0,0} + a_{1,1} + a_{2,2}}{\sum_{i=0}^{2} \sum_{j=0}^{2} a_{i,j}   } \tag{example classifier accuracy}
+    \text{accuracy} = \frac{a_{0,0} + a_{1,1} + a_{2,2}}{\sum_{i=0}^{2} \sum_{j=0}^{2} a_{i,j}   } \tag{table \ref{tab:confusionMatrix} classifier accuracy}
 \end{equation}
 
 In general, the classifier accuracy is defined by 
 \begin{equation}
-    \text{accuracy} = \frac{\sum_{i=1}^{k-1}}{\sum_{i=0}^{k-1} \sum_{=0}^{k-1} a_{i,j}   } 
+    \text{accuracy} = \frac{\sum_{i=1}^{k-1}a_{i,i}}{\sum_{i=0}^{k-1} \sum_{=0}^{k-1} a_{i,j}   } 
 \end{equation}
 
 \subsubsection{Cohen Kappa}
@@ -202,7 +202,9 @@ To construct an appropriate set of metrics to use for a problem, the class distr
 Imagine for example that one aims to segment pixels in a set of pictures where 95\% of the pixels is of the \textit{background} class and 5\% of the pixels is of the class to be segmented.
 A model can now easily obtain 95\% accuracy by predicting every pixel as \textit{background}. This is clearly not a metric suitable for the problem.
 
-
+For an evaluation metric to be useful, it has to avoid the kind this kind of pitfalls.
+In this work, I investigate a problem where most of the image under investigation is \textit{background}. 
+For this reason, I will therefor easily obtain high
 
 \section{Machine vision}
 
