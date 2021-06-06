@@ -9,38 +9,40 @@ axis background/.style={fill=color0},
 axis line style={white},
 height=5cm,
 tick align=outside,
-tick pos=left,
 width=9cm,
 x grid style={white},
 xlabel={Anteroposterior axis (x) [mm]},
+xmajorticks=false,
 xmin=-0.5, xmax=220.5,
 xtick style={color=white!15!black},
 y dir=reverse,
 y grid style={white},
 ylabel={Craniocaudal axis (y) [mm]},
+ymajorticks=false,
 ymin=-0.5, ymax=220.5,
 ytick style={color=white!15!black}
 ]
-\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=220.5, ymin=220.5, ymax=-0.5] {OSF_02-000.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=220.5, ymin=220.5, ymax=-0.5] {OSF_02-006.png};
 
 \nextgroupplot[
 axis background/.style={fill=color0},
 axis line style={white},
 height=5cm,
 tick align=outside,
-tick pos=left,
 width=9cm,
 x grid style={white},
 xlabel={Anteroposterior axis (x) [mm]},
+xmajorticks=false,
 xmin=-0.5, xmax=220.5,
 xtick style={color=white!15!black},
 y dir=reverse,
 y grid style={white},
 ylabel={Left-right axis (z) [mm]},
+ymajorticks=false,
 ymin=-0.5, ymax=80.5,
 ytick style={color=white!15!black}
 ]
-\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=220.5, ymin=80.5, ymax=-0.5] {OSF_02-001.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=220.5, ymin=80.5, ymax=-0.5] {OSF_02-007.png};
 \end{groupplot}
 
 \end{tikzpicture}

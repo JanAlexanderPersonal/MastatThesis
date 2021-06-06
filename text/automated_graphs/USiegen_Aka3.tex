@@ -1,46 +1,44 @@
 % This file was created by tikzplotlib v0.9.8.
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
-
 \begin{groupplot}[group style={group size=2 by 1}]
 \nextgroupplot[
-axis background/.style={fill=color0},
-axis line style={white},
+axis line style={white!15!black},
 height=5cm,
 tick align=outside,
-tick pos=left,
 width=9cm,
-x grid style={white},
+x grid style={white!80!black},
 xlabel={Anteroposterior axis (x) [mm]},
+xmajorticks=false,
 xmin=-0.5, xmax=359.5,
 xtick style={color=white!15!black},
 y dir=reverse,
-y grid style={white},
+y grid style={white!80!black},
 ylabel={Craniocaudal axis (y) [mm]},
+ymajorticks=false,
 ymin=-0.5, ymax=359.5,
 ytick style={color=white!15!black}
 ]
-\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=359.5, ymin=359.5, ymax=-0.5] {USiegen_Aka3-000.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=359.5, ymin=359.5, ymax=-0.5] {USiegen_Aka3-010.png};
 
 \nextgroupplot[
-axis background/.style={fill=color0},
-axis line style={white},
+axis line style={white!15!black},
 height=5cm,
 tick align=outside,
-tick pos=left,
 width=9cm,
-x grid style={white},
+x grid style={white!80!black},
 xlabel={Anteroposterior axis (x) [mm]},
+xmajorticks=false,
 xmin=-0.5, xmax=359.5,
 xtick style={color=white!15!black},
 y dir=reverse,
-y grid style={white},
+y grid style={white!80!black},
 ylabel={Left-right axis (z) [mm]},
+ymajorticks=false,
 ymin=-0.5, ymax=59.5,
 ytick style={color=white!15!black}
 ]
-\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=359.5, ymin=59.5, ymax=-0.5] {USiegen_Aka3-001.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=359.5, ymin=59.5, ymax=-0.5] {USiegen_Aka3-011.png};
 \end{groupplot}
 
 \end{tikzpicture}

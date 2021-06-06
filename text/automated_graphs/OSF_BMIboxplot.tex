@@ -10,11 +10,11 @@ axis background/.style={fill=color0},
 axis line style={white},
 height=5cm,
 tick align=outside,
-tick pos=left,
 width=5cm,
 x grid style={white},
 xlabel={Gender},
 xmajorgrids,
+xmajorticks=false,
 xmin=0.5, xmax=2.5,
 xtick style={color=white!15!black},
 xtick={1,2},
@@ -22,6 +22,7 @@ xticklabels={F(39),M(15)},
 y grid style={white},
 ylabel={Patient BMI},
 ymajorgrids,
+ymajorticks=false,
 ymin=18.0024047239566, ymax=36.1459436746559,
 ytick style={color=white!15!black}
 ]
@@ -43,12 +44,12 @@ table {%
 1 27.624520195661
 1 31.2809218296147
 };
-\addplot [black, opacity=1]
+\addplot [white!10!black, opacity=1]
 table {%
 0.9625 18.8271110398975
 1.0375 18.8271110398975
 };
-\addplot [black, opacity=1]
+\addplot [white!10!black, opacity=1]
 table {%
 0.9625 31.2809218296147
 1.0375 31.2809218296147
@@ -75,12 +76,12 @@ table {%
 2 30.1080510764016
 2 32.4584126587809
 };
-\addplot [black, opacity=1]
+\addplot [white!10!black, opacity=1]
 table {%
 1.9625 24.3024870597147
 2.0375 24.3024870597147
 };
-\addplot [black, opacity=1]
+\addplot [white!10!black, opacity=1]
 table {%
 1.9625 32.4584126587809
 2.0375 32.4584126587809
