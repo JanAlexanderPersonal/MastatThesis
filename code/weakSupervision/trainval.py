@@ -42,7 +42,7 @@ def setupLogging():
     
     # Create the Logger
     root_logger = logging.getLogger()
-    root_logger.setLevel(logging.INFO)
+    root_logger.setLevel(logging.DEBUG)
 
     handler = logging.StreamHandler()
     logger_formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
@@ -179,8 +179,8 @@ def trainval(exp_dict : Dict, savedir_base : str, datadir : str, reset : bool = 
                             drop_last=True, 
                             num_workers=num_workers)
 
-    for name, loader in zip(['train', 'val', 'test'], [train_loader, val_loader, test_loader]):
-        full, selected = loader.return_img_dfs()
+    for name, data_set in zip(['train', 'val', 'test'], [train_set, val_set, test_set]):
+        full, selected = data_set.return_img_dfs()
         full.to_csv(os.path.join(savedir, f'{name}_full.csv'))
         selected.to_csv(os.path.join(savedir, f'{name}_selected.csv'))
     

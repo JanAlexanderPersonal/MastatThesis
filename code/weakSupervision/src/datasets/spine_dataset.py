@@ -6,7 +6,7 @@ import h5py
 import random
 import re
 from src.modules.lcfcn import lcfcn_loss
-from scr.datasets.StratifiedGroupKFold import StratifiedGroupKFold
+from src.datasets.StratifiedGroupKFold import StratifiedGroupKFold
 import SimpleITK as sitk
 import numpy as np
 from haven import haven_utils as hu
@@ -119,7 +119,7 @@ class SpineSets(torch.utils.data.Dataset):
         self.full_image_df = pd.DataFrame(img_list)
 
         num_scans = len(scan_list)
-        logger.debug(f'{num_scans} scans found that contain in total {len(self.img_list)} images.')
+        logger.debug(f'{num_scans} scans found that contain in total {len(img_list)} images.')
         logger.debug(f'as dataframe: {self.full_image_df.head(10)}')
 
         # Train-Test split:
@@ -135,10 +135,11 @@ class SpineSets(torch.utils.data.Dataset):
 
         dev_test_split = StratifiedGroupKFold(n_splits=6, random_state=RANDOM_SEED, shuffle=True)
         train_val_split = StratifiedGroupKFold(n_splits=5, random_state=RANDOM_SEED, shuffle=True)
-        ix_dev, ix_test = dev_test_split.split(X = self.full_image_dataframe.slice_id, y = self.full_image_dataframe.source, groups = self.full_image_dataframe.patient )
+        logger.debug(dev_test_split.split(X = self.full_image_df.slice_id, y = self.full_image_df.source, groups = self.full_image_df.patient ))
+        ix_dev, ix_test = next(dev_test_split.split(X = self.full_image_df.slice_id, y = self.full_image_df.source, groups = self.full_image_df.patient ))
 
-        dev_df, test_df = self.full_image_dataframe.iloc[ix_dev], self.full_image_dataframe.iloc[ix_test]
-        ix_train, ix_val = train_val_split.split(X = dev_df.slice_id, y = dev_df.source, groups = dev_df.patient )
+        dev_df, test_df = self.full_image_df.iloc[ix_dev], self.full_image_df.iloc[ix_test]
+        ix_train, ix_val = next(train_val_split.split(X = dev_df.slice_id, y = dev_df.source, groups = dev_df.patient ))
         train_df, val_df = dev_df.iloc[ix_train], dev_df.iloc[ix_val]
 
         
