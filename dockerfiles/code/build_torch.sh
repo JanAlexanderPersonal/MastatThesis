@@ -23,13 +23,13 @@ then
     echo "Done"
 fi
 
-read -p "Do you want to build the Wisenet torch image? (y/n)" REPLY
+read -p "Do you want to build the thesis torch image? (y/n)" REPLY
 echo $REPLY # (optional) move to a new line
 if [ $REPLY = "y" ]
 then
     echo "Start to build jal:torch_wisenet"
     echo "---"
-    docker build --pull --rm -f "docker_pytorch_wisenet" -t jal:torch_wisenet "." 
+    docker build --pull --rm -f "Dockerfile_pytorch_thesis" -t jal:torch_thesis "." 
     echo "--"
     echo "Done"
 fi

@@ -1,38 +1,63 @@
 """
 author :    Jan Alexander
 project:    Master thesis
-date:       2021-01-31
+date:       2021-05-21
 
 
-Script to prepare the xVertSeg dataset for processing.
+Script to prepare the USiegen dataset for processing.
 
-Intended working: The xVertSeg folder *Data* has following structure
+Intended working: The USiegen folder *Data* has following structure
         
-Data
-├── images
-│   ├── image001.mhd
-│   ├── image001.raw
-│   ├── image002.mhd
-│   ├── image002.raw
-│   ├── image003.mhd
-│   ├── image003.raw
-│   ├── image004.mhd
-├── masks
-│   ├── mask001.mhd
-│   ├── mask001.raw
-│   ├── mask002.mhd
-│   ├── mask002.raw
-│   ├── mask003.mhd
-│   ├── mask003.raw
-│   ├── mask004.mhd
-└── scores
-    └── scores.csv
-
-This script intends to make this into the following:
-
-dataset
-   ├── masks
-   ├── images
+# USiegen data structure:
+# ├── SpineDatasets
+# │   ├── AKa2.dcm
+# │   ├── AKa3.dcm
+# │   ├── AKa4.dcm
+# │   ├── AKs3.dcm
+# │   ├── AKs5.dcm
+# │   ├── AKs6.dcm
+# │   ├── AKs7.dcm
+# │   ├── AKs8.dcm
+# │   ├── C002.dcm
+# │   ├── DzZ_T1.dcm
+# │   ├── DzZ_T2.dcm
+# │   ├── F02.dcm
+# │   ├── F03.dcm
+# │   ├── F04.dcm
+# │   ├── S01.dcm
+# │   ├── S02.dcm
+# │   └── St1.dcm
+# ├── SpineSegmented
+# │   ├── AKa2
+# │   │   ├── AKA2_mask.mha
+# │   │   ├── AKA2_sag.cso
+# │   │   ├── L1.cso
+# │   │   ├── L1.mha
+# │   │   ├── L1.obj
+# │   │   ├── L2.cso
+# │   │   ├── L2.mha
+# │   │   ├── L2.obj
+# │   │   ├── L3.cso
+# │   │   ├── L3.mha
+# │   │   ├── L3.obj
+# │   │   ├── L4.cso
+# │   │   ├── L4.mha
+# │   │   ├── L4.obj
+# │   │   ├── L5.cso
+# │   │   ├── L5.mha
+# │   │   ├── L5.obj
+# │   │   ├── S1.cso
+# │   │   ├── S1.mha
+# │   │   ├── S1.obj
+# │   │   ├── T10.cso
+# │   │   ├── T10.mha
+# │   │   ├── T10.obj
+# │   │   ├── T11.cso
+# │   │   ├── T11.mha
+# │   │   ├── T11.obj
+# │   │   ├── T12.cso
+# │   │   ├── T12.mha
+# │   │   └── T12.obj
 
 
 This script does nothing more than copying files from the source folder to the dataset folder.
@@ -61,27 +86,56 @@ from pathlib import Path
 logging.basicConfig(level=logging.INFO)
 
 ##############################
-# xVertSeg data structure:
-# .
-# ├── Data1
-# │   ├── images
-# │   │   ├── image001.mhd
-# │   │   ├── image001.raw
-# │   │   ├── image002.mhd
-# │   │   ├── image002.raw
-# │   │   ├── image003.mhd
-# │   │   ├── 
-# │   ├── masks
-# │   │   ├── mask001.mhd
-# │   │   ├── mask001.raw
-# │   │   ├── mask002.mhd
-# │   │   ├── mask002.raw
-# │   │   ├── mask003.mhd
-# │   │   ├── mask003.raw
-# │   │   ├── 
-# │   └── scores
-# │       └── scores.csv
-# └── tree.txt
+# USiegen data structure:
+# ├── SpineDatasets
+# │   ├── AKa2.dcm
+# │   ├── AKa3.dcm
+# │   ├── AKa4.dcm
+# │   ├── AKs3.dcm
+# │   ├── AKs5.dcm
+# │   ├── AKs6.dcm
+# │   ├── AKs7.dcm
+# │   ├── AKs8.dcm
+# │   ├── C002.dcm
+# │   ├── DzZ_T1.dcm
+# │   ├── DzZ_T2.dcm
+# │   ├── F02.dcm
+# │   ├── F03.dcm
+# │   ├── F04.dcm
+# │   ├── S01.dcm
+# │   ├── S02.dcm
+# │   └── St1.dcm
+# ├── SpineSegmented
+# │   ├── AKa2
+# │   │   ├── AKA2_mask.mha
+# │   │   ├── AKA2_sag.cso
+# │   │   ├── L1.cso
+# │   │   ├── L1.mha
+# │   │   ├── L1.obj
+# │   │   ├── L2.cso
+# │   │   ├── L2.mha
+# │   │   ├── L2.obj
+# │   │   ├── L3.cso
+# │   │   ├── L3.mha
+# │   │   ├── L3.obj
+# │   │   ├── L4.cso
+# │   │   ├── L4.mha
+# │   │   ├── L4.obj
+# │   │   ├── L5.cso
+# │   │   ├── L5.mha
+# │   │   ├── L5.obj
+# │   │   ├── S1.cso
+# │   │   ├── S1.mha
+# │   │   ├── S1.obj
+# │   │   ├── T10.cso
+# │   │   ├── T10.mha
+# │   │   ├── T10.obj
+# │   │   ├── T11.cso
+# │   │   ├── T11.mha
+# │   │   ├── T11.obj
+# │   │   ├── T12.cso
+# │   │   ├── T12.mha
+# │   │   └── T12.obj
 # 
 # This code will perform the following tasks:
 # • Load the image or the mask
@@ -91,19 +145,16 @@ logging.basicConfig(level=logging.INFO)
 # • The individual 2D slices are stored both as .jpg files and as pickle files to allow fast access by pyTorch.
 #############################
 
-# The following regex will parse "mask002.raw" to "mask002" "002" "raw"
-MASK_NR = re.compile(r'(^[a-zA-Z]+(\d+)).(\w+)')
+DIM_CONV = {
+    0 : 1,
+    1 : 2,
+    2 : 0
+}
 
-# The labels in the xVertSeg dataset follow (http://lit.fe.uni-lj.si/xVertSeg/database.php)
-#   L1 : 200
-#   L2 : 210
-#   ...
-#   L5 : 240
-# This will be converted to labels 1 -> 5 representing L1 -> L5.
-
-XVERTSEG_ENCODING = {200 + (i-1) * 10 : i for i in range(1,6)}
 
 if __name__ == '__main__':
+
+    logging.info('Start preprocessing of dataset USiegen')
 
     # Parse arguments
     parser = argparse.ArgumentParser(description='xVertSeg preparation')
@@ -113,13 +164,13 @@ if __name__ == '__main__':
     parser.add_argument('--contrast', type=int, default=0, help='Contrast enhancement bool?')
     args = parser.parse_args()
 
-    image_filedir = os.path.join(args.source, 'images')
-    mask_filedir = os.path.join(args.source, 'masks')
+    image_filedir = os.path.join(args.source, 'SpineDatasets')
+    mask_filedir = os.path.join(args.source, 'SpineSegmented')
+    dim_slice = DIM_CONV[args.dimension]
     contrast_enhance = (args.contrast > 0)
-    dim_slice = args.dimension
     output_filedir = os.path.abspath(args.output)
-    image_slices_filedir = os.path.join(output_filedir, 'xVertSeg_images')
-    mask_slices_filedir = os.path.join(output_filedir, 'xVertSeg_masks')
+    image_slices_filedir = os.path.join(output_filedir, 'USiegen_images')
+    mask_slices_filedir = os.path.join(output_filedir, 'USiegen_masks')
 
     # make sure the output folder exists
     Path(output_filedir).mkdir(parents=True, exist_ok=True)
@@ -135,14 +186,21 @@ if __name__ == '__main__':
 
     # Convert the images to a set of slices:
     logging.info('Start copy of image files')
+
+    filenames_dict = dict()
+    nr = 0
+
     for filename in os.listdir(image_filedir):
-        if filename.endswith('.raw'):
-            continue
-        
+
+
+        logging.debug(f'read file {filename}')
+        filenames_dict[nr] = filename
+
         image =  sitk.ReadImage(os.path.join(image_filedir, filename))
         min_max.Execute(image)
         dataset_min = min(dataset_min, min_max.GetMinimum())
         dataset_max = max(dataset_max, min_max.GetMaximum())
+
         # rescale to 0 -> 255
         image = rescale.Execute(image)
 
@@ -153,13 +211,13 @@ if __name__ == '__main__':
         arr = sitk.GetArrayFromImage(image).astype('float16')
         arr /= 255.0
 
-        logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr):1.5f}')
+        logging.info(f'min : {np.min(arr)} ** max : {np.max(arr):1.5f}')
         logging.debug(f'source : {filename}, shape {arr.shape}')
 
         # For each slice along the asked dimension, convert to a numpy.ndarray and save this.
         # Preprocessing the slices before loading into pyTorch should speed up the training in the end.
         for i in range(arr.shape[dim_slice]):
-            fn = os.path.join(image_slices_filedir, filename.split('.')[0])
+            fn = os.path.join(image_slices_filedir, f'image{nr:03d}')
             Path(fn).mkdir(parents=True, exist_ok=True)
 
             # Take the index from the desired axis and save this slice (numpy.ndarray) for the model to train on.
@@ -167,44 +225,42 @@ if __name__ == '__main__':
             slice_to_save = arr.take(i, axis=dim_slice)
             if contrast_enhance:
                 logging.debug('increase contrast')
-                sslice_to_save = denoise_bilateral(exposure.equalize_hist(slice_to_save, nbins=256, mask=(slice_to_save > 0.05))).astype('float16')
+                logging.info(f'Slice values before contrast enhancement min : {np.min(slice_to_save):1.5f} ** max : {np.max(slice_to_save):1.5f}')
+                slice_to_save = denoise_bilateral(exposure.equalize_hist(slice_to_save, nbins=256, mask=(slice_to_save > 0.05))).astype('float16')
+                logging.info(f'Slice values after contrast enhancement min : {np.min(slice_to_save):1.5f} ** max : {np.max(slice_to_save):1.5f}')
             np.save(os.path.join(fn, f'slice_{i:03d}'), slice_to_save)
 
             # for jpeg visualization, get back to the original 0 -> 255 range.
             im = Image.fromarray((slice_to_save * 255).astype(np.uint8))
             im.convert('RGB').save(os.path.join(fn, f'slice_{i:03d}.jpg')) # :03d means 3 digits -> leading 0s
+        nr += 1
 
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
     unique_values = []
-    for filename in os.listdir(mask_filedir):
-        if filename.endswith('.raw'):
-            continue
-        logging.debug(f'filename : {filename}')
-        ms = MASK_NR.findall(filename)[0]
-        source_filename = os.path.join(mask_filedir, filename)
-        target_folder = os.path.join(mask_slices_filedir, f'image{ms[1]}')
+    for nr, foldername in filenames_dict.items():
+        logging.debug(f'filename : {foldername}')
+        
+        source_filenames = [os.path.join(mask_filedir, foldername.split('.')[0], f'L{i}.mha') for i in range(1,6)]
+        target_folder = os.path.join(mask_slices_filedir, f'image{nr:03d}')
         Path(target_folder).mkdir(parents=True, exist_ok=True)
         
-        logging.debug(f'source : {source_filename}')
+        logging.debug(f'source : {source_filenames}')
         logging.debug(f'target : {target_folder}')
 
-        image =  sitk.ReadImage(source_filename)
-        # No rescaling -> mask will be transformed with XVERTSEG_ENCODING
+        # resample on isotropic 1 mm × 1 mm × 1 mm grid
+        images =  [sitk.GetArrayFromImage( ut.resampler( sitk.ReadImage(source_filename) )) for source_filename in source_filenames]
+
+        logging.debug(f'image names : {images}')
 
         # resample on isotropic 1 mm × 1 mm × 1 mm grid
-        image = ut.resampler(image)
-        arr = sitk.GetArrayFromImage(image)
+        arr = np.zeros_like(images[0], dtype=int)
 
-        # The labels in the xVertSeg dataset follow (http://lit.fe.uni-lj.si/xVertSeg/database.php)
-        #   L1 : 200
-        #   L2 : 210
-        #   ...
-        #   L5 : 240
         # This will be converted to labels 1 -> 5 representing L1 -> L5.
         # The background will be encoded as value 0
-        for encoding, vert  in XVERTSEG_ENCODING.items():
-            arr[arr==encoding] = vert
+        for i, image  in enumerate(images):
+            arr[image != 0] = i + 1
+        
         unique_values += np.unique(arr).tolist()
         logging.debug(f'source : {filename}, shape {arr.shape}')
         logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr)}')
@@ -227,3 +283,4 @@ if __name__ == '__main__':
             plt.close()
 
     logging.info(f'List of unique values in the masks : {sorted(list(set(unique_values)))}')
+    logging.info(f'min and max intensity values of images {dataset_min} & {dataset_max}')

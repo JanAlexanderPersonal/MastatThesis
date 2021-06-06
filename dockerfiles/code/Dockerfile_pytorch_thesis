@@ -1,0 +1,24 @@
+FROM nvidia/cuda:10.1-cudnn7-devel-ubuntu18.04
+MAINTAINER Jan Alexander "jan.alexander@verhaert.com"
+
+COPY requirements.txt /opt/app/requirements.txt
+WORKDIR /opt/app/
+
+RUN apt-get update && \
+    apt-get install -y apt-utils && \
+    apt-get install -y libgl1-mesa-dev && \
+    apt update -y && \
+    apt install python3.8 python3-pip python3.8-venv python3.8-dev -y && \
+    apt-get install tree && \
+    python3.8 -m pip install --upgrade pip && \
+    python3.8 -m pip install -r requirements.txt && \
+    mkdir /root/space && \
+    mkdir /root/space/temp/
+RUN apt-get -y -q install git && \
+    apt-get install --reinstall ca-certificates
+RUN python3.8 -m pip install git+https://github.com/lucasb-eyer/pydensecrf.git
+
+RUN python3.8 -m pip install SimpleITK
+
+WORKDIR /root/space/
+CMD ["cd", "code"]
