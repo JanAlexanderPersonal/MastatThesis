@@ -178,6 +178,11 @@ def trainval(exp_dict : Dict, savedir_base : str, datadir : str, reset : bool = 
                             batch_size=exp_dict["batch_size"], 
                             drop_last=True, 
                             num_workers=num_workers)
+
+    for name, loader in zip(['train', 'val', 'test'], [train_loader, val_loader, test_loader]):
+        full, selected = loader.return_img_dfs()
+        full.to_csv(os.path.join(savedir, f'{name}_full.csv'))
+        selected.to_csv(os.path.join(savedir, f'{name}_selected.csv'))
     
     # Run the remaining epochs starting from the last epoch for which values were available in the pkl
     for e in range(s_epoch, exp_dict['max_epoch']):

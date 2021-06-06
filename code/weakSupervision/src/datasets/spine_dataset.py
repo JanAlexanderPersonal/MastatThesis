@@ -1,10 +1,12 @@
 import logging
 import torch
 import os
+import pandas as pd
 import h5py
 import random
 import re
 from src.modules.lcfcn import lcfcn_loss
+from scr.datasets.StratifiedGroupKFold import StratifiedGroupKFold
 import SimpleITK as sitk
 import numpy as np
 from haven import haven_utils as hu
@@ -14,7 +16,7 @@ import tqdm
 from . import transformers
 from PIL import Image
 import PIL
-from typing import Dict
+from typing import Dict, Tuple
 
 # Regex patterns: catch the image number from image001 & slice_001.npy
 # like files
@@ -22,6 +24,7 @@ IMAGE_NR = re.compile(r'^image(\d{3})')
 SLICE_NR = re.compile(r'^slice_(\d{3}).npy')
 
 RANDOM_SEED = 10
+
 
 # Center crop dimension: in the pre-processing step, the image is center-cropped.
 # Todo: Vormt dit geen conflict met self.size?
@@ -77,7 +80,7 @@ class SpineSets(torch.utils.data.Dataset):
         logger.info(f'Start constructing the dataset object')
         logger.debug(f'\tdata path:\t{self.datadir}')
 
-        self.img_list = list()
+        img_list = list()
         scan_list = list()
 
         # Make a list of all image and mask slices in the xVertSeg dataset.
@@ -90,6 +93,7 @@ class SpineSets(torch.utils.data.Dataset):
             tgt_path = os.path.join(datadir, f'{source}_masks')
             img_path = os.path.join(datadir, f'{source}_images')
             logger.debug(f'target path : {tgt_path}')
+            patient_nr = 0
             for tgt_name in os.listdir(tgt_path):
                 logger.debug(f'target name {tgt_name} .')
                 scan_id = f'{source}_{IMAGE_NR.findall(tgt_name)[0]}'
@@ -99,18 +103,24 @@ class SpineSets(torch.utils.data.Dataset):
                 image_slice_path = os.path.join(img_path, tgt_name)
                 logger.debug(f' * mask slices path : {mask_slice_path}')
                 logger.debug(f' * image slice path : {image_slice_path}')
+                patient_id = f'{source}_{patient_nr:03d}'
                 for mask_slice in os.listdir(mask_slice_path):
                     if not mask_slice.endswith('.npy'):
                         continue
                     slice_id = int(SLICE_NR.findall(mask_slice)[0])
-                    self.img_list += [{'img': os.path.join(image_slice_path, mask_slice),
+                    img_list += [{'img': os.path.join(image_slice_path, mask_slice),
                                     'tgt': os.path.join(mask_slice_path, mask_slice),
                                     'scan_id': scan_id,
-                                    'slice_id': slice_id}]
+                                    'slice_id': slice_id,
+                                    'patient' : patient_id,
+                                    'source': source}]
         scan_list.sort()
+
+        self.full_image_df = pd.DataFrame(img_list)
 
         num_scans = len(scan_list)
         logger.debug(f'{num_scans} scans found that contain in total {len(self.img_list)} images.')
+        logger.debug(f'as dataframe: {self.full_image_df.head(10)}')
 
         # Train-Test split:
         # By using a fixed random seed, the split between train, validation and test is always the same.
@@ -121,65 +131,24 @@ class SpineSets(torch.utils.data.Dataset):
         # IMPORTANT: For other datasets, this should be adapted to assure scans of the same patients are not mixed.
         #
         # seed is fixed at RANDOM_SEED
-        random.seed(RANDOM_SEED)
+        # random.seed(RANDOM_SEED)
 
-        DIST_OK = False
+        dev_test_split = StratifiedGroupKFold(n_splits=6, random_state=RANDOM_SEED, shuffle=True)
+        train_val_split = StratifiedGroupKFold(n_splits=5, random_state=RANDOM_SEED, shuffle=True)
+        ix_dev, ix_test = dev_test_split.split(X = self.full_image_dataframe.slice_id, y = self.full_image_dataframe.source, groups = self.full_image_dataframe.patient )
 
-        while not DIST_OK:
-            train_list = random.sample(scan_list, int(num_scans / 6 * 4))
-            val_list = random.sample(
-                [i for i in scan_list if i not in train_list], int(num_scans / 6) + 1)
-            test_list = [
-                i for i in scan_list if (
-                    i not in train_list) and (
-                    i not in val_list)]
-            train_list_size = 0
-            val_list_size = 0
-            test_list_size = 0
-
-            for img in self.img_list:
-                if img['scan_id'] in train_list:
-                    train_list_size += 1
-                elif img['scan_id'] in val_list:
-                    val_list_size += 1
-                elif img['scan_id'] in test_list:
-                    test_list_size += 1
-                else:
-                    logger.warning('The split between train, test and val went wrong')
-            logger.debug(f'Attempt: train list size : {train_list_size} images ({train_list_size / num_scans * 100:3.1f} %).')
-            logger.debug(f'Attempt: val list size : {val_list_size} images ({val_list_size / num_scans * 100:3.1f} %).')
-            logger.debug(f'Attempt: test list size : {test_list_size} images ({test_list_size / num_scans * 100:3.1f} %).')
-
-            DIST_OK = (train_list_size / num_scans > 0.6) and (val_list_size / num_scans > 0.1) and (test_list_size / num_scans > 0.1)
+        dev_df, test_df = self.full_image_dataframe.iloc[ix_dev], self.full_image_dataframe.iloc[ix_test]
+        ix_train, ix_val = train_val_split.split(X = dev_df.slice_id, y = dev_df.source, groups = dev_df.patient )
+        train_df, val_df = dev_df.iloc[ix_train], dev_df.iloc[ix_val]
 
         
         logger.info(
-            f'\t * {len(train_list)} in the train set\t * {len(val_list)} in the validation set\t * {len(test_list)} in the test set')
-        logger.debug(f'train_list : {sorted(train_list)}')
-        logger.debug(f'val_list : {sorted(val_list)}')
-        logger.debug(f'test_list : {sorted(test_list)}')
+            f'\t * {train_df.shape[0]} in the train set\t * {val_df.shape[0]} in the validation set\t * {test_df.shape[0]} in the test set')
 
-        # Todo: implementation for non-separate part
-        # Only keep the appropriate part of the scan list
-        if seperate:
-            if split == 'train':
-                scan_list = train_list
-            elif split == 'val':
-                scan_list = val_list
-            elif split == 'test':
-                scan_list = test_list
+        # the img_list becomes the relevant dataframe transformed again to a list of dicts
+        self.selected_image_df = {'train' : train_df, 'val' : val_df, 'test' : test_df}[split]
+        self.img_list = self.selected_image_df.to_dict(orient = 'records')
 
-            # Only keep the images in the image list from the selected scans
-            img_list_new = []
-            for img_dict in self.img_list:
-                if img_dict['scan_id'] in scan_list:
-                    img_list_new += [img_dict]
-            random.shuffle(img_list_new)
-
-        self.img_list = img_list_new
-
-        # Todo: Why these 3 different options? Resizing after this centercrop
-        # is actually not very useful anymore.
 
         self.img_transform = transforms.Compose([
             transforms.CenterCrop(CenterCrop_dim),
@@ -205,6 +174,11 @@ class SpineSets(torch.utils.data.Dataset):
             ])
 
         logger.info('Dataset xVertSeg prepared')
+
+    def return_img_dfs(self) -> Tuple[pd.DataFrame]:
+        """Return both the full image dataframe and the selected image dataframe
+        """
+        return self.full_image_df, self.selected_image_df
 
     def __getitem__(self, i) -> Dict:
         """get item i from dataset loader
