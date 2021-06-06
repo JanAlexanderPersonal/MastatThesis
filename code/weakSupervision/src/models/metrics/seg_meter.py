@@ -50,8 +50,10 @@ class SegMeter:
         gt = batch["masks"].data.cpu().numpy()
         pred = model.predict_on_batch(batch)
 
-        logger.debug(f'mask shape : {gt.shape} with type {type(gt)}')
-        logger.debug(f'predicted mask shape : {pred.shape} with type {type(pred)}')
+        logger.debug(f'mask shape : {gt.shape} with type {type(gt)} and unique values {np.unique(gt)}')
+        logger.debug(f'predicted mask shape : {pred.shape} with type {type(pred)} and unique values {np.unique(pred)}')
+
+
 
         n_classes = model.n_classes
 
@@ -61,7 +63,7 @@ class SegMeter:
         #for p, g in zip(gt.reshape(-1), pred.reshape(-1)):
         #    cf[p,g] += 1
 
-        cf = confusion_matrix(gt, pred, labels=CLASS_NAMES, normalize=None)
+        cf = confusion_matrix(gt.reshape(-1), pred.reshape(-1), labels=[i for i in range(6)], normalize=None)
 
         if self.cf is None:
             self.cf = cf
