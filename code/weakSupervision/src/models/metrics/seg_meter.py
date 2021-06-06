@@ -3,6 +3,7 @@ from collections import defaultdict
 from scipy import spatial
 import numpy as np
 import pandas as pd
+from sklearn.metrics import confusion_matrix
 
 from . import struct_metric
 from typing import Dict
@@ -55,10 +56,12 @@ class SegMeter:
         n_classes = model.n_classes
 
         # empty confusion matrix
-        cf = np.zeros((n_classes, n_classes), dtype=int)
+        #cf = np.zeros((n_classes, n_classes), dtype=int)
 
-        for p, g in zip(gt.reshape(-1), pred.reshape(-1)):
-            cf[p,g] += 1
+        #for p, g in zip(gt.reshape(-1), pred.reshape(-1)):
+        #    cf[p,g] += 1
+
+        cf = confusion_matrix(gt, pred, labels=CLASS_NAMES, normalize=None)
 
         if self.cf is None:
             self.cf = cf

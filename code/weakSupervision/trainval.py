@@ -122,12 +122,12 @@ def trainval(exp_dict : Dict, savedir_base : str, datadir : str, reset : bool = 
     logging.info('make dataloaders from the defined validation and test set')
     val_loader = DataLoader(val_set,
                             # sampler=val_sampler,
-                            batch_size=1,
+                            batch_size=exp_dict["dataset_size"],
                             collate_fn=ut.collate_fn,
                             num_workers=num_workers)
     test_loader = DataLoader(test_set,
                             # sampler=val_sampler,
-                            batch_size=1,
+                            batch_size=exp_dict["dataset_size"],
                             collate_fn=ut.collate_fn,
                             num_workers=num_workers)
 

@@ -757,13 +757,14 @@ class Inst_Seg(torch.nn.Module):
         #input('press enter')
         hu.save_image(savedir_image, img_comp)
 
-    def val_on_loader(self, loader, savedir_images=None, n_images=0):
+    def val_on_loader(self, loader, savedir_images=None, n_images=0, n_jobs = -2):
         """Get validation score dictionary
 
         Args:
             loader (torch.dataloader): dataloader for this split
             savedir_images (str, optional): Directory to save the haven images. Defaults to None.
             n_images (int, optional): Number of images. Defaults to 0.
+            n_jobs (int): for parallel execution
 
         Returns:
             Dict[float]: Dictionary with 8 different metric scores:
@@ -779,19 +780,29 @@ class Inst_Seg(torch.nn.Module):
         val_meter = metrics.SegMeter(split=loader.dataset.split)
         logger.debug(
             f'Start validation on batch for {loader.dataset.split} set.')
-        i_count = 0
-        for i, batch in enumerate(tqdm.tqdm(loader)):
+
+        # Check the batches in the loader have not been trained on:
+
+        for batch in loader:
             # make sure it wasn't trained on
             for m in batch['meta']:
                 assert(
                     m['hash'] not in self.train_hashes), 'image in train hashes : {} - {}'.format(
                     m['img_name'], m['tgt_name'])
 
+        
+        for batch in tqdm.tqdm(loader):
             val_meter.val_on_batch(self, batch)
+
+        i_count = 0
+        for batch in loader:
             if i_count < n_images:
                 self.vis_on_batch(batch, savedir_image=os.path.join(savedir_images,
                                                                     '%d.png' % batch['meta'][0]['index']), i=i_count)
                 i_count += 1
+            else:
+                break
+        
         avg_score = val_meter.get_avg_score()
         for key, value in avg_score.items():
             if key.endswith('metrics_df'):
