@@ -1,4 +1,5 @@
 import logging
+from posix import sched_param
 import torch
 import os
 import pandas as pd
@@ -40,7 +41,7 @@ class SpineSets(torch.utils.data.Dataset):
         split: str,
         datadir: str,
         exp_dict: Dict,
-        seperate: bool = True,
+        separate_source: str = None,
     ):
         """xVertSeg calss : inherits from torch.utils.data.Dataset
 
@@ -48,14 +49,13 @@ class SpineSets(torch.utils.data.Dataset):
             split (str): Is this the dataloader for the train, the test of the validation set? ['train', 'test', 'val']
             datadir (str): path to the data
             exp_dict (Dict): Dictionary with the experiment definition
-            seperate (bool, optional): [description]. Defaults to True.
+            separate_source (str, optional): name of source you want to separate out for more detailed metrics calculation. Defaults to True.
 
         attributes:
             exp_dict (Dict)
             datadir (str)
             split (str)
             n_classes (int) : number of classes, apart from the background. This is extracted from exp_dict['dataset']['n_classes']
-            size (int) : xxx
             img_path (path object) : path to image folders
             tgt_path (path object) : path to the target (mask) folders
             image_list (List[Dict]) : a list of dictionaries. Each dictionary contains
@@ -148,6 +148,8 @@ class SpineSets(torch.utils.data.Dataset):
 
         # the img_list becomes the relevant dataframe transformed again to a list of dicts
         self.selected_image_df = {'train' : train_df, 'val' : val_df, 'test' : test_df}[split]
+        if separate_source is not None:
+            self.selected_image_df = self.selected_image_df[self.selected_image_df['source'] == separate_source]
         self.img_list = self.selected_image_df.to_dict(orient = 'records')
 
 

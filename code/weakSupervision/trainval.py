@@ -36,28 +36,32 @@ cudnn.benchmark = True
 
 F_stop_at_epoch = False
 
+
 def setupLogging():
     """Setup the logger for this module
     """
-    
+
     # Create the Logger
     root_logger = logging.getLogger()
     root_logger.setLevel(logging.DEBUG)
 
     handler = logging.StreamHandler()
-    logger_formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
+    logger_formatter = logging.Formatter(
+        '%(name)s - %(levelname)s - %(message)s')
     handler.setFormatter(logger_formatter)
     root_logger.addHandler(handler)
 
-def trainval(exp_dict : Dict, savedir_base : str, datadir : str, reset : bool = False, num_workers : int =0, tensorboard_folder : str =None):
+
+def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
+             reset: bool = False, num_workers: int = 0, tensorboard_folder: str = None):
     """trainval: training and validation routine to perform all the experiments defined in exp_dict
 
     Args:
         exp_dict (Dict): Dictionnary defining the experiment to run.
                 {
-                    'model' : (Dict) Definition of the model    {   
-                                                                    'n_classes' : n_classes, 
-                                                                    'base' : network to base the model upon, 
+                    'model' : (Dict) Definition of the model    {
+                                                                    'n_classes' : n_classes,
+                                                                    'base' : network to base the model upon,
                                                                     'optimizer' : model optimizer
                                                                 },
                     'dataset' : (str) defines dataset to use
@@ -114,10 +118,10 @@ def trainval(exp_dict : Dict, savedir_base : str, datadir : str, reset : bool = 
     # test set
     logging.info('define test set')
     test_set = datasets.get_dataset(dataset_dict=exp_dict["dataset"],
-                                   split="test",
-                                   datadir=datadir,
-                                   exp_dict=exp_dict,
-                                   dataset_size=exp_dict['dataset_size'])
+                                    split="test",
+                                    datadir=datadir,
+                                    exp_dict=exp_dict,
+                                    dataset_size=exp_dict['dataset_size'])
 
     logging.info('make dataloaders from the defined validation and test set')
     val_loader = DataLoader(val_set,
@@ -126,10 +130,10 @@ def trainval(exp_dict : Dict, savedir_base : str, datadir : str, reset : bool = 
                             collate_fn=ut.collate_fn,
                             num_workers=num_workers)
     test_loader = DataLoader(test_set,
-                            # sampler=val_sampler,
-                            batch_size=exp_dict["batch_size"],
-                            collate_fn=ut.collate_fn,
-                            num_workers=num_workers)
+                             # sampler=val_sampler,
+                             batch_size=exp_dict["batch_size"],
+                             collate_fn=ut.collate_fn,
+                             num_workers=num_workers)
 
     # Model
     # ==================
@@ -145,10 +149,11 @@ def trainval(exp_dict : Dict, savedir_base : str, datadir : str, reset : bool = 
     score_list_path = os.path.join(savedir, "score_list.pkl")
 
     #logging.debug('model definition')
-    #logging.debug(model)
+    # logging.debug(model)
 
     # If there is a pkl file containing stored model weights from the last time the model was trained, get it.
-    # if 'reset == True' this file will be deleted when you reach this code line.
+    # if 'reset == True' this file will be deleted when you reach this code
+    # line.
     if os.path.exists(score_list_path):
         # resume experiment
         model.load_state_dict(hu.torch_load(model_path))
@@ -165,35 +170,33 @@ def trainval(exp_dict : Dict, savedir_base : str, datadir : str, reset : bool = 
     logger.info("Starting experiment at epoch %d" % (s_epoch))
     model.waiting = 0
     model.val_score_best = -np.inf
-    
-    # Random sampler 
+
+    # Random sampler
     train_sampler = torch.utils.data.RandomSampler(
-                                train_set, replacement=True, 
-                                num_samples=2*len(test_set))
+        train_set, replacement=True,
+        num_samples=2 * len(test_set))
 
     logging.info('Get train loader for train dataset')
     train_loader = DataLoader(train_set,
-                            sampler=train_sampler,
-                            collate_fn=ut.collate_fn,
-                            batch_size=exp_dict["batch_size"], 
-                            drop_last=True, 
-                            num_workers=num_workers)
+                              sampler=train_sampler,
+                              collate_fn=ut.collate_fn,
+                              batch_size=exp_dict["batch_size"],
+                              drop_last=True,
+                              num_workers=num_workers)
 
-    for name, data_set in zip(['train', 'val', 'test'], [train_set, val_set, test_set]):
+    for name, data_set in zip(['train', 'val', 'test'], [
+                              train_set, val_set, test_set]):
         full, selected = data_set.return_img_dfs()
         full.to_csv(os.path.join(savedir, f'{name}_full.csv'))
         selected.to_csv(os.path.join(savedir, f'{name}_selected.csv'))
-    
-    # Run the remaining epochs starting from the last epoch for which values were available in the pkl
+
+    # Run the remaining epochs starting from the last epoch for which values
+    # were available in the pkl
     for e in range(s_epoch, exp_dict['max_epoch']):
         # Validate only at the start of each cycle
         logger.info(f'Start epoch {e}')
         score_dict = {}
 
-        logger.info('Start validation on test set')
-        test_dict, test_metrics_df = model.val_on_loader(test_loader,
-                                savedir_images=os.path.join(savedir, "images"),
-                                n_images=10) 
         # Train the model
         logger.info('Start training')
         train_dict = model.train_on_loader(train_loader)
@@ -220,14 +223,20 @@ def trainval(exp_dict : Dict, savedir_base : str, datadir : str, reset : bool = 
         # Save Best Checkpoint
         score_df = pd.DataFrame(score_list)
         if score_dict["val_score"] >= model.val_score_best:
+            logger.info('Start validation on test set')
             test_dict, test_metrics_df = model.val_on_loader(test_loader,
-                                savedir_images=os.path.join(savedir, "images"),
-                                n_images=10)  
+                                                             savedir_images=os.path.join(
+                                                                 savedir, "images"),
+                                                             n_images=10)
             score_dict.update(test_dict)
-            hu.save_pkl(os.path.join(savedir, "score_list_best.pkl"), score_list)
+            hu.save_pkl(
+                os.path.join(
+                    savedir,
+                    "score_list_best.pkl"),
+                score_list)
             # score_df.to_csv(os.path.join(savedir, "score_best_df.csv"))
             hu.torch_save(os.path.join(savedir, "model_best.pth"),
-                        model.get_state_dict())
+                          model.get_state_dict())
             model.waiting = 0
             model.val_score_best = score_dict["val_score"]
             logger.info("Saved Best: %s" % savedir)
@@ -236,19 +245,57 @@ def trainval(exp_dict : Dict, savedir_base : str, datadir : str, reset : bool = 
         score_df = pd.DataFrame(score_list)
         score_df.to_csv(os.path.join(savedir, "score_df.csv"))
         test_metrics_df.to_csv(os.path.join(savedir, 'test_metrics_df.csv'))
+        val_metrics_df.to_csv(os.path.join(savedir, 'val_metrics_df.csv'))
         logger.info(f"\n{score_df.tail(10)}\n")
         hu.torch_save(model_path, model.get_state_dict())
         hu.save_pkl(score_list_path, score_list)
         logger.info("Checkpoint Saved: %s" % savedir)
 
-        if model.waiting > 100:
+        if model.waiting > 25:
             break
 
         if F_stop_at_epoch:
             print(f'Epoch {e} is finished.')
             input('Press enter to continue')
-    
 
+    for source in full.source.unique():
+        logger.info(f'Specific analysis for {source}')
+        source_val_set = datasets.get_dataset(dataset_dict=exp_dict["dataset"],
+                                              split="val",
+                                              datadir=datadir,
+                                              exp_dict=exp_dict,
+                                              dataset_size=exp_dict['dataset_size'],
+                                              separate_source=source)
+        source_val_loader = DataLoader(source_val_set,
+                                       batch_size=exp_dict["batch_size"],
+                                       collate_fn=ut.collate_fn,
+                                       num_workers=num_workers)
+        val_dict, val_metrics_df = model.val_on_loader(source_val_loader,
+                                                       savedir_images=os.path.join(
+                                                           savedir, f"val_{source}_images"),
+                                                       n_images=25)
+        source_test_set = datasets.get_dataset(dataset_dict=exp_dict["dataset"],
+                                               split="test",
+                                               datadir=datadir,
+                                               exp_dict=exp_dict,
+                                               dataset_size=exp_dict['dataset_size'],
+                                               separate_source=source)
+        source_test_loader = DataLoader(source_test_set,
+                                        batch_size=exp_dict["batch_size"],
+                                        collate_fn=ut.collate_fn,
+                                        num_workers=num_workers)
+        test_dict, test_metrics_df = model.val_on_loader(source_test_loader,
+                                                         savedir_images=os.path.join(
+                                                             savedir, f"test_{source}_images"),
+                                                         n_images=25)
+        val_metrics_df.to_csv(
+            os.path.join(
+                savedir,
+                'val_metrics_{source}_df.csv'))
+        test_metrics_df.to_csv(
+            os.path.join(
+                savedir,
+                'test_metrics_{source}_df.csv'))
 
     print('Experiment completed et epoch %d' % e)
 
@@ -262,7 +309,7 @@ if __name__ == "__main__":
     parser.add_argument('-e', '--exp_group_list', nargs="+")
     parser.add_argument('-sb', '--savedir_base', required=True)
     parser.add_argument('-d', '--datadir', default=None)
-    parser.add_argument("-r", "--reset",  default=0, type=int)
+    parser.add_argument("-r", "--reset", default=0, type=int)
     parser.add_argument("-ei", "--exp_id", default=None)
     parser.add_argument("-j", "--run_jobs", default=0, type=int)
     parser.add_argument("-nw", "--num_workers", type=int, default=0)
@@ -270,7 +317,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    logger.info(f'start trainval with experiment dict {pformat(exp_configs.EXP_GROUPS)}')
+    logger.info(
+        f'start trainval with experiment dict {pformat(exp_configs.EXP_GROUPS)}')
 
     # Collect experiments
     # ===================
@@ -287,16 +335,18 @@ if __name__ == "__main__":
         for exp_group_name in args.exp_group_list:
             exp_list += exp_configs.EXP_GROUPS[exp_group_name]
 
-    # Make sure the paths for the tensorboard feedback and the model improvement steps are present
+    # Make sure the paths for the tensorboard feedback and the model
+    # improvement steps are present
     Path(args.tensorboard).mkdir(parents=True, exist_ok=True)
     Path(args.savedir_base).mkdir(parents=True, exist_ok=True)
 
-    # Perform the trainval procedure on each of the experiments in the experiment dict:
+    # Perform the trainval procedure on each of the experiments in the
+    # experiment dict:
     for exp_dict in exp_list:
         # do trainval
         trainval(exp_dict=exp_dict,
-                savedir_base=args.savedir_base,
-                datadir=args.datadir,
-                reset=args.reset,
-                num_workers=args.num_workers,
-                tensorboard_folder=args.tensorboard)
+                 savedir_base=args.savedir_base,
+                 datadir=args.datadir,
+                 reset=args.reset,
+                 num_workers=args.num_workers,
+                 tensorboard_folder=args.tensorboard)
