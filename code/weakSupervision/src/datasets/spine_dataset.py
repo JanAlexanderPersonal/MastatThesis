@@ -75,7 +75,7 @@ class SpineSets(torch.utils.data.Dataset):
         self.exp_dict = exp_dict
         self.datadir = datadir
         self.split = split
-        self.context_span = context_span
+        self.context_span = exp_dict['dataset']['context_span']
         self.n_classes = exp_dict['dataset']['n_classes']
         self.sources = exp_dict['dataset']['sources']
         self.size = 352
