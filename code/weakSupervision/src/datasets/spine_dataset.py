@@ -42,6 +42,7 @@ class SpineSets(torch.utils.data.Dataset):
         datadir: str,
         exp_dict: Dict,
         separate_source: str = None,
+        context_span : int = 0
     ):
         """xVertSeg calss : inherits from torch.utils.data.Dataset
 
@@ -67,9 +68,14 @@ class SpineSets(torch.utils.data.Dataset):
                                             }
 
         """
+
+        assert split in ['train', 'test', 'val'], "Only 3 split types are allowed: train, test and val"
+
+
         self.exp_dict = exp_dict
         self.datadir = datadir
         self.split = split
+        self.context_span = context_span
         self.n_classes = exp_dict['dataset']['n_classes']
         self.sources = exp_dict['dataset']['sources']
         self.size = 352
@@ -195,9 +201,21 @@ class SpineSets(torch.utils.data.Dataset):
         out = self.img_list[i]
         img_name, tgt_name = out['img'], out['tgt']
 
-        # read image from the preprocessed image slices
-        image = np.load(img_name)
-        image = Image.fromarray((image * 255).astype('uint8')).convert('RGB')
+        if self.context_span > 0:
+            queries = {name : 'scan_id == \"{}\" & patient == \"{}\" & slice_id == {}'.format(out['scan_id'], out['patient'], out['slice_id'] + offset) for name, offset in zip(['top', 'bottom'], [1 * self.context_span, -1 * self.context_span ])}
+            top_name = self.selected_image_df(queries['top']).img.iloc[0]
+            bottom_name = self.selected_image_df(queries['bottom'].img.iloc[0])
+            logger.debug(f'image path : {img_name} * top path : {top_name} * bottom name : {bottom_name}')
+            # Load the images
+            image = np.load(img_name)
+            top = np.load(top_name)
+            bottom = np.load(bottom_name)
+            layers = np.stack([top, image, bottom], axis=2)
+            image = Image.fromarray((layers * 255).astype('uint8'))
+        else:
+            # read image from the preprocessed image slices
+            image = np.load(img_name)
+            image = Image.fromarray((image * 255).astype('uint8')).convert('RGB')
 
         # read annotation mask
         tgt_mask = np.load(tgt_name)
