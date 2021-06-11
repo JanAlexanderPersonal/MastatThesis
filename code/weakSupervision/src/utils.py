@@ -112,3 +112,6 @@ def vectorized_distance(A: np.ndarray, p: Tuple):
     px, py = tuple(p)
     X,Y = np.ix_(np.arange(H),np.arange(W))
     return np.sqrt((X-px)**2 + (Y-py)**2)
+
+
+

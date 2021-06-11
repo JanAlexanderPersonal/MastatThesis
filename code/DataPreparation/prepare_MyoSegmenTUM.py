@@ -4,29 +4,67 @@ project:    Master thesis
 date:       2021-01-31
 
 
-Script to prepare the xVertSeg dataset for processing.
+Script to prepare the MyoSegmenTUM dataset for processing.
 
-Intended working: The xVertSeg folder *Data* has following structure
+Intended working: The MyoSegmenTUM folder *Data* has following structure
         
-Data
-├── images
-│   ├── image001.mhd
-│   ├── image001.raw
-│   ├── image002.mhd
-│   ├── image002.raw
-│   ├── image003.mhd
-│   ├── image003.raw
-│   ├── image004.mhd
-├── masks
-│   ├── mask001.mhd
-│   ├── mask001.raw
-│   ├── mask002.mhd
-│   ├── mask002.raw
-│   ├── mask003.mhd
-│   ├── mask003.raw
-│   ├── mask004.mhd
-└── scores
-    └── scores.csv
+MyoSegmenTUM data structure:
+├── 01
+│   ├── 01
+│   │   ├── muscle
+│   │   │   ├── B0.dcm
+│   │   │   ├── erector_spinae_left_01.mha
+│   │   │   ├── erector_spinae_right_01.mha
+│   │   │   ├── FAT.dcm
+│   │   │   ├── FATFRACTION.dcm
+│   │   │   ├── psoas_left_01.mha
+│   │   │   ├── psoas_right_01.mha
+│   │   │   ├── T2star.dcm
+│   │   │   └── WATER.dcm
+│   │   └── vertebrae
+│   │       ├── B0.dcm
+│   │       ├── FAT.dcm
+│   │       ├── FATFRACTION.dcm
+│   │       ├── L1_01.mha
+│   │       ├── L2_01.mha
+│   │       ├── L3_01.mha
+│   │       ├── L4_01.mha
+│   │       ├── L5_01.mha
+│   │       ├── T2star.dcm
+│   │       └── WATER.dcm
+│   └── __MACOSX
+│       └── 01
+│           ├── muscle
+│           └── vertebrae
+├── 01.zip
+├── 02
+│   ├── 02
+│   │   ├── muscle
+│   │   │   ├── B0.dcm
+│   │   │   ├── erector_spinae_left_02.mha
+│   │   │   ├── erector_spinae_right_02.mha
+│   │   │   ├── FAT.dcm
+│   │   │   ├── FATFRACTION.dcm
+│   │   │   ├── psoas_left_02.mha
+│   │   │   ├── psoas_right_02.mha
+│   │   │   ├── T2star.dcm
+│   │   │   └── WATER.dcm
+│   │   └── vertebrae
+│   │       ├── B0.dcm
+│   │       ├── FAT.dcm
+│   │       ├── FATFRACTION.dcm
+│   │       ├── L1_02.mha
+│   │       ├── L2_02.mha
+│   │       ├── L3_02.mha
+│   │       ├── L4_02.mha
+│   │       ├── L5_02.mha
+│   │       ├── T2star.dcm
+│   │       └── WATER.dcm
+│   └── __MACOSX
+│       └── 02
+│           ├── muscle
+│           └── vertebrae
+
 
 This script intends to make this into the following:
 
@@ -45,7 +83,7 @@ import argparse
 import logging
 import SimpleITK as sitk
 import numpy as np
-from matplotlib import cm
+
 import matplotlib.pyplot as plt
 
 import sys
@@ -54,8 +92,7 @@ sys.path.append('../utils/')
 import utils as ut
 
 from PIL import Image
-from skimage import exposure
-from skimage.restoration import denoise_bilateral
+
 
 from pathlib import Path
 
@@ -181,44 +218,21 @@ if __name__ == '__main__':
 
     for nr, foldername in filefolder_list.items():
         filename = os.path.join(foldername, f'{args.mode}.dcm')
+
+        arr, minimum, maximum = ut.array_from_file(filename)
         
-        image =  sitk.ReadImage(filename)
-        # rescale to 0 -> 255
-        image = rescale.Execute(image)
-
-        # resample on isotropic 1 mm × 1 mm × 1 mm grid
-        image = ut.resampler(image)
-
-        # Convert this new view of the image (on the isotropic grid) to an array & display some main features of this array:
-        arr = sitk.GetArrayFromImage(image).astype('float16')
-        arr /= 255.0
-
         logging.debug(f'min : {np.min(arr):1.5f} ** max : {np.max(arr):1.5f}')
         logging.debug(f'source : {filename}, shape {arr.shape}')
 
-        dataset_min = min(dataset_min, np.min(arr))
-        dataset_max = max(dataset_max, np.max(arr))
+        dataset_min = min(dataset_min, minimum)
+        dataset_max = max(dataset_max, maximum)
 
+        fn = os.path.join(image_slices_filedir, f'image{nr:03d}')
+        Path(fn).mkdir(parents=True, exist_ok=True)
 
         # For each slice along the asked dimension, convert to a numpy.ndarray and save this.
         # Preprocessing the slices before loading into pyTorch should speed up the training in the end.
-        for i in range(arr.shape[dim_slice]):
-            fn = os.path.join(image_slices_filedir, f'image{nr:03d}')
-            Path(fn).mkdir(parents=True, exist_ok=True)
-
-            # Take the index from the desired axis and save this slice (numpy.ndarray) for the model to train on.
-            # https://numpy.org/doc/stable/reference/generated/numpy.ndarray.take.html#numpy.ndarray.take
-            slice_to_save = arr.take(i, axis=dim_slice)
-            if contrast_enhance:
-                logging.debug('increase contrast')
-                slice_to_save = denoise_bilateral(exposure.equalize_hist(slice_to_save, nbins=256, mask=(slice_to_save > 0.05))).astype('float16')
-                logging.debug(f'Slice values after contrast enhancement min : {np.min(slice_to_save):1.5f} ** max : {np.max(slice_to_save):1.5f}')
-            np.save(os.path.join(fn, f'slice_{i:03d}'), slice_to_save)
-            
-
-            # for jpeg visualization, get back to the original 0 -> 255 range.
-            im = Image.fromarray((slice_to_save * 255).astype(np.uint8))
-            im.convert('RGB').save(os.path.join(fn, f'slice_{i:03d}.jpg')) # :03d means 3 digits -> leading 0s
+        ut.arr_slices_save(arr, dim_slice, fn, args.contrast, save_jpeg = True)
 
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
@@ -245,23 +259,7 @@ if __name__ == '__main__':
         unique_values += np.unique(arr).tolist()
         logging.debug(f'source : {filename}, shape {arr.shape}')
         logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr)}')
-        for i in range(arr.shape[dim_slice]):
-            fn = os.path.join(target_folder, f'slice_{i:03d}') # :03d means 3 digits -> leading 0s
-            # Take the index from the desired axis and save this slice (numpy.ndarray) for the model to train on.
-            # https://numpy.org/doc/stable/reference/generated/numpy.ndarray.take.html#numpy.ndarray.take
-            arr_slice = arr.take(i, axis=dim_slice)
-            np.save(fn, arr_slice)
-
-            # For the visualization, bring background back to 0 and spread out the colours as far as possible
-            arr_slice[arr_slice == 255] = 0
-            arr_slice *= 51
-            im = cm.gist_earth(arr_slice)
-            plt.figure()
-            plt.imshow(im)
-            plt.axis('off')
-            plt.colorbar()
-            plt.savefig(os.path.join(target_folder, f'slice_{i:03d}.png'), bbox_inches='tight')
-            plt.close()
+        ut.mask_to_slices_save(arr, dim_slice, target_folder)
 
     logging.info(f'List of unique values in the masks : {sorted(list(set(unique_values)))}')
     logging.info(f'min and max values in the complete dataset : {dataset_min} & {dataset_max}.')

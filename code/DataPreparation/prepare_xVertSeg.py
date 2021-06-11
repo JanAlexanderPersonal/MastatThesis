@@ -138,41 +138,22 @@ if __name__ == '__main__':
     for filename in os.listdir(image_filedir):
         if filename.endswith('.raw'):
             continue
+
+        arr, minimum, maximum = ut.array_from_file(os.path.join(image_filedir, filename))
         
-        image =  sitk.ReadImage(os.path.join(image_filedir, filename))
-        min_max.Execute(image)
-        dataset_min = min(dataset_min, min_max.GetMinimum())
-        dataset_max = max(dataset_max, min_max.GetMaximum())
-        # rescale to 0 -> 255
-        image = rescale.Execute(image)
-
-        # resample on isotropic 1 mm × 1 mm × 1 mm grid
-        image = ut.resampler(image)
-
-        # Convert this new view of the image (on the isotropic grid) to an array & display some main features of this array:
-        arr = sitk.GetArrayFromImage(image).astype('float16')
-        arr /= 255.0
+        dataset_min = min(dataset_min, minimum)
+        dataset_max = max(dataset_max, maximum)
 
         logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr):1.5f}')
         logging.debug(f'source : {filename}, shape {arr.shape}')
 
         # For each slice along the asked dimension, convert to a numpy.ndarray and save this.
         # Preprocessing the slices before loading into pyTorch should speed up the training in the end.
-        for i in range(arr.shape[dim_slice]):
-            fn = os.path.join(image_slices_filedir, filename.split('.')[0])
-            Path(fn).mkdir(parents=True, exist_ok=True)
 
-            # Take the index from the desired axis and save this slice (numpy.ndarray) for the model to train on.
-            # https://numpy.org/doc/stable/reference/generated/numpy.ndarray.take.html#numpy.ndarray.take
-            slice_to_save = arr.take(i, axis=dim_slice)
-            if contrast_enhance:
-                logging.debug('increase contrast')
-                sslice_to_save = denoise_bilateral(exposure.equalize_hist(slice_to_save, nbins=256, mask=(slice_to_save > 0.05))).astype('float16')
-            np.save(os.path.join(fn, f'slice_{i:03d}'), slice_to_save)
+        fn = os.path.join(image_slices_filedir, f'image{nr:03d}')
+        Path(fn).mkdir(parents=True, exist_ok=True)
 
-            # for jpeg visualization, get back to the original 0 -> 255 range.
-            im = Image.fromarray((slice_to_save * 255).astype(np.uint8))
-            im.convert('RGB').save(os.path.join(fn, f'slice_{i:03d}.jpg')) # :03d means 3 digits -> leading 0s
+        ut.arr_slices_save(arr, dim_slice, fn, args.contrast, save_jpeg = True)
 
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
@@ -208,22 +189,7 @@ if __name__ == '__main__':
         unique_values += np.unique(arr).tolist()
         logging.debug(f'source : {filename}, shape {arr.shape}')
         logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr)}')
-        for i in range(arr.shape[dim_slice]):
-            fn = os.path.join(target_folder, f'slice_{i:03d}') # :03d means 3 digits -> leading 0s
-            # Take the index from the desired axis and save this slice (numpy.ndarray) for the model to train on.
-            # https://numpy.org/doc/stable/reference/generated/numpy.ndarray.take.html#numpy.ndarray.take
-            arr_slice = arr.take(i, axis=dim_slice)
-            np.save(fn, arr_slice)
-
-            # For the visualization, bring background back to 0 and spread out the colours as far as possible
-            arr_slice[arr_slice == 255] = 0
-            arr_slice *= 51
-            im = cm.gist_earth(arr_slice)
-            plt.figure()
-            plt.imshow(im)
-            plt.axis('off')
-            plt.colorbar()
-            plt.savefig(os.path.join(target_folder, f'slice_{i:03d}.png'), bbox_inches='tight')
-            plt.close()
+        ut.mask_to_slices_save(arr, dim_slice, target_folder)
 
     logging.info(f'List of unique values in the masks : {sorted(list(set(unique_values)))}')
+    logging.info(f'min and max values in the complete dataset : {dataset_min} & {dataset_max}.')
