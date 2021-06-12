@@ -19,6 +19,8 @@ from PIL import Image
 import PIL
 from typing import Dict, Tuple
 
+
+
 # Regex patterns: catch the image number from image001 & slice_001.npy
 # like files
 IMAGE_NR = re.compile(r'^image(\d{3})')
@@ -188,6 +190,16 @@ class SpineSets(torch.utils.data.Dataset):
         """Return both the full image dataframe and the selected image dataframe
         """
         return self.full_image_df, self.selected_image_df
+
+    def count_values_masks(self) -> Dict:
+
+        def unique_vals_dict(i):
+            mask_name = self.img_list[i]['tgt']
+            mask = np.load(mask_name)
+            vals, counts = np.unique(mask, return_counts=True)
+            return {val: count for val, count in zip(vals.to_list(), counts.to_list())}
+
+        
 
     def __getitem__(self, i) -> Dict:
         """get item i from dataset loader

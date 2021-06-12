@@ -56,6 +56,8 @@ from PIL import Image
 from skimage import exposure
 from skimage.restoration import denoise_bilateral
 
+import json
+
 from pathlib import Path
 
 logging.basicConfig(level=logging.INFO)
@@ -157,7 +159,7 @@ if __name__ == '__main__':
 
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
-    unique_values = []
+    unique_values = dict()
     for filename in os.listdir(mask_filedir):
         if filename.endswith('.raw'):
             continue
@@ -186,10 +188,15 @@ if __name__ == '__main__':
         # The background will be encoded as value 0
         for encoding, vert  in XVERTSEG_ENCODING.items():
             arr[arr==encoding] = vert
-        unique_values += np.unique(arr).tolist()
+        vals, counts = np.unique(arr, return_counts=True)
+        for val, count in zip(vals.tolist(), counts.tolist()):
+            unique_values[val] = unique_values.get(val, default=0) + count
         logging.debug(f'source : {filename}, shape {arr.shape}')
         logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr)}')
         ut.mask_to_slices_save(arr, dim_slice, target_folder)
 
-    logging.info(f'List of unique values in the masks : {sorted(list(set(unique_values)))}')
+    logging.info(f'List of unique values in the masks : {unique_values}')
     logging.info(f'min and max values in the complete dataset : {dataset_min} & {dataset_max}.')
+
+    with open(os.path.join(output_filedir, 'mask_counts.json'), 'w') as mask_counts_file:
+        json.dump(unique_values, mask_counts_file)

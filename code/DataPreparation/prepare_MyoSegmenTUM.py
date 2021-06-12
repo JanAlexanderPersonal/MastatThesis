@@ -87,12 +87,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 import sys
+
 sys.path.append('../utils/')
 
 import utils as ut
 
 from PIL import Image
 
+import json
 
 from pathlib import Path
 
@@ -236,7 +238,7 @@ if __name__ == '__main__':
 
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
-    unique_values = []
+    unique_values = dict()
     for nr, foldername in filefolder_list.items():
         mask_files = [os.path.join(foldername, f'L{i}_{nr:02d}.mha') for i in range(1,6)]
         logging.debug(f'Mask files : {mask_files}')
@@ -256,10 +258,15 @@ if __name__ == '__main__':
         for i, mask in enumerate(masks):
             arr[mask == 1] = i+1
 
-        unique_values += np.unique(arr).tolist()
+        vals, counts = np.unique(arr, return_counts=True)
+        for val, count in zip(vals.tolist(), counts.tolist()):
+            unique_values[val] = unique_values.get(val, default=0) + count
         logging.debug(f'source : {filename}, shape {arr.shape}')
         logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr)}')
         ut.mask_to_slices_save(arr, dim_slice, target_folder)
 
-    logging.info(f'List of unique values in the masks : {sorted(list(set(unique_values)))}')
+    logging.info(f'List of unique values in the masks : {unique_values}')
     logging.info(f'min and max values in the complete dataset : {dataset_min} & {dataset_max}.')
+
+    with open(os.path.join(output_filedir, 'mask_counts.json'), 'w') as mask_counts_file:
+        json.dump(unique_values, mask_counts_file)

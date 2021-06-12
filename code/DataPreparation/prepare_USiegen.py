@@ -77,6 +77,7 @@ import sys
 sys.path.append('../utils/')
 import utils as ut
 
+import json
 
 from pathlib import Path
 
@@ -208,7 +209,7 @@ if __name__ == '__main__':
 
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
-    unique_values = []
+    unique_values = dict()
     for nr, foldername in filenames_dict.items():
         logging.debug(f'filename : {foldername}')
         
@@ -232,10 +233,15 @@ if __name__ == '__main__':
         for i, image  in enumerate(images):
             arr[image != 0] = i + 1
         
-        unique_values += np.unique(arr).tolist()
+        vals, counts = np.unique(arr, return_counts=True)
+        for val, count in zip(vals.tolist(), counts.tolist()):
+            unique_values[val] = unique_values.get(val, default=0) + count
         logging.debug(f'source : {filename}, shape {arr.shape}')
         logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr)}')
         ut.mask_to_slices_save(arr, dim_slice, target_folder)
 
-    logging.info(f'List of unique values in the masks : {sorted(list(set(unique_values)))}')
+    logging.info(f'List of unique values in the masks : {unique_values}')
     logging.info(f'min and max intensity values of images {dataset_min} & {dataset_max}')
+
+    with open(os.path.join(output_filedir, 'mask_counts.json'), 'w') as mask_counts_file:
+        json.dump(unique_values, mask_counts_file)
