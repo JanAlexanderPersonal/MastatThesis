@@ -19,6 +19,8 @@ from PIL import Image
 import PIL
 from typing import Dict, Tuple
 
+from joblib import Parallel, delayed
+
 
 
 # Regex patterns: catch the image number from image001 & slice_001.npy
@@ -27,6 +29,8 @@ IMAGE_NR = re.compile(r'^image(\d{3})')
 SLICE_NR = re.compile(r'^slice_(\d{3}).npy')
 
 RANDOM_SEED = 10
+
+N_CORES = -2
 
 
 # Center crop dimension: in the pre-processing step, the image is center-cropped.
@@ -193,13 +197,19 @@ class SpineSets(torch.utils.data.Dataset):
 
     def count_values_masks(self) -> Dict:
 
-        def unique_vals_dict(i):
-            mask_name = self.img_list[i]['tgt']
+        def unique_vals_dict(img_list_entry):
+            mask_name = img_list_entry['tgt']
             mask = np.load(mask_name)
             vals, counts = np.unique(mask, return_counts=True)
             return {val: count for val, count in zip(vals.to_list(), counts.to_list())}
 
+        list_counts = Parallel(n_jobs=N_CORES)(delayed(unique_vals_dict)(image_list_entry) for image_list_entry in self.img_list)
+        df_list_counts = pd.DataFrame(list_counts)
+
+        logger.debug(f'Dataframe with counts : \n{df_list_counts.head()}')
         
+        return df_list_counts.sum(axis=0, skipna = True).to_dict()
+
 
     def __getitem__(self, i) -> Dict:
         """get item i from dataset loader
