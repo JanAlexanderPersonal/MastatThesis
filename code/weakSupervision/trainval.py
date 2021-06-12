@@ -1,6 +1,7 @@
 from haven import haven_chk as hc
 from haven import haven_results as hr
 from haven import haven_utils as hu
+from numpy.lib.twodim_base import mask_indices
 import torch
 import torchvision
 import tqdm
@@ -37,7 +38,7 @@ cudnn.benchmark = True
 F_stop_at_epoch = False
 
 
-def setupLogging():
+def setuplogger():
     """Setup the logger for this module
     """
 
@@ -88,7 +89,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
     os.makedirs(savedir, exist_ok=True)
     hu.save_json(os.path.join(savedir, "exp_dict.json"), exp_dict)
-    logging.info("Experiment saved in %s" % savedir)
+    logger.info("Experiment saved in %s" % savedir)
 
     # set seed
     # ==================
@@ -101,14 +102,21 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     # ==================
     # train set
 
-    logging.info('define train set')
+    logger.info('define train set')
     train_set = datasets.get_dataset(dataset_dict=exp_dict["dataset"],
                                      split="train",
                                      datadir=datadir,
                                      exp_dict=exp_dict,
                                      dataset_size=exp_dict['dataset_size'])
+
+    mask_counts = train_set.count_values_masks()
+
+    logger.info(f'counts for mask labels : {mask_counts}')
+
+    input()
+
     # val set
-    logging.info('define validation set')
+    logger.info('define validation set')
     val_set = datasets.get_dataset(dataset_dict=exp_dict["dataset"],
                                    split="val",
                                    datadir=datadir,
@@ -116,14 +124,14 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                                    dataset_size=exp_dict['dataset_size'])
 
     # test set
-    logging.info('define test set')
+    logger.info('define test set')
     test_set = datasets.get_dataset(dataset_dict=exp_dict["dataset"],
                                     split="test",
                                     datadir=datadir,
                                     exp_dict=exp_dict,
                                     dataset_size=exp_dict['dataset_size'])
 
-    logging.info('make dataloaders from the defined validation and test set')
+    logger.info('make dataloaders from the defined validation and test set')
     val_loader = DataLoader(val_set,
                             # sampler=val_sampler,
                             batch_size=exp_dict["batch_size"],
@@ -137,7 +145,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
     # Model
     # ==================
-    logging.info('get model')
+    logger.info('get model')
     model = models.get_model(model_dict=exp_dict['model'],
                              exp_dict=exp_dict,
                              train_set=train_set).cuda()
@@ -148,8 +156,8 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     model_path = os.path.join(savedir, "model.pth")
     score_list_path = os.path.join(savedir, "score_list.pkl")
 
-    #logging.debug('model definition')
-    # logging.debug(model)
+    #logger.debug('model definition')
+    # logger.debug(model)
 
     # If there is a pkl file containing stored model weights from the last time the model was trained, get it.
     # if 'reset == True' this file will be deleted when you reach this code
@@ -176,7 +184,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         train_set, replacement=True,
         num_samples=2 * len(test_set))
 
-    logging.info('Get train loader for train dataset')
+    logger.info('Get train loader for train dataset')
     train_loader = DataLoader(train_set,
                               sampler=train_sampler,
                               collate_fn=ut.collate_fn,
@@ -206,7 +214,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
             input('Press enter to continue')
 
         # Validate the model
-        logging.info('Start validation on de cross validation set')
+        logger.info('Start validation on de cross validation set')
         val_dict, val_metrics_df = model.val_on_loader(val_loader)
         score_dict["val_score"] = val_dict["val_score"]
 
@@ -301,8 +309,8 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
 
 if __name__ == "__main__":
-    setupLogging()
-    logger = logging.getLogger(__name__)
+    setuplogger()
+    logger = logger.getLogger(__name__)
 
     parser = argparse.ArgumentParser()
 
