@@ -243,5 +243,5 @@ if __name__ == '__main__':
     logging.info(f'List of unique values in the masks : {unique_values}')
     logging.info(f'min and max intensity values of images {dataset_min} & {dataset_max}')
 
-    with open(os.path.join(output_filedir, 'mask_counts.json'), 'w') as mask_counts_file:
+    with open(os.path.join(output_filedir, 'mask_counts_USiegen.json'), 'w') as mask_counts_file:
         json.dump(unique_values, mask_counts_file)
