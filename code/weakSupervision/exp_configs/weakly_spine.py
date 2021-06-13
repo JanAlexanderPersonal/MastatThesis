@@ -68,7 +68,7 @@ def template_exp_spine(
         'dataset': dataset,
         'dataset_size': dataset_size,
         'lr': 10**(-4),
-        'max_epoch': 10 if debug else 55,
+        'max_epoch': 10 if debug else 50,
         'model': model,
         'num_channels': 1,
         'optimizer': 'adam'
@@ -92,4 +92,19 @@ EXP_GROUPS['weakly_spine_dataset_c6'] = [
         bg_points=bg_points,
         base=b) for b, bp, cp, bg_points in itertools.product([
             'fcn8_vgg16',
-            'fcn8_resnet'], [2**i for i in range(5)], [0, 1, 3, 5], [-1, 3, 5, 15, 100])]
+            'fcn8_resnet'], [2**i for i in range(3)], [0, 1, 3], [3, 5, 100])]
+
+EXP_GROUPS['weakly_spine_dataset_c6_weighted'] = [
+    template_exp_spine(
+        debug=False,
+        blob_points=bp,
+        context_span=cp,
+        loss = [
+            'unsupervised_rotation_loss',
+            'rot_point_loss_multi_weighted',
+            'prior_extend',
+            'separation_loss'],
+        bg_points=bg_points,
+        base=b) for b, bp, cp, bg_points in itertools.product([
+            'fcn8_vgg16',
+            'fcn8_resnet'], [2**i for i in range(3)], [0, 1, 3], [3, 5, 100])]
