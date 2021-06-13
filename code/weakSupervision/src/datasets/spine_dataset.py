@@ -201,7 +201,7 @@ class SpineSets(torch.utils.data.Dataset):
             mask_name = img_list_entry['tgt']
             mask = np.load(mask_name)
             vals, counts = np.unique(mask, return_counts=True)
-            return {val: count for val, count in zip(vals.to_list(), counts.to_list())}
+            return {val: count for val, count in zip(vals.tolist(), counts.tolist())}
 
         list_counts = Parallel(n_jobs=N_CORES)(delayed(unique_vals_dict)(image_list_entry) for image_list_entry in self.img_list)
         df_list_counts = pd.DataFrame(list_counts)

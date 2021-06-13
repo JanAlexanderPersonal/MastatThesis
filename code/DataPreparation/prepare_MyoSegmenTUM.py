@@ -260,7 +260,7 @@ if __name__ == '__main__':
 
         vals, counts = np.unique(arr, return_counts=True)
         for val, count in zip(vals.tolist(), counts.tolist()):
-            unique_values[val] = unique_values.get(val, default=0) + count
+            unique_values[val] = unique_values.get(val, 0) + count
         logging.debug(f'source : {filename}, shape {arr.shape}')
         logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr)}')
         ut.mask_to_slices_save(arr, dim_slice, target_folder)

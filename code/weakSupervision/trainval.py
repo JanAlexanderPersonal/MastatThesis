@@ -310,7 +310,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
 if __name__ == "__main__":
     setuplogger()
-    logger = logger.getLogger(__name__)
+    logger = logging.getLogger(__name__)
 
     parser = argparse.ArgumentParser()
 

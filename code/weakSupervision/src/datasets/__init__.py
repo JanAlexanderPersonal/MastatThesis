@@ -55,7 +55,7 @@ def get_dataset(dataset_dict, split, datadir, exp_dict, dataset_size=None):
     
     elif name == "spine_dataset":
 
-        dataset = spine_dataset.SpineSets(split=split, datadir=datadir, seperate=True, exp_dict=exp_dict)
+        dataset = spine_dataset.SpineSets(split=split, datadir=datadir, exp_dict=exp_dict)
         if dataset_size is not None and dataset_size.get(split, 'all') != 'all':
             dataset.img_list = dataset.img_list[:dataset_size[split]] 
           

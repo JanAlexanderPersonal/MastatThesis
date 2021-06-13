@@ -137,7 +137,7 @@ if __name__ == '__main__':
 
     # Convert the images to a set of slices:
     logging.info('Start copy of image files')
-    for filename in os.listdir(image_filedir):
+    for nr, filename in enumerate(os.listdir(image_filedir)):
         if filename.endswith('.raw'):
             continue
 
@@ -190,7 +190,7 @@ if __name__ == '__main__':
             arr[arr==encoding] = vert
         vals, counts = np.unique(arr, return_counts=True)
         for val, count in zip(vals.tolist(), counts.tolist()):
-            unique_values[val] = unique_values.get(val, default=0) + count
+            unique_values[val] = unique_values.get(val, 0) + count
         logging.debug(f'source : {filename}, shape {arr.shape}')
         logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr)}')
         ut.mask_to_slices_save(arr, dim_slice, target_folder)

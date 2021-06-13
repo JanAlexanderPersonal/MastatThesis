@@ -100,7 +100,7 @@ def adjust_contrast(arr : np.ndarray, contrast_option:int = 0) -> np.ndarray:
 
 
 
-def arr_slices_save(arr : np.ndarray, dim_slice : int, fn : str, contrast_option : int, save_jpg : bool = True):
+def arr_slices_save(arr : np.ndarray, dim_slice : int, fn : str, contrast_option : int, save_jpeg : bool = True):
     """Save the image slices with optional contrast enhancement
 
     Args:
@@ -115,7 +115,7 @@ def arr_slices_save(arr : np.ndarray, dim_slice : int, fn : str, contrast_option
         # This function makes use of the parameters available in the scope of 'arr_slices_save'
         slice_to_save = adjust_contrast(arr.take(i, axis=dim_slice), contrast_option)
         np.save(os.path.join(fn, f'slice_{i:03d}'), slice_to_save)
-        if save_jpg:
+        if save_jpeg:
             # for jpeg visualization, get back to the original 0 -> 255 range.
             im = Image.fromarray((slice_to_save * 255).astype(np.uint8))
             im.convert('RGB').save(os.path.join(fn, f'slice_{i:03d}.jpg')) # :03d means 3 digits -> leading 0s
@@ -151,3 +151,7 @@ def mask_to_slices_save(arr : np.ndarray, dim_slice : int, target_folder : str):
         plt.close()
 
     Parallel(n_jobs=N_CORES)(delayed(save_mask_slice)(i) for i in range(arr.shape[dim_slice]))
+
+def read_masklist(source_filenames : List[str]) -> List:
+    """ Read list of maskfiles """
+    return [sitk.GetArrayFromImage( resampler( sitk.ReadImage(source_filename) )) for source_filename in source_filenames]
