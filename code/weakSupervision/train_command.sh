@@ -1,5 +1,11 @@
 #!/bin/bash
 
-python3.8 trainval.py -e weakly_spine_dataset_c6 -sb /root/space/temp/haven_raw -d /root/space/temp/dataset_2/ -tb /root/space/temp/tensorboard -r 1
 
-python3.8 trainval.py -e weakly_spine_dataset_c6 -sb /root/space/temp/haven_enhanced -d /root/space/temp/dataset_contrast_2/ -tb /root/space/temp/tensorboard -r 1
+for c in 0 1 3
+
+do
+    for d in 1 2
+    do
+        python3.8 trainval.py -e weakly_spine_dataset_c6 -sb /root/space/temp/results_dataset_${d}_contrast_$c -d /root/space/temp/dataset_${d}_contrast_$c/ -tb /root/space/temp/tensorboard_d_${d}_c_${c} -r 1
+    done
+done
