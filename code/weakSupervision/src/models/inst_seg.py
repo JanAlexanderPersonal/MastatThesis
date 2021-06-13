@@ -27,7 +27,7 @@ from src.modules import sstransforms as sst
 
 import cv2
 
-from typing import Dict
+from typing import Dict, List
 
 import logging
 
@@ -36,7 +36,7 @@ logger = logging.getLogger(__name__)
 
 class Inst_Seg(torch.nn.Module):
 
-    def __init__(self, exp_dict: Dict, tensorboard_folder: str = None):
+    def __init__(self, exp_dict: Dict, weight_vector : List = None, tensorboard_folder: str = None):
         """Semantic segmentation class
 
         Args:
@@ -60,6 +60,12 @@ class Inst_Seg(torch.nn.Module):
         self.epoch = 0
 
         self.writer = None
+
+        if weight_vector is None:
+            self.weight_vector = [1.0] * self.n_classes
+        else:
+            self.weigth_vector = weight_vector
+
         if tensorboard_folder is not None:
             self.writer = SummaryWriter(tensorboard_folder)
 
@@ -168,7 +174,7 @@ class Inst_Seg(torch.nn.Module):
                 loss = F.cross_entropy(logits, torch.squeeze(masks,1), ignore_index = 255)
                 logger.debug(f'update loss : {loss}')
         if 'weighted_cross_entropy' in loss_name:
-            loss = F.cross_entropy(logits, torch.squeeze(masks,1), ignore_index = 255, weight = torch.Tensor([1.0, 50.0, 50.0, 50.0, 50.0, 50.0]).to(logits.get_device()))
+            loss = F.cross_entropy(logits, torch.squeeze(masks,1), ignore_index = 255, weight = torch.Tensor(self.weight_vector).to(logits.get_device()))
             logger.debug(f'update loss : {loss}')
 
 
@@ -245,7 +251,7 @@ class Inst_Seg(torch.nn.Module):
 
 
 
-        if 'rot_point_loss_multi' in loss_name:
+        if ('rot_point_loss_multi' in loss_name) or ('rot_point_loss_multi_weighted' in loss_name):
             """ Flips the image and computes a random rotation of
                 {0, 90, 180, 270} degrees
                 Adapted for multi-channel loss (n_classes > 2)
@@ -301,11 +307,16 @@ class Inst_Seg(torch.nn.Module):
                     f'two tensors are sliced : logits slice has dimensions {logits_slice.size()} and logits_flip slice has dimensions {logits_rotated_slice.size()}')
 
                 ind = points_temp != 255
+
+                weight = 1.0 if ('rot_point_loss_multi_weighted' not in loss_name) else self.weight_vector[i]
+
+                logger.debug(f'weight for class i : {weight}')
+
                 if ind.sum() != 0:
                     loss += F.binary_cross_entropy_with_logits(logits_slice[ind],
                                                                points_temp[ind].detach(
                     ).float().cuda(),
-                        reduction='mean')
+                        reduction='mean') * weight
 
                     logger.debug(
                         f'straight logits loss added for channel {i} : {loss}')
@@ -317,7 +328,7 @@ class Inst_Seg(torch.nn.Module):
                     loss += F.binary_cross_entropy_with_logits(logits_rotated_slice[ind],
                                                                points_rotated[ind].detach(
                     ).float().cuda(),
-                        reduction='mean')
+                        reduction='mean') * weight
 
                     logger.debug(
                         f'rotated logits loss added for channel {i} : {loss}')
@@ -351,7 +362,7 @@ class Inst_Seg(torch.nn.Module):
                     reduction='mean')
                 logger.debug(f'flipped logits loss added : {loss}')
 
-        if 'cons_point_loss_multi' in loss_name:
+        if ('cons_point_loss_multi' in loss_name) or ('cons_point_loss_multi_weighted' in loss_name):
             """ Extension of the consistency point loss to multi-class segmentation """
 
             # Consistency loss based on flip (only)
@@ -411,11 +422,16 @@ class Inst_Seg(torch.nn.Module):
                     f'two tensors are sliced : logits slice has dimensions {logits_slice.size()} and logits_flip slice has dimensions {logits_flip_slice.size()}')
 
                 ind = points_temp != 255
+
+                weight = 1.0 if ('cons_point_loss_multi_weighted' not in loss_name) else self.weight_vector[i]
+
+                logger.debug(f'weight for class i : {weight}')
+
                 if ind.sum() != 0:
                     loss += F.binary_cross_entropy_with_logits(logits_slice[ind],
                                                                points_temp[ind].float(
                     ).cuda(),
-                        reduction='mean')
+                        reduction='mean') * weight
                     logger.debug(
                         f'straight logits loss added for channel {i} : {loss}')
 
@@ -424,7 +440,7 @@ class Inst_Seg(torch.nn.Module):
                     loss += F.binary_cross_entropy_with_logits(logits_flip_slice[ind],
                                                                points_flip[ind].float(
                     ).cuda(),
-                        reduction='mean')
+                        reduction='mean') * weight
                     logger.debug(
                         f'flipped logits loss added for channel {i} : {loss}')
                     logger.debug(

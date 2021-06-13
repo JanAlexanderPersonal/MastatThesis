@@ -109,11 +109,13 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                                      exp_dict=exp_dict,
                                      dataset_size=exp_dict['dataset_size'])
 
-    mask_counts = train_set.count_values_masks()
+    mask_counts = train_set.count_values_masks() # dict with counts per label {0 : ... ,  1 : ... , ...}
 
-    logger.info(f'counts for mask labels : {mask_counts}')
+    # Weights: The objective is to get weights proportional to the prevalence of labels in the dataset and with minimal weight == 1
 
-    input()
+    mask_weights = [min(list(mask_counts.values)) * (mask_counts[i] ** (-1)) for i in range(6) ]
+
+    logger.info(f'counts for mask labels : {mask_counts}. This results in the mask weights {mask_weights}.')
 
     # val set
     logger.info('define validation set')
@@ -148,6 +150,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     logger.info('get model')
     model = models.get_model(model_dict=exp_dict['model'],
                              exp_dict=exp_dict,
+                             weight_vector = mask_weights,
                              train_set=train_set).cuda()
     if tensorboard_folder is not None:
         model.add_writer(tensorboard_folder)
