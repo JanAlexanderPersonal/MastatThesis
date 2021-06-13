@@ -87,7 +87,8 @@ def adjust_contrast(arr : np.ndarray, contrast_option:int = 0) -> np.ndarray:
     elif contrast_option in [1 ,2]:
         arr = exposure.equalize_hist(arr, nbins=256, mask=(arr > 0.05))
     elif contrast_option in [3, 4]:
-        arr = exposure.equalize_adapthist(arr, nbins=256)
+        # Some type conversions to avoid strange behaviour of this function for float types --> not cleared out, but this works.
+        arr = exposure.equalize_adapthist((arr * 255).astype('uint16'), nbins=256, kernel_size=50, clip_limit=9.0/1000.0)
     else:
         raise NotImplementedError
 
