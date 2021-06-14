@@ -12,22 +12,10 @@ from logging import StreamHandler
 
 # Create the Logger
 logger = logging.getLogger(__name__)
-#logger.setLevel(logging.DEBUG)
-
-#Create the Handler for logging data to console.
-#console_handler = StreamHandler()
-
-# Create a Formatter for formatting the log messages
-# logger_formatter = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
-
-# Add the Formatter to the Handler
-#console_handler.setFormatter(logger_formatter)
-
-# Add the Handler to the Logger
-#logger.addHandler(console_handler)
 
 
-def get_model(model_dict, exp_dict=None, train_set=None):
+
+def get_model(model_dict, exp_dict=None, train_set=None, weight_vector = None):
     if model_dict['name'] in ["wisenet"]:
         logger.debug('Get Wisenet')
         model =  wisenet.WiseNet(exp_dict, train_set)
@@ -36,21 +24,13 @@ def get_model(model_dict, exp_dict=None, train_set=None):
         logger.debug('Get semseg active network')
         model =  semseg_active.get_semsegactive(semseg.SemSeg)(exp_dict, train_set)
 
-    if model_dict['name'] in ["semseg_active_counting"]:
-        logger.debug('Get semseg network for active counting')
-        model =  semseg_active.get_semsegactive(semseg_counting.SemSegCounting)(exp_dict, train_set)
-
-    if model_dict['name'] in ["semseg_counting"]:
-        logger.debug('Get semseg network for counting')
-        model =  semseg_counting.SemSegCounting(exp_dict)
-
     if model_dict['name'] in ["semseg"]:
         logger.debug('Get semseg')
         model =  semseg.SemSeg(exp_dict)
 
     if model_dict['name'] in ["inst_seg"]:
-        logger.debug('Get semseg')
-        model =  inst_seg.Inst_Seg(exp_dict)
+        logger.debug('Get instance seg model')
+        model =  inst_seg.Inst_Seg(exp_dict, weight_vector=weight_vector)
 
         # load pretrained
         if 'pretrained' in model_dict:

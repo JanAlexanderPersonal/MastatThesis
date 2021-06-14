@@ -88,7 +88,7 @@ import matplotlib.pyplot as plt
 
 import sys
 
-sys.path.append('../utils/')
+sys.path.append('/root/space/code/utils/')
 
 import utils as ut
 
@@ -98,7 +98,9 @@ import json
 
 from pathlib import Path
 
-logging.basicConfig(level=logging.INFO)
+from tqdm import tqdm
+
+logging.basicConfig(level=logging.DEBUG)
 
 ##############################
 # MyoSegmenTUM data structure:
@@ -203,14 +205,12 @@ if __name__ == '__main__':
     Path(image_slices_filedir).mkdir(parents=True, exist_ok=True)
     Path(mask_slices_filedir).mkdir(parents=True, exist_ok=True)
 
-    # Prepare the intensity rescaler
-    # todo: Should this rescaler be initiated differently?
-    rescale = sitk.RescaleIntensityImageFilter()
-
     # make list with filenames:
     filefolder_list = {
         nr : os.path.join(source_filedir, f'{nr:02d}', 'vertebrae') for nr in range(1, 55)
     }
+
+    dimensions_dict = dict()
 
     # Convert the images to a set of slices:
     logging.info('Start copy of image files')
@@ -222,6 +222,8 @@ if __name__ == '__main__':
         filename = os.path.join(foldername, f'{args.mode}.dcm')
 
         arr, minimum, maximum = ut.array_from_file(filename)
+
+        dimensions_dict[foldername] = {'image' : arr.shape}
         
         logging.debug(f'min : {np.min(arr):1.5f} ** max : {np.max(arr):1.5f}')
         logging.debug(f'source : {filename}, shape {arr.shape}')
@@ -239,7 +241,7 @@ if __name__ == '__main__':
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
     unique_values = dict()
-    for nr, foldername in filefolder_list.items():
+    for nr, foldername in tqdm(filefolder_list.items(), desc='Copy mask files'):
         mask_files = [os.path.join(foldername, f'L{i}_{nr:02d}.mha') for i in range(1,6)]
         logging.debug(f'Mask files : {mask_files}')
 
@@ -258,6 +260,8 @@ if __name__ == '__main__':
         for i, mask in enumerate(masks):
             arr[mask == 1] = i+1
 
+        dimensions_dict[foldername]['mask'] = arr.shape
+
         vals, counts = np.unique(arr, return_counts=True)
         for val, count in zip(vals.tolist(), counts.tolist()):
             unique_values[val] = unique_values.get(val, 0) + count
@@ -270,3 +274,7 @@ if __name__ == '__main__':
 
     with open(os.path.join(output_filedir, 'mask_counts_MyoSegmenTUM.json'), 'w') as mask_counts_file:
         json.dump(unique_values, mask_counts_file)
+
+
+    with open(os.path.join(output_filedir, 'dimensions_MyoSegmenTUM.json'), 'w') as mask_dim_file:
+        json.dump(dimensions_dict, mask_dim_file)

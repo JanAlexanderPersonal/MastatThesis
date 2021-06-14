@@ -49,7 +49,7 @@ from matplotlib import cm
 import matplotlib.pyplot as plt
 
 import sys
-sys.path.append('../utils/')
+sys.path.append('/root/space/code/utils/')
 import utils as ut
 
 from PIL import Image
@@ -59,6 +59,8 @@ from skimage.restoration import denoise_bilateral
 import json
 
 from pathlib import Path
+
+from tqdm import tqdm
 
 logging.basicConfig(level=logging.INFO)
 
@@ -137,11 +139,20 @@ if __name__ == '__main__':
 
     # Convert the images to a set of slices:
     logging.info('Start copy of image files')
+
+    dimensions_dict = dict()
+
+
     for nr, filename in enumerate(os.listdir(image_filedir)):
+
         if filename.endswith('.raw'):
             continue
 
+        logging.debug(filename)
+
         arr, minimum, maximum = ut.array_from_file(os.path.join(image_filedir, filename))
+
+        dimensions_dict[filename] = {'image' : arr.shape}
         
         dataset_min = min(dataset_min, minimum)
         dataset_max = max(dataset_max, maximum)
@@ -152,7 +163,7 @@ if __name__ == '__main__':
         # For each slice along the asked dimension, convert to a numpy.ndarray and save this.
         # Preprocessing the slices before loading into pyTorch should speed up the training in the end.
 
-        fn = os.path.join(image_slices_filedir, f'image{nr:03d}')
+        fn = os.path.join(image_slices_filedir, filename.split('.')[0])
         Path(fn).mkdir(parents=True, exist_ok=True)
 
         ut.arr_slices_save(arr, dim_slice, fn, args.contrast, save_jpeg = True)
@@ -160,7 +171,7 @@ if __name__ == '__main__':
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
     unique_values = dict()
-    for filename in os.listdir(mask_filedir):
+    for filename in tqdm(os.listdir(mask_filedir), desc = "Mask files"):
         if filename.endswith('.raw'):
             continue
         logging.debug(f'filename : {filename}')
@@ -188,6 +199,9 @@ if __name__ == '__main__':
         # The background will be encoded as value 0
         for encoding, vert  in XVERTSEG_ENCODING.items():
             arr[arr==encoding] = vert
+
+        dimensions_dict[filename]['mask'] = arr.shape
+
         vals, counts = np.unique(arr, return_counts=True)
         for val, count in zip(vals.tolist(), counts.tolist()):
             unique_values[val] = unique_values.get(val, 0) + count
@@ -200,3 +214,6 @@ if __name__ == '__main__':
 
     with open(os.path.join(output_filedir, 'mask_counts_xVertSeg.json'), 'w') as mask_counts_file:
         json.dump(unique_values, mask_counts_file)
+
+    with open(os.path.join(output_filedir, 'dimensions_xVertSeg.json'), 'w') as mask_dim_file:
+        json.dump(dimensions_dict, mask_dim_file)

@@ -74,12 +74,14 @@ from matplotlib import cm
 import matplotlib.pyplot as plt
 
 import sys
-sys.path.append('../utils/')
+sys.path.append('/root/space/code/utils/')
 import utils as ut
 
 import json
 
 from pathlib import Path
+
+from tqdm import tqdm
 
 logging.basicConfig(level=logging.INFO)
 
@@ -184,15 +186,19 @@ if __name__ == '__main__':
     logging.info('Start copy of image files')
 
     filenames_dict = dict()
-    
+    dimensions_dict = dict()
 
     for nr, filename in enumerate(os.listdir(image_filedir)):
 
 
         logging.debug(f'read file {filename}')
+
+        # Keep the filenames in a dict to assure the correct mask end up linked to the correct images
         filenames_dict[nr] = filename
 
         arr, minimum, maximum = ut.array_from_file(os.path.join(image_filedir, filename))
+
+        dimensions_dict[filename] = {'image' : arr.shape}
         
         dataset_min = min(dataset_min, minimum)
         dataset_max = max(dataset_max, maximum)
@@ -210,7 +216,7 @@ if __name__ == '__main__':
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
     unique_values = dict()
-    for nr, foldername in filenames_dict.items():
+    for nr, foldername in tqdm(filenames_dict.items(),desc='copy mask files'):
         logging.debug(f'filename : {foldername}')
         
         source_filenames = [os.path.join(mask_filedir, foldername.split('.')[0], f'L{i}.mha') for i in range(1,6)]
@@ -232,6 +238,8 @@ if __name__ == '__main__':
         # The background will be encoded as value 0
         for i, image  in enumerate(images):
             arr[image != 0] = i + 1
+
+        dimensions_dict[foldername]['mask'] = arr.shape
         
         vals, counts = np.unique(arr, return_counts=True)
         for val, count in zip(vals.tolist(), counts.tolist()):
@@ -245,3 +253,6 @@ if __name__ == '__main__':
 
     with open(os.path.join(output_filedir, 'mask_counts_USiegen.json'), 'w') as mask_counts_file:
         json.dump(unique_values, mask_counts_file)
+
+    with open(os.path.join(output_filedir, 'dimensions_USiegen.json'), 'w') as mask_dim_file:
+        json.dump(dimensions_dict, mask_dim_file)

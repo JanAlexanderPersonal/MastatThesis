@@ -44,7 +44,7 @@ def setuplogger():
 
     # Create the Logger
     root_logger = logging.getLogger()
-    root_logger.setLevel(logging.DEBUG)
+    root_logger.setLevel(logging.INFO)
 
     handler = logging.StreamHandler()
     logger_formatter = logging.Formatter(
@@ -75,7 +75,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         tensorboard_folder (str, optional): path to store the tensorboard information (log_dir). Defaults to None.
     """
     # todo: solve problems with GPU memory size
-    logger.info(f'start trainval with experiment dict {pformat(exp_dict)}')
+    logger.debug(f'start trainval with experiment dict {pformat(exp_dict)}')
 
     # bookkeepting stuff
     # ==================
@@ -113,7 +113,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
     # Weights: The objective is to get weights proportional to the prevalence of labels in the dataset and with minimal weight == 1
 
-    mask_weights = [min(list(mask_counts.values)) * (mask_counts[i] ** (-1)) for i in range(6) ]
+    mask_weights = [min(list(mask_counts.values())) * (mask_counts[i] ** (-1)) for i in range(6) ]
 
     logger.info(f'counts for mask labels : {mask_counts}. This results in the mask weights {mask_weights}.')
 
@@ -262,7 +262,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         hu.save_pkl(score_list_path, score_list)
         logger.info("Checkpoint Saved: %s" % savedir)
 
-        if model.waiting > 25:
+        if model.waiting > 4:
             break
 
         if F_stop_at_epoch:
@@ -308,6 +308,9 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                 savedir,
                 'test_metrics_{source}_df.csv'))
 
+    if e is None:
+        e = 'final'
+
     print('Experiment completed et epoch %d' % e)
 
 
@@ -327,9 +330,6 @@ if __name__ == "__main__":
     parser.add_argument("-tb", "--tensorboard", default=None)
 
     args = parser.parse_args()
-
-    logger.info(
-        f'start trainval with experiment dict {pformat(exp_configs.EXP_GROUPS)}')
 
     # Collect experiments
     # ===================

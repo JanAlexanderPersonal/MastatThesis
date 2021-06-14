@@ -64,7 +64,9 @@ class Inst_Seg(torch.nn.Module):
         if weight_vector is None:
             self.weight_vector = [1.0] * self.n_classes
         else:
-            self.weigth_vector = weight_vector
+            self.weight_vector = weight_vector
+
+        logger.info(f'weight vector : {self.weight_vector}')
 
         if tensorboard_folder is not None:
             self.writer = SummaryWriter(tensorboard_folder)
