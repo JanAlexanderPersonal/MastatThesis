@@ -51,10 +51,11 @@ def resampler(image : sitk.SimpleITK.Image, new_spacing : List[float] = None, im
     if imposed_size is not None:
         # imposed size will be in z y x (numpy) instead of x y z (Simple ITK):
         if any([(abs(new_size[i] - imposed_size[j]) > 5) for i, j in zip([0, 1, 2], [2, 1, 0])  ]):
-            logging.warning('Large difference between calculated size and imposed size!')
-        new_size = imposed_size
+            logging.warning(f'Large difference between calculated size and imposed size! Calculated : {new_size} vs imposed {imposed_size}')
+        new_size = imposed_size[::-1]
 
     resampler.SetSize(new_size)
+    logging.info(f'resample to size {new_size}')
 
     isotropic_img = resampler.Execute(image)
 

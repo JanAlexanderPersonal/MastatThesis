@@ -189,7 +189,7 @@ if __name__ == '__main__':
         # No rescaling -> mask will be transformed with XVERTSEG_ENCODING
 
         # resample on isotropic 1 mm × 1 mm × 1 mm grid
-        image = ut.resampler(image, imposed_size = dimensions_dict[filename]['image'])
+        image = ut.resampler(image, imposed_size = dimensions_dict[f'image{ms[1]}.mhd']['image'])
         arr = sitk.GetArrayFromImage(image)
 
         # The labels in the xVertSeg dataset follow (http://lit.fe.uni-lj.si/xVertSeg/database.php)
@@ -202,7 +202,7 @@ if __name__ == '__main__':
         for encoding, vert  in XVERTSEG_ENCODING.items():
             arr[arr==encoding] = vert
 
-        dimensions_dict[filename]['mask'] = arr.shape
+        dimensions_dict[f'image{ms[1]}.mhd']['mask'] = arr.shape
 
         vals, counts = np.unique(arr, return_counts=True)
         for val, count in zip(vals.tolist(), counts.tolist()):
