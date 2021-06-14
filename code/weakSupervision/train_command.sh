@@ -3,7 +3,7 @@
 
 PATH_OP=/root/space/output
 
-for c in 0 1 3
+for c in 0 3
 
 do
     for d in 1 2
