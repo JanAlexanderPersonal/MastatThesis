@@ -252,7 +252,7 @@ if __name__ == '__main__':
 
         # Get mask, resample to 1 mm × 1 mm × 1 mm grid and extract np_array from this
 
-        masks =  [sitk.GetArrayFromImage( ut.resampler( sitk.ReadImage(file) ) ) for file in mask_files]
+        masks =  [sitk.GetArrayFromImage( ut.resampler( sitk.ReadImage(file) , imposed_size = dimensions_dict[foldername]['image']) ) for file in mask_files]
 
         logging.debug(f'mask image dimensions : {[mask.shape for mask in masks]}')
 

@@ -227,7 +227,7 @@ if __name__ == '__main__':
         logging.debug(f'target : {target_folder}')
 
         # resample on isotropic 1 mm × 1 mm × 1 mm grid
-        images =  ut.read_masklist(source_filenames)
+        images =  ut.read_masklist(source_filenames, imposed_size = dimensions_dict[foldername]['image'])
 
         logging.debug(f'image names : {images}')
 

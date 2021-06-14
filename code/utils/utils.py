@@ -13,17 +13,19 @@ from joblib import Parallel, delayed
 
 from skimage import exposure
 from skimage.restoration import denoise_bilateral
+import logging
 from PIL import Image
 
 N_CORES = -2
 
 
-def resampler(image : sitk.SimpleITK.Image, new_spacing : List[float] = None):
+def resampler(image : sitk.SimpleITK.Image, new_spacing : List[float] = None, imposed_size : List[int] = None):
     """resampler to isotropic spacing
 
     Args:
         image (sitk.SimpleITK.Image): image to resample
         new_spacing (List[float], optional): List of three floats representing the new desired spacing. Defaults to None.
+        imposed_size (List[int], optional): you can pass a desired output size (in numpy coordinates! --> z y x)
 
     Returns:
         sitk.SimpleITK.Image: resampled image on the new grid (default 1 mm × 1 mm × 1 mm)
@@ -45,6 +47,13 @@ def resampler(image : sitk.SimpleITK.Image, new_spacing : List[float] = None):
     new_size = np.array([x * (y / z) for x, y, z in zip(orig_size, orig_spacing, new_spacing)])
     new_size = np.ceil(new_size).astype(np.int)  # Image dimensions are in integers
     new_size = [int(s) for s in new_size]
+
+    if imposed_size is not None:
+        # imposed size will be in z y x (numpy) instead of x y z (Simple ITK):
+        if any([(abs(new_size[i] - imposed_size[j]) > 5) for i, j in zip([0, 1, 2], [2, 1, 0])  ]):
+            logging.warning('Large difference between calculated size and imposed size!')
+        new_size = imposed_size
+
     resampler.SetSize(new_size)
 
     isotropic_img = resampler.Execute(image)
@@ -153,6 +162,6 @@ def mask_to_slices_save(arr : np.ndarray, dim_slice : int, target_folder : str):
 
     Parallel(n_jobs=N_CORES)(delayed(save_mask_slice)(i) for i in range(arr.shape[dim_slice]))
 
-def read_masklist(source_filenames : List[str]) -> List:
+def read_masklist(source_filenames : List[str], imposed_size = None) -> List:
     """ Read list of maskfiles """
-    return [sitk.GetArrayFromImage( resampler( sitk.ReadImage(source_filename) )) for source_filename in source_filenames]
+    return [sitk.GetArrayFromImage( resampler( sitk.ReadImage(source_filename) , imposed_size= imposed_size)) for source_filename in source_filenames]

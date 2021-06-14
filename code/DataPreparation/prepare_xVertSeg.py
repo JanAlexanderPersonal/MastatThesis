@@ -170,6 +170,8 @@ if __name__ == '__main__':
 
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
+    logging.info(f'dimensions dictionary so far : {dimensions_dict}')
+    
     unique_values = dict()
     for filename in tqdm(os.listdir(mask_filedir), desc = "Mask files"):
         if filename.endswith('.raw'):
@@ -187,7 +189,7 @@ if __name__ == '__main__':
         # No rescaling -> mask will be transformed with XVERTSEG_ENCODING
 
         # resample on isotropic 1 mm × 1 mm × 1 mm grid
-        image = ut.resampler(image)
+        image = ut.resampler(image, imposed_size = dimensions_dict[filename]['image'])
         arr = sitk.GetArrayFromImage(image)
 
         # The labels in the xVertSeg dataset follow (http://lit.fe.uni-lj.si/xVertSeg/database.php)
