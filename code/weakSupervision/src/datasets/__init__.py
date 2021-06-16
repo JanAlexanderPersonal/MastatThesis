@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 #logger.addHandler(console_handler)
 
 
-def get_dataset(dataset_dict, split, datadir, exp_dict, dataset_size=None):
+def get_dataset(dataset_dict, split, datadir, exp_dict, dataset_size=None, separate_source=None):
     name = dataset_dict['name']
 
     if name == "covid19_v2_sep":
@@ -55,7 +55,7 @@ def get_dataset(dataset_dict, split, datadir, exp_dict, dataset_size=None):
     
     elif name == "spine_dataset":
 
-        dataset = spine_dataset.SpineSets(split=split, datadir=datadir, exp_dict=exp_dict)
+        dataset = spine_dataset.SpineSets(split=split, datadir=datadir, exp_dict=exp_dict, separate_source=separate_source)
         if dataset_size is not None and dataset_size.get(split, 'all') != 'all':
             dataset.img_list = dataset.img_list[:dataset_size[split]] 
           

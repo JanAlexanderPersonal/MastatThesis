@@ -48,7 +48,6 @@ class SpineSets(torch.utils.data.Dataset):
         datadir: str,
         exp_dict: Dict,
         separate_source: str = None,
-        context_span : int = 0
     ):
         """xVertSeg calss : inherits from torch.utils.data.Dataset
 
