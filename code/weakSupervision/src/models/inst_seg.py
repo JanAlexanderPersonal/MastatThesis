@@ -177,7 +177,7 @@ class Inst_Seg(torch.nn.Module):
                 logger.debug(f'update loss : {loss}')
         if 'weighted_cross_entropy' in loss_name:
             loss = F.cross_entropy(logits, torch.squeeze(masks,1), ignore_index = 255, weight = torch.Tensor(self.weight_vector).to(logits.get_device()))
-            logger.debug(f'update loss : {loss}')
+            logger.debug(f'update loss (weighted) : {loss}')
 
 
         elif 'joint_cross_entropy' in loss_name:

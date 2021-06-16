@@ -75,6 +75,29 @@ def template_exp_spine(
     }
 
 
+EXP_GROUPS['weakly_spine_xVertSeg_c6'] = EXP_GROUPS['weakly_spine_dataset_c6'] = [
+    template_exp_spine(
+        debug=False,
+        blob_points=4,
+        context_span=0,
+        sources = ['xVertSeg'],
+        bg_points=10,
+        loss=loss,
+        base=b) for b, loss in itertools.product([
+            'fcn8_vgg16',
+            'fcn8_resnet'],[
+                [
+            'unsupervised_rotation_loss',
+            'rot_point_loss_multi_weighted',
+            'prior_extend',
+            'separation_loss'],
+            [
+            'unsupervised_rotation_loss',
+            'rot_point_loss_multi',
+            'prior_extend',
+        'separation_loss']
+            ])]
+
 EXP_GROUPS['debug_weakly_spine_dataset_c6'] = [
     template_exp_spine(
         debug=True, sources=[s]) for s in [
