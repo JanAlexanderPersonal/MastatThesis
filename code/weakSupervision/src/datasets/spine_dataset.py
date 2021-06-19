@@ -38,7 +38,7 @@ def get_patient_nr(filenames : dict, patients : dict, image_nr : int) -> int:
     """
 
     logger.debug(f'function:  Get patient nr\nfilenames : {filenames}\npatients : {patients}\nimage_nr : {image_nr}')
-    fn = filenames[image_nr]
+    fn = filenames[str(image_nr)]
     return patients[fn]
 
 
