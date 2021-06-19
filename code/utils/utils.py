@@ -16,7 +16,7 @@ from skimage.restoration import denoise_bilateral
 import logging
 from PIL import Image
 
-N_CORES = -2
+N_CORES = -1
 
 
 def resampler(image : sitk.SimpleITK.Image, new_spacing : List[float] = None, imposed_size : List[int] = None):
