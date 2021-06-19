@@ -4,6 +4,7 @@ import torch
 import os
 import pandas as pd
 import h5py
+import json
 import random
 import re
 from src.modules.lcfcn import lcfcn_loss
@@ -20,6 +21,27 @@ import PIL
 from typing import Dict, Tuple
 
 from joblib import Parallel, delayed
+
+def get_patient_nr(filenames : dict, patients : dict, image_nr : int) -> int:
+    """Get the patient number from the source filenames dict and the source patients list
+
+    Args:
+        filenames (dict): {image nr : filename}
+        patients (dict): {filename : patient number}
+        image_nr (int): image nr    
+
+    Raises:
+        AssertionError: [description]
+
+    Returns:
+        int: patient number
+    """
+
+    logger.debug(f'function:  Get patient nr\nfilenames : {filenames}\npatients : {patients}\nimage_nr : {image_nr}')
+    fn = filenames[image_nr]
+    return patients[fn]
+
+
 
 
 
@@ -94,7 +116,7 @@ class SpineSets(torch.utils.data.Dataset):
         img_list = list()
         scan_list = list()
 
-        # Make a list of all image and mask slices in the xVertSeg dataset.
+        # Make a list of all image and mask slices in the dataset sources.
         # after the xVertSeg dataset is processed by the python script prepare_xVertSeg.py,
         # two folders are made.
         # Folder 'images' and folder 'masks' contain a folder for each scan with all slices of that scan.
@@ -104,9 +126,17 @@ class SpineSets(torch.utils.data.Dataset):
             tgt_path = os.path.join(datadir, f'{source}_masks')
             img_path = os.path.join(datadir, f'{source}_images')
             logger.debug(f'target path : {tgt_path}')
-            patient_nr = 0
+            if source == 'USiegen':
+                with open(os.path.join(datadir, 'filenames_USiegen.json')) as f:
+                    filenames_source = json.load(f)
+                with open(os.path.join(datadir, 'patients_USiegen.json')) as f:
+                    patients_source = json.load(f)
+            previous_patient_nr = 0
             for tgt_name in os.listdir(tgt_path):
                 logger.debug(f'target name {tgt_name} .')
+                patient_nr = previous_patient_nr + 1 if source not in ['USiegen'] else get_patient_nr(filenames_source, patients_source, IMAGE_NR.findall(tgt_name)[0])
+                previous_patient_nr = patient_nr
+                
                 scan_id = f'{source}_{IMAGE_NR.findall(tgt_name)[0]}'
                 logger.debug(f'scan id : {scan_id} .')
                 scan_list.append(scan_id)
