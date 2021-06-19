@@ -100,7 +100,7 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.WARNING)
 
 ##############################
 # MyoSegmenTUM data structure:

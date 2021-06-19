@@ -83,7 +83,7 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
 
 
 FILENAMES_TO_PATIENTS = {
@@ -288,7 +288,7 @@ if __name__ == '__main__':
         json.dump(dimensions_dict, mask_dim_file)
 
     with open(os.path.join(output_filedir, 'filenames_USiegen.json'), 'w') as filenames_file:
-        json.dump(filenames_dict, filenames_file)
+        json.dump({int(key) : value.split('.')[0] for key, value in filenames_dict.items()}, filenames_file)
 
     with open(os.path.join(output_filedir, 'patients_USiegen.json'), 'w') as patients_file:
         json.dump( FILENAMES_TO_PATIENTS, patients_file)

@@ -62,7 +62,7 @@ from pathlib import Path
 
 from tqdm import tqdm
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
 
 ##############################
 # xVertSeg data structure:
