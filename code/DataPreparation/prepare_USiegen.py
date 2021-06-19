@@ -85,6 +85,36 @@ from tqdm import tqdm
 
 logging.basicConfig(level=logging.INFO)
 
+
+FILENAMES_TO_PATIENTS = {
+    'AKa2' : 1,
+'AKa3' : 1,
+'AKa4' : 1,
+'AKs3' : 2,
+'AKs5' : 2,
+'AKs6' :2, 
+'AKs7' : 2,
+'AKs8' : 2,
+'Ble' : 3,
+'C002' : 4,
+'case_2' : 5,
+'case_10' : 6,
+'DzZ_T1' : 7,
+'DzZ_T2' : 7,
+'F02' : 8,
+'F03' : 9,
+'F04' : 10,
+'Geh' : 11,
+'Hoe' : 12,
+'Lan' : 13,
+'LanII' : 13,
+'LC' : 14,
+'S01' : 15,
+'S02' : 16,
+'Sch' : 17,
+'St1' : 18
+}
+
 ##############################
 # USiegen data structure:
 # ├── SpineDatasets
@@ -188,7 +218,7 @@ if __name__ == '__main__':
     filenames_dict = dict()
     dimensions_dict = dict()
 
-    for nr, filename in enumerate(os.listdir(image_filedir)):
+    for nr, filename in tqdm(enumerate(os.listdir(image_filedir)), desc='copy image files for the USiegen dataset'):
 
 
         logging.debug(f'read file {filename}')
@@ -216,7 +246,7 @@ if __name__ == '__main__':
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
     unique_values = dict()
-    for nr, foldername in tqdm(filenames_dict.items(),desc='copy mask files'):
+    for nr, foldername in tqdm(filenames_dict.items(),desc='copy mask files for the USiegen dataset'):
         logging.debug(f'filename : {foldername}')
         
         source_filenames = [os.path.join(mask_filedir, foldername.split('.')[0], f'L{i}.mha') for i in range(1,6)]
@@ -256,3 +286,9 @@ if __name__ == '__main__':
 
     with open(os.path.join(output_filedir, 'dimensions_USiegen.json'), 'w') as mask_dim_file:
         json.dump(dimensions_dict, mask_dim_file)
+
+    with open(os.path.join(output_filedir, 'filenames_USiegen.json'), 'w') as filenames_file:
+        json.dump(filenames_dict, filenames_file)
+
+    with open(os.path.join(output_filedir, 'patients_USiegen.json'), 'w') as patients_file:
+        json.dump( FILENAMES_TO_PATIENTS, patients_file)

@@ -241,7 +241,7 @@ if __name__ == '__main__':
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
     unique_values = dict()
-    for nr, foldername in tqdm(filefolder_list.items(), desc='Copy mask files'):
+    for nr, foldername in tqdm(filefolder_list.items(), desc='Copy mask files of the MyoSegmenTUM dataset'):
         mask_files = [os.path.join(foldername, f'L{i}_{nr:02d}.mha') for i in range(1,6)]
         logging.debug(f'Mask files : {mask_files}')
 

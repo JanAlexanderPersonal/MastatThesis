@@ -4,6 +4,7 @@ import torch
 import os
 import pandas as pd
 import h5py
+import json
 import random
 import re
 from src.modules.lcfcn import lcfcn_loss
@@ -21,6 +22,27 @@ from typing import Dict, Tuple
 
 from joblib import Parallel, delayed
 
+def get_patient_nr(filenames : dict, patients : dict, image_nr : int) -> int:
+    """Get the patient number from the source filenames dict and the source patients list
+
+    Args:
+        filenames (dict): {image nr : filename}
+        patients (dict): {filename : patient number}
+        image_nr (int): image nr    
+
+    Raises:
+        AssertionError: [description]
+
+    Returns:
+        int: patient number
+    """
+
+    logger.debug(f'function:  Get patient nr\nfilenames : {filenames}\npatients : {patients}\nimage_nr : {image_nr}')
+    fn = filenames[image_nr]
+    return patients[fn]
+
+
+
 
 
 # Regex patterns: catch the image number from image001 & slice_001.npy
@@ -35,7 +57,7 @@ N_CORES = -2
 
 # Center crop dimension: in the pre-processing step, the image is center-cropped.
 # Todo: Vormt dit geen conflict met self.size?
-CenterCrop_dim = (352, 352)  # was (384, 385)
+CenterCrop_dim = (384, 384)  # was (384, 385)
 
 
 logger = logging.getLogger(__name__)
@@ -94,7 +116,7 @@ class SpineSets(torch.utils.data.Dataset):
         img_list = list()
         scan_list = list()
 
-        # Make a list of all image and mask slices in the xVertSeg dataset.
+        # Make a list of all image and mask slices in the dataset sources.
         # after the xVertSeg dataset is processed by the python script prepare_xVertSeg.py,
         # two folders are made.
         # Folder 'images' and folder 'masks' contain a folder for each scan with all slices of that scan.
@@ -104,9 +126,17 @@ class SpineSets(torch.utils.data.Dataset):
             tgt_path = os.path.join(datadir, f'{source}_masks')
             img_path = os.path.join(datadir, f'{source}_images')
             logger.debug(f'target path : {tgt_path}')
-            patient_nr = 0
+            if source == 'USiegen':
+                with open(os.path.join(datadir, 'filenames_USiegen.json')) as f:
+                    filenames_source = json.load(f)
+                with open(os.path.join(datadir, 'patients_USiegen.json')) as f:
+                    patients_source = json.load(f)
+            previous_patient_nr = 0
             for tgt_name in os.listdir(tgt_path):
                 logger.debug(f'target name {tgt_name} .')
+                patient_nr = previous_patient_nr + 1 if source not in ['USiegen'] else get_patient_nr(filenames_source, patients_source, IMAGE_NR.findall(tgt_name)[0])
+                previous_patient_nr = patient_nr
+                
                 scan_id = f'{source}_{IMAGE_NR.findall(tgt_name)[0]}'
                 logger.debug(f'scan id : {scan_id} .')
                 scan_list.append(scan_id)
@@ -193,6 +223,38 @@ class SpineSets(torch.utils.data.Dataset):
         """Return both the full image dataframe and the selected image dataframe
         """
         return self.full_image_df, self.selected_image_df
+    
+    def img_tgt_transform(self, image : PIL.Image, crop_nr : int = 0, normalize : bool = True):
+        """Crop (pick one of the fivecrop parts)
+
+        Args:
+            image (PIL.Image): Image to crop   
+            crop_nr (int, optional): crop number to select of the 5 cropped images returned by 5 crop. Defaults to 0.
+            normalize (bool): should the image be normalized to be comform the ImageNet average values?
+        """
+        assert isinstance(crop_nr, int) and crop_nr < 5, 'Crop should be in the range [0 1 2 3 4]'
+
+        crop_dim = (384, 384)
+
+        if normalize:
+            transf = transforms.Compose([
+                transforms.FiveCrop(crop_dim)[crop_nr],
+                transforms.Resize((self.size, self.size)),
+                transforms.ToTensor(),
+                # Backbones were pre-trained on ImageNet. The images have to be
+                # normalized using the ImageNet average values.
+                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
+        else:
+            transf = transforms.Compose([
+                transforms.FiveCrop(CenterCrop_dim)[crop_nr],
+                transforms.Resize(
+                    (self.size, self.size), interpolation=PIL.Image.NEAREST)])
+        return transf(image)
+
+        
+
+        
+
 
     def count_values_masks(self) -> Dict:
 
@@ -268,6 +330,7 @@ class SpineSets(torch.utils.data.Dataset):
         # img_uint8 = ((image/4095)*255).astype('uint8')
 
         # REMARK: black and white scan slice image is converted to RGB
+
         image = self.img_transform(image)
         mask = self.gt_transform(Image.fromarray((tgt_mask).astype('uint8')))
         mask = torch.LongTensor(np.array(mask))
