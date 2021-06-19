@@ -57,7 +57,7 @@ N_CORES = -2
 
 # Center crop dimension: in the pre-processing step, the image is center-cropped.
 # Todo: Vormt dit geen conflict met self.size?
-CenterCrop_dim = (352, 352)  # was (384, 385)
+CenterCrop_dim = (384, 384)  # was (384, 385)
 
 
 logger = logging.getLogger(__name__)
@@ -223,6 +223,38 @@ class SpineSets(torch.utils.data.Dataset):
         """Return both the full image dataframe and the selected image dataframe
         """
         return self.full_image_df, self.selected_image_df
+    
+    def img_tgt_transform(self, image : PIL.Image, crop_nr : int = 0, normalize : bool = True):
+        """Crop (pick one of the fivecrop parts)
+
+        Args:
+            image (PIL.Image): Image to crop   
+            crop_nr (int, optional): crop number to select of the 5 cropped images returned by 5 crop. Defaults to 0.
+            normalize (bool): should the image be normalized to be comform the ImageNet average values?
+        """
+        assert isinstance(crop_nr, int) and crop_nr < 5, 'Crop should be in the range [0 1 2 3 4]'
+
+        crop_dim = (384, 384)
+
+        if normalize:
+            transf = transforms.Compose([
+                transforms.FiveCrop(crop_dim)[crop_nr],
+                transforms.Resize((self.size, self.size)),
+                transforms.ToTensor(),
+                # Backbones were pre-trained on ImageNet. The images have to be
+                # normalized using the ImageNet average values.
+                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
+        else:
+            transf = transforms.Compose([
+                transforms.FiveCrop(CenterCrop_dim)[crop_nr],
+                transforms.Resize(
+                    (self.size, self.size), interpolation=PIL.Image.NEAREST)])
+        return transf(image)
+
+        
+
+        
+
 
     def count_values_masks(self) -> Dict:
 
@@ -298,6 +330,7 @@ class SpineSets(torch.utils.data.Dataset):
         # img_uint8 = ((image/4095)*255).astype('uint8')
 
         # REMARK: black and white scan slice image is converted to RGB
+
         image = self.img_transform(image)
         mask = self.gt_transform(Image.fromarray((tgt_mask).astype('uint8')))
         mask = torch.LongTensor(np.array(mask))
