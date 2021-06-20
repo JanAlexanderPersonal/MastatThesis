@@ -109,6 +109,8 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                                      exp_dict=exp_dict,
                                      dataset_size=exp_dict['dataset_size'])
 
+    train_set.shuffle_img_df()
+
     mask_counts = train_set.count_values_masks() # dict with counts per label {0 : ... ,  1 : ... , ...}
 
     # Weights: The objective is to get weights proportional to the prevalence of labels in the dataset and with minimal weight == 1
@@ -210,6 +212,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
         # Train the model
         logger.info('Start training')
+        train_set.shuffle_img_df()
         train_dict = model.train_on_loader(train_loader)
 
         if F_stop_at_epoch:

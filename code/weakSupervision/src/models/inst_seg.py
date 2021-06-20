@@ -54,6 +54,7 @@ class Inst_Seg(torch.nn.Module):
         self.exp_dict = exp_dict
         self.train_hashes = set()
         self.n_classes = self.exp_dict['model'].get('n_classes', 1)
+        
 
         self.init_model()
         self.first_time = True
@@ -468,8 +469,8 @@ class Inst_Seg(torch.nn.Module):
                     b = ind[0].tolist() # batch nr
                     mask[b, i, :, :] = np.minimum(mask[b, i, :, :], ut.vectorized_distance(mask[b, i, :, :], p)) 
             
-            EXTEND = 70
-            SLOPE = 10
+            EXTEND = self.exp_dict['model'].get('prior_extend', 70)
+            SLOPE = self.exp_dict['model'].get('prior_extend_slope', 10)
             
             mask = ((-1) * mask + EXTEND) / SLOPE
 
