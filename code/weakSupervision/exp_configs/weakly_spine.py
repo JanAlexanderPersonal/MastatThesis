@@ -1,5 +1,5 @@
 import itertools
-from typing import List, Dict
+from typing import List, Dict, Tuple
 EXP_GROUPS = dict()
 model_list = [
     {'name': 'semseg', 'loss': 'cons_point_loss',
@@ -21,8 +21,11 @@ def template_exp_spine(
         'MyoSegmenTUM'],
         blob_points: int = 1,
         bg_points: int = -1,
-        context_span=0,
-        batch_size=6,
+        context_span : int=0,
+        batch_size:int=6,
+        prior_extend : int = 70,
+        prior_extend_slope:int = 10,
+        dataset_crop_size:Tuple[int] = (352, 352),
         loss: List[str] = [
             'unsupervised_rotation_loss',
             'rot_point_loss_multi',
@@ -49,6 +52,7 @@ def template_exp_spine(
         'name': 'spine_dataset',
         'sources': sources,
         'blob_points': blob_points,
+        'crop_size' : dataset_crop_size,
         'context_span': context_span,
         'bg_points': bg_points}
     dataset_size = {
@@ -59,12 +63,14 @@ def template_exp_spine(
     model = {
         'base': base,
         'loss': loss,
+        'prior_extend' : prior_extend,
+        'prior_extend_slope' : prior_extend_slope, 
         'n_channels': 3,
         'n_classes': n_classes,
         'name': 'semseg' if n_classes == 1 else 'inst_seg',
     }
     return {
-        'batch_size': 6,
+        'batch_size': batch_size,
         'dataset': dataset,
         'dataset_size': dataset_size,
         'lr': 10**(-4),
