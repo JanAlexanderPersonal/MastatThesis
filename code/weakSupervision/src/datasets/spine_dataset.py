@@ -5,7 +5,7 @@ import os
 import pandas as pd
 import h5py
 import json
-import random
+import random, math
 import re
 from src.modules.lcfcn import lcfcn_loss
 from src.datasets.StratifiedGroupKFold import StratifiedGroupKFold
@@ -38,7 +38,7 @@ def get_patient_nr(filenames : dict, patients : dict, image_nr : int) -> int:
     """
 
     logger.debug(f'function:  Get patient nr\nfilenames : {filenames}\npatients : {patients}\nimage_nr : {image_nr}')
-    fn = filenames[str(image_nr)]
+    fn = filenames[str(int(image_nr))]
     return patients[fn]
 
 
@@ -194,28 +194,28 @@ class SpineSets(torch.utils.data.Dataset):
         self.img_list = self.selected_image_df.to_dict(orient = 'records')
 
 
-        self.img_transform = transforms.Compose([
-            transforms.CenterCrop(CenterCrop_dim),
-            transforms.Resize((self.size, self.size)),
-            transforms.ToTensor(),
-            # Backbones were pre-trained on ImageNet. The images have to be
-            # normalized using the ImageNet average values.
-            transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])]
-        )
+        # self.img_transform = transforms.Compose([
+        #     transforms.CenterCrop(CenterCrop_dim),
+        #     transforms.Resize((self.size, self.size)),
+        #     transforms.ToTensor(),
+        #     # Backbones were pre-trained on ImageNet. The images have to be
+        #     # normalized using the ImageNet average values.
+        #     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])]
+        # )
 
-        if split == 'train':
-            self.gt_transform = transforms.Compose([
+        # if split == 'train':
+        #     self.gt_transform = transforms.Compose([
 
-                transforms.CenterCrop(CenterCrop_dim),
-                transforms.Resize(
-                    (self.size, self.size), interpolation=PIL.Image.NEAREST),
-                # transforms.ToTensor()]
-            ])
-        else:
-            self.gt_transform = transforms.Compose([
-                transforms.CenterCrop(CenterCrop_dim),
-                # transforms.ToTensor()
-            ])
+        #         transforms.CenterCrop(CenterCrop_dim),
+        #         transforms.Resize(
+        #             (self.size, self.size), interpolation=PIL.Image.NEAREST),
+        #         # transforms.ToTensor()]
+        #     ])
+        # else:
+        #     self.gt_transform = transforms.Compose([
+        #         transforms.CenterCrop(CenterCrop_dim),
+        #         # transforms.ToTensor()
+        #     ])
 
         logger.info('Dataset xVertSeg prepared')
 
@@ -238,7 +238,11 @@ class SpineSets(torch.utils.data.Dataset):
 
         if normalize:
             transf = transforms.Compose([
-                transforms.FiveCrop(crop_dim)[crop_nr],
+                transforms.Lambda(lambda x : transforms.Pad((
+                    max(0, math.ceil((crop_dim[0] - x.size[0]) / 2)),
+                    max(0, math.ceil((crop_dim[1] - x.size[1]) / 2)) ), fill=0)(x) ),
+                transforms.FiveCrop(crop_dim),
+                transforms.Lambda(lambda crops: crops[crop_nr]),
                 transforms.Resize((self.size, self.size)),
                 transforms.ToTensor(),
                 # Backbones were pre-trained on ImageNet. The images have to be
@@ -246,9 +250,14 @@ class SpineSets(torch.utils.data.Dataset):
                 transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])])
         else:
             transf = transforms.Compose([
-                transforms.FiveCrop(CenterCrop_dim)[crop_nr],
+                transforms.Lambda(lambda x : transforms.Pad((
+                    max(0, math.ceil((crop_dim[0] - x.size[0]) / 2)),
+                    max(0, math.ceil((crop_dim[1] - x.size[1]) / 2)) ), fill=0)(x) ),
+                transforms.FiveCrop(crop_dim),
+                transforms.Lambda(lambda crops: crops[crop_nr]),
                 transforms.Resize(
                     (self.size, self.size), interpolation=PIL.Image.NEAREST)])
+        logger.debug(f'defined transformation : {transf}')
         return transf(image)
 
         
@@ -331,8 +340,13 @@ class SpineSets(torch.utils.data.Dataset):
 
         # REMARK: black and white scan slice image is converted to RGB
 
-        image = self.img_transform(image)
-        mask = self.gt_transform(Image.fromarray((tgt_mask).astype('uint8')))
+        # image = self.img_transform(image)
+        # mask = self.gt_transform(Image.fromarray((tgt_mask).astype('uint8')))
+        # mask = torch.LongTensor(np.array(mask))
+
+        crop_nr = random.randint(0, 4)
+        image = self.img_tgt_transform(image, crop_nr = crop_nr, normalize = True)
+        mask = self.img_tgt_transform(Image.fromarray((tgt_mask).astype('uint8')), crop_nr = crop_nr, normalize = False)
         mask = torch.LongTensor(np.array(mask))
 
         # todo: Check this part well! The code seems very complicated to do something simple.

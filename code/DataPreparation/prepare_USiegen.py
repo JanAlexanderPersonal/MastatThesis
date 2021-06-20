@@ -288,7 +288,7 @@ if __name__ == '__main__':
         json.dump(dimensions_dict, mask_dim_file)
 
     with open(os.path.join(output_filedir, 'filenames_USiegen.json'), 'w') as filenames_file:
-        json.dump({int(key) : value.split('.')[0] for key, value in filenames_dict.items()}, filenames_file)
+        json.dump({int(key) : (value.split('.')[0]).lower() for key, value in filenames_dict.items()}, filenames_file)
 
     with open(os.path.join(output_filedir, 'patients_USiegen.json'), 'w') as patients_file:
-        json.dump( FILENAMES_TO_PATIENTS, patients_file)
+        json.dump({key.lower() : value for key, value in FILENAMES_TO_PATIENTS.items()}, patients_file)

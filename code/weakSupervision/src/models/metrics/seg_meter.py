@@ -63,7 +63,7 @@ class SegMeter:
         #for p, g in zip(gt.reshape(-1), pred.reshape(-1)):
         #    cf[p,g] += 1
 
-        cf = confusion_matrix(gt.reshape(-1), pred.reshape(-1), labels=[i for i in range(6)], normalize=None)
+        cf = confusion_matrix(gt.reshape(-1), pred.reshape(-1), labels=[i for i in range(n_classes)], normalize=None)
 
         if self.cf is None:
             self.cf = cf
