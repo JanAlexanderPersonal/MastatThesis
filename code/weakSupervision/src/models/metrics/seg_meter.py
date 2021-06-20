@@ -57,12 +57,6 @@ class SegMeter:
 
         n_classes = model.n_classes
 
-        # empty confusion matrix
-        #cf = np.zeros((n_classes, n_classes), dtype=int)
-
-        #for p, g in zip(gt.reshape(-1), pred.reshape(-1)):
-        #    cf[p,g] += 1
-
         cf = confusion_matrix(gt.reshape(-1), pred.reshape(-1), labels=[i for i in range(n_classes)], normalize=None)
 
         if self.cf is None:
@@ -161,10 +155,12 @@ class SegMeter:
 
         # All metrics are computed based on the confusion matrix (self.cf : np.ndarray)
 
-        logger.info(f'Get average score from confusion matrix :\n{pformat(self.cf)}')
+
+        logger.info(f'Get average score from confusion matrix :\n{pformat(self.cf)} \n resulting in weights : {np.sum(self.cf,axis = 1)}')
 
         val_dict = dict()
         val_dict['%s_dice' % self.split] = np.mean(self.calc_dice())
+        val_dict['%s_weighted_dice' % self.split] = np.average(self.calc_dice(), weights = np.sum(self.cf,axis = 1))
         val_dict['%s_iou' % self.split] = np.mean(self.calc_iou())
 
         val_dict['%s_prec' % self.split] = np.mean(self.calc_precision())

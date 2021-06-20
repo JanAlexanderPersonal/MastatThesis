@@ -5,6 +5,7 @@ from torch.utils.tensorboard import SummaryWriter
 import os
 import pprint
 import tqdm
+from joblib import Parallel, delayed
 import numpy as np
 import pandas as pd
 from haven import haven_utils as hu
@@ -776,7 +777,7 @@ class Inst_Seg(torch.nn.Module):
         return any([(i in np.unique(gt)) for i in range(1,5)])
     
 
-    def val_on_loader(self, loader, savedir_images=None, n_images=0, n_jobs = -2):
+    def val_on_loader(self, loader, savedir_images=None, n_images=0, n_jobs = -1):
         """Get validation score dictionary
 
         Args:
@@ -795,6 +796,12 @@ class Inst_Seg(torch.nn.Module):
                             <split>_score (Dice score)
                             <split>_struct (structured metric - objectness score)
         """
+
+        def check_hash( m ):
+            assert(
+                        m['hash'] not in self.train_hashes), 'image in train hashes : {} - {}'.format(
+                        m['img_name'], m['tgt_name'])
+
         self.eval()
         val_meter = metrics.SegMeter(split=loader.dataset.split)
         logger.debug(
@@ -802,15 +809,14 @@ class Inst_Seg(torch.nn.Module):
 
         # Check the batches in the loader have not been trained on:
 
-        for batch in loader:
-            # make sure it wasn't trained on
-            for m in batch['meta']:
-                assert(
-                    m['hash'] not in self.train_hashes), 'image in train hashes : {} - {}'.format(
-                    m['img_name'], m['tgt_name'])
+        if loader.dataset.split != 'train':
+            for batch in tqdm.tqdm(loader, desc = 'Assure no overlap with train set'):
+                # make sure it wasn't trained on
+                Parallel(n_jobs=n_jobs)(delayed(check_hash)(m) for m in batch['meta'])
+                    
 
         
-        for batch in tqdm.tqdm(loader):
+        for batch in tqdm.tqdm(loader, desc = 'validate batches in val meter'):
             val_meter.val_on_batch(self, batch)
 
         i_count = 0

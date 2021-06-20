@@ -215,6 +215,10 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         train_set.shuffle_img_df()
         train_dict = model.train_on_loader(train_loader)
 
+        logger.info('Start validation on de train set')
+        train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
+
+
         if F_stop_at_epoch:
             print(f'Epoch {e} -> train on loader is finished.')
             input('Press enter to continue')
@@ -258,6 +262,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         # Report & Save
         score_df = pd.DataFrame(score_list)
         score_df.to_csv(os.path.join(savedir, "score_df.csv"))
+        train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
         test_metrics_df.to_csv(os.path.join(savedir, 'test_metrics_df.csv'))
         val_metrics_df.to_csv(os.path.join(savedir, 'val_metrics_df.csv'))
         logger.info(f"\n{score_df.tail(10)}\n")
