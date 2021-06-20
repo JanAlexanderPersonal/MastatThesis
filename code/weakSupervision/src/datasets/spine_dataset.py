@@ -187,10 +187,11 @@ class SpineSets(torch.utils.data.Dataset):
         logger.info(
             f'\t * {train_df.shape[0]} in the train set\t * {val_df.shape[0]} in the validation set\t * {test_df.shape[0]} in the test set')
 
-        # the img_list becomes the relevant dataframe transformed again to a list of dicts
+        # the img_list becomes the relevant dataframe transformed again to a list of dicts & shuffle the dataframe
         self.selected_image_df = {'train' : train_df, 'val' : val_df, 'test' : test_df}[split]
         if separate_source is not None:
             self.selected_image_df = self.selected_image_df[self.selected_image_df['source'] == separate_source]
+            self.selected_image_df = self.selected_image_df.sample(frac=1).reset_index(drop=True)
         self.img_list = self.selected_image_df.to_dict(orient = 'records')
 
 
