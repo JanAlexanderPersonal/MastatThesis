@@ -302,11 +302,11 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         val_metrics_df.to_csv(
             os.path.join(
                 savedir,
-                'val_metrics_{source}_df.csv'))
+                f'val_metrics_{source}_df.csv'))
         test_metrics_df.to_csv(
             os.path.join(
                 savedir,
-                'test_metrics_{source}_df.csv'))
+                f'test_metrics_{source}_df.csv'))
 
     if e is None:
         e = 'final'
