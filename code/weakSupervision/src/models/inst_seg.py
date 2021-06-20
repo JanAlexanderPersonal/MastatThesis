@@ -749,6 +749,7 @@ class Inst_Seg(torch.nn.Module):
         logger.debug(
             f'vis_on_batch - Ground truth unique values : {np.unique(gt)}, res shape and unique values {res.shape} ** {np.unique(res)}')
 
+
         res_segm = colour_segments(res, stack_axis=0) / 255.
         gt_segm = colour_segments(gt, stack_axis=0) / 255.
 
@@ -774,6 +775,10 @@ class Inst_Seg(torch.nn.Module):
             dataformats='CHW')
         #input('press enter')
         hu.save_image(savedir_image, img_comp)
+
+        # Check if this image contains all the classes:
+        return all([(i in np.unique(gt)) for i in range(5)])
+    
 
     def val_on_loader(self, loader, savedir_images=None, n_images=0, n_jobs = -2):
         """Get validation score dictionary
@@ -815,9 +820,9 @@ class Inst_Seg(torch.nn.Module):
         i_count = 0
         for batch in loader:
             if i_count < n_images:
-                self.vis_on_batch(batch, savedir_image=os.path.join(savedir_images,
-                                                                    '%d.png' % batch['meta'][0]['index']), i=i_count)
-                i_count += 1
+                # This function returns if the image contains all labels as a boolean
+                i_count += int(self.vis_on_batch(batch, savedir_image=os.path.join(savedir_images,
+                                                                    '%d.png' % batch['meta'][0]['index']), i=i_count))
             else:
                 break
         
