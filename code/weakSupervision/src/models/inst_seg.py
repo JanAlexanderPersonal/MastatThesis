@@ -578,11 +578,6 @@ class Inst_Seg(torch.nn.Module):
 
         if 'point_loss' in loss_name:
             ind = points != 255
-            # self.vis_on_batch(batch, savedir_image='tmp.png')
-
-            # POINT LOSS
-            # loss = ut.joint_loss(logits, points[:,None].float().cuda(), ignore_index=255)
-            # print(points[ind].sum())
             if ind.sum() == 0:
                 loss = 0.
             else:
@@ -776,8 +771,8 @@ class Inst_Seg(torch.nn.Module):
         #input('press enter')
         hu.save_image(savedir_image, img_comp)
 
-        # Check if this image contains all the classes:
-        return all([(i in np.unique(gt)) for i in range(5)])
+        # Check if this image contains any of the non-background classes:
+        return any([(i in np.unique(gt)) for i in range(1,5)])
     
 
     def val_on_loader(self, loader, savedir_images=None, n_images=0, n_jobs = -2):
