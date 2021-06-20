@@ -18,7 +18,7 @@ import tqdm
 from . import transformers
 from PIL import Image
 import PIL
-from typing import Dict, Tuple
+from typing import Dict, Tuple, List
 
 from joblib import Parallel, delayed
 
@@ -55,9 +55,6 @@ RANDOM_SEED = 10
 N_CORES = -2
 
 
-# Center crop dimension: in the pre-processing step, the image is center-cropped.
-# Todo: Vormt dit geen conflict met self.size?
-CenterCrop_dim = (384, 384)  # was (384, 385)
 
 
 logger = logging.getLogger(__name__)
@@ -70,6 +67,7 @@ class SpineSets(torch.utils.data.Dataset):
         datadir: str,
         exp_dict: Dict,
         separate_source: str = None,
+        crop_size : List[int] = (352, 352)
     ):
         """xVertSeg calss : inherits from torch.utils.data.Dataset
 
@@ -106,6 +104,7 @@ class SpineSets(torch.utils.data.Dataset):
         self.n_classes = exp_dict['dataset']['n_classes']
         self.sources = exp_dict['dataset']['sources']
         self.size = 352
+        self.crop_size = crop_size
 
         self.blob_points = exp_dict['dataset']['blob_points']
         self.bg_points = exp_dict['dataset']['bg_points']
@@ -184,39 +183,20 @@ class SpineSets(torch.utils.data.Dataset):
         train_df, val_df = dev_df.iloc[ix_train], dev_df.iloc[ix_val]
 
         
-        logger.info(
+        logger.debug(
             f'\t * {train_df.shape[0]} in the train set\t * {val_df.shape[0]} in the validation set\t * {test_df.shape[0]} in the test set')
 
         # the img_list becomes the relevant dataframe transformed again to a list of dicts & shuffle the dataframe
         self.selected_image_df = {'train' : train_df, 'val' : val_df, 'test' : test_df}[split]
         if separate_source is not None:
             self.selected_image_df = self.selected_image_df[self.selected_image_df['source'] == separate_source]
-            self.selected_image_df = self.selected_image_df.sample(frac=1).reset_index(drop=True)
+        
+        random.seed(RANDOM_SEED)
+        self.selected_image_df['crop_nr'] = self.selected_image_df.apply(lambda _ : random.randint(0, 4))
+        
         self.img_list = self.selected_image_df.to_dict(orient = 'records')
 
 
-        # self.img_transform = transforms.Compose([
-        #     transforms.CenterCrop(CenterCrop_dim),
-        #     transforms.Resize((self.size, self.size)),
-        #     transforms.ToTensor(),
-        #     # Backbones were pre-trained on ImageNet. The images have to be
-        #     # normalized using the ImageNet average values.
-        #     transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])]
-        # )
-
-        # if split == 'train':
-        #     self.gt_transform = transforms.Compose([
-
-        #         transforms.CenterCrop(CenterCrop_dim),
-        #         transforms.Resize(
-        #             (self.size, self.size), interpolation=PIL.Image.NEAREST),
-        #         # transforms.ToTensor()]
-        #     ])
-        # else:
-        #     self.gt_transform = transforms.Compose([
-        #         transforms.CenterCrop(CenterCrop_dim),
-        #         # transforms.ToTensor()
-        #     ])
 
         logger.info('Dataset xVertSeg prepared')
 
@@ -224,6 +204,13 @@ class SpineSets(torch.utils.data.Dataset):
         """Return both the full image dataframe and the selected image dataframe
         """
         return self.full_image_df, self.selected_image_df
+    
+    def shuffle_img_df(self) -> None:
+        """Shuffle the selected image dataframe
+        """
+        logger.debug('Shuffle dataset')
+        self.selected_image_df = self.selected_image_df.sample(frac=1).reset_index(drop=True)
+
     
     def img_tgt_transform(self, image : PIL.Image, crop_nr : int = 0, normalize : bool = True):
         """Crop (pick one of the fivecrop parts)
@@ -235,7 +222,7 @@ class SpineSets(torch.utils.data.Dataset):
         """
         assert isinstance(crop_nr, int) and crop_nr < 5, 'Crop should be in the range [0 1 2 3 4]'
 
-        crop_dim = (384, 384)
+        crop_dim = self.exp_dict['dataset'].get('crop_size', (self.size, self.size))
 
         if normalize:
             transf = transforms.Compose([
@@ -331,21 +318,15 @@ class SpineSets(torch.utils.data.Dataset):
         else:
             raise AssertionError
 
-        # The image and the mask could be transformed before going further
-        # image, mask = transformers.apply_transform(self.split, image=image, label=mask,
-        #                                transform_name=self.exp_dict['dataset']['transform'],
-        #                                exp_dict=self.exp_dict)
-        #
-        # Convert the image to [0 -> 255] range
-        # img_uint8 = ((image/4095)*255).astype('uint8')
 
-        # REMARK: black and white scan slice image is converted to RGB
 
-        # image = self.img_transform(image)
-        # mask = self.gt_transform(Image.fromarray((tgt_mask).astype('uint8')))
-        # mask = torch.LongTensor(np.array(mask))
-
-        crop_nr = random.randint(0, 4)
+        # For the validation and test set, you want to get identical crop nr's but for the train set some more variability could be beneficial
+        if self.split in ['val', 'test']:
+            crop_nr = out['crop_nr']
+        elif self.split == 'train':
+            crop_nr = random.randint(0, 4)
+        else:
+            raise AssertionError
         image = self.img_tgt_transform(image, crop_nr = crop_nr, normalize = True)
         mask = self.img_tgt_transform(Image.fromarray((tgt_mask).astype('uint8')), crop_nr = crop_nr, normalize = False)
         mask = torch.LongTensor(np.array(mask))
