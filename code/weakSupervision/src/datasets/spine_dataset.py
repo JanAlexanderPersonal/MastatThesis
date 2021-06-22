@@ -133,7 +133,7 @@ class SpineSets(torch.utils.data.Dataset):
             previous_patient_nr = 0
             for tgt_name in os.listdir(tgt_path):
                 logger.debug(f'target name {tgt_name} .')
-                patient_nr = previous_patient_nr + 1 if source not in ['USiegen'] else get_patient_nr(filenames_source, patients_source, IMAGE_NR.findall(tgt_name)[0])
+                patient_nr = IMAGE_NR.findall(tgt_name)[0] if source not in ['USiegen'] else get_patient_nr(filenames_source, patients_source, IMAGE_NR.findall(tgt_name)[0])
                 previous_patient_nr = patient_nr
                 
                 scan_id = f'{source}_{IMAGE_NR.findall(tgt_name)[0]}'
