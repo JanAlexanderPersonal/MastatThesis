@@ -28,6 +28,7 @@ from torch.utils.data.sampler import RandomSampler
 from torch.backends import cudnn
 from torch.nn import functional as F
 from torch.utils.data import DataLoader
+import random
 
 from typing import List, Dict
 
@@ -108,8 +109,6 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                                      datadir=datadir,
                                      exp_dict=exp_dict,
                                      dataset_size=exp_dict['dataset_size'])
-
-    train_set.shuffle_img_df()
 
     mask_counts = train_set.count_values_masks() # dict with counts per label {0 : ... ,  1 : ... , ...}
 
@@ -203,6 +202,18 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         full.to_csv(os.path.join(savedir, f'{name}_full.csv'))
         selected.to_csv(os.path.join(savedir, f'{name}_selected.csv'))
 
+    # check for overlap:
+
+    _, train_selected = train_set.return_img_dfs()
+    _, val_selected = val_set.return_img_dfs()
+    _, test_selected = test_set.return_img_dfs()
+
+    assert(pd.merge(train_selected, val_selected, how ='inner', on =['img', 'tgt']).shape[0] == 0), 'Overlap detected'
+    assert(pd.merge(train_selected, test_selected, how ='inner', on =['img', 'tgt']).shape[0] == 0), 'Overlap detected'
+    assert(pd.merge(test_selected, val_selected, how ='inner', on =['img', 'tgt']).shape[0] == 0), 'Overlap detected'
+
+    logger.info('Overlap detection success!')
+
     # Run the remaining epochs starting from the last epoch for which values
     # were available in the pkl
     for e in range(s_epoch, exp_dict['max_epoch']):
@@ -215,8 +226,13 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         train_set.shuffle_img_df()
         train_dict = model.train_on_loader(train_loader)
 
-        logger.info('Start validation on de train set')
-        train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
+        
+        if (random.uniform(0,1) < 0.5) or (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 5 - 1):
+            logger.info('Start validation on de train set')
+            train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
+            score_dict['train_score'] = train_val_dict['train_score']
+            score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
+            train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
 
 
         if F_stop_at_epoch:
@@ -226,7 +242,10 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         # Validate the model
         logger.info('Start validation on de cross validation set')
         val_dict, val_metrics_df = model.val_on_loader(val_loader)
+        val_metrics_df.to_csv(os.path.join(savedir, 'val_metrics_df.csv'))
         score_dict["val_score"] = val_dict["val_score"]
+        score_dict["val_weighted_dice"] = val_dict["val_weighted_dice"]
+        
 
         # Get new score_dict
         score_dict.update(train_dict)
@@ -242,11 +261,13 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         score_df = pd.DataFrame(score_list)
         if score_dict["val_score"] >= model.val_score_best:
             logger.info('Start validation on test set')
-            test_dict, test_metrics_df = model.val_on_loader(test_loader,
-                                                             savedir_images=os.path.join(
-                                                                 savedir, "images"),
-                                                             n_images=10)
-            score_dict.update(test_dict)
+            if (random.uniform(0,1) < 0.25) or (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 5):
+                test_dict, test_metrics_df = model.val_on_loader(test_loader,
+                                                                savedir_images=os.path.join(
+                                                                    savedir, "images"),
+                                                                n_images=10)
+                score_dict.update(test_dict)
+                test_metrics_df.to_csv(os.path.join(savedir, 'test_metrics_df.csv'))
             hu.save_pkl(
                 os.path.join(
                     savedir,
@@ -262,15 +283,13 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         # Report & Save
         score_df = pd.DataFrame(score_list)
         score_df.to_csv(os.path.join(savedir, "score_df.csv"))
-        train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
-        test_metrics_df.to_csv(os.path.join(savedir, 'test_metrics_df.csv'))
-        val_metrics_df.to_csv(os.path.join(savedir, 'val_metrics_df.csv'))
+        
         logger.info(f"\n{score_df.tail(10)}\n")
         hu.torch_save(model_path, model.get_state_dict())
         hu.save_pkl(score_list_path, score_list)
         logger.info("Checkpoint Saved: %s" % savedir)
 
-        if model.waiting > 4:
+        if model.waiting >= 5:
             break
 
         if F_stop_at_epoch:

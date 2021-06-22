@@ -22,6 +22,8 @@ from typing import Dict, Tuple, List
 
 from joblib import Parallel, delayed
 
+pd.options.mode.chained_assignment = 'raise'
+
 def get_patient_nr(filenames : dict, patients : dict, image_nr : int) -> int:
     """Get the patient number from the source filenames dict and the source patients list
 
@@ -192,7 +194,7 @@ class SpineSets(torch.utils.data.Dataset):
             self.selected_image_df = self.selected_image_df[self.selected_image_df['source'] == separate_source]
         
         random.seed(RANDOM_SEED)
-        self.selected_image_df['crop_nr'] = self.selected_image_df.apply(lambda _ : random.randint(0, 4))
+        self.selected_image_df = pd.concat([self.selected_image_df  , self.selected_image_df.img.apply(lambda _ : random.randint(0, 4)).rename('crop_nr')], axis=1)
         
         self.img_list = self.selected_image_df.to_dict(orient = 'records')
 
@@ -261,7 +263,7 @@ class SpineSets(torch.utils.data.Dataset):
             vals, counts = np.unique(mask, return_counts=True)
             return {val: count for val, count in zip(vals.tolist(), counts.tolist())}
 
-        logger.info('Start counting the mask labels')
+        logger.info(f'Start counting the mask labels ')
         list_counts = Parallel(n_jobs=N_CORES)(delayed(unique_vals_dict)(image_list_entry) for image_list_entry in self.img_list)
         df_list_counts = pd.DataFrame(list_counts)
 
@@ -284,8 +286,14 @@ class SpineSets(torch.utils.data.Dataset):
 
         if self.context_span > 0:
             queries = {name : 'scan_id == \"{}\" & patient == \"{}\" & slice_id == {}'.format(out['scan_id'], out['patient'], out['slice_id'] + offset) for name, offset in zip(['top', 'bottom'], [1 * self.context_span, -1 * self.context_span ])}
-            top_name = self.selected_image_df(queries['top']).img.iloc[0]
-            bottom_name = self.selected_image_df(queries['bottom'].img.iloc[0])
+            try:
+                top_name = self.selected_image_df.query(queries['top']).img.iloc[0]
+            except IndexError:
+                top_name = img_name
+            try:
+                bottom_name = self.selected_image_df.query(queries['bottom'].img.iloc[0])
+            except IndexError:
+                bottom_name = img_name
             logger.debug(f'image path : {img_name} * top path : {top_name} * bottom name : {bottom_name}')
             # Load the images
             image = np.load(img_name)

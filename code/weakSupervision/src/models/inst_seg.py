@@ -5,7 +5,6 @@ from torch.utils.tensorboard import SummaryWriter
 import os
 import pprint
 import tqdm
-from joblib import Parallel, delayed
 import numpy as np
 import pandas as pd
 from haven import haven_utils as hu
@@ -798,9 +797,8 @@ class Inst_Seg(torch.nn.Module):
         """
 
         def check_hash( m ):
-            assert(
-                        m['hash'] not in self.train_hashes), 'image in train hashes : {} - {}'.format(
-                        m['img_name'], m['tgt_name'])
+            return (m['hash'] not in self.train_hashes)
+
 
         self.eval()
         val_meter = metrics.SegMeter(split=loader.dataset.split)
@@ -811,8 +809,11 @@ class Inst_Seg(torch.nn.Module):
 
         if loader.dataset.split != 'train':
             for batch in tqdm.tqdm(loader, desc = 'Assure no overlap with train set'):
+                h_c = [check_hash(m) for m in batch['meta']]
+                if not all(h_c):
+                    logger.warning('information leakage : {}'.format(batch['meta']))
                 # make sure it wasn't trained on
-                Parallel(n_jobs=n_jobs)(delayed(check_hash)(m) for m in batch['meta'])
+                assert( all(h_c)), 'Information leakage'
                     
 
         

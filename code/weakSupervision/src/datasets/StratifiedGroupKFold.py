@@ -1,7 +1,5 @@
 # Code from: https://github.com/scikit-learn/scikit-learn/pull/18649/
 
-# Remark: This code provides a class to perform a K-Fold split that is both stratified and grouped.
-
 import warnings
 from collections import defaultdict, Counter
 
