@@ -25,7 +25,7 @@ def template_exp_spine(
         batch_size:int=6,
         prior_extend : int = 70,
         prior_extend_slope:int = 10,
-        dataset_crop_size:Tuple[int] = (352, 352),
+        dataset_crop_size:Tuple[int] = [352, 352],
         loss: List[str] = [
             'unsupervised_rotation_loss',
             'rot_point_loss_multi',
@@ -137,3 +137,12 @@ EXP_GROUPS['weakly_spine_dataset_c6_weighted'] = [
         base=b) for b, bp, cp, bg_points in itertools.product([
             'fcn8_vgg16',
             'fcn8_resnet'], [2**i for i in [0 , 3]], [0,  3], [3, 100])]
+
+EXP_GROUPS['full_spine_dataset_c6'] = [
+    template_exp_spine(
+        debug=False,
+        loss = l,
+        context_span=cp,
+        base=b) for b, l, cp in itertools.product([
+            'fcn8_vgg16',
+            'fcn8_resnet'], [ 'cross_entropy', 'weighted_cross_entropy'], [0,1,3])]
