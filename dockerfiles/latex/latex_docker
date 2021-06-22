@@ -17,6 +17,8 @@ RUN apt-get install lmodern
 RUN apt install -y xindy
 RUN apt-get install -y texlive-bibtex-extra biber
 
+RUN apt install -y python3.8
+
 # RUN apt-get install texlive-lang-all
 
 WORKDIR /home/thesis
