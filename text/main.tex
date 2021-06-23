@@ -20,6 +20,8 @@
 \usepackage{epstopdf}
 \usepackage{multirow}
 
+\usepackage[mode=buildnew]{standalone}
+
 \graphicspath{{automated_graphs/}{.}{images/}}
 
 
@@ -258,7 +260,9 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 \input{/home/thesis/2_Analysis/data}
 
 
-\chapter{Proposed methods}
+\chapter{Methods}
+
+\input{/home/thesis/2_Analysis/Model}
 
 \input{/home/thesis/2_Analysis/PropMethods_FullSupervision}
 

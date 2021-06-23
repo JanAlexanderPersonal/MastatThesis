@@ -10,7 +10,7 @@ sys.path.append(os.path.abspath('.'))
 from pycore.tikzeng import *
 from pycore.blocks  import *
 
-arch = [ 
+temp = [ 
     to_head('..'), 
     to_cor(),
     to_begin(),
@@ -36,7 +36,7 @@ arch = [
     to_skip( of='ccr_b4', to='ccr_res_b6', pos=1.25),
     *block_Unconv( name="b7", botton="end_b6", top='end_b7', s_filer=128, n_filer=256, offset="(2.1,0,0)", size=(25,25,4.5), opacity=0.5 ),
     to_skip( of='ccr_b3', to='ccr_res_b7', pos=1.25),    
-    *block_Unconv( name="b8", botton="end_b7", top='end_b8', s_filer=256, n_filer=128, offset="(2.1,0,0)", size=(32,32,3.5), opacity=0.5 ),
+    *block_Unconv( name="b8", botton="end_b7", top='end_b8', s_filer=128, n_filer=128, offset="(2.1,0,0)", size=(32,32,3.5), opacity=0.5 ),
     to_skip( of='ccr_b2', to='ccr_res_b8', pos=1.25),    
     
     *block_Unconv( name="b9", botton="end_b8", top='end_b9', s_filer=512, n_filer=64,  offset="(2.1,0,0)", size=(40,40,2.5), opacity=0.5 ),
@@ -48,11 +48,26 @@ arch = [
     to_end() 
     ]
 
+arch = list( )
+
+for txt in temp:
+    if isinstance(txt, str):
+        arch.append(txt)
+    elif isinstance(txt, list):
+        for t in txt:
+            if isinstance(t, str):
+                arch.append(t)
+            else:
+                print('error')
+
+    
+
 
 def main():
     namefile = str(sys.argv[0]).split('.')[0]
     to_generate(arch, namefile + '.tex' )
 
 if __name__ == '__main__':
+    
     main()
     

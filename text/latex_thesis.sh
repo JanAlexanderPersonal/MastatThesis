@@ -5,11 +5,11 @@
 rm /home/thesis/PlotNeuralNets/*.aux
 
 echo "Maak images netwerken"
-# python3.8 /home/thesis/PlotNeuralNets/unet.py > /home/thesis/PlotNeuralNets/unet.tex
-python3.8 /home/thesis/PlotNeuralNets/vgg16_upscore.py > /home/thesis/PlotNeuralNets/vgg16.tex
+#python3.8 /home/thesis/PlotNeuralNets/unet.py > /home/thesis/PlotNeuralNets/unet.tex
+#python3.8 /home/thesis/PlotNeuralNets/vgg16_upscore.py > /home/thesis/PlotNeuralNets/vgg16.tex
 
 pdflatex /home/thesis/PlotNeuralNets/unet.tex
-pdflatex /home/thesis/PlotNeuralNets/vgg16.tex
+pdflatex /home/thesis/PlotNeuralNets/vgg16_upscore.tex
 
 echo "Make main document"
 pdflatex main.tex

@@ -148,7 +148,7 @@
     };
 
 \draw [connection]  (pool_b4-east)    -- node {\midarrow} (ccr_b5-west); % end to_connection
-
+% to_UnPool
 \pic[shift={ (2.1,0,0) }] at (ccr_b5-east) 
     {Box={
         name=unpool_b6,
@@ -160,7 +160,7 @@
         depth=16
         }
     };
-
+% to_ConvRes 1
 \pic[shift={ (0,0,0) }] at (unpool_b6-east) 
     {RightBandedBox={
         name=ccr_res_b6,
@@ -175,7 +175,7 @@
         depth=16
         }
     };
-
+%to_Conv 1
 \pic[shift={(0,0,0)}] at (ccr_res_b6-east) 
     {Box={
         name=ccr_b6,
@@ -188,7 +188,7 @@
         depth=16
         }
     };
-
+% to_ConvRes 2
 \pic[shift={ (0,0,0) }] at (ccr_b6-east) 
     {RightBandedBox={
         name=ccr_res_c_b6,
@@ -203,7 +203,7 @@
         depth=16
         }
     };
-
+% to_Conv 2
 \pic[shift={(0,0,0)}] at (ccr_res_c_b6-east) 
     {Box={
         name=end_b6,
@@ -216,7 +216,7 @@
         depth=16
         }
     };
-
+% to_connection
 \draw [connection]  (ccr_b5-east)    -- node {\midarrow} (unpool_b6-west); % end to_connection
 
 \path (ccr_b4-southeast) -- (ccr_b4-northeast) coordinate[pos=1.25] (ccr_b4-top) ;
@@ -225,7 +225,7 @@
 -- node {\copymidarrow}(ccr_b4-top)
 -- node {\copymidarrow}(ccr_res_b6-top)
 -- node {\copymidarrow} (ccr_res_b6-north);
-
+% to_UnPool
 \pic[shift={ (2.1,0,0) }] at (end_b6-east) 
     {Box={
         name=unpool_b7,
@@ -237,7 +237,7 @@
         depth=25
         }
     };
-
+% to_ConvRes 1
 \pic[shift={ (0,0,0) }] at (unpool_b7-east) 
     {RightBandedBox={
         name=ccr_res_b7,
@@ -252,7 +252,7 @@
         depth=25
         }
     };
-
+%to_Conv 1
 \pic[shift={(0,0,0)}] at (ccr_res_b7-east) 
     {Box={
         name=ccr_b7,
@@ -265,7 +265,7 @@
         depth=25
         }
     };
-
+% to_ConvRes 2
 \pic[shift={ (0,0,0) }] at (ccr_b7-east) 
     {RightBandedBox={
         name=ccr_res_c_b7,
@@ -280,7 +280,7 @@
         depth=25
         }
     };
-
+% to_Conv 2
 \pic[shift={(0,0,0)}] at (ccr_res_c_b7-east) 
     {Box={
         name=end_b7,
@@ -293,7 +293,7 @@
         depth=25
         }
     };
-
+% to_connection
 \draw [connection]  (end_b6-east)    -- node {\midarrow} (unpool_b7-west); % end to_connection
 
 \path (ccr_b3-southeast) -- (ccr_b3-northeast) coordinate[pos=1.25] (ccr_b3-top) ;
@@ -302,7 +302,7 @@
 -- node {\copymidarrow}(ccr_b3-top)
 -- node {\copymidarrow}(ccr_res_b7-top)
 -- node {\copymidarrow} (ccr_res_b7-north);
-
+% to_UnPool
 \pic[shift={ (2.1,0,0) }] at (end_b7-east) 
     {Box={
         name=unpool_b8,
@@ -314,13 +314,13 @@
         depth=32
         }
     };
-
+% to_ConvRes 1
 \pic[shift={ (0,0,0) }] at (unpool_b8-east) 
     {RightBandedBox={
         name=ccr_res_b8,
         caption= ,
         xlabel={{ 128, }},
-        zlabel=256,
+        zlabel=128,
         fill={rgb:white,1;black,3},
         bandfill={rgb:white,1;black,2},
         opacity=0.5,
@@ -329,26 +329,26 @@
         depth=32
         }
     };
-
+%to_Conv 1
 \pic[shift={(0,0,0)}] at (ccr_res_b8-east) 
     {Box={
         name=ccr_b8,
         caption= ,
         xlabel={{128, }},
-        zlabel=256,
+        zlabel=128,
         fill=\ConvColor,
         height=32,
         width=3.5,
         depth=32
         }
     };
-
+% to_ConvRes 2
 \pic[shift={ (0,0,0) }] at (ccr_b8-east) 
     {RightBandedBox={
         name=ccr_res_c_b8,
         caption= ,
         xlabel={{ 128, }},
-        zlabel=256,
+        zlabel=128,
         fill={rgb:white,1;black,3},
         bandfill={rgb:white,1;black,2},
         opacity=0.5,
@@ -357,24 +357,21 @@
         depth=32
         }
     };
-
-
+% to_Conv 2
 \pic[shift={(0,0,0)}] at (ccr_res_c_b8-east) 
     {Box={
         name=end_b8,
         caption= ,
         xlabel={{128, }},
-        zlabel=256,
+        zlabel=128,
         fill=\ConvColor,
         height=32,
         width=3.5,
         depth=32
         }
     };
-
-
+% to_connection
 \draw [connection]  (end_b7-east)    -- node {\midarrow} (unpool_b8-west); % end to_connection
-
 
 \path (ccr_b2-southeast) -- (ccr_b2-northeast) coordinate[pos=1.25] (ccr_b2-top) ;
 \path (ccr_res_b8-south)  -- (ccr_res_b8-north)  coordinate[pos=1.25] (ccr_res_b8-top) ;
@@ -382,8 +379,7 @@
 -- node {\copymidarrow}(ccr_b2-top)
 -- node {\copymidarrow}(ccr_res_b8-top)
 -- node {\copymidarrow} (ccr_res_b8-north);
-
-
+% to_UnPool
 \pic[shift={ (2.1,0,0) }] at (end_b8-east) 
     {Box={
         name=unpool_b9,
@@ -395,8 +391,7 @@
         depth=40
         }
     };
-
-
+% to_ConvRes 1
 \pic[shift={ (0,0,0) }] at (unpool_b9-east) 
     {RightBandedBox={
         name=ccr_res_b9,
@@ -411,8 +406,7 @@
         depth=40
         }
     };
-
-
+%to_Conv 1
 \pic[shift={(0,0,0)}] at (ccr_res_b9-east) 
     {Box={
         name=ccr_b9,
@@ -425,8 +419,7 @@
         depth=40
         }
     };
-
-
+% to_ConvRes 2
 \pic[shift={ (0,0,0) }] at (ccr_b9-east) 
     {RightBandedBox={
         name=ccr_res_c_b9,
@@ -441,8 +434,7 @@
         depth=40
         }
     };
-
-
+% to_Conv 2
 \pic[shift={(0,0,0)}] at (ccr_res_c_b9-east) 
     {Box={
         name=end_b9,
@@ -455,10 +447,8 @@
         depth=40
         }
     };
-
-
+% to_connection
 \draw [connection]  (end_b8-east)    -- node {\midarrow} (unpool_b9-west); % end to_connection
-
 
 \path (ccr_b1-southeast) -- (ccr_b1-northeast) coordinate[pos=1.25] (ccr_b1-top) ;
 \path (ccr_res_b9-south)  -- (ccr_res_b9-north)  coordinate[pos=1.25] (ccr_res_b9-top) ;
@@ -466,7 +456,6 @@
 -- node {\copymidarrow}(ccr_b1-top)
 -- node {\copymidarrow}(ccr_res_b9-top)
 -- node {\copymidarrow} (ccr_res_b9-north);
-
 
 \pic[shift={(0.75,0,0)}] at (end_b9-east) 
     {Box={
@@ -480,10 +469,7 @@
         }
     };
 
-
 \draw [connection]  (end_b9-east)    -- node {\midarrow} (soft1-west); % end to_connection
-
 
 \end{tikzpicture}
 \end{document}
-
