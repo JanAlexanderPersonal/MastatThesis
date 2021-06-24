@@ -135,7 +135,7 @@ class SpineSets(torch.utils.data.Dataset):
             previous_patient_nr = 0
             for tgt_name in os.listdir(tgt_path):
                 logger.debug(f'target name {tgt_name} .')
-                patient_nr = IMAGE_NR.findall(tgt_name)[0] if source not in ['USiegen'] else get_patient_nr(filenames_source, patients_source, IMAGE_NR.findall(tgt_name)[0])
+                patient_nr = int(IMAGE_NR.findall(tgt_name)[0]) if source not in ['USiegen'] else get_patient_nr(filenames_source, patients_source, IMAGE_NR.findall(tgt_name)[0])
                 previous_patient_nr = patient_nr
                 
                 scan_id = f'{source}_{IMAGE_NR.findall(tgt_name)[0]}'
@@ -175,14 +175,19 @@ class SpineSets(torch.utils.data.Dataset):
         # seed is fixed at RANDOM_SEED
         # random.seed(RANDOM_SEED)
 
+        patient_df = self.full_image_df.drop_duplicates('patient')
+
         dev_test_split = StratifiedGroupKFold(n_splits=6, random_state=RANDOM_SEED, shuffle=True)
         train_val_split = StratifiedGroupKFold(n_splits=5, random_state=RANDOM_SEED, shuffle=True)
-        logger.debug(dev_test_split.split(X = self.full_image_df.slice_id, y = self.full_image_df.source, groups = self.full_image_df.patient ))
-        ix_dev, ix_test = next(dev_test_split.split(X = self.full_image_df.slice_id, y = self.full_image_df.source, groups = self.full_image_df.patient ))
+        ix_dev, ix_test = next(dev_test_split.split(X = patient_df.slice_id, y = patient_df.source, groups = patient_df.patient ))
 
-        dev_df, test_df = self.full_image_df.iloc[ix_dev], self.full_image_df.iloc[ix_test]
-        ix_train, ix_val = next(train_val_split.split(X = dev_df.slice_id, y = dev_df.source, groups = dev_df.patient ))
-        train_df, val_df = dev_df.iloc[ix_train], dev_df.iloc[ix_val]
+        dev_pat_df, test_pat_df = patient_df.iloc[ix_dev], patient_df.iloc[ix_test]
+        ix_train, ix_val = next(train_val_split.split(X = dev_pat_df.slice_id, y = dev_pat_df.source, groups = dev_pat_df.patient ))
+        train_pat_df, val_pat_df = dev_pat_df.iloc[ix_train], dev_pat_df.iloc[ix_val]
+
+        test_df = self.full_image_df[self.full_image_df['patient'].isin(test_pat_df.patient.tolist())]
+        train_df = self.full_image_df[self.full_image_df['patient'].isin(train_pat_df.patient.tolist())]
+        val_df = self.full_image_df[self.full_image_df['patient'].isin(val_pat_df.patient.tolist())]
 
         
         logger.debug(
@@ -291,7 +296,7 @@ class SpineSets(torch.utils.data.Dataset):
             except IndexError:
                 top_name = img_name
             try:
-                bottom_name = self.selected_image_df.query(queries['bottom'].img.iloc[0])
+                bottom_name = self.selected_image_df.query(queries['bottom']).img.iloc[0]
             except IndexError:
                 bottom_name = img_name
             logger.debug(f'image path : {img_name} * top path : {top_name} * bottom name : {bottom_name}')
