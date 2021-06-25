@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 
-def get_model(model_dict, exp_dict=None, train_set=None, weight_vector = None):
+def get_model(model_dict, exp_dict=None, weight_vector = None):
     if model_dict['name'] in ["wisenet"]:
         logger.debug('Get Wisenet')
         model =  wisenet.WiseNet(exp_dict, train_set)
