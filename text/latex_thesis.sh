@@ -10,6 +10,7 @@ echo "Maak images netwerken"
 
 pdflatex /home/thesis/PlotNeuralNets/unet.tex
 pdflatex /home/thesis/PlotNeuralNets/vgg16_upscore.tex
+pdflatex /home/thesis/PlotNeuralNets/resnet.tex
 
 echo "Make main document"
 pdflatex main.tex
