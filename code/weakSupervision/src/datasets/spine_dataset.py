@@ -203,10 +203,6 @@ class SpineSets(torch.utils.data.Dataset):
         
         self.img_list = self.selected_image_df.to_dict(orient = 'records')
 
-
-
-        logger.info('Dataset xVertSeg prepared')
-
     def return_img_dfs(self) -> Tuple[pd.DataFrame]:
         """Return both the full image dataframe and the selected image dataframe
         """
@@ -231,11 +227,15 @@ class SpineSets(torch.utils.data.Dataset):
 
         crop_dim = self.exp_dict['dataset'].get('crop_size', (self.size, self.size))
 
+        # Pay attention to the dimensions of the images: A FiveCrop crops with numpy dimensions (HW)
+        # This means that if you ask for FiveCrop((100, 200)) you will get 5 PIL image with size (200, 100).
+        # This corresponds indeed to np.ndarray.shape = (100, 200) or a tensor [3, 100, 200]
+
         if normalize:
             transf = transforms.Compose([
                 transforms.Lambda(lambda x : transforms.Pad((
-                    max(0, math.ceil((crop_dim[0] - x.size[0]) / 2)),
-                    max(0, math.ceil((crop_dim[1] - x.size[1]) / 2)) ), fill=0)(x) ),
+                    max(0, math.ceil((crop_dim[1] - x.size[0]) / 2)),
+                    max(0, math.ceil((crop_dim[0] - x.size[1]) / 2)) ), fill=0)(x) ),
                 transforms.FiveCrop(crop_dim),
                 transforms.Lambda(lambda crops: crops[crop_nr]),
                 transforms.Resize((self.size, self.size)),
@@ -246,8 +246,8 @@ class SpineSets(torch.utils.data.Dataset):
         else:
             transf = transforms.Compose([
                 transforms.Lambda(lambda x : transforms.Pad((
-                    max(0, math.ceil((crop_dim[0] - x.size[0]) / 2)),
-                    max(0, math.ceil((crop_dim[1] - x.size[1]) / 2)) ), fill=0)(x) ),
+                    max(0, math.ceil((crop_dim[1] - x.size[0]) / 2)),
+                    max(0, math.ceil((crop_dim[0] - x.size[1]) / 2)) ), fill=0)(x) ),
                 transforms.FiveCrop(crop_dim),
                 transforms.Lambda(lambda crops: crops[crop_nr]),
                 transforms.Resize(
@@ -257,10 +257,53 @@ class SpineSets(torch.utils.data.Dataset):
 
         
 
-        
+    def make_full_croplist(self):
+        """This function takes the selected image dataframe and adds all relevant crops to this dataframe --> not just 1 random crop per slice 
+
+        Step 1 : Dimensions of all slices of 1 image are the same --> extract individual images from the dataframe
+        Step 2 : Get one image and define the suitable crops to take
+        Step 3 : New dataframe block is the cross product of the image block with the crop_nr series 
+        """
+        crop_dim = self.exp_dict['dataset'].get('crop_size', (self.size, self.size))
+
+        def expand_image(df_part : pd.DataFrame) -> pd.DataFrame:
+            # Get the relevant crop numbers for 1 image (no centercrop)
+            crops = list(range(4))
+            im = np.load(df_part.sample(axis=0)['img'])
+            if im.shape[0] <= crop_dim[0]:
+                for i in [2, 3, 4]:
+                    crops.remove(i)
+            if im.shape[1] <= crop_dim[1]:
+                for i in [1, 2, 4]:
+                    try:
+                        crops.remove(i)
+                    except ValueError:
+                        pass
+
+            # Remove the column 'crop_nr' and take the cross product with a dataframe that contains the desired crop numbers
+            cols = [col for col in df_part.columns if col != 'crop_nr']
+            return df_part[cols].merge(pd.DataFrame({'crop_nr': crops}), how='cross')
+
+        logger.info(f'before expanding the dataframe with all relevant crops, the datafame contains {self.selected_image_df.shape[0]} rows' )
+        temp = list()
+        for groupname, group in self.selected_image_df.groupby('scan_id'):
+            logger.info('Expand the selected image dataframe for scan {groupname}')
+            temp.append(expand_image(group))
+
+        # All these subgroups are not concatenated back into a new selected images dataframe and sorted.
+        # The sorting is important to assure the recombination in 3D volumes can take place correctly
+        self.selected_image_df = pd.concat(temp, axis=0, ignore_index=True).sort_values(by=['slice_id', 'scan_id', 'crop_nr'])
+        self.img_list = self.selected_image_df.to_dict(orient = 'records')
+
+        logger.info(f'After expanding the dataframe with all relevant crops, the datafame contains {self.selected_image_df.shape[0]} rows' )
 
 
     def count_values_masks(self) -> Dict:
+        """Count the number of occurances of each label in the complete dataset
+
+        Returns:
+            Dict: {label : occurances in the complete dataset}
+        """
 
         def unique_vals_dict(img_list_entry):
             mask_name = img_list_entry['tgt']
@@ -311,6 +354,8 @@ class SpineSets(torch.utils.data.Dataset):
             image = np.load(img_name)
             image = Image.fromarray((image * 255).astype('uint8')).convert('RGB')
 
+        # PIL size inverts the image dimensions (unfortunately...)
+        orig_shape = image.size[::-1]
         # read annotation mask
         tgt_mask = np.load(tgt_name)
 
@@ -361,16 +406,22 @@ class SpineSets(torch.utils.data.Dataset):
             f'mask : {mask.long()[None].shape} with value range {mask.min()} to {mask.max()}')
         logger.debug(f'points : {torch.LongTensor(points).shape}')
 
+        # Together with the image, the metadata is transferred
+
         return {'images': image,
                 'masks': mask.long()[None],
                 'points': torch.LongTensor(points),
                 'meta': {'shape': mask.squeeze().shape,
                          'index': i,
+                         'orig_shape' : orig_shape,
                          'hash': hu.hash_dict({'id': img_name}),
                          'name': img_name,
                          'img_name': img_name,
                          'tgt_name': tgt_name,
                          'image_id': i,
+                         'scan_id' : out['scan_id'],
+                         'slice_id' : out['slice_id'],
+                         'crop_nr' : out['crop_nr'],
                          'split': self.split}}
 
     def __len__(self):

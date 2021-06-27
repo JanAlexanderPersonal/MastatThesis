@@ -729,6 +729,20 @@ class Inst_Seg(torch.nn.Module):
 
         return res
 
+    def probabilities_on_batch(self, batch):
+        """add a numpy array to the batch with the predicted probabilities
+
+        Args:
+            batch (batch): Batch from the dataloader
+
+        Returns:
+            batch: same batch with the probabilities added
+        """
+        self.eval()
+        image = batch['images'].cuda()
+        logits = self.model_base.forward(image)
+        return batch.update({'probs' : logits.sigmoid().data.cpu().numpy()})
+
     def vis_on_batch(self, batch, savedir_image, i=0):
         # Get torch tensors with the images and the masks
         image = hu.denormalize(batch['images'], mode='rgb')[0]
