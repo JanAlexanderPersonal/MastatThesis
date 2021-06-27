@@ -32,6 +32,10 @@ import random
 
 from typing import List, Dict
 
+
+import json
+
+
 import logging
 
 cudnn.benchmark = True
@@ -212,6 +216,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     assert(pd.merge(train_selected, test_selected, how ='inner', on =['img', 'tgt']).shape[0] == 0), 'Overlap detected'
     assert(pd.merge(test_selected, val_selected, how ='inner', on =['img', 'tgt']).shape[0] == 0), 'Overlap detected'
 
+    score_dict = {}
     logger.info('Overlap detection success!')
 
     # Run the remaining epochs starting from the last epoch for which values
@@ -290,14 +295,45 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         logger.info("Checkpoint Saved: %s" % savedir)
 
         if model.waiting >= 5:
+            # Revert to final model
+
             break
 
         if F_stop_at_epoch:
             print(f'Epoch {e} is finished.')
             input('Press enter to continue')
 
+    # Revert the model to the last stored value and perform the final validation
+
+    model.load_state_dict(hu.torch_load(model_path))
+    logger.info('Start final validation on de test set')
+    test_dict, test_metrics_df = model.val_on_loader(test_loader,
+                                                                savedir_images=os.path.join(
+                                                                    savedir, "images"),
+                                                                n_images=10)
+    score_dict.update(test_dict)
+    test_metrics_df.to_csv(os.path.join(savedir, 'test_metrics_df.csv'))
+
+    
+    logger.info('Start final validation on de train set')
+    train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
+    score_dict['train_score'] = train_val_dict['train_score']
+    score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
+    train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
+
+    logger.info('Start final validation on de cross validation set')
+    val_dict, val_metrics_df = model.val_on_loader(val_loader)
+    val_metrics_df.to_csv(os.path.join(savedir, 'val_metrics_df.csv'))
+    score_dict["val_score"] = val_dict["val_score"]
+    score_dict["val_weighted_dice"] = val_dict["val_weighted_dice"]
+
+    with open(os.path.join(savedir, 'score_dict_final.json')) as f:
+        json.dump(score_dict, f)
+
+
     for source in full.source.unique():
         logger.info(f'Specific analysis for {source}')
+
         source_val_set = datasets.get_dataset(dataset_dict=exp_dict["dataset"],
                                               split="val",
                                               datadir=datadir,
