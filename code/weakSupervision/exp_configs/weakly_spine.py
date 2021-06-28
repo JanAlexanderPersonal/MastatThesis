@@ -121,7 +121,7 @@ EXP_GROUPS['weakly_spine_dataset_c6'] = [
         bg_points=bg_points,
         base=b) for b, bp, cp, bg_points in itertools.product([
             'fcn8_vgg16',
-            'fcn8_resnet'], [2**i for i in [0 , 3]], [0, 3], [3, 100])]
+            'fcn8_resnet', 'unet2d'], [2**i for i in [0 , 3]], [0, 3], [3, 100])]
 
 EXP_GROUPS['weakly_spine_dataset_c6_weighted'] = [
     template_exp_spine(
@@ -136,7 +136,7 @@ EXP_GROUPS['weakly_spine_dataset_c6_weighted'] = [
         bg_points=bg_points,
         base=b) for b, bp, cp, bg_points in itertools.product([
             'fcn8_vgg16',
-            'fcn8_resnet'], [2**i for i in [0 , 3]], [0,  3], [3, 100])]
+            'fcn8_resnet', 'unet2d'], [2**i for i in [0 ,2, 3]], [0,1,  3], [3,5, 100])]
 
 EXP_GROUPS['full_spine_dataset_c6'] = [
     template_exp_spine(
@@ -145,4 +145,4 @@ EXP_GROUPS['full_spine_dataset_c6'] = [
         context_span=cp,
         base=b) for b, l, cp in itertools.product([
             'fcn8_vgg16',
-            'fcn8_resnet'], [ 'cross_entropy', 'weighted_cross_entropy'], [0,1,3])]
+            'fcn8_resnet', 'unet2d'], [ 'cross_entropy', 'weighted_cross_entropy'], [0,1,3])]

@@ -21,6 +21,9 @@ def get_network(network_name, n_classes, exp_dict):
 
     if network_name == "unet_resnet":
         model_base = unet_resnet.ResNetUNet(n_class=n_classes)
+
+    if network_name == 'unet2d':
+        model_base = unet2d.UNet(n_channels=3, n_classes =n_classes, bilinear=False)
     
     if network_name == "resnet_seam":
         model_base = resnet_seam.ResNetSeam()
