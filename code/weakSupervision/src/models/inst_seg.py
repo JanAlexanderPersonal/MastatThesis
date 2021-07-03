@@ -27,6 +27,8 @@ from src.modules import sstransforms as sst
 
 import cv2
 
+F_checkoverlap = False
+
 from typing import Dict, List
 
 import logging
@@ -821,7 +823,7 @@ class Inst_Seg(torch.nn.Module):
 
         # Check the batches in the loader have not been trained on:
 
-        if loader.dataset.split != 'train':
+        if loader.dataset.split != 'train' and F_checkoverlap:
             for batch in tqdm.tqdm(loader, desc = 'Assure no overlap with train set'):
                 h_c = [check_hash(m) for m in batch['meta']]
                 if not all(h_c):
