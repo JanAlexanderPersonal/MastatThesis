@@ -851,7 +851,7 @@ class Inst_Seg(torch.nn.Module):
 
         metrics_df = val_meter.metrics_df()
 
-        logger.info(f'Matrix with metrics : \n{metrics_df}')
+        logger.debug(f'Matrix with metrics : \n{metrics_df}')
 
         return avg_score, metrics_df
 
