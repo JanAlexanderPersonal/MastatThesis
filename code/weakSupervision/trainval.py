@@ -292,7 +292,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         hu.save_pkl(score_list_path, score_list)
         logger.info("Checkpoint Saved: %s" % savedir)
 
-        if model.waiting >= 5:
+        if model.waiting >= 8:
             # Revert to final model
 
             break
