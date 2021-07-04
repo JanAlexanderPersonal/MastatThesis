@@ -731,7 +731,7 @@ class Inst_Seg(torch.nn.Module):
 
         return res
 
-    def probabilities_on_batch(self, batch):
+    def probabilities_on_batch(self, batch) -> np.ndarray:
         """add a numpy array to the batch with the predicted probabilities
 
         Args:

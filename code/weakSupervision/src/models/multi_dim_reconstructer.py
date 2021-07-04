@@ -71,14 +71,15 @@ class multi_dim_reconstructor(object):
                     logger.debug(f'Model weights file discovered and loaded for model on dimension {i}')
                     model.load_state_dict(hu.torch_load(model_path))
                 else:
-                    logging.warning('Model {model_folder} (dimension {i}) is not trained yet!')
+                    logger.warning('Model {model_folder} (dimension {i}) is not trained yet!')
 
                 models_dict.update({i : model})
 
             return models_dict
 
         def get_dataloaders(model_dict : Dict, dataset_location : str = '/root/space/output', C : int = 3) -> Dict:
-            """Get dictionary of dataloaders
+            """Get dictionary of dataloaders for every model, we have 3 dataloaders:
+                    train, test and val (cross-validation set)
 
             Args:
                 model_dict (Dict): dictionary of model exp dicts
@@ -95,7 +96,7 @@ class multi_dim_reconstructor(object):
             for i, model_dict in model_dict.items():
                 loaders = dict()
                 for split in ['val', 'train', 'test']:
-                    logging.info(f'get dataloader for split {split} and dimension {i}')
+                    logger.info(f'get dataloader for split {split} and dimension {i}')
                     ds = datasets.get_dataset(dataset_dict=model_dict["dataset"],
                                         split=split,
                                         datadir=os.path.join(dataset_location, f'dataset_{i}_contrast_{C}'),
@@ -122,99 +123,202 @@ class multi_dim_reconstructor(object):
         self.models = get_models(model_dict, model_location, model_type_name)
         self.dataloaders = get_dataloaders(model_dict, dataset_location, contrast)
 
-        def make_3D_volumes(self, output_location):
-            """Construct the 3D volumes corresponding to the datasets indicated when constructing the dataloaders
+    def make_3D_volumes(self, output_location):
+        """Construct the 3D volumes corresponding to the datasets indicated when constructing the dataloaders
 
-            Since the datasets are sorted, we know the images will just come in the right order
+        Since the datasets are sorted, we know the images will just come in the right order
+
+        Args:
+            output_location (str): Location to output the generated 3D volumes to
+        """
+
+        def combine_crops(crops_dict : Dict, orig_shape : Tuple) -> np.ndarray:
+            """Function to combine the results (probabilities as sigmoid of logits) for each of the image slice crops  
 
             Args:
-                output_location (str): Location to output the generated 3D volumes to
+                crops_dict (Dict): { crop_nr : crop results (probabilities) as np.ndarray }
+                orig_shape (Tuple): (H,W) original shape of the slice
+
+            Raises:
+                ValueError: [description]
+
+            Returns:
+                np.ndarray: 
+            """
+            crop_dim = crops_dict[0].shape
+            logger.debug(f'new cropdict : original size {orig_shape} resulting in crops {[i for i in crops_dict.keys()]} with dimension {crop_dim}')
+            padding = (max(0, math.ceil((crop_dim[1] - orig_shape[1]) / 2)),max(0, math.ceil((crop_dim[0] - orig_shape[0]) / 2)))
+            # cut off the padding
+            crops_dict = {crop_nr : im[:,padding[0]: crop_dim[0] - padding[0], padding[1]: crop_dim[1] - padding[1]] for crop_nr, im in crops_dict.items()}
+
+            # Make an empty array that will contain all the crops, fill it with NaN
+            result = np.empty((crop_dim[0], orig_shape[0], orig_shape[1], len(crops_dict)))
+            result.fill(np.nan)
+
+            # Crops only give partial information, each time a part of the results table stays low
+            count = 0
+            h, w = min(orig_shape[0], crop_dim[0]), min(orig_shape[1], crop_dim[1])
+            for crop_nr, im in crops_dict.items():
+                if crop_nr == 0:
+                    result[:, :h, :w, count] = im
+                elif crop_nr == 1:
+                    result[:, :h, -w:, count] = im
+                elif crop_nr == 2:
+                    result[:, -h:, -w:, count] = im
+                elif crop_nr == 3:
+                    result[:, -h:, :w, count] = im
+                else:
+                    raise ValueError
+
+                count += 1
+
+            # Now, average over the last dimension of result to combine the crops, ignoring the nan values (where no value was returned)
+            return np.nanmean(result, axis=3)
+
+        def combine_slices(slices_dict : Dict, stack_dim : int) -> np.ndarray:
+            """combine a dictionary of slices to a complete 3D array with
+
+            Args:
+                slices_dict (Dict): Dict of slices {slice nr (int) : slice (np.ndarray)}
+                stack_dim (int): dimension along which to stack the slices
+
+            Returns:
+                np.ndarray: 3D array of the combined slices
+            """
+            assert stack_dim in [0, 1, 2]
+            max_slice_nr = max([i for i in slices_dict.keys()])
+            slice_list = [slices_dict[i] for i in range(max_slice_nr + 1)] 
+            return np.stack(slice_list, axis=stack_dim)
+            
+        def volumes_from_loader(model, dataloader, stack_dim : int, output_location : str):
+            """ Make a volume for each of the scans in the dataloader.
+                The images in the dataloader are grouped by patient
+
+                model : model object to generate the probabilities
+                dataloader : loader for the images (based on a sequential sampler)
+                stack dim: dimension along which to stack the images to form volumes
+                ouput_location : path to the location where these volumes can be stored
+
+                1 SCAN consists of multiple SLICES, but each SLICE is cropped again in multiple CROPS. 
             """
 
-            def combine_crops(crops_dict : Dict, orig_shape : Tuple) -> np.ndarray:
-                crop_dim = crops_dict[0].shape
-                logger.debug(f'new cropdict : original size {orig_shape} resulting in crops {[i for i in crops_dict.keys()]} with dimension {crop_dim}')
-                padding = (max(0, math.ceil((crop_dim[1] - orig_shape[1]) / 2)),max(0, math.ceil((crop_dim[0] - orig_shape[0]) / 2)))
-                # cut off the padding
-                crops_dict = {crop_nr : im[:,padding[0]: crop_dim[0] - padding[0], padding[1]: crop_dim[1] - padding[1]] for crop_nr, im in crops_dict.items()}
 
-                result = np.empty((5, orig_shape[0], orig_shape[1], len(crops_dict)))
-                result.fill(np.nan)
+            slice_dict = dict()
+            crops_dict = dict()
+            hash = None
+            orig_shape = None
+            scan_id = None
+            slice_id = None
 
-                count = 0
-                h, w = min(orig_shape[0], crop_dim[0]), min(orig_shape[1], crop_dim[1])
-                for crop_nr, im in crops_dict.items():
-                    if crop_nr == 0:
-                        result[:, :h, :w, count] = im
-                    elif crop_nr == 1:
-                        result[:, :h, -w:, count] = im
-                    elif crop_nr == 2:
-                        result[:, -h:, -w:, count] = im
-                    elif crop_nr == 3:
-                        result[:, -h:, :w, count] = im
-                    else:
-                        raise ValueError
+            logger.debug('start making volumes')
+            # Go through all the batches. The batches come in sequence, so the different slices of a single scan 
+            # should come in sequence. Different crops of the same slice should come in sequence.
+            for batch in tqdm(dataloader):
+                batch = model.probabilities_on_batch(batch)
+                batch_scan_ids = [m['scan_id'] for m in batch['meta']]
+                batch_slice_ids = [m['slice_id'] for m in batch['meta']]
+                batch_crop_nrs = [m['crop_nr'] for m in batch['meta']]
 
-                    count += 1
-
-                # Now, average over the last dimension of result to combine the crops, ignoring the nan values (where no value was returned)
-                return np.nanmean(result, axis=3)
-
-            def combine_slices(slices_dict : Dict, stack_dim : int) -> np.ndarray:
-                assert stack_dim in [0, 1, 2]
-                max_slice_nr = max([i for i in slices_dict.keys()])
-                slice_list = [slices_dict[i] for i in range(max_slice_nr + 1)] 
-                return np.stack(slice_list, axis=stack_dim)
+                logger.debug(f'slice ids : {batch_scan_ids} with slice ids {batch_slice_ids}')
+                if scan_id is None:
+                    scan_id = batch_scan_ids[0]
+                if slice_id is None:
+                    slice_id = batch_slice_ids[0]
                 
-            def volumes_from_loader(model, dataloader, stack_dim, output_location):
+                logger.debug('shape of the probs : {}. This should be BCHW'.format(batch['probs'].shape))
 
-                slice_dict = dict()
-                crops_dict = dict()
-                hash = None
-                orig_shape = None
-                scan_id = None
-                slice_id = None
+                for i, pr in enumerate(batch['probs']):
+                    # New crop of same scan, same slice
+                    if (batch_scan_ids[i] == scan_id) and (batch_slice_ids[i] == slice_id): 
+                        crops_dict[batch_crop_nrs[i]] = pr
+                        orig_shape = batch['meta'][i]['orig_shape']
+                        hash = batch['meta'][i]['hash']
+                    elif batch_scan_ids[i] == scan_id: # New slice of the same scan
+                        # Add the previous slice to the dict --> we are starting the crops of a new slice after this
+                        slice_dict[slice_id] = combine_crops(crops_dict, orig_shape)
+                        # Start a new crops_dict
+                        crops_dict = {batch_crop_nrs[i] : pr}
+                        # Update the current slice id
+                        slice_id = batch_slice_ids[i]
+                        logger.debug('New slice started -> slice : {scan_id}')
+                    else: # New scan
+                        # add the previous slice to complete the previous scan
+                        slice_dict[slice_id] = combine_crops(crops_dict, orig_shape)
+                        logger.debug(f'Finish scan {scan_id} and save in file {hash}_scan_{scan_id:03d}')
+                        volume = combine_slices(slice_dict, stack_dim)
+                        np.save(os.path.join(output_location, f'{hash}_scan_{scan_id:03d}'), volume)
+                        # Apart from the probabilities, the 'result' is just the argmax function on this array 
+                        # --> channel with max probability is the inferred class
+                        np.save(os.path.join(output_location, f'{hash}_scan_{scan_id:03d}_res'), np.argmax(volume, axis=0))
 
-                for batch in tqdm(dataloader):
-                    batch = model.probabilities_on_batch(batch)
-                    batch_scan_ids = [m['scan_id'] for m in batch['meta']]
-                    batch_slice_ids = [m['slice_id'] for m in batch['meta']]
-                    batch_crop_nrs = [m['crop_nr'] for m in batch['meta']]
+                        # start a new scan and a new slice
+                        slice_dict = dict()
+                        crops_dict = {batch_crop_nrs[i] : pr}
+                        scan_id = batch_scan_ids[i]
+                        slice_id = batch_slice_ids[i]
 
-                    logger.debug(f'slice ids : {batch_scan_ids} with slice ids {batch_slice_ids}')
-                    if scan_id is None:
-                        scan_id = batch_scan_ids[0]
-                    if slice_id is None:
-                        slice_id = batch_slice_ids[0]
-                    
-                    logging.debug('shape of the probs : {}. This should be BCHW'.format(batch['probs'].shape))
+        for dim, model in self.models.items():
+            logger.info(f'Start making volumes based on the model for dimension {dim}')
+            for split, loader in self.dataloaders[dim].items():
+                logger.info(f'Make volume from the {split} loader')
+                volumes_from_loader(model, loader, dim, os.path.join(output_location, f"dimension_{dim}_split_{split}"))
 
-                    for i, pr in enumerate(batch['probs']):
-                        if (batch_scan_ids[i] == scan_id) and (batch_slice_ids[i] == slice_id): 
-                            crops_dict[batch_crop_nrs[i]] = pr
-                            orig_shape = batch['meta'][i]['orig_shape']
-                            hash = batch['meta'][i]['hash']
-                        elif batch_scan_ids[i] == scan_id: # New slice of the same scan
-                            # Add the previous slice to the dict
-                            slice_dict[slice_id] = combine_crops(crops_dict, orig_shape)
-                            # Start a new crops_dict
-                            crops_dict = {batch_crop_nrs[i] : pr}
-                            # Update the current slice id
-                            slice_id = batch_slice_ids[i]
-                        else: # New scan
-                            # add the previous slice to complete the previous scan
-                            slice_dict[slice_id] = combine_crops(crops_dict, orig_shape)
-                            volume = combine_slices(slice_dict, stack_dim)
-                            np.save(os.path.join(output_location, f'{hash}_scan_{scan_id:03d}'), volume)
-                            np.save(os.path.join(output_location, f'{hash}_scan_{scan_id:03d}_res'), np.argmax(volume, axis=0))
+        def probabilities_vs_points(self, input_location_volumes : str, input_location_points):
+            """Make a dataframe that contains the probabilities inferred by different models and compare it to the point labels in the annotations.
 
-                            # start a new scan and a new slice
-                            slice_dict = dict()
-                            crops_dict = {batch_crop_nrs[i] : pr}
-                            scan_id = batch_scan_ids[i]
-                            slice_id = batch_slice_ids[i]
+            Args:
+                input_location_volumes (str): location where different volumes are stored in
+                input_location_points (str): location where different volumes containing point labels are stored
+            """
 
-            for dim, model in self.models.items():
-                logging.info(f'Start making volumes based on the model for dimension {dim}')
-                for split, loader in self.dataloaders[dim].items():
-                    volumes_from_loader(model, loader, dim, os.path.join(output_location, f"dimension_{dim}_split_{split}"))
+            def points_probabilities(probabilities : Dict[str, np.ndarray], points : np.ndarray) -> pd.DataFrame:
+                """Extract the probabilities from a probability volume for all the annotated points in points.
+
+                Args:
+                    probabilities (Dict): [n_classes, H, W, D] volume with probabilities for each of the n_classes classes in a dict: {prefix : np.ndarray}
+                    points (np.ndarray): [H, W, D] volume with point annotations
+
+                Returns:
+                    pd.DataFrame: dataframe with columns [point_annotation, prob_0, prob_1, ... , prob_n_classes]
+                """
+
+                logger.debug(f'Compare probabilities volume with points volume (shape HWD : {points.shape}).')
+
+                point_idx = np.argwhere(points != 255)
+                # convert to lists of integer indices for each dimension
+                points_h, points_w, points_d = point_idx[:,0].tolist(), point_idx[:,1].tolist(), point_idx[:,2].tolist()
+                point_vals = pd.DataFrame((points[points_h, points_w, points_d]).T, columns = ['point_labels']) # This should give a 1D array with all the point value labels
+
+                logger.debug(f'Point value array : {point_vals.shape}')
+
+                point_probs = [point_vals]
+                for prefix, probs in probabilities.items():
+                    logger.debug(f'Probabilities for {prefix} : shape CHWD {probs.shape}')
+                    point_probs.append(pd.DataFrame(probs[:, points_h, points_w, points_d], columns = [f'{prefix}_class_{i}' for i in range(probs.shape[0])]) )# This should give a 2D array [number of point labels, n_classes]
+                    logger.debug(f'new dataframe for probabilities : {prefix} \n {point_probs[-1].head()}')
+
+                # The obtained result is a list of pandas dataframes that contain the 
+
+                return pd.concat(point_probs, axis=1)
+
+
+            self.train_df = points_probabilities(...)
+            self.val_df = points_probabilities(...)
+            self.test_df = points_probabilities(...)
+
+        
+        def train_model(self):
+            """
+            Train a classic machine learning model on the dataframe containing the train data.
+            Validate it on the validation set and test on the test model.
+
+            n_classes probabilities --> class label.
+            
+            This model will then be used to infer the class labels based on the predictions of three models (dimensional cut 0, 1 & 2).
+            This might be better than just 1 model 
+            """
+            raise NotImplementedError
+
+
+
+
