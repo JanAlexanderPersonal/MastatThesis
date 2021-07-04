@@ -230,14 +230,12 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         logger.info('Start training')
         train_set.shuffle_img_df()
         train_dict = model.train_on_loader(train_loader)
-
-        
-        if (random.uniform(0,1) < 0.5) or (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 5 - 1):
-            logger.info('Start validation on de train set')
-            train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
-            score_dict['train_score'] = train_val_dict['train_score']
-            score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
-            train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
+    
+        logger.info('Start validation on de train set')
+        train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
+        score_dict['train_score'] = train_val_dict['train_score']
+        score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
+        train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
 
 
         if F_stop_at_epoch:
@@ -266,7 +264,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         score_df = pd.DataFrame(score_list)
         if score_dict["val_score"] >= model.val_score_best:
             logger.info('Start validation on test set')
-            if (random.uniform(0,1) < 0.25) or (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 5):
+            if (random.uniform(0,1) < 0.25) or (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 4):
                 test_dict, test_metrics_df = model.val_on_loader(test_loader,
                                                                 savedir_images=os.path.join(
                                                                     savedir, "images"),
@@ -327,7 +325,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     score_dict["val_score"] = val_dict["val_score"]
     score_dict["val_weighted_dice"] = val_dict["val_weighted_dice"]
 
-    with open(os.path.join(savedir, 'score_dict_final.json')) as f:
+    with open(os.path.join(savedir, 'score_dict_final.json'), 'w') as f:
         json.dump(score_dict, f)
 
 

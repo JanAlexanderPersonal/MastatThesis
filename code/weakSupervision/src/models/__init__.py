@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 
-def get_model(model_dict, exp_dict=None, weight_vector = None):
+def get_model(model_dict, exp_dict=None, weight_vector = None, train_set = None):
     if model_dict['name'] in ["wisenet"]:
         logger.debug('Get Wisenet')
         model =  wisenet.WiseNet(exp_dict, train_set)
@@ -55,7 +55,7 @@ def max_norm(p, version='torch', e=1e-5):
 			max_v = torch.max(p.view(N,C,-1),dim=-1)[0].view(N,C,1,1)
 			min_v = torch.min(p.view(N,C,-1),dim=-1)[0].view(N,C,1,1)
 			p = F.relu(p-min_v-e)/(max_v-min_v+e)
-	elif version is 'numpy' or version is 'np':
+	elif version == 'numpy' or version == 'np':
 		if p.ndim == 3:
 			C, H, W = p.shape
 			p[p<0] = 0

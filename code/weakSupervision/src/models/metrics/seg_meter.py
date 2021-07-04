@@ -156,7 +156,7 @@ class SegMeter:
         # All metrics are computed based on the confusion matrix (self.cf : np.ndarray)
 
 
-        logger.info(f'Get average score from confusion matrix :\n{pformat(self.cf)} \n resulting in weights : {np.power(np.sum(self.cf,axis = 1).astype(float), -1)}')
+        logger.debug(f'Get average score from confusion matrix :\n{pformat(self.cf)} \n resulting in weights : {np.power(np.sum(self.cf,axis = 1).astype(float), -1)}')
 
         val_dict = dict()
         val_dict['%s_dice' % self.split] = np.mean(self.calc_dice())
