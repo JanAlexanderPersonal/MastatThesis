@@ -16,7 +16,15 @@ from skimage.restoration import denoise_bilateral
 import logging
 from PIL import Image
 
+import sys
+sys.path.append(r'/root/space/code/weakSupervision/')
+
+from src.modules.lcfcn import lcfcn_loss
+
 N_CORES = -1
+
+BG_POINTS = 5
+BLOB_POINTS = 3
 
 
 def resampler(image : sitk.SimpleITK.Image, new_spacing : List[float] = None, imposed_size : List[int] = None):
@@ -161,7 +169,34 @@ def mask_to_slices_save(arr : np.ndarray, dim_slice : int, target_folder : str):
         plt.savefig(os.path.join(target_folder, f'slice_{i:03d}.png'), bbox_inches='tight')
         plt.close()
 
-    Parallel(n_jobs=N_CORES)(delayed(save_mask_slice)(i) for i in range(arr.shape[dim_slice]))
+    def points_from_mask_slice(i):
+        """Function that will extract a number of background points and blob points from a slice
+
+        Args:
+            i (int): Index of the slice you want to extract
+
+        Returns:
+            Tuple: (index, np.ndarray that is 255 everywhere except for a number of points)
+        """
+        fn = os.path.join(target_folder, f'slice_{i:03d}_points') # :03d means 3 digits -> leading 0s
+        arr_slice = arr.take(i, axis=dim_slice)
+        points = lcfcn_loss.get_points_from_mask(
+            arr_slice.astype('int64').squeeze(),
+            bg_points=BG_POINTS,
+            blob_points=BLOB_POINTS,center=False)
+        np.save(fn, points)
+        return (i , points)
+
+    # Make one parallel pool for both operations we want to perform
+    parallel_pool = Parallel(n_jobs=N_CORES)
+    parallel_pool(delayed(save_mask_slice)(i) for i in range(arr.shape[dim_slice]))
+    # Get list of (slice_nr , points_slice) this can be sorted and transformed to a volume easily
+    points_list = parallel_pool([delayed(points_from_mask_slice)(i) for i in range(arr.shape[dim_slice])])
+    # sort the list you obtained by the first value
+    points_list.sort(key=lambda a: a[0])
+    points = np.stack([points_slice for slice_index, points_slice in points_list ],  axis = dim_slice)
+    np.save(os.path.join(target_folder, f'points_volume'), points)
+
 
 def read_masklist(source_filenames : List[str], imposed_size = None) -> List:
     """ Read list of maskfiles """
