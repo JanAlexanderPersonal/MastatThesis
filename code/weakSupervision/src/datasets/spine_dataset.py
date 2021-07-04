@@ -69,7 +69,8 @@ class SpineSets(torch.utils.data.Dataset):
         datadir: str,
         exp_dict: Dict,
         separate_source: str = None,
-        crop_size : List[int] = (352, 352)
+        crop_size : List[int] = (352, 352),
+        precalculated_points = False
     ):
         """xVertSeg calss : inherits from torch.utils.data.Dataset
 
@@ -107,6 +108,7 @@ class SpineSets(torch.utils.data.Dataset):
         self.sources = exp_dict['dataset']['sources']
         self.size = 352
         self.crop_size = crop_size
+        self.precalculated_points = precalculated_points
 
         self.blob_points = exp_dict['dataset']['blob_points']
         self.bg_points = exp_dict['dataset']['bg_points']
@@ -389,15 +391,18 @@ class SpineSets(torch.utils.data.Dataset):
         mask = self.img_tgt_transform(Image.fromarray((tgt_mask).astype('uint8')), crop_nr = crop_nr, normalize = False)
         mask = torch.LongTensor(np.array(mask))
 
-        # todo: Check this part well! The code seems very complicated to do something simple.
-        # Function get_points_from_mask from src.modules.lcfcn.lcfcn_loss.py ->
-        # This function takes the mask and returns an array that is 255
-        # everywhere except for the background points (0) and the class points
-        # (1-> 5)
-        points = lcfcn_loss.get_points_from_mask(
-            mask.numpy().squeeze(),
-            bg_points=self.bg_points,
-            blob_points=self.blob_points,center=False)
+        if not self.precalculated_points:
+            # Function get_points_from_mask from src.modules.lcfcn.lcfcn_loss.py ->
+            # This function takes the mask and returns an array that is 255
+            # everywhere except for the background points (0) and the class points
+            # (1-> 5)
+            points = lcfcn_loss.get_points_from_mask(
+                mask.numpy().squeeze(),
+                bg_points=self.bg_points,
+                blob_points=self.blob_points,center=False)
+        else:
+            # Get the pre-defined points and crop this image with the right crop nr
+            points = self.img_tgt_transform(Image.fromarray(np.load(tgt_name.replace('.npy', '_points.npy').astype('uint8'))), crop_nr=crop_nr, normalize = False)
 
         logger.debug(f'shapes:')
         logger.debug(
