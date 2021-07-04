@@ -83,7 +83,7 @@ def template_exp_spine(
     }
 
 
-EXP_GROUPS['weakly_spine_xVertSeg_c6'] = EXP_GROUPS['weakly_spine_dataset_c6'] = [
+EXP_GROUPS['weakly_spine_dataset_c6'] = [
     template_exp_spine(
         debug=False,
         blob_points=4,
@@ -163,3 +163,11 @@ EXP_GROUPS['weakly_spine_dataset_c6_weighted_red'] = [
         bg_points=bg_points,
         base=b) for b, bp, cp, bg_points in itertools.product([
             'fcn8_vgg16'], [3], [1], [10, 100])]
+EXP_GROUPS['full_spine_dataset_c6_weighted'] = [
+    template_exp_spine(
+        debug=False,
+        loss = l,
+        context_span=cp,
+        base=b) for b, l, cp in itertools.product([
+            'fcn8_vgg16',
+            'fcn8_resnet', 'unet2d'], [ 'weighted_cross_entropy'], [0,1,3])]
