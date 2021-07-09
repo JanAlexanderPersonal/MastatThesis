@@ -166,7 +166,8 @@ class SegMeter:
         val_dict['%s_prec' % self.split] = np.mean(self.calc_precision())
         val_dict['%s_recall' % self.split] = np.mean(self.calc_recall())
 
-        val_dict['%s_score' % self.split] = np.mean(self.calc_dice())
+        val_dict['%s_score' % self.split] = np.average(self.calc_dice(), weights = np.power(np.sum(self.cf,axis = 1).astype(float), -1))
+        #val_dict['%s_score' % self.split] = np.mean(self.calc_dice())
 
         logger.debug(f'Return validation metric average score : {pformat(val_dict)}')
         return val_dict

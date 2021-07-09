@@ -86,6 +86,7 @@ from tqdm import tqdm
 logging.basicConfig(level=logging.WARNING)
 
 
+
 FILENAMES_TO_PATIENTS = {
     'AKa2' : 1,
 'AKa3' : 1,
@@ -260,7 +261,7 @@ if __name__ == '__main__':
         # resample on isotropic 1 mm × 1 mm × 1 mm grid
         images =  ut.read_masklist(source_filenames, imposed_size = dimensions_dict[foldername]['image'])
 
-        logging.debug(f'image names : {images}')
+        logging.debug(f'image names : {source_filenames}')
 
         # resample on isotropic 1 mm × 1 mm × 1 mm grid
         arr = np.zeros_like(images[0], dtype=int)

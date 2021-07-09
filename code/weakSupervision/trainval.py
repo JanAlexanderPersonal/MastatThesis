@@ -85,6 +85,9 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     # bookkeepting stuff
     # ==================
     exp_id = hu.hash_dict(exp_dict)
+
+    exp_dict['lr'] = exp_dict['lr'] / 2000
+    exp_dict['max_epoch'] = 80
     logger.debug('experiment has : {exp_id}')
     savedir = os.path.join(savedir_base, exp_id)
     if reset:
@@ -235,6 +238,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
         score_dict['train_score'] = train_val_dict['train_score']
         score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
+        score_dict["train_dice"] = train_val_dict["train_dice"]
         train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
 
 
@@ -248,6 +252,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         val_metrics_df.to_csv(os.path.join(savedir, 'val_metrics_df.csv'))
         score_dict["val_score"] = val_dict["val_score"]
         score_dict["val_weighted_dice"] = val_dict["val_weighted_dice"]
+        score_dict["val_dice"] = val_dict["val_dice"]
         
 
         # Get new score_dict
@@ -263,8 +268,9 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         # Save Best Checkpoint
         score_df = pd.DataFrame(score_list)
         if score_dict["val_score"] >= model.val_score_best:
-            logger.info('Start validation on test set')
-            if (random.uniform(0,1) < 0.25) or (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 4):
+            hu.torch_save(model_path, model.get_state_dict())
+            logger.info("Checkpoint Saved: %s" % savedir)
+            if (random.uniform(0,1) < 0.2) or (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 6):
                 test_dict, test_metrics_df = model.val_on_loader(test_loader,
                                                                 savedir_images=os.path.join(
                                                                     savedir, "images"),
@@ -288,11 +294,11 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         score_df.to_csv(os.path.join(savedir, "score_df.csv"))
         
         logger.info(f"\n{score_df.tail(10)}\n")
-        hu.torch_save(model_path, model.get_state_dict())
+        
         hu.save_pkl(score_list_path, score_list)
-        logger.info("Checkpoint Saved: %s" % savedir)
+        
 
-        if model.waiting >= 8:
+        if model.waiting >= 10:
             # Revert to final model
 
             break
@@ -387,7 +393,7 @@ if __name__ == "__main__":
     parser.add_argument("-r", "--reset", default=0, type=int)
     parser.add_argument("-ei", "--exp_id", default=None)
     parser.add_argument("-j", "--run_jobs", default=0, type=int)
-    parser.add_argument("-nw", "--num_workers", type=int, default=0)
+    parser.add_argument("-nw", "--num_workers", type=int, default=4)
     parser.add_argument("-tb", "--tensorboard", default=None)
 
     args = parser.parse_args()
