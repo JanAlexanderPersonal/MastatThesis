@@ -10,7 +10,7 @@ model_list = [
 
 ]
 
-MAX_EPOCH = 10
+MAX_EPOCH = 50
 
 
 def template_exp_spine(
@@ -75,7 +75,7 @@ def template_exp_spine(
         'batch_size': batch_size,
         'dataset': dataset,
         'dataset_size': dataset_size,
-        'lr': 10**(-4),
+        'lr': 10**(-4) ,
         'max_epoch': 10 if debug else MAX_EPOCH,
         'model': model,
         'num_channels': 1,
