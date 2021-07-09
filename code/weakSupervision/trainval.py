@@ -229,17 +229,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         logger.info(f'Start epoch {e}')
         score_dict = {}
 
-        # Train the model
-        logger.info('Start training')
-        train_set.shuffle_img_df()
-        train_dict = model.train_on_loader(train_loader)
-    
-        logger.info('Start validation on de train set')
-        train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
-        score_dict['train_score'] = train_val_dict['train_score']
-        score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
-        score_dict["train_dice"] = train_val_dict["train_dice"]
-        train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
+        
 
 
         if F_stop_at_epoch:
@@ -296,6 +286,18 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         logger.info(f"\n{score_df.tail(10)}\n")
         
         hu.save_pkl(score_list_path, score_list)
+
+        # Train the model
+        logger.info('Start training')
+        train_set.shuffle_img_df()
+        train_dict = model.train_on_loader(train_loader)
+    
+        logger.info('Start validation on de train set')
+        train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
+        score_dict['train_score'] = train_val_dict['train_score']
+        score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
+        score_dict["train_dice"] = train_val_dict["train_dice"]
+        train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
         
 
         if model.waiting >= 10:
