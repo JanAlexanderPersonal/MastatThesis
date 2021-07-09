@@ -53,6 +53,7 @@ class multi_dim_reconstructor(object):
             Returns:
                 Dict: {d : model object (for example: inst_seg)}
             """
+            logger.debug('Start collecting the models')
             assert all([key in [0,1,2] for key in model_dict.keys()])
 
             models_dict = dict()
@@ -74,6 +75,7 @@ class multi_dim_reconstructor(object):
                     logger.warning('Model {model_folder} (dimension {i}) is not trained yet!')
 
                 models_dict.update({i : model})
+            
 
             return models_dict
 
@@ -88,6 +90,7 @@ class multi_dim_reconstructor(object):
             Returns:
                 Dict: {dim : {'train' : train_loader, 'test' : test_loader, 'val' : val_loader}}
             """
+            logger.debug('Get the dataloaders')
             assert all([key in [0,1,2] for key in model_dict.keys()])
             assert C in [i for i in range(4)]
 
@@ -263,61 +266,61 @@ class multi_dim_reconstructor(object):
                 logger.info(f'Make volume from the {split} loader')
                 volumes_from_loader(model, loader, dim, os.path.join(output_location, f"dimension_{dim}_split_{split}"))
 
-        def probabilities_vs_points(self, input_location_volumes : str, input_location_points):
-            """Make a dataframe that contains the probabilities inferred by different models and compare it to the point labels in the annotations.
+    def probabilities_vs_points(self, input_location_volumes : str, input_location_points):
+        """Make a dataframe that contains the probabilities inferred by different models and compare it to the point labels in the annotations.
+
+        Args:
+            input_location_volumes (str): location where different volumes are stored in
+            input_location_points (str): location where different volumes containing point labels are stored
+        """
+
+        def points_probabilities(probabilities : Dict[str, np.ndarray], points : np.ndarray) -> pd.DataFrame:
+            """Extract the probabilities from a probability volume for all the annotated points in points.
 
             Args:
-                input_location_volumes (str): location where different volumes are stored in
-                input_location_points (str): location where different volumes containing point labels are stored
+                probabilities (Dict): [n_classes, H, W, D] volume with probabilities for each of the n_classes classes in a dict: {prefix : np.ndarray}
+                points (np.ndarray): [H, W, D] volume with point annotations
+
+            Returns:
+                pd.DataFrame: dataframe with columns [point_annotation, prob_0, prob_1, ... , prob_n_classes]
             """
 
-            def points_probabilities(probabilities : Dict[str, np.ndarray], points : np.ndarray) -> pd.DataFrame:
-                """Extract the probabilities from a probability volume for all the annotated points in points.
+            logger.debug(f'Compare probabilities volume with points volume (shape HWD : {points.shape}).')
 
-                Args:
-                    probabilities (Dict): [n_classes, H, W, D] volume with probabilities for each of the n_classes classes in a dict: {prefix : np.ndarray}
-                    points (np.ndarray): [H, W, D] volume with point annotations
+            point_idx = np.argwhere(points != 255)
+            # convert to lists of integer indices for each dimension
+            points_h, points_w, points_d = point_idx[:,0].tolist(), point_idx[:,1].tolist(), point_idx[:,2].tolist()
+            point_vals = pd.DataFrame((points[points_h, points_w, points_d]).T, columns = ['point_labels']) # This should give a 1D array with all the point value labels
 
-                Returns:
-                    pd.DataFrame: dataframe with columns [point_annotation, prob_0, prob_1, ... , prob_n_classes]
-                """
+            logger.debug(f'Point value array : {point_vals.shape}')
 
-                logger.debug(f'Compare probabilities volume with points volume (shape HWD : {points.shape}).')
+            point_probs = [point_vals]
+            for prefix, probs in probabilities.items():
+                logger.debug(f'Probabilities for {prefix} : shape CHWD {probs.shape}')
+                point_probs.append(pd.DataFrame(probs[:, points_h, points_w, points_d], columns = [f'{prefix}_class_{i}' for i in range(probs.shape[0])]) )# This should give a 2D array [number of point labels, n_classes]
+                logger.debug(f'new dataframe for probabilities : {prefix} \n {point_probs[-1].head()}')
 
-                point_idx = np.argwhere(points != 255)
-                # convert to lists of integer indices for each dimension
-                points_h, points_w, points_d = point_idx[:,0].tolist(), point_idx[:,1].tolist(), point_idx[:,2].tolist()
-                point_vals = pd.DataFrame((points[points_h, points_w, points_d]).T, columns = ['point_labels']) # This should give a 1D array with all the point value labels
+            # The obtained result is a list of pandas dataframes that contain the 
 
-                logger.debug(f'Point value array : {point_vals.shape}')
-
-                point_probs = [point_vals]
-                for prefix, probs in probabilities.items():
-                    logger.debug(f'Probabilities for {prefix} : shape CHWD {probs.shape}')
-                    point_probs.append(pd.DataFrame(probs[:, points_h, points_w, points_d], columns = [f'{prefix}_class_{i}' for i in range(probs.shape[0])]) )# This should give a 2D array [number of point labels, n_classes]
-                    logger.debug(f'new dataframe for probabilities : {prefix} \n {point_probs[-1].head()}')
-
-                # The obtained result is a list of pandas dataframes that contain the 
-
-                return pd.concat(point_probs, axis=1)
+            return pd.concat(point_probs, axis=1)
 
 
-            self.train_df = points_probabilities(...)
-            self.val_df = points_probabilities(...)
-            self.test_df = points_probabilities(...)
+        self.train_df = points_probabilities(...)
+        self.val_df = points_probabilities(...)
+        self.test_df = points_probabilities(...)
 
+    
+    def train_model(self):
+        """
+        Train a classic machine learning model on the dataframe containing the train data.
+        Validate it on the validation set and test on the test model.
+
+        n_classes probabilities --> class label.
         
-        def train_model(self):
-            """
-            Train a classic machine learning model on the dataframe containing the train data.
-            Validate it on the validation set and test on the test model.
-
-            n_classes probabilities --> class label.
-            
-            This model will then be used to infer the class labels based on the predictions of three models (dimensional cut 0, 1 & 2).
-            This might be better than just 1 model 
-            """
-            raise NotImplementedError
+        This model will then be used to infer the class labels based on the predictions of three models (dimensional cut 0, 1 & 2).
+        This might be better than just 1 model 
+        """
+        raise NotImplementedError
 
 
 
