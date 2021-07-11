@@ -151,8 +151,8 @@ class SpineSets(torch.utils.data.Dataset):
                 for mask_slice in os.listdir(mask_slice_path):
                     if not mask_slice.endswith('.npy') or mask_slice.endswith('points.npy') or mask_slice in ['points_volume.npy', 'mask_array.npy']:
                         continue
-                    logger.debug(mask_slice)
-                    logger.debug(SLICE_NR.findall(mask_slice))
+                    #logger.debug(mask_slice)
+                    #logger.debug(SLICE_NR.findall(mask_slice))
                     slice_id = int(SLICE_NR.findall(mask_slice)[0])
                     img_list += [{'img': os.path.join(image_slice_path, mask_slice),
                                     'tgt': os.path.join(mask_slice_path, mask_slice),
@@ -273,30 +273,38 @@ class SpineSets(torch.utils.data.Dataset):
         def expand_image(df_part : pd.DataFrame) -> pd.DataFrame:
             # Get the relevant crop numbers for 1 image (no centercrop)
             crops = list(range(4))
-            im = np.load(df_part.sample(axis=0)['img'])
+            img_location = df_part.sample(axis=0).img.iloc[0]
+
+            
+            im = np.load(img_location)
+            logger.debug(f'Image location : {img_location} with shape {im.shape}')
             if im.shape[0] <= crop_dim[0]:
-                for i in [2, 3, 4]:
+                for i in [2, 3]:
                     crops.remove(i)
             if im.shape[1] <= crop_dim[1]:
-                for i in [1, 2, 4]:
+                for i in [1, 2]:
                     try:
                         crops.remove(i)
                     except ValueError:
                         pass
 
+            logger.debug(f'Selected crops : {crops}')
+
             # Remove the column 'crop_nr' and take the cross product with a dataframe that contains the desired crop numbers
             cols = [col for col in df_part.columns if col != 'crop_nr']
-            return df_part[cols].merge(pd.DataFrame({'crop_nr': crops}), how='cross')
+            expanded_image = df_part[cols].merge(pd.DataFrame({'crop_nr': crops}), how='cross')
+
+            return expanded_image
 
         logger.info(f'before expanding the dataframe with all relevant crops, the datafame contains {self.selected_image_df.shape[0]} rows' )
         temp = list()
         for groupname, group in self.selected_image_df.groupby('scan_id'):
-            logger.info('Expand the selected image dataframe for scan {groupname}')
+            logger.info(f'Expand the selected image dataframe for scan {groupname}')
             temp.append(expand_image(group))
 
         # All these subgroups are not concatenated back into a new selected images dataframe and sorted.
         # The sorting is important to assure the recombination in 3D volumes can take place correctly
-        self.selected_image_df = pd.concat(temp, axis=0, ignore_index=True).sort_values(by=['slice_id', 'scan_id', 'crop_nr'])
+        self.selected_image_df = pd.concat(temp, axis=0, ignore_index=True).sort_values(by=['scan_id', 'slice_id', 'crop_nr'])
         self.img_list = self.selected_image_df.to_dict(orient = 'records')
 
         logger.info(f'After expanding the dataframe with all relevant crops, the datafame contains {self.selected_image_df.shape[0]} rows' )

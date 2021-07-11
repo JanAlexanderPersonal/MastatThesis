@@ -86,8 +86,8 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     # ==================
     exp_id = hu.hash_dict(exp_dict)
 
-    exp_dict['lr'] = exp_dict['lr'] / 2000
-    exp_dict['max_epoch'] = 80
+    exp_dict['lr'] = exp_dict['lr'] / 5000
+    exp_dict['max_epoch'] = 50
     logger.debug('experiment has : {exp_id}')
     savedir = os.path.join(savedir_base, exp_id)
     if reset:
@@ -144,14 +144,14 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     logger.info('make dataloaders from the defined validation and test set')
     val_loader = DataLoader(val_set,
                             # sampler=val_sampler,
-                            batch_size=exp_dict["batch_size"],
+                            batch_size=exp_dict["batch_size"] + 4,
                             collate_fn=ut.collate_fn,
-                            num_workers=num_workers)
+                            num_workers=4)
     test_loader = DataLoader(test_set,
                              # sampler=val_sampler,
-                             batch_size=exp_dict["batch_size"],
+                             batch_size=exp_dict["batch_size"] + 4,
                              collate_fn=ut.collate_fn,
-                             num_workers=num_workers)
+                             num_workers=4)
 
     # Model
     # ==================
@@ -188,7 +188,10 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     # ==================
     logger.info("Starting experiment at epoch %d" % (s_epoch))
     model.waiting = 0
-    model.val_score_best = -np.inf
+    # Validate the model
+    logger.info('Start validation on de cross validation set')
+    val_dict, val_metrics_df = model.val_on_loader(val_loader)
+    model.val_score_best = val_dict["val_score"]
 
     # Random sampler
     train_sampler = torch.utils.data.RandomSampler(
@@ -201,7 +204,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                               collate_fn=ut.collate_fn,
                               batch_size=exp_dict["batch_size"],
                               drop_last=True,
-                              num_workers=num_workers)
+                              num_workers=4)
 
     for name, data_set in zip(['train', 'val', 'test'], [
                               train_set, val_set, test_set]):
@@ -229,6 +232,27 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         logger.info(f'Start epoch {e}')
         score_dict = {}
 
+         # Train the model
+        logger.info('Start training')
+        train_set.shuffle_img_df()
+        train_dict = model.train_on_loader(train_loader)
+    
+        logger.info('Start validation on de train set')
+        train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
+        score_dict['train_score'] = train_val_dict['train_score']
+        score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
+        score_dict["train_dice"] = train_val_dict["train_dice"]
+        train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
+
+        # Get new score_dict
+        score_dict.update(train_dict)
+        score_dict["epoch"] = e
+        score_dict["waiting"] = model.waiting
+
+        model.waiting += 1
+
+        # Add to score_list and save checkpoint
+        score_list += [score_dict]
         
 
 
@@ -245,19 +269,10 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         score_dict["val_dice"] = val_dict["val_dice"]
         
 
-        # Get new score_dict
-        score_dict.update(train_dict)
-        score_dict["epoch"] = e
-        score_dict["waiting"] = model.waiting
-
-        model.waiting += 1
-
-        # Add to score_list and save checkpoint
-        score_list += [score_dict]
-
         # Save Best Checkpoint
         score_df = pd.DataFrame(score_list)
         if score_dict["val_score"] >= model.val_score_best:
+            logger.info('SCORE IMPROVED')
             hu.torch_save(model_path, model.get_state_dict())
             logger.info("Checkpoint Saved: %s" % savedir)
             if (random.uniform(0,1) < 0.2) or (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 6):
@@ -287,18 +302,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         
         hu.save_pkl(score_list_path, score_list)
 
-        # Train the model
-        logger.info('Start training')
-        train_set.shuffle_img_df()
-        train_dict = model.train_on_loader(train_loader)
-    
-        logger.info('Start validation on de train set')
-        train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
-        score_dict['train_score'] = train_val_dict['train_score']
-        score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
-        score_dict["train_dice"] = train_val_dict["train_dice"]
-        train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
-        
+       
 
         if model.waiting >= 10:
             # Revert to final model
