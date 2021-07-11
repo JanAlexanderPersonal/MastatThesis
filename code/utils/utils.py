@@ -140,6 +140,7 @@ def arr_slices_save(arr : np.ndarray, dim_slice : int, fn : str, contrast_option
             im.convert('RGB').save(os.path.join(fn, f'slice_{i:03d}.jpg')) # :03d means 3 digits -> leading 0s
 
     # Execute the function parallel --> only one image in memory but the contrast improvement and conversion to jpg is parallel
+    np.save(os.path.join(fn, 'volume'), arr)
     Parallel(n_jobs=N_CORES)(delayed(save_scan_slice)(i) for i in range(arr.shape[dim_slice]))
 
 def mask_to_slices_save(arr : np.ndarray, dim_slice : int, target_folder : str):

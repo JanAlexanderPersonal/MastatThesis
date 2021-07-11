@@ -81,6 +81,7 @@ import os
 import re
 import argparse
 import logging
+from typing import MappingView
 import SimpleITK as sitk
 import numpy as np
 
@@ -179,6 +180,9 @@ DIM_CONV = {
     2 : 0
 }
 
+def arrange_axis(arr):
+    return np.moveaxis(arr, 0, 2)
+
 
 if __name__ == '__main__':
 
@@ -194,7 +198,7 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     source_filedir = os.path.abspath(args.source)
-    dim_slice = DIM_CONV[args.dimension]
+    dim_slice = args.dimension
     output_filedir = os.path.abspath(args.output)
     contrast_enhance = (args.contrast > 0)
     image_slices_filedir = os.path.join(output_filedir, 'MyoSegmenTUM_images')
@@ -222,6 +226,8 @@ if __name__ == '__main__':
         filename = os.path.join(foldername, f'{args.mode}.dcm')
 
         arr, minimum, maximum = ut.array_from_file(filename)
+        if not nr in [53, 54]:
+            arr = arrange_axis(arr)
 
         dimensions_dict[foldername] = {'image' : arr.shape}
         
@@ -259,6 +265,9 @@ if __name__ == '__main__':
         arr = np.zeros_like(masks[0], dtype=int)
         for i, mask in enumerate(masks):
             arr[mask == 1] = i+1
+
+        if not nr in [53, 54]:
+            arr = arrange_axis(arr)
 
         dimensions_dict[foldername]['mask'] = arr.shape
 

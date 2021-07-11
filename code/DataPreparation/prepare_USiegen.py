@@ -182,6 +182,9 @@ DIM_CONV = {
     2 : 0
 }
 
+def arrange_axis(arr):
+    return np.moveaxis(arr, 0, 2)
+
 
 if __name__ == '__main__':
 
@@ -197,7 +200,7 @@ if __name__ == '__main__':
 
     image_filedir = os.path.join(args.source, 'SpineDatasets')
     mask_filedir = os.path.join(args.source, 'SpineSegmented')
-    dim_slice = DIM_CONV[args.dimension]
+    dim_slice = args.dimension
     contrast_enhance = (args.contrast > 0)
     output_filedir = os.path.abspath(args.output)
     image_slices_filedir = os.path.join(output_filedir, 'USiegen_images')
@@ -228,6 +231,8 @@ if __name__ == '__main__':
         filenames_dict[nr] = filename
 
         arr, minimum, maximum = ut.array_from_file(os.path.join(image_filedir, filename))
+
+        arr = arrange_axis(arr)
 
         dimensions_dict[filename] = {'image' : arr.shape}
         
@@ -270,6 +275,8 @@ if __name__ == '__main__':
         # The background will be encoded as value 0
         for i, image  in enumerate(images):
             arr[image != 0] = i + 1
+
+        arr = arrange_axis(arr)
 
         dimensions_dict[foldername]['mask'] = arr.shape
         
