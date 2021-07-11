@@ -392,6 +392,12 @@ class Inst_Seg(torch.nn.Module):
             #           except: 0 for background points
             #                   1 --> 5 to indicate L1 --> L5
 
+            loss += F.cross_entropy(logits, points.cuda(), ignore_index = 255, weight = torch.Tensor(self.weight_vector).to(logits.get_device()))
+            points_flip = flips.Hflip()(points)
+            loss += F.cross_entropy(logits_flip, points_flip.cuda(), ignore_index = 255, weight = torch.Tensor(self.weight_vector).to(logits.get_device()))
+
+
+            """
             for i in range(self.n_classes):
 
                 if i not in torch.unique(points):
@@ -450,6 +456,7 @@ class Inst_Seg(torch.nn.Module):
                         f'flipped logits loss added for channel {i} : {loss}')
                     logger.debug(
                         f'This was calculated with BCE logits slice [ind] {logits_slice[ind]} vs points temp {points_temp[ind]}\n and logits flip slice {logits_flip_slice[ind]} vs {points_flip[ind]}.')
+            """
         
         if 'prior_extend' in loss_name:
 
@@ -672,7 +679,7 @@ class Inst_Seg(torch.nn.Module):
             logger.debug(
                 f'Loss calculated (value {loss}). Start backward step')
             loss.backward()
-            if self.exp_dict['model'].get('clip_grad'):
+            if True: #self.exp_dict['model'].get('clip_grad'):
                 ut.clip_gradient(self.opt, 0.5)
             try:
                 self.opt.step()
@@ -743,7 +750,8 @@ class Inst_Seg(torch.nn.Module):
         self.eval()
         image = batch['images'].cuda()
         logits = self.model_base.forward(image)
-        return batch.update({'probs' : logits.sigmoid().data.cpu().numpy()})
+        batch.update({'probs' : logits.sigmoid().data.cpu().numpy()})
+        return batch
 
     def vis_on_batch(self, batch, savedir_image, i=0):
         # Get torch tensors with the images and the masks
