@@ -42,6 +42,9 @@ cudnn.benchmark = True
 
 F_stop_at_epoch = False
 
+LEARNING_RATE_STEPS = [1, 5000, 20000]
+MAX_WEIGHT_STEPS = [4,4,8]
+
 
 def setuplogger():
     """Setup the logger for this module
@@ -59,7 +62,7 @@ def setuplogger():
 
 
 def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
-             reset: bool = False, num_workers: int = 0, tensorboard_folder: str = None, learning_rate_factor : int = 1, me = 150, max_wait = 5):
+             reset: bool = False, num_workers: int = 0, tensorboard_folder: str = None, learning_rate_factor : int = 1, me = 150):
     """trainval: training and validation routine to perform all the experiments defined in exp_dict
 
     Args:
@@ -163,12 +166,9 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     if tensorboard_folder is not None:
         model.add_writer(tensorboard_folder)
 
-    # model.opt = optimizers.get_optim(exp_dict['opt'], model)
     model_path = os.path.join(savedir, "model.pth")
     score_list_path = os.path.join(savedir, "score_list.pkl")
 
-    #logger.debug('model definition')
-    # logger.debug(model)
 
     # If there is a pkl file containing stored model weights from the last time the model was trained, get it.
     # if 'reset == True' this file will be deleted when you reach this code
@@ -225,93 +225,96 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     score_dict = {}
     logger.info('Overlap detection success!')
 
+    min_loss = np.inf
+
     # Run the remaining epochs starting from the last epoch for which values
     # were available in the pkl
-    for e in range(s_epoch, exp_dict['max_epoch']):
-        # Validate only at the start of each cycle
-        logger.info(f'Start epoch {e}')
-        score_dict = {}
-
-         # Train the model
-        logger.info('Start training')
-        train_set.shuffle_img_df()
-        train_dict = model.train_on_loader(train_loader)
-    
-        logger.info('Start validation on de train set')
-        train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
-        score_dict['train_score'] = train_val_dict['train_score']
-        score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
-        score_dict["train_dice"] = train_val_dict["train_dice"]
-        train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
-
-        # Get new score_dict
-        score_dict.update(train_dict)
-        score_dict["epoch"] = e
-        score_dict["waiting"] = model.waiting
-
-        model.waiting += 1
-
-        # Add to score_list and save checkpoint
-        score_list += [score_dict]
-        
-
-
-        if F_stop_at_epoch:
-            print(f'Epoch {e} -> train on loader is finished.')
-            input('Press enter to continue')
-
-        # Validate the model
-        logger.info('Start validation on de cross validation set')
-        val_dict, val_metrics_df = model.val_on_loader(val_loader,savedir_images=os.path.join(savedir, "images"), n_images=3)
-        val_metrics_df.to_csv(os.path.join(savedir, 'val_metrics_df.csv'))
-        score_dict["val_score"] = val_dict["val_score"]
-        score_dict["val_weighted_dice"] = val_dict["val_weighted_dice"]
-        score_dict["val_dice"] = val_dict["val_dice"]
-        
-
-        # Save Best Checkpoint
-        score_df = pd.DataFrame(score_list)
-        if score_dict["val_score"] >= model.val_score_best:
-            logger.info('SCORE IMPROVED')
-            hu.torch_save(model_path, model.get_state_dict())
-            logger.info("Checkpoint Saved: %s" % savedir)
-            if (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 5) or (e % 10 == 0):
-                test_dict, test_metrics_df = model.val_on_loader(test_loader,
-                                                                savedir_images=os.path.join(
-                                                                    savedir, "images"),
-                                                                n_images=3)
-                score_dict.update(test_dict)
-                test_metrics_df.to_csv(os.path.join(savedir, 'test_metrics_df.csv'))
-            hu.save_pkl(
-                os.path.join(
-                    savedir,
-                    "score_list_best.pkl"),
-                score_list)
-            # score_df.to_csv(os.path.join(savedir, "score_best_df.csv"))
-            hu.torch_save(os.path.join(savedir, "model_best.pth"),
-                          model.get_state_dict())
-            model.waiting = 0
-            model.val_score_best = score_dict["val_score"]
-            logger.info("Saved Best: %s" % savedir)
-
-        # Report & Save
-        score_df = pd.DataFrame(score_list)
-        score_df.to_csv(os.path.join(savedir, "score_df.csv"))
-        
-        logger.info(f"\n{score_df.tail(10)}\n")
-        
-        hu.save_pkl(score_list_path, score_list)
-
-       
-
+    for learning_rate_factor, max_wait in zip(LEARNING_RATE_STEPS, MAX_WEIGHT_STEPS):
         if model.waiting >= max_wait:
-            # Revert to final model
+                # Revert to final model
+                break
+        exp_dict['lr'] = exp_dict['lr'] / learning_rate_factor
+        model.update_optimizer(exp_dict)
+        loss_decrease_counter = 0
 
-            break
+        for e in range(s_epoch, exp_dict['max_epoch']):
+            # Validate only at the start of each cycle
+            logger.info(f'Start epoch {e}')
+            score_dict = {}
 
-        if F_stop_at_epoch:
-            print(f'Epoch {e} is finished.')
-            input('Press enter to continue')
+            # Train the model
+            logger.info('Start training')
+            train_set.shuffle_img_df()
+            train_dict = model.train_on_loader(train_loader)
+        
+            logger.info('Start validation on de train set')
+            train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
+            score_dict['train_score'] = train_val_dict['train_score']
+            score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
+            score_dict["train_dice"] = train_val_dict["train_dice"]
+            train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
+
+            # Get new score_dict
+            score_dict.update(train_dict)
+            score_dict["epoch"] = e
+            score_dict["waiting"] = model.waiting
+
+            if min_loss > train_dict['train_loss']:
+                model.waiting += 1
+                min_loss = train_dict['train_loss']
+            else:
+                loss_decrease_counter += 1
+
+            # Add to score_list and save checkpoint
+            score_list += [score_dict]
+            
+            if F_stop_at_epoch:
+                print(f'Epoch {e} -> train on loader is finished.')
+                input('Press enter to continue')
+
+            # Validate the model
+            logger.info('Start validation on de cross validation set')
+            val_dict, val_metrics_df = model.val_on_loader(val_loader,savedir_images=os.path.join(savedir, "images"), n_images=3)
+            val_metrics_df.to_csv(os.path.join(savedir, 'val_metrics_df.csv'))
+            score_dict["val_score"] = val_dict["val_score"]
+            score_dict["val_weighted_dice"] = val_dict["val_weighted_dice"]
+            score_dict["val_dice"] = val_dict["val_dice"]
+
+            if score_dict["val_score"] >= model.val_score_best:
+                logger.info('SCORE IMPROVED')
+                hu.torch_save(model_path, model.get_state_dict())
+                logger.info("Checkpoint Saved: %s" % savedir)
+                if (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 5) or (e % 10 == 0):
+                    test_dict, test_metrics_df = model.val_on_loader(test_loader,
+                                                                    savedir_images=os.path.join(
+                                                                        savedir, "images"),
+                                                                    n_images=3)
+                    score_dict.update(test_dict)
+                    test_metrics_df.to_csv(os.path.join(savedir, 'test_metrics_df.csv'))
+                hu.save_pkl(
+                    os.path.join(
+                        savedir,
+                        "score_list_best.pkl"),
+                    score_list)
+                # score_df.to_csv(os.path.join(savedir, "score_best_df.csv"))
+                hu.torch_save(os.path.join(savedir, "model_best.pth"),
+                            model.get_state_dict())
+                model.waiting = 0
+                model.val_score_best = score_dict["val_score"]
+                logger.info("Saved Best: %s" % savedir)
+
+            # Report & Save
+            score_df = pd.DataFrame(score_list)
+            score_df.to_csv(os.path.join(savedir, "score_df.csv"))
+            
+            logger.info(f"\n{score_df.tail(10)}\n")
+            
+            hu.save_pkl(score_list_path, score_list)
+
+            if model.waiting >= max_wait or loss_decrease_counter >= max_wait:
+                # Reduce learning rate or stop
+                break
+
 
     # Revert the model to the last stored value and perform the final validation
 
@@ -425,16 +428,13 @@ if __name__ == "__main__":
     Path(args.tensorboard).mkdir(parents=True, exist_ok=True)
     Path(args.savedir_base).mkdir(parents=True, exist_ok=True)
 
-    # Perform the trainval procedure on each of the experiments in the
-    # experiment dict:
-    me = 50
+    # Perform the trainval procedure on each of the experiments in the exp list
     for exp_dict in exp_list:
         # do trainval
-        for lrf, mw in zip([1, 5000, 25000], [6,3,8]):
-            exp_dict_copy = copy.deepcopy(exp_dict)
-            trainval(exp_dict=exp_dict_copy,
-                    savedir_base=args.savedir_base,
-                    datadir=args.datadir,
-                    reset=args.reset,
-                    num_workers=args.num_workers,
-                    tensorboard_folder=args.tensorboard, learning_rate_factor=lrf)
+        exp_dict_copy = copy.deepcopy(exp_dict)
+        trainval(exp_dict=exp_dict_copy,
+                savedir_base=args.savedir_base,
+                datadir=args.datadir,
+                reset=args.reset,
+                num_workers=args.num_workers,
+                tensorboard_folder=args.tensorboard)

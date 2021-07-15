@@ -104,6 +104,11 @@ class Inst_Seg(torch.nn.Module):
 
         return state_dict
 
+    def update_optimizer(self, exp_dict):
+        self.opt = optimizers.get_optimizer(
+            self.exp_dict['optimizer'], self.model_base, self.exp_dict)
+
+
     def load_state_dict(self, state_dict):
         self.model_base.load_state_dict(state_dict["model"])
         if 'opt' not in state_dict:
@@ -141,10 +146,6 @@ class Inst_Seg(torch.nn.Module):
             pbar.update(1)
 
         pbar.close()
-
-        if self.exp_dict.get('adjust_lr'):
-            infnet.adjust_lr(self.opt,
-                             self.epoch, decay_rate=0.1, decay_epoch=30)
 
         avg_score = train_monitor.get_avg_score()
 
