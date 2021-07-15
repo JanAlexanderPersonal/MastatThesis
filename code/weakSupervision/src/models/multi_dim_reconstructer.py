@@ -21,6 +21,8 @@ from src import datasets
 from src import utils as ut
 from pathlib import Path
 
+from multiprocessing import Process
+
 from typing import Dict, Tuple
 
 from torch.utils.data import DataLoader
@@ -278,10 +280,15 @@ class multi_dim_reconstructor(object):
                         slice_dict[slice_id] = combine_crops(crops_dict, orig_shape)
                         logger.debug(f'Finish scan {scan_id} and save in file scan_{scan_id}')
                         volume = combine_slices(slice_dict, stack_dim)
-                        np.save(os.path.join(output_location, f'scan_{scan_id}'), volume)
+                        # Start the saving processes independently
+                        save_probs = Process(target=np.save, args=(os.path.join(output_location, f'scan_{scan_id}'), volume))
+                        save_res = Process(target=np.save, args=(os.path.join(os.path.join(output_location, f'scan_{scan_id}_res'), np.argmax(volume, axis=0))))
+                        save_probs.start()
+                        save_res.start()
+                        #np.save(os.path.join(output_location, f'scan_{scan_id}'), volume)
                         # Apart from the probabilities, the 'result' is just the argmax function on this array 
                         # --> channel with max probability is the inferred class
-                        np.save(os.path.join(output_location, f'scan_{scan_id}_res'), np.argmax(volume, axis=0))
+                        #np.save(os.path.join(output_location, f'scan_{scan_id}_res'), np.argmax(volume, axis=0))
 
                         # start a new scan and a new slice
                         slice_dict = dict()
