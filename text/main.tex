@@ -1,12 +1,12 @@
 \documentclass[
     a4paper, % Stock and paper size.
     9pt, % Type size.
-    % article,
+    article,
     oneside, 
     onecolumn, % Only one column of text on a page.
-    % openright, % Each chapter will start on a recto page.
+    openright, % Each chapter will start on a recto page.
     % openleft, % Each chapter will start on a verso page.
-    openany, % A chapter may start on either a recto or verso page.
+    % openany, % A chapter may start on either a recto or verso page.
     ]{memoir}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -19,6 +19,8 @@
 \usepgfplotslibrary{groupplots}
 \usepackage{epstopdf}
 \usepackage{multirow}
+\usepackage{placeins}
+\usepackage{amsfonts} 
 
 \usepackage[mode=buildnew]{standalone}
 
@@ -233,44 +235,23 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 %\cleardoublepage
 \restoregeometry
 \input{/home/thesis/0_Main/main_abstract}
-\newgeometry{total={210mm,297mm},left=20mm,right=20mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
-\begin{partwithabstract}{Problem Introduction \& Motivation}
-    The objective of this project is the development of a model for the automated vertebrae instance segmentation of \acrshort{mri} and \acrshort{ct} scans of the lumbar part of the human spine based on point annotated training data.
-    
-    This part of the book aims to clarify these terms. 
-    I start off with some information regarding the human spine and the medical imaging techniques to investigate it.
-    Secondly, I define and clarify different machine learning problems and techniques when working with two and three dimensional images.
-    This part of the book ends with a discussion of previous work. 
-    First the previous work to tackle the problem of instance segmentation of the human spine from medical images.
-    Then prevous work in the field of \Gls{weaklysupervisedl} \Gls{machinevision}.
-\end{partwithabstract}
-
-\restoregeometry
-\input{/home/thesis/1_ProblemIntro/Medical}
-\input{/home/thesis/1_ProblemIntro/MachineVision}
-\input{/home/thesis/1_ProblemIntro/PreviousWork}
-
+\input{/home/thesis/1_ProblemIntro/PART_Problem_intro}
 
 \newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
-\begin{partwithabstract}{Modelling \& Analysis}
+\begin{partwithabstract}{Modelling methods \& Analysis}
     This part of the document details the used datasets and the modelling and evaluation methodology.
 \end{partwithabstract}
 \restoregeometry
 
 \input{/home/thesis/2_Analysis/data}
 
-
-\chapter{Methods}
-
 \input{/home/thesis/2_Analysis/Model}
 
-\input{/home/thesis/2_Analysis/PropMethods_FullSupervision}
-
-\input{/home/thesis/2_Analysis/PropMethods_WeakSupervision}
-
-
-
-\chapter{Experiments}
+\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
+\begin{partwithabstract}{Experiments}
+    This part of the document details the used datasets and the modelling and evaluation methodology.
+\end{partwithabstract}
+\restoregeometry
 
 \section{Experimental results of the fully supervised model}
 
@@ -282,63 +263,16 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 \section{Experimental results of the final model}
 
-\chapter{Conclusion}
+\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
+\begin{partwithabstract}{Conclusions}
+    This part of the document details the used datasets and the modelling and evaluation methodology.
+\end{partwithabstract}
+\restoregeometry
 
 Comparison between results with weakly supervised model and fully supervised model.
 
-\appendix
+\input{/home/thesis/A_Appendix/appendices.tex}
 
-\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm}
-\begin{partwithabstract}{Appendix}
-  Apendices to the document:
-  \begin{enumerate}
-    \item Software environment used
-    \item Agreement documents for use of two datasets.
-  \end{enumerate}
-\end{partwithabstract}
-\restoregeometry
-\chapter{Medical terms}
-
-Clarification of the medical lingo used.
-
-\begin{SCfigure}[][htb]
-  \centering
-  \includegraphics[width=10cm]{/home/thesis/images/Anatomical_Planes.png}
-  \caption{Clarification of the terms regarding the anatomical planes
-  }
-\end{SCfigure}
-
-\begin{SCfigure}[][htb]
-  \centering
-  \includegraphics[width=10cm]{/home/thesis/images/prone_supine.png}
-  \caption{Supine (face-up) and Prone (face-down) position of a patient.}
-\end{SCfigure}
-
-\chapter{Used software}
-
-\todo[inline]{Software environments can be build with dockerfiles available in folder \textit{/dockerfiles/code/} of the git.}
-
-\todo[inline]{Assure proper referencing of all libraries used}
-
-\begin{SCtable}[\sidecaptionrelwidth][h]
- 
-  \begin{tabular}{ p{6cm} l l } 
-   \hline
-   \hline
-   Library & version & reference  \\
-   \hline 
-   PyTorch & 1.7.1 &  \\ 
-   SimpleITK &  &  \\ 
-   \hline
-   \hline
-  \end{tabular}
-  \caption{Python libraries used}
-
-\end{SCtable}
-\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm}
-\chapter{Dataset agreements\label{seg:datasetagreement}}
-
-\includegraphics[width=17cm]{/home/thesis/images/AgreementxVertSeg.png}
 
 \printbibliography
 

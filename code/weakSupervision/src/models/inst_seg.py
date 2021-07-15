@@ -500,7 +500,7 @@ class Inst_Seg(torch.nn.Module):
                 index_i_to_device = torch.tensor([i]).to(logits.device)
                 sigm_slice_i = sigm.index_select(1, index_i_to_device)
                 differences = torch.zeros_like(sigm_slice_i)
-                for j in range(self.n_classes):
+                for j in range(i+1, self.n_classes):
                     if i == j:
                         continue
                     index_j_to_device = torch.tensor([j]).to(logits.device)
