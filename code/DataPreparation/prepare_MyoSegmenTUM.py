@@ -223,13 +223,17 @@ if __name__ == '__main__':
     dataset_max = -np.infty
 
     for nr, foldername in filefolder_list.items():
+        if nr in [33, 53, 54]:
+            continue
         filename = os.path.join(foldername, f'{args.mode}.dcm')
 
         arr, minimum, maximum = ut.array_from_file(filename)
-        if not nr in [53, 54]:
-            arr = arrange_axis(arr)
+        
 
         dimensions_dict[foldername] = {'image' : arr.shape}
+
+        if not nr in [53, 54]:
+            arr = arrange_axis(arr)
         
         logging.debug(f'min : {np.min(arr):1.5f} ** max : {np.max(arr):1.5f}')
         logging.debug(f'source : {filename}, shape {arr.shape}')
@@ -242,12 +246,14 @@ if __name__ == '__main__':
 
         # For each slice along the asked dimension, convert to a numpy.ndarray and save this.
         # Preprocessing the slices before loading into pyTorch should speed up the training in the end.
-        ut.arr_slices_save(arr, dim_slice, fn, args.contrast, save_jpeg = True)
+        ut.arr_slices_save(arr, dim_slice, fn, args.contrast, save_jpeg = True, invert = False)
 
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
     unique_values = dict()
     for nr, foldername in tqdm(filefolder_list.items(), desc='Copy mask files of the MyoSegmenTUM dataset'):
+        if nr in [33, 53, 54]:
+            continue
         mask_files = [os.path.join(foldername, f'L{i}_{nr:02d}.mha') for i in range(1,6)]
         logging.debug(f'Mask files : {mask_files}')
 

@@ -59,7 +59,7 @@ def setuplogger():
 
 
 def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
-             reset: bool = False, num_workers: int = 0, tensorboard_folder: str = None):
+             reset: bool = False, num_workers: int = 0, tensorboard_folder: str = None, learning_rate_factor : int = 1, me = 150, max_wait = 5):
     """trainval: training and validation routine to perform all the experiments defined in exp_dict
 
     Args:
@@ -86,8 +86,8 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     # ==================
     exp_id = hu.hash_dict(exp_dict)
 
-    exp_dict['lr'] = exp_dict['lr'] / 5000
-    exp_dict['max_epoch'] = 50
+    exp_dict['lr'] = exp_dict['lr'] / learning_rate_factor
+    exp_dict['max_epoch'] = me
     logger.debug('experiment has : {exp_id}')
     savedir = os.path.join(savedir_base, exp_id)
     if reset:
@@ -262,7 +262,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
         # Validate the model
         logger.info('Start validation on de cross validation set')
-        val_dict, val_metrics_df = model.val_on_loader(val_loader)
+        val_dict, val_metrics_df = model.val_on_loader(val_loader,savedir_images=os.path.join(savedir, "images"), n_images=3)
         val_metrics_df.to_csv(os.path.join(savedir, 'val_metrics_df.csv'))
         score_dict["val_score"] = val_dict["val_score"]
         score_dict["val_weighted_dice"] = val_dict["val_weighted_dice"]
@@ -275,11 +275,11 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
             logger.info('SCORE IMPROVED')
             hu.torch_save(model_path, model.get_state_dict())
             logger.info("Checkpoint Saved: %s" % savedir)
-            if (random.uniform(0,1) < 0.2) or (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 6):
+            if (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 5) or (e % 10 == 0):
                 test_dict, test_metrics_df = model.val_on_loader(test_loader,
                                                                 savedir_images=os.path.join(
                                                                     savedir, "images"),
-                                                                n_images=10)
+                                                                n_images=3)
                 score_dict.update(test_dict)
                 test_metrics_df.to_csv(os.path.join(savedir, 'test_metrics_df.csv'))
             hu.save_pkl(
@@ -304,7 +304,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
        
 
-        if model.waiting >= 10:
+        if model.waiting >= max_wait:
             # Revert to final model
 
             break
@@ -386,6 +386,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
     print('Experiment completed et epoch %d' % e)
 
+import copy
 
 if __name__ == "__main__":
     setuplogger()
@@ -426,11 +427,14 @@ if __name__ == "__main__":
 
     # Perform the trainval procedure on each of the experiments in the
     # experiment dict:
+    me = 50
     for exp_dict in exp_list:
         # do trainval
-        trainval(exp_dict=exp_dict,
-                 savedir_base=args.savedir_base,
-                 datadir=args.datadir,
-                 reset=args.reset,
-                 num_workers=args.num_workers,
-                 tensorboard_folder=args.tensorboard)
+        for lrf, mw in zip([1, 5000, 25000], [6,3,8]):
+            exp_dict_copy = copy.deepcopy(exp_dict)
+            trainval(exp_dict=exp_dict_copy,
+                    savedir_base=args.savedir_base,
+                    datadir=args.datadir,
+                    reset=args.reset,
+                    num_workers=args.num_workers,
+                    tensorboard_folder=args.tensorboard, learning_rate_factor=lrf)

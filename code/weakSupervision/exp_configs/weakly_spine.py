@@ -214,5 +214,132 @@ EXP_GROUPS['selected'] = [
             },
             "num_channels": 1,
             "optimizer": "adam"
+        },
+        {
+            "batch_size": 6,
+            "dataset": {
+                "bg_points": 5,
+                "blob_points": 5,
+                "context_span": 1,
+                "crop_size": [
+                    352,
+                    352
+                ],
+                "n_classes": 6,
+                "name": "spine_dataset",
+                "sources": [
+                    "xVertSeg",
+                    "USiegen",
+                    "MyoSegmenTUM"
+                ]
+            },
+            "dataset_size": {
+                "test": "all",
+                "train": "all",
+                "val": "all"
+            },
+            "lr": 2.5e-05,
+            "max_epoch": 10,
+            "model": {
+                "base": "fcn8_vgg16",
+                "loss": [
+                    "unsupervised_rotation_loss",
+                    "rot_point_loss_multi_weighted",
+                    "prior_extend",
+                    "separation_loss"
+                ],
+                "n_channels": 3,
+                "n_classes": 6,
+                "name": "inst_seg",
+                "prior_extend": 70,
+                "prior_extend_slope": 10
+            },
+            "num_channels": 1,
+            "optimizer": "adam"
+        }, {
+
+            "batch_size": 6,
+            "dataset": {
+                "bg_points": 5,
+                "blob_points": 5,
+                "context_span": 1,
+                "crop_size": [
+                    352,
+                    352
+                ],
+                "n_classes": 6,
+                "name": "spine_dataset",
+                "sources": [
+                    "xVertSeg",
+                    "USiegen",
+                    "MyoSegmenTUM"
+                ]
+            },
+            "dataset_size": {
+                "test": "all",
+                "train": "all",
+                "val": "all"
+            },
+            "lr": 2.5e-05,
+            "max_epoch": 10,
+            "model": {
+                "base": "fcn8_vgg16",
+                "loss": [
+                    "unsupervised_rotation_loss",
+                    "rot_point_loss_multi_weighted",
+                    "prior_extend",
+                    "separation_loss"
+                ],
+                "n_channels": 3,
+                "n_classes": 6,
+                "name": "inst_seg",
+                "prior_extend": 110,
+                "prior_extend_slope": 10
+            },
+            "num_channels": 1,
+            "optimizer": "adam"
+        }, 
+        {
+
+            "batch_size": 6,
+            "dataset": {
+                "bg_points": 3,
+                "blob_points": 7,
+                "context_span": 1,
+                "crop_size": [
+                    352,
+                    352
+                ],
+                "n_classes": 6,
+                "name": "spine_dataset",
+                "sources": [
+                    "xVertSeg",
+                    "USiegen",
+                    "MyoSegmenTUM"
+                ]
+            },
+            "dataset_size": {
+                "test": "all",
+                "train": "all",
+                "val": "all"
+            },
+            "lr": 2.5e-05,
+            "max_epoch": 10,
+            "model": {
+                "base": "fcn8_vgg16",
+                "loss": [
+                    "unsupervised_rotation_loss",
+                    "rot_point_loss_multi_weighted",
+                    "prior_extend",
+                    "separation_loss"
+                ],
+                "n_channels": 3,
+                "n_classes": 6,
+                "name": "inst_seg",
+                "prior_extend": 110,
+                "prior_extend_slope": 10
+            },
+            "num_channels": 1,
+            "optimizer": "adam"
         }
 ]

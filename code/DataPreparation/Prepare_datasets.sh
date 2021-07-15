@@ -8,7 +8,7 @@ PATH_CODE=/root/space/code/DataPreparation
 PATH_DATA=/root/space/data
 PATH_OP=/root/space/output
 
-for c in 0 1 3
+for c in 3
 
 do
         for d in 0 1 2

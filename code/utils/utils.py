@@ -27,7 +27,7 @@ BG_POINTS = 5
 BLOB_POINTS = 3
 
 
-def resampler(image : sitk.SimpleITK.Image, new_spacing : List[float] = None, imposed_size : List[int] = None):
+def resampler(image : sitk.SimpleITK.Image, new_spacing : List[float] = None, imposed_size : List[int] = None, mask = False):
     """resampler to isotropic spacing
 
     Args:
@@ -45,7 +45,10 @@ def resampler(image : sitk.SimpleITK.Image, new_spacing : List[float] = None, im
     resampler = sitk.ResampleImageFilter()
     # Nearest neighbour interpolation to avoid disturbing the labels
     # Todo: Adapt this for non-label images -> not necessary to use nearest neighbor
-    resampler.SetInterpolator(sitk.sitkNearestNeighbor)
+    if mask:
+        resampler.SetInterpolator(sitk.sitkNearestNeighbor)
+    else:
+        resampler.SetInterpolator(sitk.sitkLinear)
     resampler.SetOutputDirection(image.GetDirection())
     resampler.SetOutputOrigin(image.GetOrigin())
     resampler.SetOutputSpacing(new_spacing)
@@ -119,7 +122,7 @@ def adjust_contrast(arr : np.ndarray, contrast_option:int = 0) -> np.ndarray:
 
 
 
-def arr_slices_save(arr : np.ndarray, dim_slice : int, fn : str, contrast_option : int, save_jpeg : bool = True):
+def arr_slices_save(arr : np.ndarray, dim_slice : int, fn : str, contrast_option : int, save_jpeg : bool = True, invert=False):
     """Save the image slices with optional contrast enhancement
 
     Args:
@@ -133,6 +136,8 @@ def arr_slices_save(arr : np.ndarray, dim_slice : int, fn : str, contrast_option
     def save_scan_slice(i):
         # This function makes use of the parameters available in the scope of 'arr_slices_save'
         slice_to_save = adjust_contrast(arr.take(i, axis=dim_slice), contrast_option)
+        if invert:
+            slice_to_save = np.subtract(np.arange(1.0), slice_to_save)
         np.save(os.path.join(fn, f'slice_{i:03d}'), slice_to_save)
         if save_jpeg:
             # for jpeg visualization, get back to the original 0 -> 255 range.
@@ -159,16 +164,17 @@ def mask_to_slices_save(arr : np.ndarray, dim_slice : int, target_folder : str):
         arr_slice = arr.take(i, axis=dim_slice)
         np.save(fn, arr_slice)
 
-        # For the visualization, bring background back to 0 and spread out the colours as far as possible
-        arr_slice[arr_slice == 255] = 0
-        arr_slice *= 51
-        im = cm.gist_earth(arr_slice)
-        plt.figure()
-        plt.imshow(im)
-        plt.axis('off')
-        plt.colorbar()
-        plt.savefig(os.path.join(target_folder, f'slice_{i:03d}.png'), bbox_inches='tight')
-        plt.close()
+        if False:
+            # For the visualization, bring background back to 0 and spread out the colours as far as possible
+            arr_slice[arr_slice == 255] = 0
+            arr_slice *= 51
+            im = cm.gist_earth(arr_slice)
+            plt.figure()
+            plt.imshow(im)
+            plt.axis('off')
+            plt.colorbar()
+            plt.savefig(os.path.join(target_folder, f'slice_{i:03d}.png'), bbox_inches='tight')
+            plt.close()
 
     def points_from_mask_slice(i):
         """Function that will extract a number of background points and blob points from a slice
@@ -201,4 +207,4 @@ def mask_to_slices_save(arr : np.ndarray, dim_slice : int, target_folder : str):
 
 def read_masklist(source_filenames : List[str], imposed_size = None) -> List:
     """ Read list of maskfiles """
-    return [sitk.GetArrayFromImage( resampler( sitk.ReadImage(source_filename) , imposed_size= imposed_size)) for source_filename in source_filenames]
+    return [sitk.GetArrayFromImage( resampler( sitk.ReadImage(source_filename) ,mask=True, imposed_size= imposed_size)) for source_filename in source_filenames]

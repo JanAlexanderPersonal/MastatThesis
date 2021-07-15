@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import cv2 as cv2
+from numpy.lib.type_check import imag
 from torch.utils.tensorboard import SummaryWriter
 import os
 import pprint
@@ -759,6 +760,10 @@ class Inst_Seg(torch.nn.Module):
         gt = batch['masks'].data.cpu().numpy()
         points = batch['points'].data.cpu().numpy()
 
+
+        # If there are context slices, you do not want them in the image
+        image_center = np.stack([image[1,:,:] for i in range(3)], axis = 0)
+
         logger.debug(
             f'Ground truth unique values : {np.unique(gt)} with shape {gt.shape}')
         gt = gt[0, 0, :, :]
@@ -773,10 +778,10 @@ class Inst_Seg(torch.nn.Module):
         res_segm = colour_segments(res, stack_axis=0) / 255.
         gt_segm = colour_segments(gt, stack_axis=0) / 255.
 
-        gt_segm = cv2.addWeighted(image, 0.85, gt_segm, 0.15, 0)
+        gt_segm_stack = cv2.addWeighted(image, 0.85, gt_segm, 0.15, 0)
         gt_segm = colour_points(points, gt_segm)
 
-        res_segm = cv2.addWeighted(image, 0.75, res_segm, 0.25, 0)
+        res_segm_stack = cv2.addWeighted(image, 0.75, res_segm, 0.25, 0)
 
         # Create numpy arrays for the colour channels
 
@@ -784,7 +789,10 @@ class Inst_Seg(torch.nn.Module):
             f'image : {image.shape} [{np.min(image)} - {np.max(image)}]** gt_segm : {gt_segm.shape}  [{np.min(gt_segm)} - {np.max(gt_segm)}]** res_segm : {res_segm.shape}')
 
         img_list = [image, gt_segm, res_segm]
+        img_list2 = [image_center, gt_segm_stack, res_segm_stack]
         img_comp = np.concatenate(img_list, axis=2)
+        img_comp2 = np.concatenate(img_list2, axis=2)
+        img_comp = np.concatenate([img_comp, img_comp2], axis = 1)
         logging.debug(f'image list from visualize on batch : {img_comp.shape}')
 
         # write to tensorboard

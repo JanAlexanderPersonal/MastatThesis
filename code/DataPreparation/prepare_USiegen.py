@@ -183,7 +183,8 @@ DIM_CONV = {
 }
 
 def arrange_axis(arr):
-    return np.moveaxis(arr, 0, 2)
+    arr =  np.moveaxis(arr, 0, 2)
+    return arr
 
 
 if __name__ == '__main__':
@@ -232,9 +233,13 @@ if __name__ == '__main__':
 
         arr, minimum, maximum = ut.array_from_file(os.path.join(image_filedir, filename))
 
-        arr = arrange_axis(arr)
 
         dimensions_dict[filename] = {'image' : arr.shape}
+
+        arr = arrange_axis(arr)
+
+        if nr == 14:
+            arr = np.rot90(arr, k=1, axes=(2,1))
         
         dataset_min = min(dataset_min, minimum)
         dataset_max = max(dataset_max, maximum)
@@ -277,6 +282,9 @@ if __name__ == '__main__':
             arr[image != 0] = i + 1
 
         arr = arrange_axis(arr)
+
+        if nr == 14:
+            arr = np.rot90(arr, k=1, axes=(2,1))
 
         dimensions_dict[foldername]['mask'] = arr.shape
         
