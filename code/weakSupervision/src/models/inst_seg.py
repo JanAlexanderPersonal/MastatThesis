@@ -399,72 +399,13 @@ class Inst_Seg(torch.nn.Module):
             loss += F.cross_entropy(logits_flip, points_flip.cuda(), ignore_index = 255, weight = torch.Tensor(self.weight_vector).to(logits.get_device()))
 
 
-            """
-            for i in range(self.n_classes):
 
-                if i not in torch.unique(points):
-                    continue
-
-                points_temp = points.clone().detach()
-
-                logger.debug(f'Extract flip loss for class {i}')
-                # If you are really searching for the background class, you
-                # should give this a temporary different value from 0 and from
-                # the other class labels
-                if i == 0:
-                    points_temp[points == i] = self.n_classes
-                for j in [x for x in range(self.n_classes) if x != i]:
-                    # points temporary only has two types of points: The class
-                    # to be investigated and background (for that channel)
-                    points_temp[points == j] = 0
-                logger.debug(
-                    f'Unique values remaining after bringing the other classes to background: {torch.unique(points_temp)}')
-                logger.debug(
-                    f'To calculate the additional loss for channel {i}, the points tensor becomes {torch.unique(points_temp, return_counts = True)}. The non-zero value will be converted to 1.')
-                points_temp[points == i] = 1
-                # Revert the possible re-naming of the background class
-                points_temp[points == self.n_classes] = 1
-
-                # Extract the layer from the model output
-                index_to_device = torch.tensor([i]).to(logits.device)
-                logits_slice = logits.index_select(1, index_to_device)
-                logits_flip_slice = logits_flip.index_select(
-                    1, index_to_device)
-
-                logger.debug(
-                    f'two tensors are sliced : logits slice has dimensions {logits_slice.size()} and logits_flip slice has dimensions {logits_flip_slice.size()}')
-
-                ind = points_temp != 255
-
-                weight = 1.0 if ('cons_point_loss_multi_weighted' not in loss_name) else self.weight_vector[i]
-
-                logger.debug(f'weight for class i : {weight}')
-
-                if ind.sum() != 0:
-                    loss += F.binary_cross_entropy_with_logits(logits_slice[ind],
-                                                               points_temp[ind].float(
-                    ).cuda(),
-                        reduction='mean') * weight
-                    logger.debug(
-                        f'straight logits loss added for channel {i} : {loss}')
-
-                    points_flip = flips.Hflip()(points_temp)
-                    ind = points_flip != 255
-                    loss += F.binary_cross_entropy_with_logits(logits_flip_slice[ind],
-                                                               points_flip[ind].float(
-                    ).cuda(),
-                        reduction='mean') * weight
-                    logger.debug(
-                        f'flipped logits loss added for channel {i} : {loss}')
-                    logger.debug(
-                        f'This was calculated with BCE logits slice [ind] {logits_slice[ind]} vs points temp {points_temp[ind]}\n and logits flip slice {logits_flip_slice[ind]} vs {points_flip[ind]}.')
-            """
         
         if 'prior_extend' in loss_name:
 
             # mask for logits BCHW
             # This loss takes into account that a typical vertebra is not larger than 100 mm x 100 mm x 100 mm
-            mask = np.ones(list(logits.size())) * np.infty
+            mask = np.ones(list(logits.size())) * -np.infty
             logging.debug(f'Mask shape {mask.shape}. points shape {points.size()}')
 
             
@@ -478,17 +419,19 @@ class Inst_Seg(torch.nn.Module):
                     logging.debug(f'add mask distance from {ind}')
                     p = ind[2:].tolist() # point coordinates (H,W)
                     b = ind[0].tolist() # batch nr
-                    mask[b, i, :, :] = np.minimum(mask[b, i, :, :], ut.vectorized_distance(mask[b, i, :, :], p)) 
+                    mask[b, i, :, :] = np.maximum(mask[b, i, :, :], ut.vectorized_distance(mask[b, i, :, :], p)) 
             
-            EXTEND = self.exp_dict['model'].get('prior_extend', 70)
+            EXTEND = 100 # self.exp_dict['model'].get('prior_extend', 70)
             SLOPE = self.exp_dict['model'].get('prior_extend_slope', 10)
             
-            mask = ((-1) * mask + EXTEND) / SLOPE
+            mask = (-1) * mask + EXTEND > 0
+            mask = mask.astype(np.int8)
 
             # When calculating this loss, you need to restrict yourself to the NON-BACKGROUND classes!
 
             mask = torch.from_numpy(mask).to(logits.device).sigmoid()[:,1:,:,:]
-            loss += F.binary_cross_entropy_with_logits(logits[:,1:, :, :], mask, reduction = 'mean')
+            # Pos weight = 0 indicates that we do not care about the positive examples.
+            loss += F.binary_cross_entropy_with_logits(logits[:,1:, :, :], mask, reduction = 'mean', pos_weight=0)
             logger.debug(f'loss after adding prior extend loss: {loss}')
 
         if 'separation_loss' in loss_name:
