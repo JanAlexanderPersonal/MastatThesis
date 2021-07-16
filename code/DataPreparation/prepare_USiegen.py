@@ -230,10 +230,7 @@ if __name__ == '__main__':
 
         # Keep the filenames in a dict to assure the correct mask end up linked to the correct images
         filenames_dict[nr] = filename
-
         arr, minimum, maximum = ut.array_from_file(os.path.join(image_filedir, filename))
-
-
         dimensions_dict[filename] = {'image' : arr.shape}
 
         arr = arrange_axis(arr)

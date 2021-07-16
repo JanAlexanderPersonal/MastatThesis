@@ -61,8 +61,8 @@ def setuplogger():
     root_logger.addHandler(handler)
 
 
-def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
-             reset: bool = False, num_workers: int = 0, tensorboard_folder: str = None, learning_rate_factor : int = 1, me = 150):
+def trainval_source(exp_dict: Dict, savedir_base: str, datadir: str,
+             reset: bool = False, num_workers: int = 0, tensorboard_folder: str = None, learning_rate_factor : int = 1, me = 150, source : str = "MyoSegmenTUM"):
     """trainval: training and validation routine to perform all the experiments defined in exp_dict
 
     Args:
@@ -82,7 +82,6 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         num_workers (int, optional): Number of workers to use. Defaults to 0.
         tensorboard_folder (str, optional): path to store the tensorboard information (log_dir). Defaults to None.
     """
-    # todo: solve problems with GPU memory size
     logger.debug(f'start trainval with experiment dict {pformat(exp_dict)}')
 
     # bookkeepting stuff
@@ -92,11 +91,8 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     exp_dict['lr'] = exp_dict['lr'] / learning_rate_factor
     exp_dict['max_epoch'] = me
     logger.debug('experiment has : {exp_id}')
-    savedir = os.path.join(savedir_base, exp_id)
-    if reset:
-        hc.delete_and_backup_experiment(savedir)
-        for file in os.listdir(tensorboard_folder):
-            os.remove(os.path.join(tensorboard_folder, file))
+    orig_dir = os.path.join(savedir_base, exp_id) # directory with the original model, trained on all data sources
+    savedir = os.path.join(savedir_base, f'{exp_id}_{source}')
 
     os.makedirs(savedir, exist_ok=True)
     hu.save_json(os.path.join(savedir, "exp_dict.json"), exp_dict)
@@ -118,7 +114,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                                      split="train",
                                      datadir=datadir,
                                      exp_dict=exp_dict,
-                                     dataset_size=exp_dict['dataset_size'])
+                                     dataset_size=exp_dict['dataset_size'], separate_source=source)
 
     mask_counts = train_set.count_values_masks() # dict with counts per label {0 : ... ,  1 : ... , ...}
 
@@ -134,7 +130,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                                    split="val",
                                    datadir=datadir,
                                    exp_dict=exp_dict,
-                                   dataset_size=exp_dict['dataset_size'])
+                                   dataset_size=exp_dict['dataset_size'], separate_source=source)
 
     # test set
     logger.info('define test set')
@@ -142,7 +138,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                                     split="test",
                                     datadir=datadir,
                                     exp_dict=exp_dict,
-                                    dataset_size=exp_dict['dataset_size'])
+                                    dataset_size=exp_dict['dataset_size'], separate_source=source)
 
     logger.info('make dataloaders from the defined validation and test set')
     val_loader = DataLoader(val_set,
@@ -166,8 +162,8 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     if tensorboard_folder is not None:
         model.add_writer(tensorboard_folder)
 
-    model_path = os.path.join(savedir, "model.pth")
-    score_list_path = os.path.join(savedir, "score_list.pkl")
+    model_path = os.path.join(orig_dir, "model.pth")
+    score_list_path = os.path.join(orig_dir, "score_list.pkl")
 
 
     # If there is a pkl file containing stored model weights from the last time the model was trained, get it.
@@ -181,8 +177,8 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         e = s_epoch
     else:
         # restart experiment
-        score_list = []
-        s_epoch = 0
+        print('Model not found')
+        return
 
     # Train & Val
     # ==================
@@ -266,10 +262,6 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
             # Add to score_list and save checkpoint
             score_list += [score_dict]
             
-            if F_stop_at_epoch:
-                print(f'Epoch {e} -> train on loader is finished.')
-                input('Press enter to continue')
-
             # Validate the model
             logger.info('Start validation on de cross validation set')
             val_dict, val_metrics_df = model.val_on_loader(val_loader,savedir_images=os.path.join(savedir, "images"), n_images=3)
@@ -342,46 +334,6 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         json.dump(score_dict, f)
 
 
-    for source in full.source.unique():
-        logger.info(f'Specific analysis for {source}')
-
-        source_val_set = datasets.get_dataset(dataset_dict=exp_dict["dataset"],
-                                              split="val",
-                                              datadir=datadir,
-                                              exp_dict=exp_dict,
-                                              dataset_size=exp_dict['dataset_size'],
-                                              separate_source=source)
-        source_val_loader = DataLoader(source_val_set,
-                                       batch_size=exp_dict["batch_size"],
-                                       collate_fn=ut.collate_fn,
-                                       num_workers=num_workers)
-        val_dict, val_metrics_df = model.val_on_loader(source_val_loader,
-                                                       savedir_images=os.path.join(
-                                                           savedir, f"val_{source}_images"),
-                                                       n_images=25)
-        source_test_set = datasets.get_dataset(dataset_dict=exp_dict["dataset"],
-                                               split="test",
-                                               datadir=datadir,
-                                               exp_dict=exp_dict,
-                                               dataset_size=exp_dict['dataset_size'],
-                                               separate_source=source)
-        source_test_loader = DataLoader(source_test_set,
-                                        batch_size=exp_dict["batch_size"],
-                                        collate_fn=ut.collate_fn,
-                                        num_workers=num_workers)
-        test_dict, test_metrics_df = model.val_on_loader(source_test_loader,
-                                                         savedir_images=os.path.join(
-                                                             savedir, f"test_{source}_images"),
-                                                         n_images=25)
-        val_metrics_df.to_csv(
-            os.path.join(
-                savedir,
-                f'val_metrics_{source}_df.csv'))
-        test_metrics_df.to_csv(
-            os.path.join(
-                savedir,
-                f'test_metrics_{source}_df.csv'))
-
     if e is None:
         e = 'final'
 
@@ -428,11 +380,13 @@ if __name__ == "__main__":
 
     # Perform the trainval procedure on each of the experiments in the exp list
     for exp_dict in exp_list:
-        # do trainval
-        exp_dict_copy = copy.deepcopy(exp_dict)
-        trainval(exp_dict=exp_dict_copy,
-                savedir_base=args.savedir_base,
-                datadir=args.datadir,
-                reset=args.reset,
-                num_workers=args.num_workers,
-                tensorboard_folder=args.tensorboard)
+        for source in exp_dict['dataset']['sources']:
+            # do trainval
+            logger.info(f'start for source : {source}')
+            exp_dict_copy = copy.deepcopy(exp_dict)
+            trainval_source(exp_dict=exp_dict_copy,
+                    savedir_base=args.savedir_base,
+                    datadir=args.datadir,
+                    reset=args.reset,
+                    num_workers=args.num_workers,
+                    tensorboard_folder=args.tensorboard, source = source)
