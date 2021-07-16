@@ -2,8 +2,7 @@
 import torch
 import os
 import tqdm 
-from . import semseg, semseg_counting, semseg_active
-from . import wisenet
+
 from . import inst_seg
 import torch
 

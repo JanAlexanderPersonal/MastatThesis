@@ -40,10 +40,8 @@ import logging
 
 cudnn.benchmark = True
 
-F_stop_at_epoch = False
-
-LEARNING_RATE_STEPS = [1, 5000, 20000]
-MAX_WEIGHT_STEPS = [4,4,8]
+LEARNING_RATE_STEPS = [500, 5000, 5000000]
+MAX_WAIT_STEPS = [3,3,4]
 
 
 def setuplogger():
@@ -229,13 +227,12 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
     # Run the remaining epochs starting from the last epoch for which values
     # were available in the pkl
-    for learning_rate_factor, max_wait in zip(LEARNING_RATE_STEPS, MAX_WEIGHT_STEPS):
-        if model.waiting >= max_wait:
-                # Revert to final model
-                break
+    for learning_rate_factor, max_wait in zip(LEARNING_RATE_STEPS, MAX_WAIT_STEPS):
         exp_dict['lr'] = exp_dict['lr'] / learning_rate_factor
+        logger.info('UPDATE LEARNING RATE')
         model.update_optimizer(exp_dict)
         loss_decrease_counter = 0
+        model.waiting = 0
 
         for e in range(s_epoch, exp_dict['max_epoch']):
             # Validate only at the start of each cycle
@@ -246,13 +243,14 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
             logger.info('Start training')
             train_set.shuffle_img_df()
             train_dict = model.train_on_loader(train_loader)
-        
-            logger.info('Start validation on de train set')
-            train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
-            score_dict['train_score'] = train_val_dict['train_score']
-            score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
-            score_dict["train_dice"] = train_val_dict["train_dice"]
-            train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
+
+            if min_loss > train_dict['train_loss']:
+                logger.info('Start validation on de train set')
+                train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
+                score_dict['train_score'] = train_val_dict['train_score']
+                score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
+                score_dict["train_dice"] = train_val_dict["train_dice"]
+                train_metrics_df.to_csv(os.path.join(savedir, 'train_metrics_df.csv'))
 
             # Get new score_dict
             score_dict.update(train_dict)
@@ -262,15 +260,13 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
             if min_loss > train_dict['train_loss']:
                 model.waiting += 1
                 min_loss = train_dict['train_loss']
+                loss_decrease_counter = 0
+                logger.info('LOSS IMPROVED')
             else:
                 loss_decrease_counter += 1
 
-            # Add to score_list and save checkpoint
-            score_list += [score_dict]
-            
-            if F_stop_at_epoch:
-                print(f'Epoch {e} -> train on loader is finished.')
-                input('Press enter to continue')
+
+
 
             # Validate the model
             logger.info('Start validation on de cross validation set')
@@ -279,12 +275,14 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
             score_dict["val_score"] = val_dict["val_score"]
             score_dict["val_weighted_dice"] = val_dict["val_weighted_dice"]
             score_dict["val_dice"] = val_dict["val_dice"]
+            logger.info(f'score dict {pformat(score_dict)}')
+
+
 
             if score_dict["val_score"] >= model.val_score_best:
-                logger.info('SCORE IMPROVED')
                 hu.torch_save(model_path, model.get_state_dict())
                 logger.info("Checkpoint Saved: %s" % savedir)
-                if (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 5) or (e % 10 == 0):
+                if (e == exp_dict['max_epoch'] - 1) or (e % 10 == 0):
                     test_dict, test_metrics_df = model.val_on_loader(test_loader,
                                                                     savedir_images=os.path.join(
                                                                         savedir, "images"),
@@ -302,6 +300,9 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                 model.waiting = 0
                 model.val_score_best = score_dict["val_score"]
                 logger.info("Saved Best: %s" % savedir)
+
+            # Add to score_list and save checkpoint
+            score_list += [score_dict]
 
             # Report & Save
             score_df = pd.DataFrame(score_list)
