@@ -6,7 +6,7 @@ The field of \Gls{machinevision} is a branch of machine vision in which importan
 The aim of this chapter is not to provide a complete overview of the machine learning field.
 Rather, the objective is to highlight concepts that are important for interpretation of the specific analysis in this Master thesis.
 
-\section{Birds-eye view on the field of Artificial Intelligence}
+\section{Artificial Intelligence}
 
 The field of \Gls{ai} (AI) is the engineering discipline of the automation of \textit{cognitive} tasks.
 Tasks such as search, control and classification are generally considered to require a level of intelligence. 
@@ -24,12 +24,24 @@ In this work, I make use of \Gls{deepl} models.
 A \Gls{deepl} model is a type of \acrfull{ann} with multiple hidden layers. 
 Deep learning models are behind almost all modern applications of \acrfull{nlp} and \Gls{machinevision}.
 
-Deep learning models can be fitted through the \acrfull{bp} algorithm. 
+An \acrshort{ann} is a collection of connected nodes, or \textit{neurons}. 
+These are typically structured in layers. 
+There is always an \textit{input} layer and an \textit{output} layer. Between these two, one can find the \textit{hidden} layers\footnote{When there is at least one hidden layer, one talks about a deep network. In practice \acrshort{cnn}s have multiple hidden layers.}.
+To calculate a node value, the incoming node values are weighted by the connection weights and the result of this linear combination is transformed by an activation function\footnote{
+    $\vec{x}$ : values of the nodes connected to node $j$\\
+    $\vec{w}$ : connection weights\\
+    $\sigma(.)$ : activation function
+}:
+\begin{eqnarray}
+    z_j(\vec{x} | \vec{w}) &=& \frac{\vec{w}^T\vec{x}}{\sum w_k} \\
+    y_j(\vec{x} | \vec{w}) &=& \sigma(z_j)
+\end{eqnarray}
+Deep learning models can be fitted through the \acrfull{bp} algorithm.
+
 \todo[inline]{Short and to-the point introduction of neural networks}
 
-\section{Losses and metrics}
-
 Constructing a network requires evaluating it, comparing the evaluation output to a known desired output and trying to take steps to bring the model output closer to the desired output. 
+The procedure used to 
 A network is fitted to the \textit{train set} by the optimization algorithm, based on the \textbf{loss}.
 The \acrshort{ml} engineer wants to judge the performance of the model based on one or several \textbf{metrics}, calculated on the \textit{train set}, the \textit{cross-validation set} and eventually on the \textit{test set}.
 
@@ -159,7 +171,11 @@ If one uses the same dataset to construct a model that predicts pixel-wise masks
 
 For a segmentation task, weak labels can be:
 \begin{description}
-    \item[Image level labels]: When only  
+    \item[Image level labels]: In this case, only the object class of the object in the image is provided. 
+    This would be a full label for a classification task, but it is clearly a weak label for a segmentation task.
+    \item[Point annotation]: Only points are provided
+    \item[squiggles]:
+    \item[Image description]: This task combines the problem of \acrlong{nlp} with the problem of image segmentation.  
 \end{description}
 
 \todo[inline]{Motivation of weakly supervised learning --> Difference in annotation time and cost from Bearman and Laradji Covid}
