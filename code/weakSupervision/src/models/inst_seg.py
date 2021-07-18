@@ -276,6 +276,17 @@ class Inst_Seg(torch.nn.Module):
 
             # Todo: There is some code repetation compared to the other
             # consistency class.
+            ind = points != 255
+            if ind.sum() != 0:
+                points_rotated = flips.Hflip()(points_temp)
+                points_rotated = sst.batch_rotation(
+                            points_rotated, rotations)
+                logger.debug(f'Loss before taking into account the rotation consistency point loss : {loss}')
+                loss += F.cross_entropy(logits, points.cuda(), ignore_index = 255, weight = torch.Tensor(self.weight_vector).to(logits.get_device()))
+                loss += F.cross_entropy(logits_rotated, points_rotated.detach.float().cuda(), ignore_index = 255, weight = torch.Tensor(self.weight_vector).to(logits.get_device()))
+                logger.debug(f'Loss after taking into account the rotation consistency point loss : {loss}')
+
+            """
 
             for i in range(self.n_classes):
 
@@ -339,6 +350,8 @@ class Inst_Seg(torch.nn.Module):
 
                     logger.debug(
                         f'rotated logits loss added for channel {i} : {loss}')
+
+            """
 
         
 
@@ -421,8 +434,7 @@ class Inst_Seg(torch.nn.Module):
                     b = ind[0].tolist() # batch nr
                     mask[b, i, :, :] = np.maximum(mask[b, i, :, :], ut.vectorized_distance(mask[b, i, :, :], p)) 
             
-            EXTEND = 100 # self.exp_dict['model'].get('prior_extend', 70)
-            SLOPE = self.exp_dict['model'].get('prior_extend_slope', 10)
+            EXTEND = self.exp_dict['model'].get('prior_extend', 100)
             
             mask = (-1) * mask + EXTEND > 0
             mask = mask.astype(np.int8)

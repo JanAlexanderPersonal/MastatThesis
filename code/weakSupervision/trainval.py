@@ -40,8 +40,8 @@ import logging
 
 cudnn.benchmark = True
 
-LEARNING_RATE_STEPS = [500, 5000, 5000000]
-MAX_WAIT_STEPS = [3,3,4]
+LEARNING_RATE_STEPS = [1, 10, 50, 50]   # Learning rate reduction per step
+MAX_WAIT_STEPS = [3,5,5,5]              # Tries to decrease the loss with a given learning rate
 
 
 def setuplogger():
@@ -232,9 +232,12 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         logger.info('UPDATE LEARNING RATE')
         model.update_optimizer(exp_dict)
         loss_decrease_counter = 0
-        model.waiting = 0
+        if model.waiting > 10:
+            break
 
         for e in range(s_epoch, exp_dict['max_epoch']):
+            if model.waiting > 10:
+                break
             # Validate only at the start of each cycle
             logger.info(f'Start epoch {e}')
             score_dict = {}
@@ -312,7 +315,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
             
             hu.save_pkl(score_list_path, score_list)
 
-            if model.waiting >= max_wait or loss_decrease_counter >= max_wait:
+            if loss_decrease_counter >= max_wait:
                 # Reduce learning rate or stop
                 break
 
