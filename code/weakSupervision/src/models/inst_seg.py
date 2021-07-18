@@ -425,13 +425,15 @@ class Inst_Seg(torch.nn.Module):
             SLOPE = self.exp_dict['model'].get('prior_extend_slope', 10)
             
             mask = (-1) * mask + EXTEND > 0
-            mask = mask.astype(np.int8)
+            mask = torch.from_numpy(mask.astype(np.float16)).to(logits.device)[:,1:,:,:]
 
             # When calculating this loss, you need to restrict yourself to the NON-BACKGROUND classes!
 
-            mask = torch.from_numpy(mask).to(logits.device).sigmoid()[:,1:,:,:]
+            #mask = torch.from_numpy(mask).to(logits.device).sigmoid()[:,1:,:,:]
             # Pos weight = 0 indicates that we do not care about the positive examples.
-            loss += F.binary_cross_entropy_with_logits(logits[:,1:, :, :], mask, reduction = 'mean', pos_weight=0)
+            
+            loss += F.binary_cross_entropy_with_logits(logits[:,1:, :, :], mask, reduction = 'mean', pos_weight=torch.cuda.FloatTensor([0]))
+            
             logger.debug(f'loss after adding prior extend loss: {loss}')
 
         if 'separation_loss' in loss_name:
@@ -441,7 +443,7 @@ class Inst_Seg(torch.nn.Module):
 
             sigm = logits.sigmoid()
 
-            for i in range(self.n_classes):
+            for i in range(self.n_classes-1):
                 index_i_to_device = torch.tensor([i]).to(logits.device)
                 sigm_slice_i = sigm.index_select(1, index_i_to_device)
                 differences = torch.zeros_like(sigm_slice_i)
