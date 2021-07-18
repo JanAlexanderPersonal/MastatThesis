@@ -47,12 +47,11 @@ import SimpleITK as sitk
 import numpy as np
 from matplotlib import cm
 import matplotlib.pyplot as plt
-
+from tqdm import tqdm
+import json
 import sys
-sys.path.append('../utils/')
-
+sys.path.append('/root/space/code/utils/')
 import utils as ut
-
 from PIL import Image
 
 from shutil import copyfile
@@ -86,7 +85,7 @@ if __name__ == '__main__':
 
     # Parse arguments
     parser = argparse.ArgumentParser(description='xVertSeg preparation')
-    parser.add_argument('--source', type=str, default='./spine_volumes/OSF_Sarah_Schlaeger', help='root path of xVertSeg dataset')
+    parser.add_argument('--source', type=str, default='./spine_volumes/Zenodo', help='root path of PLoS dataset')
     parser.add_argument('--output', type=str, default='./dataset', help='output path for the dataset')
     parser.add_argument('--dimension', type=int, default=0, help='dimension along which to slice the volumes, converted to xVertSeg dimensions')
     args = parser.parse_args()
@@ -102,98 +101,65 @@ if __name__ == '__main__':
     Path(image_slices_filedir).mkdir(parents=True, exist_ok=True)
     Path(mask_slices_filedir).mkdir(parents=True, exist_ok=True)
 
-    # Prepare the intensity rescaler
-    # todo: Should this rescaler be initiated differently?
-    rescale = sitk.RescaleIntensityImageFilter()
-    min_max = sitk.MinimumMaximumImageFilter()
-
-    # make list with filenames:
 
     # Convert the images to a set of slices:
     logging.info('Start copy of image files')
 
-    dataset_min = 0
-    dataset_max = 0
+    dataset_min = np.infty
+    dataset_max = -np.infty
 
-    for nr, foldername in os.listdir(source_filedir):
-        filename = os.path.join(foldername, f'{args.mode}.dcm')
-        
-        image =  sitk.ReadImage(filename)
-        min_max.Execute(image)
-        dataset_min = min(dataset_min, min_max.GetMinimum())
-        dataset_max = max(dataset_max, min_max.GetMaximum())
-        # rescale to 0 -> 255
-        image = rescale.Execute(image)
+    filenames_dict = dict()
+    dimensions_dict = dict()
 
-        # resample on isotropic 1 mm × 1 mm × 1 mm grid
-        image = ut.resampler(image)
+    for nr in tqdm(range(1,23)):
+        filename = f'Img_{nr:02d}.nii'
+        logging.debug(f'read file {filename}')
+        arr, minimum, maximum = ut.array_from_file(os.path.join(source_filedir, filename))
+        dimensions_dict[filename] = {'image' : arr.shape}
+        dataset_min = min(dataset_min, minimum)
+        dataset_max = max(dataset_max, maximum)
 
-        # Convert this new view of the image (on the isotropic grid) to an array & display some main features of this array:
-        arr = sitk.GetArrayFromImage(image).astype('float16')
-        arr /= 255.0
-
-        logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr):1.5f}')
+        logging.debug(f'min : {np.min(arr):1.5f} ** max : {np.max(arr):1.5f}')
         logging.debug(f'source : {filename}, shape {arr.shape}')
 
-        
-
+        fn = os.path.join(image_slices_filedir, f'image{nr:03d}')
+        Path(fn).mkdir(parents=True, exist_ok=True)
 
         # For each slice along the asked dimension, convert to a numpy.ndarray and save this.
         # Preprocessing the slices before loading into pyTorch should speed up the training in the end.
-        for i in range(arr.shape[dim_slice]):
-            fn = os.path.join(image_slices_filedir, f'image_{nr:03d}')
-            Path(fn).mkdir(parents=True, exist_ok=True)
-
-            # Take the index from the desired axis and save this slice (numpy.ndarray) for the model to train on.
-            # https://numpy.org/doc/stable/reference/generated/numpy.ndarray.take.html#numpy.ndarray.take
-            np.save(os.path.join(fn, f'slice_{i:03d}'), arr.take(i, axis=dim_slice))
-
-            # for jpeg visualization, get back to the original 0 -> 255 range.
-            im = Image.fromarray((arr.take(i, axis=dim_slice) * 255).astype(np.uint8))
-            im.convert('RGB').save(os.path.join(fn, f'slice_{i:03d}.jpg')) # :03d means 3 digits -> leading 0s
+        ut.arr_slices_save(arr, dim_slice, fn, args.contrast, save_jpeg = True)
+        
 
     # Process the mask files and change the filenames
     logging.info('start copy of mask files')
     unique_values = []
-    for nr, foldername in filefolder_list.items():
-        mask_files = [os.path.join(foldername, f'L{i}_{nr:02d}.mha') for i in range(1,6)]
-        logging.debug(f'Mask files : {mask_files}')
+    for nr in tqdm(range(1,23)):
+        filename = f'Img_{nr:02d}_Labels.nii'
 
-        target_folder = os.path.join(mask_slices_filedir, f'image{nr:02d}')
+        target_folder = os.path.join(mask_slices_filedir, f'image{nr:03d}')
         Path(target_folder).mkdir(parents=True, exist_ok=True)
         
         logging.debug(f'target : {target_folder}')
 
         # Get mask, resample to 1 mm × 1 mm × 1 mm grid and extract np_array from this
 
-        masks =  [sitk.GetArrayFromImage( ut.resampler( sitk.ReadImage(file) ) ) for file in mask_files]
-
-        logging.debug(f'mask image dimensions : {[mask.shape for mask in masks]}')
-
-        arr = np.zeros_like(masks[0], dtype=float)
-        for i, mask in enumerate(masks):
-            arr[mask == 1] = i+1
-
+        arr =  sitk.GetArrayFromImage( ut.resampler( sitk.ReadImage(os.path.join(source_filedir, filename)) ) ) 
+        dimensions_dict[f'Img_{nr:02d}.nii']['mask'] = arr.shape
         unique_values += np.unique(arr).tolist()
         logging.debug(f'source : {filename}, shape {arr.shape}')
         logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr)}')
-        for i in range(arr.shape[dim_slice]):
-            fn = os.path.join(target_folder, f'slice_{i:03d}') # :03d means 3 digits -> leading 0s
-            # Take the index from the desired axis and save this slice (numpy.ndarray) for the model to train on.
-            # https://numpy.org/doc/stable/reference/generated/numpy.ndarray.take.html#numpy.ndarray.take
-            arr_slice = arr.take(i, axis=dim_slice)
-            np.save(fn, arr_slice)
 
-            # For the visualization, bring background back to 0 and spread out the colours as far as possible
-            arr_slice[arr_slice == 255] = 0
-            arr_slice *= 51
-            im = cm.gist_earth(arr_slice)
-            plt.figure()
-            plt.imshow(im)
-            plt.axis('off')
-            plt.colorbar()
-            plt.savefig(os.path.join(target_folder, f'slice_{i:03d}.png'), bbox_inches='tight')
-            plt.close()
+        np.save(os.path.join(target_folder, 'mask_array'), arr)
+        ut.mask_to_slices_save(arr, dim_slice, target_folder)
 
     logging.info(f'List of unique values in the masks : {sorted(list(set(unique_values)))}')
     logging.info(f'min and max values in the complete dataset : {dataset_min]} & {dataset_max}.')
+
+    with open(os.path.join(output_filedir, 'mask_counts_PLoS.json'), 'w') as mask_counts_file:
+        json.dump(unique_values, mask_counts_file)
+
+    with open(os.path.join(output_filedir, 'dimensions_PLoS.json'), 'w') as mask_dim_file:
+        json.dump(dimensions_dict, mask_dim_file)
+
+    with open(os.path.join(output_filedir, 'filenames_PLoS.json'), 'w') as filenames_file:
+        json.dump({int(key) : (value.split('.')[0]).lower() for key, value in filenames_dict.items()}, filenames_file)

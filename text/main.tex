@@ -1,7 +1,7 @@
 \documentclass[
     a4paper, % Stock and paper size.
     9pt, % Type size.
-    article,
+    %article,
     oneside, 
     onecolumn, % Only one column of text on a page.
     openright, % Each chapter will start on a recto page.
@@ -19,6 +19,7 @@
 \usepgfplotslibrary{groupplots}
 \usepackage{epstopdf}
 \usepackage{multirow}
+\usepackage{multicol}
 \usepackage{placeins}
 \usepackage{amsfonts} 
 
@@ -234,7 +235,9 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 %\cleardoublepage
 \restoregeometry
+\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
 \input{/home/thesis/0_Main/main_abstract}
+\restoregeometry
 \input{/home/thesis/1_ProblemIntro/PART_Problem_intro}
 
 \newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 

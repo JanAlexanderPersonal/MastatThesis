@@ -117,6 +117,8 @@ class SpineSets(torch.utils.data.Dataset):
         logger.debug(f'\tdata path:\t{self.datadir}')
 
         img_list = list()
+        if 'PLoS' in self.sources:
+            PLoS_list = list() # Hold out the PLoS dataset until the end
         scan_list = list()
 
         # Make a list of all image and mask slices in the dataset sources.
@@ -134,7 +136,6 @@ class SpineSets(torch.utils.data.Dataset):
                     filenames_source = json.load(f)
                 with open(os.path.join(datadir, 'patients_USiegen.json')) as f:
                     patients_source = json.load(f)
-            previous_patient_nr = 0
             for tgt_name in os.listdir(tgt_path):
                 logger.debug(f'target name {tgt_name} .')
                 patient_nr = int(IMAGE_NR.findall(tgt_name)[0]) if source not in ['USiegen'] else get_patient_nr(filenames_source, patients_source, IMAGE_NR.findall(tgt_name)[0])
@@ -154,15 +155,25 @@ class SpineSets(torch.utils.data.Dataset):
                     #logger.debug(mask_slice)
                     #logger.debug(SLICE_NR.findall(mask_slice))
                     slice_id = int(SLICE_NR.findall(mask_slice)[0])
-                    img_list += [{'img': os.path.join(image_slice_path, mask_slice),
-                                    'tgt': os.path.join(mask_slice_path, mask_slice),
-                                    'scan_id': scan_id,
-                                    'slice_id': slice_id,
-                                    'patient' : patient_id,
-                                    'source': source}]
+                    if source != 'PLoS':
+                        img_list += [{'img': os.path.join(image_slice_path, mask_slice),
+                                        'tgt': os.path.join(mask_slice_path, mask_slice),
+                                        'scan_id': scan_id,
+                                        'slice_id': slice_id,
+                                        'patient' : patient_id,
+                                        'source': source}]
+                    else:
+                        PLoS_list += [{'img': os.path.join(image_slice_path, mask_slice),
+                                        'tgt': os.path.join(mask_slice_path, mask_slice),
+                                        'scan_id': scan_id,
+                                        'slice_id': slice_id,
+                                        'patient' : patient_id,
+                                        'source': source}]
         scan_list.sort()
 
         self.full_image_df = pd.DataFrame(img_list)
+        if 'PLoS' in self.sources:
+            PLoS_df = pd.DataFrame(PLoS_list)
 
         num_scans = len(scan_list)
         logger.debug(f'{num_scans} scans found that contain in total {len(img_list)} images.')
@@ -183,6 +194,11 @@ class SpineSets(torch.utils.data.Dataset):
 
         dev_test_split = StratifiedGroupKFold(n_splits=6, random_state=RANDOM_SEED, shuffle=True)
         train_val_split = StratifiedGroupKFold(n_splits=5, random_state=RANDOM_SEED, shuffle=True)
+
+        if 'PLoS' in self.sources:
+            PLoS_dev_test_split = GroupKFold(n_splits=6)
+            PLoS_train_val_split = GroupKFold(n_splits=5)
+
         ix_dev, ix_test = next(dev_test_split.split(X = patient_df.slice_id, y = patient_df.source, groups = patient_df.patient ))
 
         dev_pat_df, test_pat_df = patient_df.iloc[ix_dev], patient_df.iloc[ix_test]
@@ -192,6 +208,17 @@ class SpineSets(torch.utils.data.Dataset):
         test_df = self.full_image_df[self.full_image_df['patient'].isin(test_pat_df.patient.tolist())]
         train_df = self.full_image_df[self.full_image_df['patient'].isin(train_pat_df.patient.tolist())]
         val_df = self.full_image_df[self.full_image_df['patient'].isin(val_pat_df.patient.tolist())]
+
+        if 'PLoS' in self.souces:
+            ix_dev, ix_test = next(PLoS_dev_test_split.split(X = PLoS_df.slice_id, y = PLoS_df.source, groups = PLoS_df.scan_id ))
+
+            dev_PLoS_df, test_PLoS_df = PLoS_df.iloc[ix_dev], PLoS_df.iloc[ix_test]
+            ix_train, ix_val = next(PLoS_train_val_split.split(X = dev_PLoS_df.slice_id, y = dev_PLoS_df.source, groups = dev_PLoS_df.scan_id ))
+            train_PLoS_df, val_PLoS_df = dev_PLoS_df.iloc[ix_train], dev_PLoS_df.iloc[ix_val]
+
+            test_df = pd.concat([test_df, test_PLoS_df], axis = 0)
+            train_df = pd.concat([train_df, train_PLoS_df], axis = 0)
+            val_df = pd.concat([train_df, train_PLoS_df], axis = 0)
 
         
         logger.debug(
