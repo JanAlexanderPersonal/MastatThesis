@@ -58,7 +58,7 @@ from shutil import copyfile
 
 from pathlib import Path
 
-logging.basicConfig(level=logging.INFO)
+logging.basicConfig(level=logging.WARNING)
 
 ##############################
 # ├── Img_01_Labels.nii
@@ -79,7 +79,9 @@ logging.basicConfig(level=logging.INFO)
 
 # Todo: use the semantic segments to make instance segments --> just number starting from the top
 
-
+def arrange_axis(arr):
+    arr = np.rot90(arr, k=2, axes=(0, 2))
+    return arr
 
 if __name__ == '__main__':
 
@@ -88,6 +90,7 @@ if __name__ == '__main__':
     parser.add_argument('--source', type=str, default='./spine_volumes/Zenodo', help='root path of PLoS dataset')
     parser.add_argument('--output', type=str, default='./dataset', help='output path for the dataset')
     parser.add_argument('--dimension', type=int, default=0, help='dimension along which to slice the volumes, converted to xVertSeg dimensions')
+    parser.add_argument('--contrast', type=int, default=0, help='Contrast enhancement bool?')
     args = parser.parse_args()
 
     source_filedir = os.path.abspath(args.source)
@@ -115,6 +118,7 @@ if __name__ == '__main__':
         filename = f'Img_{nr:02d}.nii'
         logging.debug(f'read file {filename}')
         arr, minimum, maximum = ut.array_from_file(os.path.join(source_filedir, filename))
+        arr = arrange_axis(arr)
         dimensions_dict[filename] = {'image' : arr.shape}
         dataset_min = min(dataset_min, minimum)
         dataset_max = max(dataset_max, maximum)
@@ -144,6 +148,7 @@ if __name__ == '__main__':
         # Get mask, resample to 1 mm × 1 mm × 1 mm grid and extract np_array from this
 
         arr =  sitk.GetArrayFromImage( ut.resampler( sitk.ReadImage(os.path.join(source_filedir, filename)) ) ) 
+        arr = arrange_axis(arr)
         dimensions_dict[f'Img_{nr:02d}.nii']['mask'] = arr.shape
         unique_values += np.unique(arr).tolist()
         logging.debug(f'source : {filename}, shape {arr.shape}')
@@ -153,7 +158,7 @@ if __name__ == '__main__':
         ut.mask_to_slices_save(arr, dim_slice, target_folder)
 
     logging.info(f'List of unique values in the masks : {sorted(list(set(unique_values)))}')
-    logging.info(f'min and max values in the complete dataset : {dataset_min]} & {dataset_max}.')
+    logging.info(f'min and max values in the complete dataset : {dataset_min} & {dataset_max}.')
 
     with open(os.path.join(output_filedir, 'mask_counts_PLoS.json'), 'w') as mask_counts_file:
         json.dump(unique_values, mask_counts_file)

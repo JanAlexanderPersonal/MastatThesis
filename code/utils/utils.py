@@ -164,7 +164,7 @@ def mask_to_slices_save(arr : np.ndarray, dim_slice : int, target_folder : str):
         arr_slice = arr.take(i, axis=dim_slice)
         np.save(fn, arr_slice)
 
-        if False:
+        if True:
             # For the visualization, bring background back to 0 and spread out the colours as far as possible
             arr_slice[arr_slice == 255] = 0
             arr_slice *= 51

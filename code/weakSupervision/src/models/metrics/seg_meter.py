@@ -1,11 +1,7 @@
-from collections import defaultdict
-
-from scipy import spatial
 import numpy as np
 import pandas as pd
 from sklearn.metrics import confusion_matrix
 
-from . import struct_metric
 from typing import Dict
 
 from pprint import pformat
@@ -14,6 +10,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 CLASS_NAMES = ['Background', 'L1', 'L2', 'L3', 'L4', 'L5']
+SINGLE_CLASS_NAMES = ['Background', 'Vertebra']
 
 class SegMeter:
     """Calulate segmentation metrics
@@ -133,9 +130,16 @@ class SegMeter:
         return np.nan_to_num(np.diag(self.cf) / ( self.cf.sum(axis = 0) + self.cf.sum(axis = 1) - np.diag(self.cf)))
 
     def metrics_df(self) -> pd.DataFrame:
-        metrics_df = pd.concat([
-            pd.DataFrame(metric, columns=[metric_name], index = CLASS_NAMES ) for metric, metric_name in zip([self.calc_accuracy(), self.calc_precision(), self.calc_recall(), self.calc_dice(), self.calc_iou()], ['accuracy', 'precision', 'recall', 'dice', 'iou'])
-        ], axis=1)
+        if self.cf.shape[0] == 6:
+            metrics_df = pd.concat([
+                pd.DataFrame(metric, columns=[metric_name], index = CLASS_NAMES ) for metric, metric_name in zip([self.calc_accuracy(), self.calc_precision(), self.calc_recall(), self.calc_dice(), self.calc_iou()], ['accuracy', 'precision', 'recall', 'dice', 'iou'])
+            ], axis=1)
+        elif self.cf.shape[0] == 2:
+            metrics_df = pd.concat([
+                pd.DataFrame(metric, columns=[metric_name], index = SINGLE_CLASS_NAMES ) for metric, metric_name in zip([self.calc_accuracy(), self.calc_precision(), self.calc_recall(), self.calc_dice(), self.calc_iou()], ['accuracy', 'precision', 'recall', 'dice', 'iou'])
+            ], axis=1)
+        else:
+            raise AssertionError
         return metrics_df
 
 
