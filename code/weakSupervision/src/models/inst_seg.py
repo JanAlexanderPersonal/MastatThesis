@@ -263,6 +263,8 @@ class Inst_Seg(torch.nn.Module):
                 {0, 90, 180, 270} degrees
                 Adapted for multi-channel loss (n_classes > 2)
             """
+            if 'rot_point_loss_multi_weighted' nont in loss_name:
+                self.weight_vector = [1.0] * self.n_classes
 
             assert 'unsupervised_rotation_loss' in loss_name, 'It is necessary to calculate the unsupervised rotation loss before the supervised rotation consistancy loss can be calculated.'
 

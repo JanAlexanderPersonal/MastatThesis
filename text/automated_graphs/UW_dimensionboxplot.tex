@@ -1,55 +1,39 @@
 % This file was created by tikzplotlib v0.9.8.
 \begin{tikzpicture}
 
-\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
-\definecolor{color1}{rgb}{0.298039215686275,0.447058823529412,0.690196078431373}
-\definecolor{color2}{rgb}{0.768627450980392,0.305882352941176,0.32156862745098}
+\definecolor{color0}{rgb}{0,0.447058823529412,0.698039215686274}
+\definecolor{color1}{rgb}{0.835294117647059,0.368627450980392,0}
 
 \begin{groupplot}[group style={group size=1 by 2}]
 \nextgroupplot[
-axis background/.style={fill=color0},
-axis line style={white},
 height=7cm,
 tick align=outside,
+tick pos=left,
 width=9cm,
-x grid style={white},
-xmajorgrids,
-xmajorticks=false,
+x grid style={white!69.0196078431373!black},
 xmin=0.5, xmax=3.5,
-xtick style={color=white!15!black},
-y grid style={white},
+xtick style={color=black},
+y grid style={white!69.0196078431373!black},
 ylabel={dimension [mm]},
-ymajorgrids,
-ymajorticks=false,
 ymin=41.28125, ymax=741.84375,
-ytick style={color=white!15!black},
-ytick={0,100,200,300,400,500,600,700,800},
-yticklabels={0,200,400,600,800,,,,}
+ytick style={color=black}
 ]
-\addplot [color1, opacity=1]
-table {%
-0.85 160
-1.15 160
-1.15 188.000259399414
-0.85 188.000259399414
-0.85 160
-};
-\addplot [color1, opacity=1]
+\addplot [color0, opacity=1]
 table {%
 1 160
 1 120
 };
-\addplot [color1, opacity=1]
+\addplot [color0, opacity=1]
 table {%
 1 188.000259399414
 1 225.999877929688
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 0.925 120
 1.075 120
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 0.925 225.999877929688
 1.075 225.999877929688
@@ -65,30 +49,22 @@ table {%
 1 238.000122070312
 1 232
 };
-\addplot [color1, opacity=1]
-table {%
-1.85 160
-2.15 160
-2.15 188.000259399414
-1.85 188.000259399414
-1.85 160
-};
-\addplot [color1, opacity=1]
+\addplot [color0, opacity=1]
 table {%
 2 160
 2 120
 };
-\addplot [color1, opacity=1]
+\addplot [color0, opacity=1]
 table {%
 2 188.000259399414
 2 225.999877929688
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 1.925 120
 2.075 120
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 1.925 225.999877929688
 2.075 225.999877929688
@@ -104,30 +80,22 @@ table {%
 2 238.000122070312
 2 232
 };
-\addplot [color1, opacity=1]
-table {%
-2.85 228.125
-3.15 228.125
-3.15 406.25
-2.85 406.25
-2.85 228.125
-};
-\addplot [color1, opacity=1]
+\addplot [color0, opacity=1]
 table {%
 3 228.125
 3 73.125
 };
-\addplot [color1, opacity=1]
+\addplot [color0, opacity=1]
 table {%
 3 406.25
 3 638.75
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 2.925 73.125
 3.075 73.125
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 2.925 638.75
 3.075 638.75
@@ -137,66 +105,74 @@ table {%
 3 710
 3 710
 };
-\addplot [color2, opacity=1]
+\path [draw=color0, fill=color0]
+(axis cs:0.85,160)
+--(axis cs:1.15,160)
+--(axis cs:1.15,188.000259399414)
+--(axis cs:0.85,188.000259399414)
+--(axis cs:0.85,160)
+--cycle;
+\path [draw=color0, fill=color0]
+(axis cs:1.85,160)
+--(axis cs:2.15,160)
+--(axis cs:2.15,188.000259399414)
+--(axis cs:1.85,188.000259399414)
+--(axis cs:1.85,160)
+--cycle;
+\path [draw=color0, fill=color0]
+(axis cs:2.85,228.125)
+--(axis cs:3.15,228.125)
+--(axis cs:3.15,406.25)
+--(axis cs:2.85,406.25)
+--(axis cs:2.85,228.125)
+--cycle;
+\addplot [color1, opacity=1]
 table {%
 0.85 169.999877929688
 1.15 169.999877929688
 };
-\addplot [color2, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 1.85 169.999877929688
 2.15 169.999877929688
 };
-\addplot [color2, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 2.85 288.75
 3.15 288.75
 };
 
 \nextgroupplot[
-axis background/.style={fill=color0},
-axis line style={white},
 height=7cm,
 tick align=outside,
+tick pos=left,
 width=9cm,
-x grid style={white},
-xmajorgrids,
-xmajorticks=false,
+x grid style={white!69.0196078431373!black},
 xmin=0.5, xmax=3.5,
-xtick style={color=white!15!black},
+xtick style={color=black},
 xtick={1,2,3},
 xticklabels={left-right (x),anteroposterior (y),craniocaudal (z)},
-y grid style={white},
+y grid style={white!69.0196078431373!black},
 ylabel={spacing [mm]},
-ymajorgrids,
-ymajorticks=false,
 ymin=0.112890093028545, ymax=2.61367190033197,
-ytick style={color=white!15!black}
+ytick style={color=black}
 ]
-\addplot [color1, opacity=1]
-table {%
-0.85 0.3125
-1.15 0.3125
-1.15 0.367188006639481
-0.85 0.367188006639481
-0.85 0.3125
-};
-\addplot [color1, opacity=1]
+\addplot [color0, opacity=1]
 table {%
 1 0.3125
 1 0.234375
 };
-\addplot [color1, opacity=1]
+\addplot [color0, opacity=1]
 table {%
 1 0.367188006639481
 1 0.441406011581421
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 0.925 0.234375
 1.075 0.234375
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 0.925 0.441406011581421
 1.075 0.441406011581421
@@ -212,30 +188,22 @@ table {%
 1 0.464843988418579
 1 0.453125
 };
-\addplot [color1, opacity=1]
-table {%
-1.85 0.3125
-2.15 0.3125
-2.15 0.367188006639481
-1.85 0.367188006639481
-1.85 0.3125
-};
-\addplot [color1, opacity=1]
+\addplot [color0, opacity=1]
 table {%
 2 0.3125
 2 0.234375
 };
-\addplot [color1, opacity=1]
+\addplot [color0, opacity=1]
 table {%
 2 0.367188006639481
 2 0.441406011581421
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 1.925 0.234375
 2.075 0.234375
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 1.925 0.441406011581421
 2.075 0.441406011581421
@@ -251,45 +219,58 @@ table {%
 2 0.464843988418579
 2 0.453125
 };
-\addplot [color1, opacity=1]
-table {%
-2.85 1.25
-3.15 1.25
-3.15 2.5
-2.85 2.5
-2.85 1.25
-};
-\addplot [color1, opacity=1]
+\addplot [color0, opacity=1]
 table {%
 3 1.25
 3 0.625
 };
-\addplot [color1, opacity=1]
+\addplot [color0, opacity=1]
 table {%
 3 2.5
 3 2.5
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 2.925 0.625
 3.075 0.625
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 2.925 2.5
 3.075 2.5
 };
-\addplot [color2, opacity=1]
+\path [draw=color0, fill=color0]
+(axis cs:0.85,0.3125)
+--(axis cs:1.15,0.3125)
+--(axis cs:1.15,0.367188006639481)
+--(axis cs:0.85,0.367188006639481)
+--(axis cs:0.85,0.3125)
+--cycle;
+\path [draw=color0, fill=color0]
+(axis cs:1.85,0.3125)
+--(axis cs:2.15,0.3125)
+--(axis cs:2.15,0.367188006639481)
+--(axis cs:1.85,0.367188006639481)
+--(axis cs:1.85,0.3125)
+--cycle;
+\path [draw=color0, fill=color0]
+(axis cs:2.85,1.25)
+--(axis cs:3.15,1.25)
+--(axis cs:3.15,2.5)
+--(axis cs:2.85,2.5)
+--(axis cs:2.85,1.25)
+--cycle;
+\addplot [color1, opacity=1]
 table {%
 0.85 0.332031011581421
 1.15 0.332031011581421
 };
-\addplot [color2, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 1.85 0.332031011581421
 2.15 0.332031011581421
 };
-\addplot [color2, opacity=1]
+\addplot [color1, opacity=1]
 table {%
 2.85 2.5
 3.15 2.5
