@@ -10,11 +10,50 @@ In this chapter, I introduce the main modelling approach and different ideas tes
 
 \section{Investigation strategy}
 
-\begin{SCfigure}[][htb]
-    \centering
-    \includegraphics[width=.95\textwidth]{/home/thesis/images/model_optimization.png}
-    \caption{training}
-\end{SCfigure}
+\begin{algorithm}[H]
+    \SetAlgoLined
+    \KwData{
+        \begin{itemize} 
+            \item Train set $\mathcal{S}_{train}$ with weak annotations 
+            \item Validation set $\mathcal{S}_{val}$ with full annotations 
+            \item Test set $\mathcal{S}_{test}$ with full annotations 
+        \end{itemize}}
+    \KwResult{
+        \begin{itemize} 
+            \item Trained model weights $\theta_b$
+            \item Train, cross-validation and test metrics 
+        \end{itemize}}
+    $\mathcal{M}_b \leftarrow -\infty $ (best metric)\;
+    $\mathcal{L}_b \leftarrow \infty $ (best loss)\;
+    $LR \leftarrow LR_0$ \;
+    $\vec{f}_{LR} \leftarrow 1, 10, 10, 50 $ \;
+    $T_{\mathcal{M}} \leftarrow$ 0 \;
+    $T_{\mathcal{M}, max} \leftarrow $ 10 \;
+
+    \For{$fact_{LR} \in \vec{f}_{LR}$}{
+        $LR \leftarrow LR . fact_{LR}$ \;
+        $T_{\mathcal{L}} \leftarrow $ 0 \;
+   \While{$T_{\mathcal{L}} < T_{\mathcal{L}, max} $}{
+       $\mathcal{L}_n \leftarrow $ train epoch( $\mathcal{S}_{train}$ ) \;
+       $\mathcal{M}_n \leftarrow $ evaluate($\mathcal{S}_{val}$) \;
+       \eIf{$\mathcal{L}_n < \mathcal{L}_b$}{
+            $\mathcal{L}_b \leftarrow \mathcal{L}_n$ \;
+             \eIf{$\mathcal{M}_n > \mathcal{M}_b$}{
+                $\mathcal{M}_b \leftarrow \mathcal{M}_n$ \;
+                $\theta_b \leftarrow $ current model weights \; 
+             }{
+                $T_{\mathcal{M}} \leftarrow T_{\mathcal{M}} + 1$ \;
+             }
+            }{
+                $T_{\mathcal{L}} \leftarrow T_{\mathcal{L}} + 1$ \;
+            }
+    }
+   }
+   set model weights to $\theta_b$ \;
+   evaluate all metrics
+    
+    \caption{Model optimization strategy}
+\end{algorithm}
 
 \section{Fully supervised model}
 
