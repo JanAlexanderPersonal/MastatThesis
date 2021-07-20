@@ -122,7 +122,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
     # Weights: The objective is to get weights proportional to the prevalence of labels in the dataset and with minimal weight == 1
 
-    mask_weights = [min(list(mask_counts.values())) * (mask_counts[i] ** (-1)) for i in range(6) ]
+    mask_weights = [min(list(mask_counts.values())) * (mask_counts[i] ** (-1)) for i in range(exp_dict['dataset']['n_classes']) ]
 
     logger.info(f'counts for mask labels : {mask_counts}. This results in the mask weights {mask_weights}.')
 
@@ -215,6 +215,8 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     _, train_selected = train_set.return_img_dfs()
     _, val_selected = val_set.return_img_dfs()
     _, test_selected = test_set.return_img_dfs()
+
+    print(pd.merge(train_selected, val_selected, how ='inner', on =['img', 'tgt']).head())
 
     assert(pd.merge(train_selected, val_selected, how ='inner', on =['img', 'tgt']).shape[0] == 0), 'Overlap detected'
     assert(pd.merge(train_selected, test_selected, how ='inner', on =['img', 'tgt']).shape[0] == 0), 'Overlap detected'

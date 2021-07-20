@@ -9,6 +9,7 @@ import random, math
 import re
 from src.modules.lcfcn import lcfcn_loss
 from src.datasets.StratifiedGroupKFold import StratifiedGroupKFold
+from sklearn.model_selection import  GroupKFold
 import SimpleITK as sitk
 import numpy as np
 from haven import haven_utils as hu
@@ -209,7 +210,7 @@ class SpineSets(torch.utils.data.Dataset):
         train_df = self.full_image_df[self.full_image_df['patient'].isin(train_pat_df.patient.tolist())]
         val_df = self.full_image_df[self.full_image_df['patient'].isin(val_pat_df.patient.tolist())]
 
-        if 'PLoS' in self.souces:
+        if 'PLoS' in self.sources:
             ix_dev, ix_test = next(PLoS_dev_test_split.split(X = PLoS_df.slice_id, y = PLoS_df.source, groups = PLoS_df.scan_id ))
 
             dev_PLoS_df, test_PLoS_df = PLoS_df.iloc[ix_dev], PLoS_df.iloc[ix_test]
@@ -218,7 +219,7 @@ class SpineSets(torch.utils.data.Dataset):
 
             test_df = pd.concat([test_df, test_PLoS_df], axis = 0)
             train_df = pd.concat([train_df, train_PLoS_df], axis = 0)
-            val_df = pd.concat([train_df, train_PLoS_df], axis = 0)
+            val_df = pd.concat([val_df, val_PLoS_df], axis = 0)
 
         
         logger.debug(
@@ -348,7 +349,13 @@ class SpineSets(torch.utils.data.Dataset):
             mask_name = img_list_entry['tgt']
             mask = np.load(mask_name)
             vals, counts = np.unique(mask, return_counts=True)
-            return {val: count for val, count in zip(vals.tolist(), counts.tolist())}
+            vals_dict =  {val: count for val, count in zip(vals.tolist(), counts.tolist())}
+            if self.n_classes == 2:
+                vals_dict = {
+                    0: vals_dict[0],
+                    1 : sum([vals_dict.get(i, 0) for i in range(1,6)])
+                }
+            return vals_dict
 
         logger.info(f'Start counting the mask labels ')
         list_counts = Parallel(n_jobs=N_CORES)(delayed(unique_vals_dict)(image_list_entry) for image_list_entry in self.img_list)
@@ -406,8 +413,8 @@ class SpineSets(torch.utils.data.Dataset):
 
         # Background value: 0
         # mask value i corresponds to lumbar vertebra Li
-        if self.n_classes == 1:
-            tgt_mask[tgt_mask != 0] = 1
+        if self.n_classes == 2:
+            tgt_mask[np.isin(tgt_mask,[1,2,3,4,5])] = 1
         elif self.n_classes == 6:
             # If n_classes is 6, you keep the labels for all 5 lumbar vertebrae
             # (1 -> 5) +  label 0 for the background class

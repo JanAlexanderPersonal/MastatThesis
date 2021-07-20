@@ -14,6 +14,12 @@ do
         for d in 0 1 2
         do
 
+                python3.8 $PATH_CODE/prepare_PLoS.py \
+                        --source $PATH_DATA/Zenodo/ \
+                        --output $PATH_OP/dataset_${d}_contrast_$c/ \
+                        --contrast $c \
+                        --dimension $d
+
                 python3.8 $PATH_CODE/prepare_USiegen.py \
                         --source $PATH_DATA/USiegen/ \
                         --output $PATH_OP/dataset_${d}_contrast_$c/ \
@@ -35,6 +41,8 @@ do
                         --output $PATH_OP/dataset_${d}_contrast_$c/ \
                         --contrast $c \
                         --dimension $d
+
+                
 
         done
 done

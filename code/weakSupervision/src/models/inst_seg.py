@@ -280,12 +280,12 @@ class Inst_Seg(torch.nn.Module):
             # consistency class.
             ind = points != 255
             if ind.sum() != 0:
-                points_rotated = flips.Hflip()(points_temp)
+                points_rotated = flips.Hflip()(points)
                 points_rotated = sst.batch_rotation(
                             points_rotated, rotations)
                 logger.debug(f'Loss before taking into account the rotation consistency point loss : {loss}')
-                loss += F.cross_entropy(logits, points.cuda(), ignore_index = 255, weight = torch.Tensor(self.weight_vector).to(logits.get_device()))
-                loss += F.cross_entropy(logits_rotated, points_rotated.detach.float().cuda(), ignore_index = 255, weight = torch.Tensor(self.weight_vector).to(logits.get_device()))
+                loss += F.cross_entropy(logits, points.squeeze(1).cuda(), ignore_index = 255, weight = torch.Tensor(self.weight_vector).to(logits.get_device()))
+                loss += F.cross_entropy(logits_rotated, points_rotated.detach().squeeze(1).cuda(), ignore_index = 255, weight = torch.Tensor(self.weight_vector).to(logits.get_device()))
                 logger.debug(f'Loss after taking into account the rotation consistency point loss : {loss}')
 
             """
