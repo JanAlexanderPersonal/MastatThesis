@@ -67,8 +67,8 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 % GEOMETRY
 \settrims{0pt}{0pt}
 \settypeblocksize{49\baselineskip}{107mm}{*}
-\setlrmargins{24.8mm}{*}{*}
-\setulmargins{27.4mm}{*}{*}
+\setlrmargins{20.0mm}{*}{*} % 24.8 mm
+\setulmargins{20.0mm}{*}{*} % 27.4 mm
 \setheadfoot{\baselineskip}{\baselineskip}
 \setheaderspaces{*}{2\baselineskip}{*}
 \setmarginnotes{8.2mm}{49.4mm}{\onelineskip}
@@ -212,7 +212,7 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 \begin{document}
 
-\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
+\newgeometry{total={210mm,297mm},left=20mm,right=20mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
 \input{/home/thesis/0_Main/titlepage}
 
 \cleardoublepage
@@ -236,8 +236,9 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 %\cleardoublepage
 \restoregeometry
-\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
+\newgeometry{total={210mm,297mm},left=20mm,right=20mm,bindingoffset=5mm, top=25mm,bottom=20mm} 
 \input{/home/thesis/0_Main/main_abstract}
+\clearpage
 \restoregeometry
 \input{/home/thesis/1_ProblemIntro/PART_Problem_intro}
 
@@ -251,23 +252,15 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 \input{/home/thesis/2_Analysis/Model}
 
-\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
-\begin{partwithabstract}{Experiments}
+\newgeometry{total={210mm,297mm},left=20mm,right=20mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
+\begin{partwithabstract}{Results \& Experiments}
     This part of the document details the used datasets and the modelling and evaluation methodology.
 \end{partwithabstract}
 \restoregeometry
 
-\section{Experimental results of the fully supervised model}
 
-\section{Experimental results of the weakly supervised model}
 
-\section{Comparison between fully \& weakly supervised model}
-
-\section{Final model proposal}
-
-\section{Experimental results of the final model}
-
-\newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
+\newgeometry{total={210mm,297mm},left=20mm,right=20mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
 \begin{partwithabstract}{Conclusions}
     This part of the document details the used datasets and the modelling and evaluation methodology.
 \end{partwithabstract}
