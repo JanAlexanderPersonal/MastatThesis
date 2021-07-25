@@ -135,7 +135,7 @@ each picture, the objects are delineated, indicating their class.
 
 
 
-\subsubsection{Weak supervision types}
+\subsubsection{Weak supervision types\label{sec:weak_supervision}}
 
 
 Building a machine vision model requires a collection of images where an expert in the intended task has provided correct information from which the model can \textit{learn}.
@@ -182,12 +182,22 @@ If one uses the same dataset to construct a model that predicts pixel-wise masks
 For a segmentation task, weak labels can be:
 \begin{description}
     \item[Image level labels]: In this case, only the object class of the object in the image is provided. 
-    This would be a full label for a classification task, but it is a weak label for a segmentation task.
-    \item[Point annotation]: This annotation technique, the subject of this work, consists of asking the expert to indicate the classes with one or several points. This technique is used by Laradji
+    This would be a full label for a classification task, but it is a weak label for a segmentation task\footnote{Image with image level annotation can, for some problems, be obtained in large numbers by web-scraping.}.
+    \item[Point annotation]: This annotation technique, the subject of this work, consists of asking the expert to indicate the classes with one or several points. This technique is used in \cite{Laradji2020, Laradji2018, McEver2020}.
+    In \cite{Mainis}, instead of \textit{random} point annotation, the author makes use of \textit{extreme} point annotation.  
     \item[Squiggles]: This annotation technique is related to the point annotation technique. Instead of points, the expert is asked to indicate the classes with a squiggly line.
+    \item[Bounding boxes]: A bounding box (a rectangle circumscribing the object) is a less precise form of object localization than pixel-wise segmentation.
     \item[Image description]: This task combines the problem of \acrlong{nlp} with the problem of image segmentation. The annotation of the image is derived from verbal or written description of the image. 
     This annotation type has not yet been used by many researchers. 
     It might be promising since large bodies of datasets could be available from for example medical files where a medical expert has provided a written diagnosis based on available medical images. 
 \end{description}
-
-\todo[inline]{Motivation of weakly supervised learning --> Difference in annotation time and cost from Bearman and Laradji Covid}
+\par{
+    There seem to be endless variations possible to conceive weak labels. 
+    For example, instead of image level labels, in \cite{Laradji2018}, the number of instances of the specific class\footnote{Which happens to be pinguins} is provided. 
+}
+\par{
+    In \cite{Bearman2015}, Bearman et al. compare the annotation time required for images from the PASCAL VOC 2012 dataset.
+    The authors report an average time per image of 239.7 seconds per image for full image pixel annotation, 20.0 seconds per image for image level labels and 22.1 seconds per image for point annotation.
+    As is repeated in \ref{sec:PreviousWork_weaklySupervised}, point lavel annotation is attractive since it barely requires more of the expert's time while delivering more precise information.
+    The point label contains valuable localization information, absent from the image level annotation.
+}

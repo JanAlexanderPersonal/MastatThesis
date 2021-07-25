@@ -77,6 +77,7 @@
     uses a multi-step approach. First, the \acrfull{roi} (the lumbar region) is selected using a multilayer perceptron evaluated on the respones of a Canny Edge filter.
     This \acrshort{roi} is then sliced (sagittal) and crops ($270mm \times 270mm$\footnote{The article also mentions $27mm \times 27mm$, which seems to be a typo.}) are segmented with a 2D U-net. 
     The resulting masks are improved with a morphological closing filter. 
+    In \cite{Janssens2018}, a similar 2 step approach is used. Here, the author chose to use a 3D U-net to evaluate patches from the \acrshort{roi} instead of a 2D U-net.
 }
 \par{
     An interesting approach to the problem is published in \cite{Lessmann2018, Chuang2019}. 
@@ -127,25 +128,74 @@
     \label{fig:chuang_architecture}
 \end{SCfigure}
 
-\todo[inline]{other authors, approaches --> priors used, metrics used, datasets used}
+%\todo[inline]{other authors, approaches --> priors used, metrics used, datasets used}
 
 
-\section{Weakly supervised segmentation}
-
-
-\subsection{General approaches}
-
-\todo[inline]{How is this problem generally solved: PCAMS, WISE, ...}
-
-In this work, the \acrshort{wise} concept is applied for vertebra segmentation.
-
-
+\section{Weakly supervised segmentation\label{sec:PreviousWork_weaklySupervised}}
+\par{
+    The subject of \Gls{weaklysupervisedl} is wide.
+    Researchers devised a varied range of ideas to decrease the labelling cost by leveraging weak labels to infer strong results.
+    Chapter \ref{sec:weak_supervision} discribes a number of different annotation types.
+}
+\subsection{Overview of different approaches}
+\par{
+    Given an image-level class label, the \Gls{caml} \todo{reference} allows to identify the picture regions responsible for a classification result \cite{Ahn2018, Ahn2019}
+    \footnote{Other so-called \textit{saliency detection} methods exist, for example methods based on partial image occlusion [xxx].}.
+    This is an approach that makes a lot of sense for example in cases where models are trained on web-scraped images.
+    This approach is extended to the case of point-annotation in \cite{McEver2020}. 
+    The rationale behind point annotation is that in cases where an expert is required to label the images, optimal use needs to be made of the expert's time.
+    Based on estimations \cite{Bearman2015} the time consumption of point annotation and image level annotation is small, yet the information quality is higher (see also chapter \ref{sec:weak_supervision}).
+    An expert does not need significantly more time to click on an object compared to providing an image label\footnote{
+        It should be noted that point annotation refers to \textit{random} point annotation. Some authors \cite{Mainis} use \textit{extreme} point annotation. 
+        Where the expert  is requested to indicate points at the edge of the segment region.
+    }, yet the point provides valuable localization information.
+    In \cite{McEver2020}, the case is even made that for large and dense images, point annotations could even help the expert to keep track of the already labelled objects.
+    By using the annotation points, in a technique called \acrfull{pcam}, the authors of \cite{McEver2020} are able to improve the quality of the class affinity estimation compared to the regular \Gls{caml} technique (using the PASCAL VOC 2012 dataset).
+    The obtained affinity maps are subsequently used as \textit{pseudo} label maps to train a network (ResNet50). 
+    The author reports an improved performance of the model trained on \textit{pseudo} labels compared to the performance metric calculated for those pseudo labels.
+}
+\par{
+    The technique to work in a two-step procedure, first estimating point guided pseudo-masks, then training a network based on these pseudo-masks is shared by different authors.
+}
+\subsection{Weakly supervised segmentation for Medical applications}
+\par{
+    The technique used in this project is inspired on the work of dr. I. Laradji in \cite{Laradji2020}.
+    This researcher developed several methods to make use of weak supervised data for segmentation tasks.
+    First, in \cite{Laradji2018}, the \Gls{wise} method is presented. 
+    Contrary to other \Gls{weaklysupervisedl} projects, the authors focus on multi-class, multi-instace problems for which CAM-based solutions are less suitable.
+    This method, illustrated in figure \ref{fig:Laradji_WISE}, consists of two branches from the same backbone: the Embedding branch and the Localization branch.
+    The Embedding branch is trained with a pre-trained class-agnostic object proposal method. 
+    This network (FCN8) is pre-trained to output similar embeddings for pixels that belong to the same class.
+    The output of the network is thus an Embedding mask for each pixel of the image. 
+    This network is trained to deliver different embeddings for different object instances with a binary binary cross entropy function on the squared exponential kernel difference of the embeddings
+    \footnote{With $E_i$ and $E_j$ the embeddings for points $i$ and $j$ and $\mathcal{I}$ the collection of labelled points.}:
+}
+\begin{eqnarray}
+    S(i,j) &=& \exp \left( \frac{||E_i-E_j||^2}{2d} \right)\\
+    \mathcal{L}_E &=& - \sum_{(i,j)\in \mathcal{I}} \left[  \mathbf{I}(y_i=y_j) log(S(i,j)) + \mathbf{I}(y_i\neq y_j) log(1-S(i,j))  \right]
+\end{eqnarray}
+\par{
+    The second part of the \Gls{wise} network is the Localization branch. 
+    This branch aims to predict small \textit{blobs} at the center of each object.
+    These blobs are too small to serve as masks on their own, but they can be combined with the E-branch result to provide segmentation masks.
+}
 \begin{SCfigure}[][htb]
     \includegraphics[width=10cm]{/home/thesis/images/Laradji_architecture.png}
-    \caption{Illustration from \cite{Laradji2020}. The \acrshort{wise} approach consists of two branches: The Embedding branch and the Localization branch.}
-    \label{fig:Laradji}
-  \end{SCfigure}
-
-\subsection{Weakly supervised segmentation for Medical applications}
-
-Laradji COVID 19
+    \caption{Illustration from \cite{Laradji2020}. The \Gls{wise} approach consists of two branches: The Embedding branch and the Localization branch.}
+    \label{fig:Laradji_WISE}
+\end{SCfigure}
+\par{
+    The \Gls{wise} model seems to perform well on the PASCAL VOC 2012 dataset, the Cityscapes dataset and the COCO 2014 dataset. 
+    Nevertheless, the author abandoned it in \cite{Laradji2020}, where he demonstrated a weakly supervised network to segment patient lungs and zones of opacity and consolidation in the lungs of potential \Gls{covid} patients.
+    There are several potential reasons for this. 
+    Two of those seem important for this work. 
+    First, the \Gls{wise} approach seems to assume the expert positions the annotation point right in the center of each object instance.
+    Second, the approach is complex and the double branch inference is computation and memory intensive. 
+    In this project, it is assumed that experts can provide different point labels for the same instance at random locations in the instance.
+    Since volume data is is more memory intensive than picture data, it is beneficial to avoid overly complex and memory intensive approaches.
+}
+\par{
+    In \cite{Laradji2020}, Laradji et al. introduces an approach based on the consistency loss, combined with binary cross entropy.
+    This approach is used and extended in this project.
+    Details are provided starting on page \pageref{sec:model_concept}.
+}
