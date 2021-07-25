@@ -1,46 +1,57 @@
-\chapter{Artificial intelligence \& Machine Learning}
-
-Machine learning is a branch of \Gls{ai}. 
-The field of \Gls{machinevision} is a branch of machine vision in which important steps forward has been made in the past decade, mainly thanks to the emergence of \Gls{deepl}.
-
-The aim of this chapter is not to provide a complete overview of the machine learning field.
-Rather, the objective is to highlight concepts that are important for interpretation of the specific analysis in this Master thesis.
+\chapter{Artificial intelligence \& Machine Learning\label{sec:ai_and_ml}}
+\par{
+    Machine learning is a branch of \Gls{ai}. 
+    The field of \Gls{machinevision} is a branch of machine learning.
+    Some impressive steps forward have been made in the past decade, mainly thanks to the emergence of \Gls{deepl}.
+}
+\par{
+    \Gls{ai} is showing promising results for various tasks in society.
+    New research results ranging from self-driving cars to automated translation is regularly published in mainstream media.
+    The aim of this chapter is not to provide a complete overview of the machine learning field.
+    Instead, the objective is to highlight concepts meaningful for this work.
+}
+\par{
+    Finally, this work does not cover the social, legal and ethical questions \Gls{ai} evokes.
+}
 
 \section{Artificial Intelligence}
+\par{
+    The field of \Gls{ai} (AI) is the engineering discipline of the automation of \textit{cognitive} tasks.
+    Tasks such as search, control and classification are generally considered to require a level of intelligence. 
+    Automation of this type of tasks to allow a machine to perform them is thus \Gls{ai}\footnote{To be precise, it is not the human intelligence that is replicated. It is the \textit{effect} of this intelligence.}.
+    A classic PID controller and even a bang-bang (thermostat) controller can be viewed as simple but very effective forms of AI.
+    This engineering discipline has advanced incredibly in the past decades, driven both by leaps forward in the available hardware and new algorithms and models. 
+}
+\par{
+    First, the availability and reliability of hardware components such as sensors, cameras, digital storage and calculation power have increased exponentially 
+    \footnote{ \textit{Moore's law} states that the number of transistors on an integrated circuit doubles every two years. This rate of progress has held more or less for a wide range of digital components in the past decades.}.
+    The size and price of these components decreased equally dramatically. \\
+    Second, progress has been made in developing algorithms to use this available data and computation power to solve problems and perform tasks.
+    This text does not provide a complete overview of all existing machine learning models. 
+    This work makes use of \Gls{deepl} models.
+    A \Gls{deepl} model is a type of \acrfull{ann} with multiple hidden layers. 
+    Deep learning models are behind almost all modern applications of \acrfull{nlp} and \Gls{machinevision}.
+}
+\subsection{Neural Networks}
+\par{
+    An \acrshort{ann} is a collection of connected nodes, or \textit{neurons}. 
+    These are typically structured in layers. 
+    There is always an \textit{input} layer and an \textit{output} layer. Between these two, one can find the \textit{hidden} layers\footnote{When there is at least one hidden layer, one talks about a deep network. In practice, \acrshort{cnn}s have multiple hidden layers.}.
+    To calculate a node value, the incoming node values are weighted by the connection weights and the result of this linear combination is transformed by an activation function\footnote{
+        $\vec{x}$ : values of the nodes connected to node $j$\\
+        $\vec{w}$ : connection weights\\
+        $\sigma(.)$ : activation function
+    }:
+    \begin{eqnarray}
+        z_j(\vec{x} | \vec{w}) &=& \frac{\vec{w}^T\vec{x}}{\sum w_k} \\
+        y_j(\vec{x} | \vec{w}) &=& \sigma(z_j)
+    \end{eqnarray}
+    Deep learning models can be fitted through the \acrfull{bp} algorithm.
+}
 
-The field of \Gls{ai} (AI) is the engineering discipline of the automation of \textit{cognitive} tasks.
-Tasks such as search, control and classification are generally considered to require a level of intelligence. 
-Automation of this type of tasks to allow a machine to perform them is thus \Gls{ai}\footnote{To be precise, it is not the human intelligence that is replicated. It is the \textit{effect} of this intelligence.}.
-A classic PID controller and even a bang-bang (thermostat) controller can be viewed as simple, but very effective, forms of AI.
+\todo[inline]{Short and to-the-point introduction of neural networks}
 
-
-In the past decades, this engineering discipline has incredible advance, driven both by leaps forward in the available hardware and the development of new algorithms and models. \\
-First, the availability and reliability of hardware components such as sensors, cameras, digital storage and calculation power has increased exponentially 
-\footnote{ \textit{Moore's law} states that the number of transistors on an integrated curcuit doubles every two years. This rate of progress has held more of less for a wide range of digital components in the past decades.}.
-The size and price of these components has decreased equally dramatically. \\
-Second, important progress has been made in the development of algorithms to make use of this available data and computation power to solve problems and perform tasks.
-I do not want to provide a complete overview of all existing machine learning models. 
-In this work, I make use of \Gls{deepl} models.
-A \Gls{deepl} model is a type of \acrfull{ann} with multiple hidden layers. 
-Deep learning models are behind almost all modern applications of \acrfull{nlp} and \Gls{machinevision}.
-
-An \acrshort{ann} is a collection of connected nodes, or \textit{neurons}. 
-These are typically structured in layers. 
-There is always an \textit{input} layer and an \textit{output} layer. Between these two, one can find the \textit{hidden} layers\footnote{When there is at least one hidden layer, one talks about a deep network. In practice \acrshort{cnn}s have multiple hidden layers.}.
-To calculate a node value, the incoming node values are weighted by the connection weights and the result of this linear combination is transformed by an activation function\footnote{
-    $\vec{x}$ : values of the nodes connected to node $j$\\
-    $\vec{w}$ : connection weights\\
-    $\sigma(.)$ : activation function
-}:
-\begin{eqnarray}
-    z_j(\vec{x} | \vec{w}) &=& \frac{\vec{w}^T\vec{x}}{\sum w_k} \\
-    y_j(\vec{x} | \vec{w}) &=& \sigma(z_j)
-\end{eqnarray}
-Deep learning models can be fitted through the \acrfull{bp} algorithm.
-
-\todo[inline]{Short and to-the point introduction of neural networks}
-
-Constructing a network requires evaluating it, comparing the evaluation output to a known desired output and trying to take steps to bring the model output closer to the desired output. 
+Constructing a network requires evaluating it, comparing the evaluation output to a known desired output, and taking steps to bring the model output closer to the desired output. 
 The procedure used to 
 A network is fitted to the \textit{train set} by the optimization algorithm, based on the \textbf{loss}.
 The \acrshort{ml} engineer wants to judge the performance of the model based on one or several \textbf{metrics}, calculated on the \textit{train set}, the \textit{cross-validation set} and eventually on the \textit{test set}.
@@ -49,11 +60,11 @@ The \acrshort{ml} engineer wants to judge the performance of the model based on 
 
 \Gls{machinevision} is the branch of \Gls{ai} focussed on image processing.
 The machine vision task performed in this work is called instance \Gls{segmentation}.
-In this chapter, I explain what this means. 
-I compare segmentation to other machine vision tasks.
+This chapter explains what this means. 
+The segmentation task is compared to other machine vision tasks.
 
-This work investigates the use of \Gls{weaklysupervisedl} data for training an Instance segmentation model. 
-I explain the concept and benefits of \Gls{weaklysupervisedl} machine learning.
+This work investigates the use of \Gls{weaklysupervisedl} data for the training and segmentation model. 
+The concept and benefits of \Gls{weaklysupervisedl} machine learning is discussed.
 
 \subsection{Machine vision tasks \label{sec:machinevisiontasks}}
 
@@ -69,7 +80,7 @@ Depending on the question asked ad inference time, one can distinguish the follo
     \item[Object counting] is the task of counting how many instances of each category are in the image. How many cats are there in this picture? 
     \item[Object detection] consists not only of identification of the object. Also, the spatial position is requested, often in the form of a bounding box. Where is the cat in this picture if a cat is present?
     \item[Semantic segmentation] requires a class estimation for each image pixel. Pixels that do not belong to a specific class are called the \textit{background}.
-    \item[Instance segmentation] requires not only that the semantic class determined for each pixel, but also that two individuals of the same class\footnote{say, two cats.} are distinguished.   
+    \item[Instance segmentation] requires not only that the semantic class is determined for each pixel, but also that two individuals of the same class\footnote{say, two cats.} are distinguished.   
 \end{description}
 
 Figure \ref{fig:machinevisiontasks} illustrates the difference between these machine vision tasks. 
@@ -93,11 +104,11 @@ Other interesting applications of \gls{machinevision} include\footnote{This list
 
 \subsection{The convolution layer}
 
-The building block of every modern machine vision network, including the ones in my thesis, is the convolution layer.
+The building block of virtually every modern machine vision network, including the ones in this thesis, is the convolution layer.
 
 \todo[inline]{weight sharing, feature extraction}
 
-\subsection{Data for training a machine vision model}
+\subsection{Data for training machine vision models}
 
 To perform the tasks discussed in chapter \ref{sec:machinevisiontasks}, one needs to build a suitable model.
 For \Gls{machinevision} tasks\footnote{and many other tasks.}, the current standard approach is \Gls{deepl}.
@@ -124,15 +135,15 @@ each picture, the objects are delineated, indicating their class.
 
 
 
-\subsubsection{Weak supervision types}
+\subsubsection{Weak supervision types\label{sec:weak_supervision}}
 
 
-To build a machine vision model, a collection of images is needed where an expert in the intended task has provided correct information from which the model can \textit{learn}.
+Building a machine vision model requires a collection of images where an expert in the intended task has provided correct information from which the model can \textit{learn}.
 Depending on the model objective, other types of labelling are required.
 
 
 Figure \ref{fig:ImageLabelTypes} illustrates several types of image supervision : 
-Point supervision, squiggle, bounding box and full mask.
+From left to right on the top row, this shows point supervision and squiggle annotation. ON the second row, bounding box annotation and complete mask annotation are illustrated.
 The generation of these labels is costly and time-consuming.
 Especially \gls{deepl} models are known to be very data-hungry. 
 
@@ -148,10 +159,9 @@ Especially \gls{deepl} models are known to be very data-hungry.
     \label{fig:ImageLabelTypes}}
 \end{SCfigure}
 
-Given the high labelling cost, several researchers have investigated ways to train computer vision models with cheaper labels.
+Several researchers have investigated ways to train computer vision models with cheaper labels, given the high labelling cost.
 This branch of research is known as \Gls{weaklysupervisedl}.
-The objective is to construct a robust model based on \textit{cheap} (incomplete, noisy or imprecise) labels. 
-This is sometimes described as \textit{indirect supervision}.
+The objective is to construct a robust model based on \textit{cheap} (incomplete, noisy or imprecise) labels, sometimes described as \textit{indirect supervision}.
 Numerous creative approaches have been conceived. 
 It is impossible to give an exhaustive list of approaches. 
 In what follows, I will mainly focus on the approaches I chose to investigate myself, but I will also try to give some hints of the remarkable creativity found in the field.
@@ -164,18 +174,30 @@ The basic concept of \Gls{weaklysupervisedl} is that there are two sources of in
 These \textit{Priors} can be any form of prior knowledge about the object to be segmented\footnote{or any other machine vision task.}.
 Priors can be the object size, shape or location, the number of instances, the similarity across images or the similarity with external images.
 
-Whether an annotation is considered a \textit{weak label} or a \textit{strong label} depends more on the modellers intention than on the annotation itself. 
+Whether an annotation is considered a \textit{weak label} or a \textit{strong label} depends more on the modeller's intention than on the annotation itself. 
 When one aims to construct a model to infer output labels with a higher informative value than the original annotations, these \textit{labels} become \textit{hints}.
 Making a model predict bounding boxes from a dataset annotated with bounding boxes means considering these as \textit{strong labels}. 
-If one uses the same dataset to construct a model that predicts pixel-wise masks, you use the labels as \textit{weak labels} or \textit{hints}.
+If one uses the same dataset to construct a model that predicts pixel-wise masks, the labels are \textit{weak labels} or \textit{hints}.
 
 For a segmentation task, weak labels can be:
 \begin{description}
     \item[Image level labels]: In this case, only the object class of the object in the image is provided. 
-    This would be a full label for a classification task, but it is clearly a weak label for a segmentation task.
-    \item[Point annotation]: Only points are provided
-    \item[squiggles]:
-    \item[Image description]: This task combines the problem of \acrlong{nlp} with the problem of image segmentation.  
+    This would be a full label for a classification task, but it is a weak label for a segmentation task\footnote{Image with image level annotation can, for some problems, be obtained in large numbers by web-scraping.}.
+    \item[Point annotation]: This annotation technique, the subject of this work, consists of asking the expert to indicate the classes with one or several points. This technique is used in \cite{Laradji2020, Laradji2018, McEver2020}.
+    In \cite{Mainis}, instead of \textit{random} point annotation, the author makes use of \textit{extreme} point annotation.  
+    \item[Squiggles]: This annotation technique is related to the point annotation technique. Instead of points, the expert is asked to indicate the classes with a squiggly line.
+    \item[Bounding boxes]: A bounding box (a rectangle circumscribing the object) is a less precise form of object localization than pixel-wise segmentation.
+    \item[Image description]: This task combines the problem of \acrlong{nlp} with the problem of image segmentation. The annotation of the image is derived from verbal or written description of the image. 
+    This annotation type has not yet been used by many researchers. 
+    It might be promising since large bodies of datasets could be available from for example medical files where a medical expert has provided a written diagnosis based on available medical images. 
 \end{description}
-
-\todo[inline]{Motivation of weakly supervised learning --> Difference in annotation time and cost from Bearman and Laradji Covid}
+\par{
+    There seem to be endless variations possible to conceive weak labels. 
+    For example, instead of image level labels, in \cite{Laradji2018}, the number of instances of the specific class\footnote{Which happens to be pinguins} is provided. 
+}
+\par{
+    In \cite{Bearman2015}, Bearman et al. compare the annotation time required for images from the PASCAL VOC 2012 dataset.
+    The authors report an average time per image of 239.7 seconds per image for full image pixel annotation, 20.0 seconds per image for image level labels and 22.1 seconds per image for point annotation.
+    As is repeated in \ref{sec:PreviousWork_weaklySupervised}, point lavel annotation is attractive since it barely requires more of the expert's time while delivering more precise information.
+    The point label contains valuable localization information, absent from the image level annotation.
+}

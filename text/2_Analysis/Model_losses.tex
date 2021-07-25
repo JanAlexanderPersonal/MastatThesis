@@ -65,7 +65,7 @@ This means that a point label $\mathcal{Y}_i(\vec{p})=m: m\in[1,2,3,4,5]$ indica
 
 First, $n-1$ (in this case 5) distance masks are created\footnote{1 label is background, for which there is no prior extend.}, 
 representing the maximal\footnote{Maximal distance, because there can be mulitple such labels.} distance (Euclidian norm) of each location $\vec{q}$ from the label $\mathcal{Y}_i(\vec{p})=k$ furthest away from $\vec{q}$.
-Then $\mathbf{d}$ is converted to a smooth semi-mask:
+Then $\mathbf{d}$ is converted to a semi-mask:
 \begin{eqnarray}
     \mathbf{d}_k(\vec{q}) &=& \max_{\vec{p}:\mathcal{Y}_i(\vec{p})=k}||\vec{q} - \vec{p}||\\
     \mathbf{m}_k(\vec{q}) &=& \mathbf{I}\left( (-\mathbf{d}(\vec{q}) + r) > 0 \right)
