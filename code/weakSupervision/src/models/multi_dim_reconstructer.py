@@ -66,7 +66,7 @@ class multi_dim_reconstructor(object):
             for i, model_exp_dict in model_dict.items():
                 logger.debug(f'Dimension : {i}')
                 logger.debug(f'experiment dict : {pformat(model_exp_dict)}')
-                model_folder = os.path.join(os.path.join(model_location), model_type_name.replace('D', str(i)), hu.hash_dict(model_exp_dict))
+                model_folder = os.path.join(os.path.join(model_location), model_type_name.replace('D', str(i)), model_exp_dict['hash'])
                 logger.debug(f'Load model in {model_folder} - Get model')
                 model = models.get_model(model_exp_dict['model'], exp_dict=model_exp_dict).cuda()
 
@@ -124,7 +124,8 @@ class multi_dim_reconstructor(object):
                     loaders.update({split : DataLoader(ds,
                               sampler=sampler,
                               collate_fn=ut.collate_fn,
-                              batch_size=model_dict["batch_size"],
+                              batch_size=model_dict["batch_size"] + 6,
+                              num_workers = 3,
                               drop_last=False)})
 
                 dataloaders[i] = loaders
@@ -281,9 +282,10 @@ class multi_dim_reconstructor(object):
                         logger.debug(f'Finish scan {scan_id} and save in file scan_{scan_id}')
                         volume = combine_slices(slice_dict, stack_dim)
                         # Start the saving processes independently
-                        save_probs = Process(target=np.save, args=(os.path.join(output_location, f'scan_{scan_id}'), volume))
-                        save_res = Process(target=np.save, args=(os.path.join(os.path.join(output_location, f'scan_{scan_id}_res'), np.argmax(volume, axis=0))))
-                        save_probs.start()
+                        volume_max = np.argmax(volume, axis=0)
+                        #save_probs = Process(target=np.save, args=(os.path.join(output_location, f'scan_{scan_id}'), volume))
+                        save_res = Process(target=np.save, args=(os.path.join(output_location, f'scan_{scan_id}_res'),volume_max))
+                        #save_probs.start()
                         save_res.start()
                         #np.save(os.path.join(output_location, f'scan_{scan_id}'), volume)
                         # Apart from the probabilities, the 'result' is just the argmax function on this array 
