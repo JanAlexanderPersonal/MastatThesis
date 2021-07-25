@@ -1,43 +1,53 @@
-\chapter{Artificial intelligence \& Machine Learning}
-
-Machine learning is a branch of \Gls{ai}. 
-The field of \Gls{machinevision} is a branch of machine learning.
-  Some impressive steps forward have been made in the past decade, mainly thanks to the emergence of \Gls{deepl}.
-
-The aim of this chapter is not to provide a complete overview of the machine learning field.
-Instead, the objective is to highlight concepts meaningful for this work.
+\chapter{Artificial intelligence \& Machine Learning\label{sec:ai_and_ml}}
+\par{
+    Machine learning is a branch of \Gls{ai}. 
+    The field of \Gls{machinevision} is a branch of machine learning.
+    Some impressive steps forward have been made in the past decade, mainly thanks to the emergence of \Gls{deepl}.
+}
+\par{
+    \Gls{ai} is showing promising results for various tasks in society.
+    New research results ranging from self-driving cars to automated translation is regularly published in mainstream media.
+    The aim of this chapter is not to provide a complete overview of the machine learning field.
+    Instead, the objective is to highlight concepts meaningful for this work.
+}
+\par{
+    Finally, this work does not cover the social, legal and ethical questions \Gls{ai} evokes.
+}
 
 \section{Artificial Intelligence}
-
-The field of \Gls{ai} (AI) is the engineering discipline of the automation of \textit{cognitive} tasks.
-Tasks such as search, control and classification are generally considered to require a level of intelligence. 
-Automation of this type of tasks to allow a machine to perform them is thus \Gls{ai}\footnote{To be precise, it is not the human intelligence that is replicated. It is the \textit{effect} of this intelligence.}.
-A classic PID controller and even a bang-bang (thermostat) controller can be viewed as simple but very effective forms of AI.
-
-
-This engineering discipline has advanced incredibly in the past decades, driven both by leaps forward in the available hardware and new algorithms and models. \\
-First, the availability and reliability of hardware components such as sensors, cameras, digital storage and calculation power have increased exponentially 
-\footnote{ \textit{Moore's law} states that the number of transistors on an integrated circuit doubles every two years. This rate of progress has held more or less for a wide range of digital components in the past decades.}.
-The size and price of these components decreased equally dramatically. \\
-Second, progress has been made in developing algorithms to use this available data and computation power to solve problems and perform tasks.
-This text does not provide a complete overview of all existing machine learning models. 
-This work makes use of \Gls{deepl} models.
-A \Gls{deepl} model is a type of \acrfull{ann} with multiple hidden layers. 
-Deep learning models are behind almost all modern applications of \acrfull{nlp} and \Gls{machinevision}.
-
-An \acrshort{ann} is a collection of connected nodes, or \textit{neurons}. 
-These are typically structured in layers. 
-There is always an \textit{input} layer and an \textit{output} layer. Between these two, one can find the \textit{hidden} layers\footnote{When there is at least one hidden layer, one talks about a deep network. In practice, \acrshort{cnn}s have multiple hidden layers.}.
-To calculate a node value, the incoming node values are weighted by the connection weights and the result of this linear combination is transformed by an activation function\footnote{
-    $\vec{x}$ : values of the nodes connected to node $j$\\
-    $\vec{w}$ : connection weights\\
-    $\sigma(.)$ : activation function
-}:
-\begin{eqnarray}
-    z_j(\vec{x} | \vec{w}) &=& \frac{\vec{w}^T\vec{x}}{\sum w_k} \\
-    y_j(\vec{x} | \vec{w}) &=& \sigma(z_j)
-\end{eqnarray}
-Deep learning models can be fitted through the \acrfull{bp} algorithm.
+\par{
+    The field of \Gls{ai} (AI) is the engineering discipline of the automation of \textit{cognitive} tasks.
+    Tasks such as search, control and classification are generally considered to require a level of intelligence. 
+    Automation of this type of tasks to allow a machine to perform them is thus \Gls{ai}\footnote{To be precise, it is not the human intelligence that is replicated. It is the \textit{effect} of this intelligence.}.
+    A classic PID controller and even a bang-bang (thermostat) controller can be viewed as simple but very effective forms of AI.
+    This engineering discipline has advanced incredibly in the past decades, driven both by leaps forward in the available hardware and new algorithms and models. 
+}
+\par{
+    First, the availability and reliability of hardware components such as sensors, cameras, digital storage and calculation power have increased exponentially 
+    \footnote{ \textit{Moore's law} states that the number of transistors on an integrated circuit doubles every two years. This rate of progress has held more or less for a wide range of digital components in the past decades.}.
+    The size and price of these components decreased equally dramatically. \\
+    Second, progress has been made in developing algorithms to use this available data and computation power to solve problems and perform tasks.
+    This text does not provide a complete overview of all existing machine learning models. 
+    This work makes use of \Gls{deepl} models.
+    A \Gls{deepl} model is a type of \acrfull{ann} with multiple hidden layers. 
+    Deep learning models are behind almost all modern applications of \acrfull{nlp} and \Gls{machinevision}.
+}
+\subsection{Neural Networks}
+\par{
+    An \acrshort{ann} is a collection of connected nodes, or \textit{neurons}. 
+    These are typically structured in layers. 
+    There is always an \textit{input} layer and an \textit{output} layer. Between these two, one can find the \textit{hidden} layers\footnote{When there is at least one hidden layer, one talks about a deep network. In practice, \acrshort{cnn}s have multiple hidden layers.}.
+    To calculate a node value, the incoming node values are weighted by the connection weights and the result of this linear combination is transformed by an activation function\footnote{
+        $\vec{x}$ : values of the nodes connected to node $j$\\
+        $\vec{w}$ : connection weights\\
+        $\sigma(.)$ : activation function
+    }:
+    \begin{eqnarray}
+        z_j(\vec{x} | \vec{w}) &=& \frac{\vec{w}^T\vec{x}}{\sum w_k} \\
+        y_j(\vec{x} | \vec{w}) &=& \sigma(z_j)
+    \end{eqnarray}
+    Deep learning models can be fitted through the \acrfull{bp} algorithm.
+}
 
 \todo[inline]{Short and to-the-point introduction of neural networks}
 

@@ -1,6 +1,10 @@
 \chapter*{Abstract}
+
+% Set page layout to plain (only page number) and two-column 
 \begin{multicols}{2}
+\thispagestyle{plain}
 \section*{Thesis objective \& Motivation}
+
 \par{
     The use of radiological images is a crucial element in modern medical practice. 
     Doctors use \acrfull{mri} or \acrfull{ct} scans as essential components for medical diagnosis, following the course of medical conditions and the planning of medical procedures.
@@ -112,8 +116,8 @@ As a performance benchmark, the performance of a fully supervised model trained 
     The final loss term for the weakly supervised model is again the cross-entropy loss $\mathcal{L}_p$, equation \ref{eq:crossEntropy}. 
     The difference with the fully supervised model is that $\mathcal{I}_i$ only covers a handful of image pixels.
 }
-
-
+% Avoid the header in the abstract!
+\thispagestyle{plain}
 \section*{Results}
 \subsection*{Hyperparameter optimization}
 
