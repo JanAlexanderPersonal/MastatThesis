@@ -9,22 +9,6 @@
   \end{enumerate}
 \end{partwithabstract}
 \restoregeometry
-\chapter{Medical terms}
-
-Clarification of the medical lingo used.
-
-\begin{SCfigure}[][htb]
-  \centering
-  \includegraphics[width=10cm]{/home/thesis/images/Anatomical_Planes.png}
-  \caption{Clarification of the terms regarding the anatomical planes
-  }
-\end{SCfigure}
-
-\begin{SCfigure}[][htb]
-  \centering
-  \includegraphics[width=10cm]{/home/thesis/images/prone_supine.png}
-  \caption{Supine (face-up) and Prone (face-down) position of a patient.}
-\end{SCfigure}
 
 \chapter{Used software \& Reproducability of this research}
 
@@ -41,26 +25,55 @@ The reproducability of this work has been ensured in several ways:
 \end{description}
 
 The above mentioned aspects should allow other researchers to reproduce the results in this document.
-
-\todo[inline]{Software environments can be build with dockerfiles available in folder \textit{/dockerfiles/code/} of the git.}
-
-\todo[inline]{Assure proper referencing of all libraries used}
+This work makes use of parts of \textit{haven.ai} \footnote{This is a collection of libraries developed by the team of dr. I. Laradji to manage different experiments in deep learning research.} 
+as a basis to manage different experiments.
+These experiments are conducted using the deep learning library \textit{PyTorch}.
+This tool is widely used in boty industry and academic research.
+A list of other Machine Learning tools used in this work is provided below.
+Table \ref{tab:UsedTools} is not an exhaustive list of all  python libraries used in this work.
+It aims to list the more advanced tools, crucial for this work.
 
 \begin{SCtable}[\sidecaptionrelwidth][h]
  
-  \begin{tabular}{ p{6cm} l l } 
+  \begin{tabular}{ p{2cm} l l } 
    \hline
    \hline
-   Library & version & reference  \\
+   \textbf{Library} & \textbf{version} & \textbf{reference}    \\
    \hline 
-   PyTorch & 1.7.1 &  \\ 
-   SimpleITK &  &  \\ 
+  Python & 3.8 & Programming language \\
+   \hline
+   \multicolumn{3}{c}{Deep learning and machine learning tools} \\
+   \hline
+   PyTorch & 1.7.1 & Deep learning library \\ 
+   scikit-learn & 0.24.2 & Machine learning toolbox \\
+   \hline
+   \multicolumn{3}{c}{Tools to work with (medical) images} \\
+   \hline
+   SimpleITK & 2.0.2 & Library for medical images \\ 
+   kornia & 0.2.0 & Computer vision library linked to torch \\
+   scikit-image & 0.18.1 & Image manipulation library \\
+   Pillow & 8.2.0 & Image manipulation\\
+   \hline
+   \multicolumn{3}{c}{Tools for matrix \& scientific computation} \\
+   \hline
+   numpy & 1.20.3 & matrix manipulation \\
+   scipy & 1.6.3 & scientific calculation \\
+   \hline
+   \multicolumn{3}{c}{Result visualization} \\
+   \hline
+   matplotlib & 3.4.2 & data visualization \\ 
+   seaborn & 0.11.1 & data visualization \\
    \hline
    \hline
   \end{tabular}
-  \caption{Python libraries used}
+  \caption{Python libraries used. \label{tab:UsedTools}}
 
 \end{SCtable}
+
+Table \ref{tab:UsedTools} is not an exhaustive list of all libraries used in this work.
+One can quickly dublicate the environment used in this work by building the \textit{Docker} environment defined in xxx.
+
+
 \newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm}
 \chapter{Dataset agreements\label{seg:datasetagreement}}
 

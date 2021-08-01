@@ -46,6 +46,12 @@ The softmax function $\sigma$ is related to the sigmoid function $S$. It is defi
     \mathbf{S}(x) &=& \left[ 1+ exp(-x) \right]^{-1} \\ &=& \frac{exp(x)}{exp(x) + 1} 
 \end{eqnarray}
 
+The final training loss is given by:
+\begin{equation}
+    \mathcal{L} = \mathcal{L}_P + \mathcal{L}_E + \mathcal{L}_C + \mathcal{L}_S
+\end{equation}
+The different loss components are detailed below.
+
 \subsection{Supervised loss functions}
 
 \subsubsection{cross entropy loss\label{sec:crossentropy}}
@@ -106,6 +112,13 @@ In this project, two transformations are combined: rotations of $[90^{\circ}, 18
 Each time the loss is called, 1 transformation $t$ is randomly selected from the list and the transformation consistency loss is calculated using this transformation.
 
 \subsubsection{Separation loss}
-As mentioned when discussing the cross entropy loss in §ref{sec:crossentropy}, this loss encourages the model to output the right label and to decrease the output values for the other labels.
+As mentioned when discussing the cross entropy loss in §\ref{sec:crossentropy}, this loss encourages the model to output the right label and to decrease the output values for the other labels.
 As discussed, the right label is often not know for most of the locations in a weakly supervised problem.
 Apart from a limited number of points, there is no such incentive for weakly supervised networks.
+For this reason, the separation loss $\mathcal{L}_S$ is introduced.
+This loss component consists of the negative sum of the absolute difference of the class segmentation masks\footnote{$z_i[m]$ denotes the $m^{th}$ model output channel.}:
+\begin{equation}
+    \mathcal{L}_S(X_i) = - \sum_{\vec{p}} \sum_{m\in \mathcal{K}} \sum_{n \in \mathcal{K}, n>m} \mathbf{S}(z_i[m]) - \mathbf{S}(z_i[n])
+\end{equation}
+
+This loss component thus provides an incentive to the network to make a decision, even in areas where little annotation points are available.

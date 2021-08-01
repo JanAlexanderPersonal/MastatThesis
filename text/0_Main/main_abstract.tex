@@ -3,25 +3,34 @@
 % Set page layout to plain (only page number) and two-column 
 \begin{multicols}{2}
 \thispagestyle{plain}
+\par{
+    \textit{
+        Doctors use \acrfull{mri} or \acrfull{ct} scans as essential components for medical diagnosis, following the course of medical conditions and the planning of medical procedures.
+        There is a trend towards machine vision to support medical professionals interpreting and using these images \todo[inline]{references}.
+        Building these applications requires expensive labelled datasets.
+        This research investigates techniques to reduce the dataset labelling cost by working with point annotation instead of full annotation.
+        Experiments are conducted on openly available datasets and demonstrate the usefulness of two new loss components and a combination technique of different model results to generate pseudo masks.
+        As a final result, this work demonstrates one can obtain xxx \% of the performance of a fully annotated model at xxx \% of the labelling cost. \todo[inline]{add numbers}
+    }
+}
 \section*{Thesis objective \& Motivation}
-
 \par{
     The use of radiological images is a crucial element in modern medical practice. 
-    Doctors use \acrfull{mri} or \acrfull{ct} scans as essential components for medical diagnosis, following the course of medical conditions and the planning of medical procedures.
-There is a trend towards machine vision to support medical professionals interpreting and using these images \todo[inline]{references}
+    \acrfull{mri} or \acrfull{ct} scans are essential components for pre-operative and post-operative diagnosis, following the course of medical conditions and the planning of medical procedures.
+    Automated interpretation of medical images can mean a gain in efficiency and a cost reduction.
 }
 \par{
     Machine vision - deep learning in general - tends to be very \textit{data-hungry}. Constructing a new model requires large, labelled datasets.
     Acquiring these datasets and the corresponding labels is time-consuming and expensive. 
     Maximisation of the return of a given data and labelling budget through is a goal shared by all \acrshort{ml} practitioners.
-    One idea to attain this is to use weak labels, or sometimes called \textit{hints}.
-    This approach aims to train a model that is capable of inferring \textit{stronger} information from the labels than the information level explicitly available in the labelling.
+    The use of weak labels, or sometimes called \textit{hints}, is one approach to improve this.
+    This approach aims to train a model that is capable of inferring more informative results than the information level explicitly available in the labelling.
 }
 \par{
     This project presents a model for the automated segmentation of the lumbar vertebrae of the human spine based on point level annotated medical scans.
     I work with both \acrshort{ct} scan volumes and \acrshort{mri} scan volumes.
-    Since point level annotation is faster and cheaper than providing a complete label mask, this technique provides a cost-benefit. 
-    The information contained in point labels is weaker than the segmentation information inferred by the model. the labels only contain the true class of a mere handful of voxels, hence the term \gls{weaklysupervisedl}. 
+    Since point level annotation is faster and cheaper than providing a complete label mask (estimated at 8.4\% of the cost by \cite{Bearman2015}), this technique provides a cost-benefit. 
+    The labels only contain the true class of a mere handful of voxels, the information contained in point labels is weaker than the segmentation information inferred by the model.
 }
 
 
@@ -33,11 +42,10 @@ There is a trend towards machine vision to support medical professionals interpr
     These datasets contain both \acrshort{ct} and \acrshort{mri} scans. 
     In 86 of these scans, complete volume masks of the vertebrae are available. 
     In 20 volumes, only semantic labels are available.
-    For 125 volumes, point level annotation is available. There are also five volumes for which no segmentation data is available. These were not used in this study.
+    For 125 volumes, point level annotation is available.
 }
 \par{
-    The complete dataset of 231 patients consists of xxx women and xxx men. 
-    The average male patient in the dataset is xxx years old; the average female patient is xxx.
+    The complete dataset of 231 patients consists of 112 women and 99 men. Of 23 people, no gender information is available. 
     Since a medical professional does not order a medical scan unless there is a suspicion of a medical condition, the dataset contains various patients with different pathologies.
     The dataset contains images of patients with scoliosis and with crushed and wedged vertebrae.
 }
@@ -46,49 +54,48 @@ There is a trend towards machine vision to support medical professionals interpr
     The first data preprocessing step is homogenising the scan resolution by resampling the image on an $1mm\times 1mm\times 1mm$ grid. 
     Next, the image is sliced along one of the three principal axes.
     The contrast of the 2D image slices is first enhanced with the \acrfull{clahe} algorithm.
-    Then the images are cropped (or padded, if needed) to form $352 px \times 352 px$ input image slices.
+    Then the images are cropped (or padded, if needed) to form $352 px \times 352 px$ slices.
+    All models are build with this image size. This is sufficient to contain all 5 lumbar vertebrae $L_1$ to $L_5$ in one image.
 }
 
 
 \section*{Methodology}
+\par{
+    The performances of different models are compared with the weighted dice score.
+    This metric takes into account both the model precision and recall as well as the class imbalance.
+}
 
-The performances of different models are compared with the weighted dice score.
-This metric takes into account both the model precision and recall as well as the class imbalance.
 
 \subsection*{Performance benchmark}
-For 86 scans, full annotation masks are available.
-As a performance benchmark, the performance of a fully supervised model trained on these images is taken.
+\par{
+    For 86 scans, full annotation masks are available.
+    As a performance benchmark, the performance of a fully supervised model trained on these images is taken.
+}
 
 
-\subsubsection*{Weakly supervised models}
+
+\subsection*{Weakly supervised models}
 \par{
     The segmentation of the volume image is based on a 2D \acrfull{cnn}, pre-trained on a large classification dataset.
-    Several upsampling layers are added to this network to allow the network to estimate 6 segmentation channels (5 lumbar vertebrae and the background class). 
-    The network provides a 2D segmentation mask for each slice, which is then combined into a volume segmentation mask. 
-    The image preprocessing results in 3 sets of 2D images sliced along the 3 main volume dimensions.
-    By training three different weakly supervised models on this data, three sets of segmentation masks are obtained. 
-    The combination of these different segmentation masks can result in a more accurate mask than the individual ones.
-    Finally, This combined segmentation mask is then used as an \textit{erzatz} label set to train a fully supervised model on one volumetric dimension.
-}
-\par{
-    As discussed further, there are several hyperparameters in the model to be optimised.
-    The performance of the models trained on \Gls{weaklysupervisedl} data is compared to the performance of a model trained on \Gls{supervisedl} data.
+    Upsampling layers are added to this network to allow the network to estimate 6 segmentation channels (5 lumbar vertebrae and the background class). 
+    By training three different weakly supervised models on 3 sets of 2D images sliced along the 3 main volume dimensions, three sets of segmentation masks are obtained. 
+    The combination of these different segmentation masks is used as an \textit{erzatz} label set to train a fully supervised model on one volumetric dimension.
 }
 
-\subsection*{Loss function}
+\subsubsection*{Loss function}
+\par{
+    To train a the weakly supervised network, several loss components, both supervised and unsupervised are combined.
+}
 \par{
     The weighted cross-entropy loss is optimised for the fully supervised reference model, a classic choice for this problem.
-    The function combines the six network output channels with a softmax function, after which the negative log-loss function is calculated.
+    It is also the point loss $\mathcal{L}_P$ component of the weakly supervised model. Then it is only evaluated on $\mathcal{Y}$, the set of available point labels.
+    The function combines the six network output channels with a softmax function $\sigma$, after which the negative log-loss function is calculated, weighted with factors $w$.
 }
 \begin{equation} \label{eq:crossEntropy}
     \mathcal{L}_P(X_i) = -\sum_{\vec{p} \in \mathcal{I}_i} w_{\mathcal{Y}_i(\vec{p})}.\log\left[\sigma_{\mathcal{Y}_i(\vec{p})}\left(\vec{z_i(\vec{p})}\right)\right]
 \end{equation}
 \par{
-    A combination of several supervised and unsupervised loss terms is optimised to train the weakly supervised model.
-}
-\par{
-    The first of these terms is the unsupervised rotation consistency loss \todo[inline]{cite laradji}. 
-    This loss term imposes that the model output should be consistent for a transformation $t_k$ of the input image.
+    Then the unsupervised rotation consistency loss $\mathcal{L}_C$ \todo[inline]{cite laradji} imposes that the model output $f_\theta$ should be consistent for a transformation $t_k$ of the input image.
     In this work, the chosen transformations are image rotations over $0^\circ, 90^\circ, 180^\circ$ or $270^\circ$, combined with an image flip.
 }
 \begin{equation}
@@ -98,30 +105,30 @@ As a performance benchmark, the performance of a fully supervised model trained 
     The second unsupervised loss term is the separation loss term.  \todo[inline]{elaborate}
 }
 \par{
-    Then a supervised loss term takes into account that a lumbar vertebra has a limited size.
-    Then $\mathbf{d}$ is converted to a semi-mask:
+    Finally, $\mathcal{L}_E$, the maximal extend supervised loss term takes into account that a lumbar vertebra has a limited size.
+    The Euclidian distance field $\mathbf{d}$ from the annotation point is converted to a semi-mask for each class $k$:
     \begin{eqnarray}
         \mathbf{d}_k(\vec{q}) &=& \max_{\vec{p}:\mathcal{Y}_i(\vec{p})=k}||\vec{q} - \vec{p}||\\
         \mathbf{m}_k(\vec{q}) &=& \mathbf{I}\left( (-\mathbf{d}(\vec{q}) + r) > 0 \right)
     \end{eqnarray}
-    Now, $\mathbf{m}$ is 1 for positions closer than distance $r$ from the points, and it is 0 for positions far from labels with value $k$.
-    Where $\mathbf{m}_k=0$, the model output should not indicate output class $k$. Where $\mathbf{m}_k=1$, the output class is unknown\footnote{Only channel $k$ is concerned, since one only knows what class these points do not belong to, there is not more information about the other classes.}.
-
+    Now, $\mathbf{m}$ is 1 only for positions closer than distance $r$ from the annotation points for class $k$.
+    Where $\mathbf{m}_k=0$, the model output should not indicate output class $k$. Where $\mathbf{m}_k=1$, the output class is unknown.
     The loss function is the binary cross-entropy between $\mathbf{m}_k$ and the sigmoid of the k$^{th}$ channel of the logits $z_i$ with weight vector $\{1, 0\}$.
 }
 \begin{equation}
     \mathcal{L}_E(X_i) = \sum_{k\in\mathcal{K}}\sum_{\vec{q}\in X_i}  (1-\mathbf{m}_k(\vec{q})) \log(\mathbf{S}(z_i(\vec{q})_k)) 
 \end{equation}
+
+\subsubsection*{Model result combination}
 \par{
-    The final loss term for the weakly supervised model is again the cross-entropy loss $\mathcal{L}_p$, equation \ref{eq:crossEntropy}. 
-    The difference with the fully supervised model is that $\mathcal{I}_i$ only covers a handful of image pixels.
+    The combination of the results of the three models trained on the three geometric axis is a pseudo-mask of higher quality than the results of the individual models.
+    After morphological smoothing, the pseudo mask is used to train the final model (on sagittal slices).
 }
-% Avoid the header in the abstract!
+
 \thispagestyle{plain}
 \section*{Results}
 \subsection*{Hyperparameter optimization}
 
-\subsection*{Combination of different dimension models}
 
 \subsection*{Final result}
 

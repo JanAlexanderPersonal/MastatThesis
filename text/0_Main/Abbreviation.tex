@@ -88,6 +88,9 @@ description={
         name={Deep Learning},
         description={
                 Deep learning is a branch of Machine Learning where a set of multiple sequential layers is used to progressively extract higher-level features from the raw input data.
+                Different deep learning architectures have proven to allow the construction of well performing models for problems where other machine learning techniques seem to be less performant such as
+                computer vision (with convolution layers) and natural language processing (with recurrent networks such as LSTM). 
+                The key to the succes of deep learning networks is the ability to automatically perform feature extraction in the first layers without requiring human guidance.
                 }
 }
 
@@ -96,21 +99,15 @@ description={
         name={Class Activation Map},
         description={
                 Technique to identify region of an image \textit{responsible} for the classification result.
+                The class activation map indicates the descriminative elements of an image that cause the \acrshort{cnn} to identify the category.
+                There are several techniques that aim to do this, of which the CAM technique can be considered the most popular one.
+                The CAM technique is based on the feature maps obtained in the last convolution layer.
         },
         first={Class Activation Map (CAM)},
         text={CAM}
 }
 
-\newglossaryentry{lc-fcn}{
-        name={LC-FCN},
-        description={
-                \acrfull{fcn} with a \acrfull{lc} as optimization loss.
-                This technique was introduced by I. Laradji et al in \cite{Laradji2018} for the training of an automated instance counting network on point-supervised data.
-                Later it is applied in \cite{Laradji2020} as the Location branch of the WISE network.
-                },
-        first={Fully Convolutional Network with Location based Counting loss (LC-FCN)},
-        text={LC-FCN}
-}
+
 
 \newglossaryentry{wise}{
         name={WISE},
@@ -121,7 +118,13 @@ description={
 
 \newglossaryentry{features}{
         name={Features},
-        description={Transformation of the input image.},
+        description={
+                A feature is a property of a phenomenon.
+                For all machine learning tasks, it is crucial to obtain informative, descriminative and independant features.
+                The transformation extracting informative and non-redundant features from the original measured (\textit{raw}) data is the \textit{feature extraction} step.
+                The feature set is crucial in the subsequent learning or inference step.
+                In deep learning applications, the feature set (specifically the feature set resulting from a contracting path) is often called the \textit{encoding}.
+                },
         text={features}
         }
 

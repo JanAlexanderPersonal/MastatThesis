@@ -193,10 +193,10 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 \maxtocdepth{subsection} % chapters, sections, and subsections are in the Table of Contents
 
 \usepackage[backend=biber]{biblatex}
-\addbibresource{library.bib}
+\addbibresource{bibreferences.bib}
 
 %% make a glossary
-\usepackage[acronym, xindy, nonumberlist]{glossaries}
+\usepackage[acronym, xindy]{glossaries}
 \makeglossaries
 
 \input{/home/thesis/0_Main/Abbreviation}
@@ -244,7 +244,15 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 \newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
 \begin{partwithabstract}{Modelling methods \& Analysis}
+  \par{
     This part of the document details the used datasets and the modelling and evaluation methodology.
+    First, and overview is provided of the 5 datasets used in this work.
+    Statistics regarding the patient's age and gender are documented for the sets for which this metadata is available. 
+  }
+  \par{
+    Second, the data preparation steps are explained, before describing the modelling approach, the network architectures and the model loss functions.
+  }
+    
 \end{partwithabstract}
 \restoregeometry
 
@@ -252,25 +260,13 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 \input{/home/thesis/2_Analysis/Model}
 
-\newgeometry{total={210mm,297mm},left=20mm,right=20mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
-\begin{partwithabstract}{Results \& Experiments}
-    This part of the document details the used datasets and the modelling and evaluation methodology.
-\end{partwithabstract}
-\restoregeometry
+\input{/home/thesis/3_Results/result_analysis}
 
-
-
-\newgeometry{total={210mm,297mm},left=20mm,right=20mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
-\begin{partwithabstract}{Conclusions}
-    This part of the document details the used datasets and the modelling and evaluation methodology.
-\end{partwithabstract}
-\restoregeometry
-
-Comparison between results with weakly supervised model and fully supervised model.
+\input{/home/thesis/4_Conclusions/conclusions}
 
 \input{/home/thesis/A_Appendix/appendices.tex}
 
-
+%\nocite{*} 
 \printbibliography
 
 \end{document}
