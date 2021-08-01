@@ -243,6 +243,7 @@ if __name__ == '__main__':
 
         fn = os.path.join(image_slices_filedir, f'image{nr:03d}')
         Path(fn).mkdir(parents=True, exist_ok=True)
+        np.save(os.path.join(fn, 'image_array'), arr)
 
         # For each slice along the asked dimension, convert to a numpy.ndarray and save this.
         # Preprocessing the slices before loading into pyTorch should speed up the training in the end.
@@ -282,6 +283,7 @@ if __name__ == '__main__':
             unique_values[val] = unique_values.get(val, 0) + count
         logging.debug(f'source : {filename}, shape {arr.shape}')
         logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr)}')
+        np.save(os.path.join(target_folder, 'mask_array'), arr)
         ut.mask_to_slices_save(arr, dim_slice, target_folder)
 
     logging.info(f'List of unique values in the masks : {unique_values}')

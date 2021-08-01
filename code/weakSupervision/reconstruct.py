@@ -26,14 +26,17 @@ def setuplogger():
     handler.setFormatter(logger_formatter)
     root_logger.addHandler(handler)
 
-def reconstruct_3d(exp_dict, model_type_name, savedir):
+def reconstruct_3d(exp_dict, model_type_name, savedir, ground_truth):
 
     logger.debug(f'model type name : {model_type_name}')
     logger.debug(f'save directory : {savedir}')
 
     reconstructor = rec.multi_dim_reconstructor(exp_dict, 
                     model_type_name = model_type_name)
-    reconstructor.make_3D_volumes(savedir)
+    logger.info('START CONSTRUCTING THE VOLUMES')
+    # reconstructor.make_3D_volumes(savedir)
+    logger.info('START COMBINING THE VOLUMES')
+    reconstructor.reconstruct_from_volumes(savedir, ground_truth)
     
 
 if __name__ == "__main__":
@@ -45,6 +48,7 @@ if __name__ == "__main__":
     parser.add_argument('-e', '--exp_group_list', nargs="+")
     parser.add_argument('-mn', '--model_name', required=True)
     parser.add_argument('-sd', '--savedir', default=None)
+    parser.add_argument('-gt', '--ground_truth', default='dataset_1_contrast_3')
 
     args = parser.parse_args()
 
@@ -52,7 +56,7 @@ if __name__ == "__main__":
     for exp_group_name in args.exp_group_list:
         exp_list += exp_configs.EXP_GROUPS[exp_group_name]
 
-    exp_dict_0 = {
+    exp_dict_0 ={
     "batch_size": 6,
     "dataset": {
         "bg_points": 10,
@@ -67,8 +71,7 @@ if __name__ == "__main__":
         "sources": [
             "xVertSeg",
             "USiegen",
-            "MyoSegmenTUM",
-            "PLoS"
+            "MyoSegmenTUM"
         ]
     },
     "dataset_size": {
@@ -92,16 +95,16 @@ if __name__ == "__main__":
         "prior_extend": 70,
         "prior_extend_slope": 10
     },
+    "num_channels": 1,
     "optimizer": "adam",
     'hash' : '77f85a6af05d76de63618ecb027b4210'
+}
 
-    }
-
-    exp_dict_2 = {
+    exp_dict_1 = {
     "batch_size": 6,
     "dataset": {
-        "bg_points": 3,
-        "blob_points": 7,
+        "bg_points": 5,
+        "blob_points": 5,
         "context_span": 1,
         "crop_size": [
             352,
@@ -126,8 +129,9 @@ if __name__ == "__main__":
         "base": "fcn8_vgg16",
         "loss": [
             "unsupervised_rotation_loss",
-            "rot_point_loss_multi_weighted",
-            "prior_extend"
+            "rot_point_loss_multi",
+            "prior_extend",
+            "separation_loss"
         ],
         "n_channels": 3,
         "n_classes": 6,
@@ -137,16 +141,62 @@ if __name__ == "__main__":
     },
     "num_channels": 1,
     "optimizer": "adam",
-    'hash' : '9fb9c16b07897d8524e1c0173fc0db7b'
-    }
+    'hash' : '7b8b7a23f8c8708146931117bac6ffda'
+}
+
+    exp_dict_2 = {
+    "batch_size": 6,
+    "dataset": {
+        "bg_points": 5,
+        "blob_points": 5,
+        "context_span": 1,
+        "crop_size": [
+            352,
+            352
+        ],
+        "n_classes": 6,
+        "name": "spine_dataset",
+        "sources": [
+            "xVertSeg",
+            "USiegen",
+            "MyoSegmenTUM"
+        ]
+    },
+    "dataset_size": {
+        "test": "all",
+        "train": "all",
+        "val": "all"
+    },
+    "lr": 2.5e-05,
+    "max_epoch": 150,
+    "model": {
+        "base": "fcn8_vgg16",
+        "loss": [
+            "unsupervised_rotation_loss",
+            "rot_point_loss_multi",
+            "prior_extend",
+            "separation_loss"
+        ],
+        "n_channels": 3,
+        "n_classes": 6,
+        "name": "inst_seg",
+        "prior_extend": 110,
+        "prior_extend_slope": 10
+    },
+    "num_channels": 1,
+    "optimizer": "adam",
+    'hash' : '7b8b7a23f8c8708146931117bac6ffda'
+}
 
     exp_dict = {
         0: exp_dict_0,
+        1: exp_dict_1,
         2: exp_dict_2
     }
 
     model_type_name = args.model_name
     save_dir = args.savedir
+    ground_truth = args.ground_truth
 
 
-    reconstruct_3d(exp_dict, model_type_name, save_dir)
+    reconstruct_3d(exp_dict, model_type_name, save_dir, ground_truth)

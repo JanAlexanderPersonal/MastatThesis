@@ -234,11 +234,11 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
         logger.info('UPDATE LEARNING RATE')
         model.update_optimizer(exp_dict)
         loss_decrease_counter = 0
-        if model.waiting > 10:
+        if model.waiting > 5:
             break
 
         for e in range(s_epoch, exp_dict['max_epoch']):
-            if model.waiting > 10:
+            if model.waiting > 5:
                 break
             # Validate only at the start of each cycle
             logger.info(f'Start epoch {e}')

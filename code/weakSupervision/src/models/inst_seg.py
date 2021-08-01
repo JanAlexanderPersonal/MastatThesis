@@ -739,7 +739,7 @@ class Inst_Seg(torch.nn.Module):
         gt_segm = colour_segments(gt, stack_axis=0) / 255.
 
         gt_segm_stack = cv2.addWeighted(image, 0.85, gt_segm, 0.15, 0)
-        gt_segm = colour_points(points, gt_segm)
+        gt_segm_stack = colour_points(points, gt_segm_stack)
 
         res_segm_stack = cv2.addWeighted(image, 0.75, res_segm, 0.25, 0)
 
