@@ -1,0 +1,327 @@
+% This file was created by tikzplotlib v0.9.9.
+\begin{tikzpicture}
+
+\begin{groupplot}[group style={group size=3 by 5}]
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={model 0
+slice along axis 0},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=79.5,
+xtick style={color=black},
+xtick={-50,0,50,100},
+xticklabels={\ensuremath{-}50,0,50,100},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=79.5, ymin=220.5, ymax=-0.5] {graph-015.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={model 0
+slice along axis 1},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=79.5,
+xtick style={color=black},
+xtick={-50,0,50,100},
+xticklabels={\ensuremath{-}50,0,50,100},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=79.5, ymin=220.5, ymax=-0.5] {graph-016.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={model 0
+slice along axis 2},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=220.5,
+xtick style={color=black},
+xtick={-50,0,50,100,150,200,250},
+xticklabels={\ensuremath{-}50,0,50,100,150,200,250},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=220.5, ymin=220.5, ymax=-0.5] {graph-017.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={model 1
+slice along axis 0},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=79.5,
+xtick style={color=black},
+xtick={-50,0,50,100},
+xticklabels={\ensuremath{-}50,0,50,100},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=79.5, ymin=220.5, ymax=-0.5] {graph-018.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={model 1
+slice along axis 1},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=79.5,
+xtick style={color=black},
+xtick={-50,0,50,100},
+xticklabels={\ensuremath{-}50,0,50,100},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=79.5, ymin=220.5, ymax=-0.5] {graph-019.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={model 1
+slice along axis 2},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=220.5,
+xtick style={color=black},
+xtick={-50,0,50,100,150,200,250},
+xticklabels={\ensuremath{-}50,0,50,100,150,200,250},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=220.5, ymin=220.5, ymax=-0.5] {graph-020.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={model 2
+slice along axis 0},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=79.5,
+xtick style={color=black},
+xtick={-50,0,50,100},
+xticklabels={\ensuremath{-}50,0,50,100},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=79.5, ymin=220.5, ymax=-0.5] {graph-021.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={model 2
+slice along axis 1},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=79.5,
+xtick style={color=black},
+xtick={-50,0,50,100},
+xticklabels={\ensuremath{-}50,0,50,100},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=79.5, ymin=220.5, ymax=-0.5] {graph-022.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={model 2
+slice along axis 2},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=220.5,
+xtick style={color=black},
+xtick={-50,0,50,100,150,200,250},
+xticklabels={\ensuremath{-}50,0,50,100,150,200,250},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=220.5, ymin=220.5, ymax=-0.5] {graph-023.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={Combined extimated volumes
+slice along axis 0},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=79.5,
+xtick style={color=black},
+xtick={-50,0,50,100},
+xticklabels={\ensuremath{-}50,0,50,100},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=79.5, ymin=220.5, ymax=-0.5] {graph-024.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={Combined extimated volumes
+slice along axis 1},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=79.5,
+xtick style={color=black},
+xtick={-50,0,50,100},
+xticklabels={\ensuremath{-}50,0,50,100},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=79.5, ymin=220.5, ymax=-0.5] {graph-025.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={Combined extimated volumes
+slice along axis 2},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=220.5,
+xtick style={color=black},
+xtick={-50,0,50,100,150,200,250},
+xticklabels={\ensuremath{-}50,0,50,100,150,200,250},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=220.5, ymin=220.5, ymax=-0.5] {graph-026.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={Ground truth
+slice along axis 0},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=79.5,
+xtick style={color=black},
+xtick={-50,0,50,100},
+xticklabels={\ensuremath{-}50,0,50,100},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=79.5, ymin=220.5, ymax=-0.5] {graph-027.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={Ground truth
+slice along axis 1},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=79.5,
+xtick style={color=black},
+xtick={-50,0,50,100},
+xticklabels={\ensuremath{-}50,0,50,100},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=79.5, ymin=220.5, ymax=-0.5] {graph-028.png};
+
+\nextgroupplot[
+height=20cm,
+tick align=outside,
+tick pos=left,
+title={Ground truth
+slice along axis 2},
+width=12cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=220.5,
+xtick style={color=black},
+xtick={-50,0,50,100,150,200,250},
+xticklabels={\ensuremath{-}50,0,50,100,150,200,250},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=220.5,
+ytick style={color=black},
+ytick={-25,0,25,50,75,100,125,150,175,200,225},
+yticklabels={\ensuremath{-}25,0,25,50,75,100,125,150,175,200,225}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=220.5, ymin=220.5, ymax=-0.5] {graph-029.png};
+\end{groupplot}
+
+\draw ({$(current bounding box.south west)!0.5!(current bounding box.south east)$}|-{$(current bounding box.south west)!0.98!(current bounding box.north west)$}) node[
+  scale=0.6,
+  anchor=north,
+  text=black,
+  rotate=0.0
+]{MyoSegmenTUM image 043};
+\end{tikzpicture}
