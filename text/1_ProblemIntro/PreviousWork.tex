@@ -1,7 +1,7 @@
 \chapter{Previous work}
 \par{
     This chapter gives an overview of the previous work in two fields combined in this project.
-    First there is the application of \Gls{ai}\footnote{For a brief introduction of \Gls{ai} and \Gls{machinevision} itself, the reader can consult chapter \ref{sec:ai_and_ml}.} 
+    First there is the application of \Gls{ai}\footnote{For a brief introduction of \Gls{ai} and \Gls{machinevision} itself, please consult chapter \ref{sec:ai_and_ml}.} 
     in medical applications, specifically for \Gls{machinevision} problems.
     Then, there is the active area of research of \Gls{weaklysupervisedl} machine learning both for medical and for non-medical applications.
 }
@@ -12,29 +12,10 @@
 %    \item The \acrfull{wise} approach developped by dr. I. Laradji \cite{Laradji2020,Laradji2018}. 
 %\end{enumerate}
 
-\section{Artificial intelligence for healthcare applications}
 
-\par{
-    \Gls{ai} is showing promising results for various tasks in society.
-    Various researchers are exploring the opportunities of \Gls{ai} in medical practice.
-    This could to reduce the burden of repetitive tasks on medical caregivers and support both medical diagnosis and procedures.
-}
-\par{
-    One example is the use of a \acrfull{ppg} signals to estimate a patient's blood pressure.
-    Blood pressure is a valuable indicator of the patient's condition for the medical staff.
-    Measuring blood pressure is time-consuming and disturbing for the patient however. 
-    the \acrshort{ppg} signal is relatively easy to measure. This only requires a watch-size sensor\footnote{Several commercial sports watches already use a \acrshort{ppg} sensor to measure the athletes hear rate.} 
-    around the wrist, that can be worn continuously.
-    Infering the blood pressure from such a \acrshort{ppg} signal allows the healthcare worker to access valuable information continuously, cheaper and without inconvenience for the patient.
-    \todo[inline]{references + ppg watch image}
-}
 
-\subsection{Machine vision for medical applications}
-\par{
-    Different researchers investigate \Gls{machinevision} applications for medical applications. 
-    Research on image classification for medical diagnosis is conducted among others for melanoma (skin cancer) diagnosis on camera (\acrshort{rgb}) images [xxx] 
-    and for breast cancer diagnosis on mammographic\footnote{A mammography is an X-ray scan of the human breast.} scans [xxx].
-}
+\section{Machine vision for medical applications}
+
 \par{
     For segmentation tasks, the U-net \cite{Ronneberger2015} is widely used\footnote{The U-net architecture was developed specifically for biometical applications.}. 
     This architecture can be represented by a characteristic U-shape (\ref{fig:unet}), as the name indicates.
@@ -60,7 +41,7 @@
 \end{SCfigure}
 
 
-\subsubsection{Automated segmentation of the human spine}
+\subsection{Automated segmentation of the human spine}
 \par{
     Multiple researchers have build systems for the automated segmentation of the human spine.
     Historically, this was done with techniques based on the calculation of mathematical and geometrical features of vertebrae. 
@@ -160,8 +141,10 @@
 \subsection{Weakly supervised segmentation for Medical applications}
 \par{
     The technique used in this project is inspired on the work of dr. I. Laradji in \cite{Laradji2020}.
-    This researcher developed several methods to make use of weak supervised data for segmentation tasks.
-    First, in \cite{Laradji2018}, the \Gls{wise} method is presented. 
+    This researcher developed several methods to make use of point supervised data for segmentation tasks.
+    First, LC-FCN is introduced: \acrfull{fcn} with a \acrfull{lc} as optimization loss.
+    This technique was introduced by I. Laradji et al in \cite{Laradji2018} for the training of an automated instance counting network on point-supervised data.
+    Later it is applied in \cite{Laradji2020} as the Location branch of the \Gls{wise} network.
     Contrary to other \Gls{weaklysupervisedl} projects, the authors focus on multi-class, multi-instace problems for which CAM-based solutions are less suitable.
     This method, illustrated in figure \ref{fig:Laradji_WISE}, consists of two branches from the same backbone: the Embedding branch and the Localization branch.
     The Embedding branch is trained with a pre-trained class-agnostic object proposal method. 
@@ -180,7 +163,7 @@
     These blobs are too small to serve as masks on their own, but they can be combined with the E-branch result to provide segmentation masks.
 }
 \begin{SCfigure}[][htb]
-    \includegraphics[width=10cm]{/home/thesis/images/Laradji_architecture.png}
+    \includegraphics[width=10cm]{/home/thesis/images/Laradji_WISE.jpeg}
     \caption{Illustration from \cite{Laradji2020}. The \Gls{wise} approach consists of two branches: The Embedding branch and the Localization branch.}
     \label{fig:Laradji_WISE}
 \end{SCfigure}
@@ -196,6 +179,11 @@
 }
 \par{
     In \cite{Laradji2020}, Laradji et al. introduces an approach based on the consistency loss, combined with binary cross entropy.
-    This approach is used and extended in this project.
+    This approach, illustrated in figure \ref{fig:Laradji_consistency} is used and extended in this project.
     Details are provided starting on page \pageref{sec:model_concept}.
 }
+\begin{SCfigure}[][htb]
+    \includegraphics[width=10cm]{/home/thesis/images/Laradji_architecture.png}
+    \caption{Illustration from \cite{Laradji2020}. The consistency loss approach is based on the combination of two loss terms: the unsupervised consistency loss and the (weakly) supervised point (cross entropy) loss.}
+    \label{fig:Laradji_consistency}
+\end{SCfigure}
