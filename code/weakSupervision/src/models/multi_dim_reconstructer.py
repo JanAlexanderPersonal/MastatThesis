@@ -459,7 +459,7 @@ class multi_dim_reconstructor(object):
                             logger.debug(f'calculation for erode {iterations_erode}')
                             seg_meters[iterations_denoise][iterations_erode].val_on_volume(ground_truth, combined_volumes[iterations_erode], 6) 
                 if split == 'train':
-                    combined_volume = combine_volumes(volumes_cleaned)
+                    combined_volume = combine_volumes(volumes)
                     combined_volume = clean_mask(combined_volume, iterations_denoise=BEST_IT_DN, iterations_erode=BEST_IT_ER)
                     
                     plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_train_denoise{iterations_denoise}_erode{iterations_erode}_{source}_{nr}'), combined_volume=combined_volume)
