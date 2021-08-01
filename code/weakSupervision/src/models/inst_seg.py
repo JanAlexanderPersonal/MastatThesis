@@ -263,7 +263,7 @@ class Inst_Seg(torch.nn.Module):
                 {0, 90, 180, 270} degrees
                 Adapted for multi-channel loss (n_classes > 2)
             """
-            if 'rot_point_loss_multi_weighted' nont in loss_name:
+            if 'rot_point_loss_multi_weighted' not in loss_name:
                 self.weight_vector = [1.0] * self.n_classes
 
             assert 'unsupervised_rotation_loss' in loss_name, 'It is necessary to calculate the unsupervised rotation loss before the supervised rotation consistancy loss can be calculated.'
@@ -739,7 +739,7 @@ class Inst_Seg(torch.nn.Module):
         gt_segm = colour_segments(gt, stack_axis=0) / 255.
 
         gt_segm_stack = cv2.addWeighted(image, 0.85, gt_segm, 0.15, 0)
-        gt_segm = colour_points(points, gt_segm)
+        gt_segm_stack = colour_points(points, gt_segm_stack)
 
         res_segm_stack = cv2.addWeighted(image, 0.75, res_segm, 0.25, 0)
 

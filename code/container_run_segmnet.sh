@@ -12,4 +12,5 @@ docker run --rm --gpus all --net=host --ipc=host -m 24g -e DISPLAY=$DISPLAY \
     -v /media/jan/DataStorage/ProjectData/spine_volumes/:$PATH_DATA \
     -v /media/jan/DataStorage/ProjectData/temp/:$PATH_OP \
     -v /tmp/.X11-unix:/tmp/.X11-unix \
+    --memory-swap 1 \
     --env="QT_X11_NO_MITSHM=1" -it jal:torch_thesis bash

@@ -61,6 +61,14 @@ class SegMeter:
         else:
             self.cf += cf
 
+    def val_on_volume(self, gt : np.ndarray, pred : np.ndarray, n_classes : int):
+        cf = confusion_matrix(gt.reshape(-1), pred.reshape(-1), labels=[i for i in range(n_classes)], normalize=None)
+        if self.cf is None:
+            self.cf = cf
+        else:
+            self.cf += cf
+        logger.debug(f'New confusion matrix :\n{self.cf}')
+
     def calc_accuracy(self) -> np.ndarray:
         #               k - 1       
         #                ===        

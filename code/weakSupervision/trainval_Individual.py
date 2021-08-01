@@ -84,7 +84,7 @@ def trainval_source(exp_dict: Dict, savedir_base: str, datadir: str,
     """
     logger.debug(f'start trainval with experiment dict {pformat(exp_dict)}')
 
-    # bookkeepting stuff
+    # bookkeeping stuff
     # ==================
     exp_id = hu.hash_dict(exp_dict)
 
@@ -96,7 +96,7 @@ def trainval_source(exp_dict: Dict, savedir_base: str, datadir: str,
 
     os.makedirs(savedir, exist_ok=True)
     hu.save_json(os.path.join(savedir, "exp_dict.json"), exp_dict)
-    logger.info("Experiment saved in %s" % savedir)
+    logger.info("Experiment dictionary saved in %s" % savedir)
 
     # set seed
     # ==================
@@ -114,13 +114,14 @@ def trainval_source(exp_dict: Dict, savedir_base: str, datadir: str,
                                      split="train",
                                      datadir=datadir,
                                      exp_dict=exp_dict,
-                                     dataset_size=exp_dict['dataset_size'], separate_source=source)
+                                     dataset_size=exp_dict['dataset_size'], 
+                                     separate_source=source)
 
     mask_counts = train_set.count_values_masks() # dict with counts per label {0 : ... ,  1 : ... , ...}
 
     # Weights: The objective is to get weights proportional to the prevalence of labels in the dataset and with minimal weight == 1
 
-    mask_weights = [min(list(mask_counts.values())) * (mask_counts[i] ** (-1)) for i in range(6) ]
+    mask_weights = [min(list(mask_counts.values())) * (mask_counts[i] ** (-1)) for i in range(exp_dict['dataset']['n_classes']) ]
 
     logger.info(f'counts for mask labels : {mask_counts}. This results in the mask weights {mask_weights}.')
 
@@ -130,7 +131,8 @@ def trainval_source(exp_dict: Dict, savedir_base: str, datadir: str,
                                    split="val",
                                    datadir=datadir,
                                    exp_dict=exp_dict,
-                                   dataset_size=exp_dict['dataset_size'], separate_source=source)
+                                   dataset_size=exp_dict['dataset_size'], 
+                                   separate_source=source)
 
     # test set
     logger.info('define test set')
@@ -138,7 +140,8 @@ def trainval_source(exp_dict: Dict, savedir_base: str, datadir: str,
                                     split="test",
                                     datadir=datadir,
                                     exp_dict=exp_dict,
-                                    dataset_size=exp_dict['dataset_size'], separate_source=source)
+                                    dataset_size=exp_dict['dataset_size'], 
+                                    separate_source=source)
 
     logger.info('make dataloaders from the defined validation and test set')
     val_loader = DataLoader(val_set,

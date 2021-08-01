@@ -128,6 +128,7 @@ if __name__ == '__main__':
 
         fn = os.path.join(image_slices_filedir, f'image{nr:03d}')
         Path(fn).mkdir(parents=True, exist_ok=True)
+        np.save(os.path.join(fn, 'image_array'), arr)
 
         # For each slice along the asked dimension, convert to a numpy.ndarray and save this.
         # Preprocessing the slices before loading into pyTorch should speed up the training in the end.

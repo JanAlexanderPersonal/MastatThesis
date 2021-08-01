@@ -165,7 +165,7 @@ if __name__ == '__main__':
 
         fn = os.path.join(image_slices_filedir, filename.split('.')[0])
         Path(fn).mkdir(parents=True, exist_ok=True)
-
+        np.save(os.path.join(fn, 'image_array'), arr)
         ut.arr_slices_save(arr, dim_slice, fn, args.contrast, save_jpeg = True)
 
     # Process the mask files and change the filenames
@@ -209,6 +209,7 @@ if __name__ == '__main__':
             unique_values[val] = unique_values.get(val, 0) + count
         logging.debug(f'source : {filename}, shape {arr.shape}')
         logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr)}')
+        np.save(os.path.join(target_folder, 'mask_array'), arr)
         ut.mask_to_slices_save(arr, dim_slice, target_folder)
 
     logging.info(f'List of unique values in the masks : {unique_values}')

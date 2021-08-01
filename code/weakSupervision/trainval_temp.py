@@ -40,8 +40,8 @@ import logging
 
 cudnn.benchmark = True
 
-LEARNING_RATE_STEPS = [1, 10, 50, 50]   # Learning rate reduction per step
-MAX_WAIT_STEPS = [3,5,5,6]              # Tries to decrease the loss with a given learning rate
+LEARNING_RATE_STEPS = [10, 50, 50]   # Learning rate reduction per step
+MAX_WAIT_STEPS = [5,5,6]              # Tries to decrease the loss with a given learning rate
 
 
 def setuplogger():

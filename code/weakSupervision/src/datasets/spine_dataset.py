@@ -228,7 +228,10 @@ class SpineSets(torch.utils.data.Dataset):
         # the img_list becomes the relevant dataframe transformed again to a list of dicts & shuffle the dataframe
         self.selected_image_df = {'train' : train_df, 'val' : val_df, 'test' : test_df}[split]
         if separate_source is not None:
+            logger.info(f'Only maintain the data from dataset {separate_source}.')
+            logger.info(f'Dataset length before : {self.selected_image_df.shape}')
             self.selected_image_df = self.selected_image_df[self.selected_image_df['source'] == separate_source]
+            logger.info(f'Dataset length after : {self.selected_image_df.shape}')
         
         random.seed(RANDOM_SEED)
         self.selected_image_df = pd.concat([self.selected_image_df  , self.selected_image_df.img.apply(lambda _ : random.randint(0, 4)).rename('crop_nr')], axis=1)
@@ -327,7 +330,7 @@ class SpineSets(torch.utils.data.Dataset):
         logger.info(f'before expanding the dataframe with all relevant crops, the datafame contains {self.selected_image_df.shape[0]} rows' )
         temp = list()
         for groupname, group in self.selected_image_df.groupby('scan_id'):
-            logger.info(f'Expand the selected image dataframe for scan {groupname}')
+            logger.debug(f'Expand the selected image dataframe for scan {groupname}')
             temp.append(expand_image(group))
 
         # All these subgroups are not concatenated back into a new selected images dataframe and sorted.

@@ -2,7 +2,7 @@ from haven import haven_utils as hu
 
 
 import torch
-import torchvision
+
 from tqdm import tqdm
 import pandas as pd
 import itertools
@@ -13,6 +13,10 @@ import time
 import numpy as np
 import math
 import warnings
+import tikzplotlib
+from joblib import Parallel, delayed
+
+from src.models.metrics.seg_meter import SegMeter
 
 from pprint import pformat
 
@@ -20,13 +24,20 @@ from src import models
 from src import datasets
 from src import utils as ut
 from pathlib import Path
+import scipy.ndimage.morphology as morph
 
 from multiprocessing import Process
 
 from typing import Dict, Tuple
 
-from torch.utils.data import DataLoader
+import matplotlib.pyplot as plt
+from matplotlib import  cm
 
+from typing import Dict
+
+from torch.utils.data import DataLoader
+MULTI_PROCESS = True
+N_JOBS = {'MyoSegmenTUM' : -1, 'USiegen' : -1, 'xVertSeg':1, 'PLoS' : -1}
 import logging
 
 logger = logging.getLogger(__name__)
@@ -66,7 +77,7 @@ class multi_dim_reconstructor(object):
             for i, model_exp_dict in model_dict.items():
                 logger.debug(f'Dimension : {i}')
                 logger.debug(f'experiment dict : {pformat(model_exp_dict)}')
-                model_folder = os.path.join(os.path.join(model_location), model_type_name.replace('D', str(i)), hu.hash_dict(model_exp_dict))
+                model_folder = os.path.join(os.path.join(model_location), model_type_name.replace('D', str(i)), model_exp_dict['hash'])
                 logger.debug(f'Load model in {model_folder} - Get model')
                 model = models.get_model(model_exp_dict['model'], exp_dict=model_exp_dict).cuda()
 
@@ -124,7 +135,8 @@ class multi_dim_reconstructor(object):
                     loaders.update({split : DataLoader(ds,
                               sampler=sampler,
                               collate_fn=ut.collate_fn,
-                              batch_size=model_dict["batch_size"],
+                              batch_size=model_dict["batch_size"] + 4,
+                              num_workers = 3,
                               drop_last=False)})
 
                 dataloaders[i] = loaders
@@ -193,12 +205,9 @@ class multi_dim_reconstructor(object):
                 count += 1
 
             # Now, average over the last dimension of result to combine the crops, ignoring the nan values (where no value was returned)
-            with warnings.catch_warnings():
-                warnings.simplefilter('error')
-                np.nanmean(result, axis=3)
+            # Combine the 6 channels to one estimation for this slice
 
-
-            return np.nanmean(result, axis=3)
+            return np.argmax(np.nanmean(result, axis=3), axis = 0)
 
         def combine_slices(slices_dict : Dict, stack_dim : int) -> np.ndarray:
             """combine a dictionary of slices to a complete 3D array with
@@ -213,8 +222,8 @@ class multi_dim_reconstructor(object):
             assert stack_dim in [0, 1, 2]
             max_slice_nr = max([i for i in slices_dict.keys()])
             slice_list = [slices_dict[i] for i in range(max_slice_nr + 1)] 
-            result = np.stack(slice_list, axis=stack_dim+1)
-            logger.info(f'Combine {max_slice_nr} slices of shape {slices_dict[0].shape} along dimension {stack_dim}. --> resulting shape: {result.shape}')
+            result = np.stack(slice_list, axis=stack_dim)
+            logger.info(f'Combine {max_slice_nr + 1} slices of shape {slices_dict[0].shape} along dimension {stack_dim}. --> resulting shape: {result.shape}')
             return result
             
         def volumes_from_loader(model, dataloader, stack_dim : int, output_location : str):
@@ -232,7 +241,6 @@ class multi_dim_reconstructor(object):
 
             slice_dict = dict()
             crops_dict = dict()
-            hash = None
             orig_shape = None
             scan_id = None
             slice_id = None
@@ -261,7 +269,7 @@ class multi_dim_reconstructor(object):
                     
                     # New crop of same scan, same slice
                     if (batch_scan_ids[i] == scan_id) and (batch_slice_ids[i] == slice_id): 
-                        logger.debug(f'Add crop {batch_crop_nrs[i]} of slice {slice_id} of scan {scan_id}')
+                        # logger.debug(f'Add crop {batch_crop_nrs[i]} of slice {slice_id} of scan {scan_id}')
                         crops_dict[batch_crop_nrs[i]] = pr
                         orig_shape = batch['meta'][i]['orig_shape']
                         hash = batch['meta'][i]['hash']
@@ -280,15 +288,13 @@ class multi_dim_reconstructor(object):
                         slice_dict[slice_id] = combine_crops(crops_dict, orig_shape)
                         logger.debug(f'Finish scan {scan_id} and save in file scan_{scan_id}')
                         volume = combine_slices(slice_dict, stack_dim)
-                        # Start the saving processes independently
-                        save_probs = Process(target=np.save, args=(os.path.join(output_location, f'scan_{scan_id}'), volume))
-                        save_res = Process(target=np.save, args=(os.path.join(os.path.join(output_location, f'scan_{scan_id}_res'), np.argmax(volume, axis=0))))
-                        save_probs.start()
-                        save_res.start()
-                        #np.save(os.path.join(output_location, f'scan_{scan_id}'), volume)
-                        # Apart from the probabilities, the 'result' is just the argmax function on this array 
-                        # --> channel with max probability is the inferred class
-                        #np.save(os.path.join(output_location, f'scan_{scan_id}_res'), np.argmax(volume, axis=0))
+                        # Start the saving processes in independend process
+                        save_res = Process(target=np.save, args=(os.path.join(output_location, f'scan_{scan_id}_res'), volume))
+
+                        if MULTI_PROCESS:
+                            save_res.start()
+                        else:
+                            save_res.run()
 
                         # start a new scan and a new slice
                         slice_dict = dict()
@@ -306,62 +312,164 @@ class multi_dim_reconstructor(object):
                 Path(savedir).mkdir(parents=True, exist_ok=True)
                 volumes_from_loader(model, loader, dim, savedir)
 
-    def probabilities_vs_points(self, input_location_volumes : str, input_location_points):
-        """Make a dataframe that contains the probabilities inferred by different models and compare it to the point labels in the annotations.
+    def reconstruct_from_volumes(self, volumes_location, ground_truth_location):
+        def plot_volumes(volumes : Dict, title : str, savename = '3d_reconstruct.png', ground_truth = None, combined_volume = None):
 
-        Args:
-            input_location_volumes (str): location where different volumes are stored in
-            input_location_points (str): location where different volumes containing point labels are stored
-        """
+            fig_h = 12
+            rows = 3
+            if ground_truth is not None:
+                fig_h += 4
+                rows += 1
+            if combined_volume is not None:
+                fig_h += 4
+                rows += 1
 
-        def points_probabilities(probabilities : Dict[str, np.ndarray], points : np.ndarray) -> pd.DataFrame:
-            """Extract the probabilities from a probability volume for all the annotated points in points.
+            logger.debug(f'figure height {fig_h}cm and rows : {rows}')
 
-            Args:
-                probabilities (Dict): [n_classes, H, W, D] volume with probabilities for each of the n_classes classes in a dict: {prefix : np.ndarray}
-                points (np.ndarray): [H, W, D] volume with point annotations
+            plt.figure(figsize=(12,fig_h))
+            
+            for i in range(3):
+                    for j in range(3):
+                        plt.subplot(rows,3,i*3+j+1)
+                        plt.imshow(cm.gist_stern_r(np.take(volumes[i], volumes[i].shape[j]//2, axis=j)*51))
+                        plt.title(f'model {i}\nslice along axis {j}')
+            
+            if combined_volume is not None:
+                i += 1
+                logger.debug(f'Starting image row {i}')
+                for j in range(3):
+                    plt.subplot(rows,3,i*3+j+1)
+                    plt.imshow(cm.gist_stern_r(np.take(combined_volume, combined_volume.shape[j]//2, axis=j)*51))
+                    plt.title(f'Combined extimated volumes\nslice along axis {j}')
+            
+            
+            if ground_truth is not None:
+                i += 1
+                logger.debug(f'Starting image row {i}')
+                for j in range(3):
+                    plt.subplot(rows,3,i*3+j+1)
+                    plt.imshow(cm.gist_stern_r(np.take(ground_truth, ground_truth.shape[j]//2, axis=j)*51))
+                    plt.title(f'Ground truth\nslice along axis {j}')
+                        
+            plt.suptitle(title)        
+            plt.tight_layout()
+            plt.savefig(savename)
+            Path(savename).mkdir(parents=True, exist_ok=True)
+            tikzplotlib.save(os.path.join(savename, 'graph'), axis_width ='12cm', axis_height =f'{fig_h}cm')
+            plt.close('all')
 
-            Returns:
-                pd.DataFrame: dataframe with columns [point_annotation, prob_0, prob_1, ... , prob_n_classes]
+        def clean_mask(volume : np.ndarray, iterations_denoise: int = 1, iterations_erode:int = 1):
+            """ Function to clean up a mask
             """
+            def remove_noise(volume, iterations_denoise, iterations_erode):
+                struct = morph.generate_binary_structure(3, 3)
+                return morph.binary_erosion(
+                    morph.binary_closing(
+                        morph.binary_opening(volume, structure=struct, iterations = iterations_denoise)
+                        , structure=struct, iterations = iterations_denoise
+                    ), structure=struct, iterations = iterations_erode
+                )
+            
+            temp = np.zeros((*volume.shape, 6), dtype = int)
+            for i in range(6):
+                temp[:,:,:, i] = remove_noise((volume==i), iterations_denoise, iterations_erode)
 
-            logger.debug(f'Compare probabilities volume with points volume (shape HWD : {points.shape}).')
-
-            point_idx = np.argwhere(points != 255)
-            # convert to lists of integer indices for each dimension
-            points_h, points_w, points_d = point_idx[:,0].tolist(), point_idx[:,1].tolist(), point_idx[:,2].tolist()
-            point_vals = pd.DataFrame((points[points_h, points_w, points_d]).T, columns = ['point_labels']) # This should give a 1D array with all the point value labels
-
-            logger.debug(f'Point value array : {point_vals.shape}')
-
-            point_probs = [point_vals]
-            for prefix, probs in probabilities.items():
-                logger.debug(f'Probabilities for {prefix} : shape CHWD {probs.shape}')
-                point_probs.append(pd.DataFrame(probs[:, points_h, points_w, points_d], columns = [f'{prefix}_class_{i}' for i in range(probs.shape[0])]) )# This should give a 2D array [number of point labels, n_classes]
-                logger.debug(f'new dataframe for probabilities : {prefix} \n {point_probs[-1].head()}')
-
-            # The obtained result is a list of pandas dataframes that contain the 
-
-            return pd.concat(point_probs, axis=1)
-
-
-        self.train_df = points_probabilities(...)
-        self.val_df = points_probabilities(...)
-        self.test_df = points_probabilities(...)
-
-    
-    def train_model(self):
-        """
-        Train a classic machine learning model on the dataframe containing the train data.
-        Validate it on the validation set and test on the test model.
-
-        n_classes probabilities --> class label.
+            volume = np.argmax(temp, axis = 3)
+            return volume
         
-        This model will then be used to infer the class labels based on the predictions of three models (dimensional cut 0, 1 & 2).
-        This might be better than just 1 model 
-        """
-        raise NotImplementedError
+        def combine_volumes(volumes : Dict[int, np.ndarray]) -> np.ndarray:
+            combined_volume = np.zeros_like(volumes[0])
+            for i in range(1,6):
+                m = (volumes[0] == 1) & (volumes[1] == i) & (volumes[2] == i)
+                combined_volume[m] = i
+            return combined_volume  
 
+        def get_combined_volume(volumes, iterations_denoise, iterations_erode, ground_truth = None):
+            combined_volume=combine_volumes(volumes)
+            combined_volume = clean_mask(combined_volume, iterations_denoise=iterations_denoise, iterations_erode=iterations_erode)
+            plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_denoise{iterations_denoise}_erode{iterations_erode}_{source}_{nr}'), ground_truth=ground_truth, combined_volume=combined_volume)
+            return combined_volume
+
+        def segmeter_eval(segm, ground_truth, combined_volume, n_classes):
+            segm.val_on_volume(ground_truth, combined_volume, n_classes)
+
+        splits = ['val', 'train']
+        dims = [0,1,2]
+        foldername = 'dimension_D_split_S'
+
+        seg_meters = {
+            iterations_denoise : {
+                iterations_erode : SegMeter('val') for iterations_erode in range(4)
+            } for iterations_denoise in range(4) 
+        }
+
+        savedir = os.path.join(volumes_location, 'volumes')
+        imagedir = os.path.join(volumes_location, 'images')
+
+        Path(savedir).mkdir(parents=True, exist_ok=True)
+        Path(imagedir).mkdir(parents=True, exist_ok=True)
+
+        F_optimal_iterations = False
+
+        for split in splits:
+            foldernames = [foldername.replace('S', split).replace('D', str(d)) for d in dims]
+            logger.info(f'Start reconstruction of volumes for split {split}.')
+
+            if split == 'train' and not F_optimal_iterations:
+                for it_DN, it_ER in itertools.product(list(range(4)), list(range(4))):
+                    seg_meters[it_DN][it_ER] = seg_meters[it_DN][it_ER].get_avg_score()
+                seg_meters = pd.DataFrame.from_dict({
+                    (it_DN, it_ER) : [seg_meters[it_DN][it_ER]['val_score'] , seg_meters[it_DN][it_ER]['val_prec'], seg_meters[it_DN][it_ER]['val_recall']] 
+                    for it_DN in seg_meters.keys() 
+                    for it_ER in seg_meters[it_DN].keys()
+                }, orient='index', columns=['weighted_dice_score', 'precision', 'recall'])
+                logger.info(f'Result dependent on iterations : {seg_meters}')
+                seg_meters.to_csv(os.path.join(volumes_location, 'validationSet_morphologicalIterations.csv'))
+                max_idx = seg_meters['weighted_dice_score'].idxmax()
+                logger.debug(f'The maximal weighted dice score was found for index {max_idx}')
+                BEST_IT_DN, BEST_IT_ER = max_idx
+                logger.info(f'The optimal iterations for denoising is {BEST_IT_DN} and for erosion is {BEST_IT_ER}')
+                F_optimal_iterations = True
+
+                    
+
+            for file_name in tqdm(os.listdir(os.path.join(volumes_location, foldernames[0]))):
+                if not file_name.endswith('_res.npy'):
+                    continue
+                
+                volumes = {i : np.load(os.path.join(volumes_location, fn, file_name)) for i, fn in enumerate(foldernames)}
+                _, source, nr, _ = file_name.split('_')
+                if split == 'val':
+                    mask_filename = os.path.join(ground_truth_location, f'{source}_masks', f'image{nr}', 'mask_array.npy')
+                    ground_truth = np.load(mask_filename)
+                    plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'rawmask_{source}_{nr}'), ground_truth=ground_truth)
+                else:
+                    plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'rawmask_{source}_{nr}'))
+
+                logger.debug(f'Volume {source}, nr {nr}')
+
+                n = N_JOBS.get(source, 2)
+
+                if split == 'val':
+                    for iterations_denoise, erode_dict in seg_meters.items():
+                        logger.debug(f'start evaluation the segmentation meters for iterations denoise {iterations_denoise}')
+                        logger.debug(f'Source {source}: calculate with {n} jobs')
+                        combined_volumes = Parallel(n_jobs=n)(delayed(get_combined_volume)(volumes, iterations_denoise, iterations_erode, ground_truth = ground_truth) for iterations_erode in erode_dict.keys())
+                        for iterations_erode in erode_dict.keys():
+                            logger.debug(f'calculation for erode {iterations_erode}')
+                            seg_meters[iterations_denoise][iterations_erode].val_on_volume(ground_truth, combined_volumes[iterations_erode], 6) 
+                if split == 'train':
+                    combined_volume = combine_volumes(volumes_cleaned)
+                    combined_volume = clean_mask(combined_volume, iterations_denoise=BEST_IT_DN, iterations_erode=BEST_IT_ER)
+                    
+                    plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_train_denoise{iterations_denoise}_erode{iterations_erode}_{source}_{nr}'), combined_volume=combined_volume)
+                    np.save(os.path.join(savedir, f'morphcombined_train_{source}_{nr}') ,combined_volume)
+
+
+
+                
+
+                
 
 
 
