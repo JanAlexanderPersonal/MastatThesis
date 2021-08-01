@@ -1,0 +1,54 @@
+\BOOKMARK [-1][-]{part.1}{Problem Introduction \046 Motivation}{}% 1
+\BOOKMARK [0][-]{chapter.1.1}{The human spine}{part.1}% 2
+\BOOKMARK [1][-]{section.1.1.1}{Anatomy of the human spine}{chapter.1.1}% 3
+\BOOKMARK [1][-]{section.1.1.2}{Pathologies of the human spine}{chapter.1.1}% 4
+\BOOKMARK [1][-]{section.1.1.3}{Medical imaging of the human spine}{chapter.1.1}% 5
+\BOOKMARK [2][-]{subsection.1.1.3.1}{CT scan}{section.1.1.3}% 6
+\BOOKMARK [2][-]{subsection.1.1.3.2}{MRI scan}{section.1.1.3}% 7
+\BOOKMARK [0][-]{chapter.1.2}{Artificial intelligence \046 Machine Learning}{part.1}% 8
+\BOOKMARK [1][-]{section.1.2.1}{Artificial Intelligence}{chapter.1.2}% 9
+\BOOKMARK [2][-]{subsection.1.2.1.1}{Neural Networks}{section.1.2.1}% 10
+\BOOKMARK [2][-]{subsection.1.2.1.2}{Artificial intelligence for healthcare applications}{section.1.2.1}% 11
+\BOOKMARK [1][-]{section.1.2.2}{Machine vision}{chapter.1.2}% 12
+\BOOKMARK [2][-]{subsection.1.2.2.1}{Machine vision tasks }{section.1.2.2}% 13
+\BOOKMARK [2][-]{subsection.1.2.2.2}{The convolution layer}{section.1.2.2}% 14
+\BOOKMARK [2][-]{subsection.1.2.2.3}{Data for training machine vision models}{section.1.2.2}% 15
+\BOOKMARK [0][-]{chapter.1.3}{Previous work}{part.1}% 16
+\BOOKMARK [1][-]{section.1.3.1}{Machine vision for medical applications}{chapter.1.3}% 17
+\BOOKMARK [2][-]{subsection.1.3.1.1}{Automated segmentation of the human spine}{section.1.3.1}% 18
+\BOOKMARK [1][-]{section.1.3.2}{Weakly supervised segmentation}{chapter.1.3}% 19
+\BOOKMARK [2][-]{subsection.1.3.2.1}{Overview of different approaches}{section.1.3.2}% 20
+\BOOKMARK [2][-]{subsection.1.3.2.2}{Weakly supervised segmentation for Medical applications}{section.1.3.2}% 21
+\BOOKMARK [-1][-]{part.2}{Modelling methods \046 Analysis}{}% 22
+\BOOKMARK [0][-]{chapter.2.1}{Datasets}{part.2}% 23
+\BOOKMARK [1][-]{section.2.1.1}{Global dataset overview}{chapter.2.1}% 24
+\BOOKMARK [1][-]{section.2.1.2}{Comparison of the different datasets}{chapter.2.1}% 25
+\BOOKMARK [2][-]{subsection.2.1.2.1}{xVertSeg}{section.2.1.2}% 26
+\BOOKMARK [2][-]{subsection.2.1.2.2}{UniSiegen dataset}{section.2.1.2}% 27
+\BOOKMARK [2][-]{subsection.2.1.2.3}{PLoS Dataset}{section.2.1.2}% 28
+\BOOKMARK [2][-]{subsection.2.1.2.4}{MyoSegmenTUM datset}{section.2.1.2}% 29
+\BOOKMARK [2][-]{subsection.2.1.2.5}{UWSpine dataset}{section.2.1.2}% 30
+\BOOKMARK [0][-]{chapter.2.2}{Data preprocessing}{part.2}% 31
+\BOOKMARK [1][-]{section.2.2.1}{Image preprocessing}{chapter.2.2}% 32
+\BOOKMARK [2][-]{subsection.2.2.1.1}{Resampling and slicing}{section.2.2.1}% 33
+\BOOKMARK [2][-]{subsection.2.2.1.2}{Contrast enhancement}{section.2.2.1}% 34
+\BOOKMARK [1][-]{section.2.2.2}{Train, validation and test split considerations}{chapter.2.2}% 35
+\BOOKMARK [0][-]{chapter.2.3}{Modelling methods \046 evaluation protocols}{part.2}% 36
+\BOOKMARK [1][-]{section.2.3.1}{Modelling concept}{chapter.2.3}% 37
+\BOOKMARK [2][-]{subsection.2.3.1.1}{Model type}{section.2.3.1}% 38
+\BOOKMARK [2][-]{subsection.2.3.1.2}{Model training approach}{section.2.3.1}% 39
+\BOOKMARK [1][-]{section.2.3.2}{Model hyperparameters}{chapter.2.3}% 40
+\BOOKMARK [2][-]{subsection.2.3.2.1}{Network types}{section.2.3.2}% 41
+\BOOKMARK [2][-]{subsection.2.3.2.2}{2D+ approach and context slices}{section.2.3.2}% 42
+\BOOKMARK [2][-]{subsection.2.3.2.3}{Annotation points}{section.2.3.2}% 43
+\BOOKMARK [2][-]{subsection.2.3.2.4}{Model training strategy}{section.2.3.2}% 44
+\BOOKMARK [1][-]{section.2.3.3}{Loss functions}{chapter.2.3}% 45
+\BOOKMARK [2][-]{subsection.2.3.3.1}{Supervised loss functions}{section.2.3.3}% 46
+\BOOKMARK [2][-]{subsection.2.3.3.2}{Unsupervised loss functions}{section.2.3.3}% 47
+\BOOKMARK [1][-]{section.2.3.4}{Metrics}{chapter.2.3}% 48
+\BOOKMARK [2][-]{subsection.2.3.4.1}{Class imbalance}{section.2.3.4}% 49
+\BOOKMARK [2][-]{subsection.2.3.4.2}{Precision}{section.2.3.4}% 50
+\BOOKMARK [2][-]{subsection.2.3.4.3}{Dice score}{section.2.3.4}% 51
+\BOOKMARK [2][-]{subsection.2.3.4.4}{Intersection over Union}{section.2.3.4}% 52
+\BOOKMARK [-1][-]{part.3}{Results \046 Experiments}{}% 53
+\BOOKMARK [0][-]{chapter.3.1}{Single dimension exp
