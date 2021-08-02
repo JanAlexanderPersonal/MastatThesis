@@ -62,6 +62,21 @@ These filters are combinations of the morphological \textit{erosion} and \textit
 The above mentioned procedure has two Hyperparameters: the number of iterations for the denoising filters and the number of iterations for the erosion filter.
 Both hyperparameters are estimated by calculation of the same evaluation metric, the weigh dice score on the validation set, as for the single dimensional model evaluation. 
 
+
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{images/morphmask_denoise2_erode2_MyoSegmenTUM_043.png}
+    \caption{
+        Result of the combination of the three single dimension model resuls for volume MyoSegmenTUM nr 43.
+        The colours indicate the vertebra classes. In the first row, illustrating the model trained on transversal slices, only one semantic class is estimated.
+        On the first three rows, slices of the resulting segmentations from the single dimension models are shown. 
+        It is clear these masks contain some artefacts and are not always in agreement with eachother.
+        On the fourth row, the result after mask combination and morphological smoothing is shown. 
+        This corresponds more closely to the ground truth mask shown on the fifth row.
+        It is this final mask, shown on the fourth row, that will be used as a pseudo mask to approximate the unknown ground truth mask.
+    }
+\end{SCfigure}
+
 \section{Pseudo mask performance}
 
 \chapter{Pseudo mask training}
