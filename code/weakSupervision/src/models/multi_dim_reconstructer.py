@@ -145,6 +145,7 @@ class multi_dim_reconstructor(object):
         if dataset_location is None:
             dataset_location = model_location
 
+        logger.debug(f'model dict keys : {list(model_dict.keys())}')
         self.models = get_models(model_dict, model_type_name.replace('C', str(contrast)),  model_location)
         self.dataloaders = get_dataloaders(model_dict, dataset_location, contrast)
         logger.info(f'Models and dataloaders loaded')
@@ -390,8 +391,6 @@ class multi_dim_reconstructor(object):
             plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_denoise{iterations_denoise}_erode{iterations_erode}_{source}_{nr}'), ground_truth=ground_truth, combined_volume=combined_volume)
             return combined_volume
 
-        def segmeter_eval(segm, ground_truth, combined_volume, n_classes):
-            segm.val_on_volume(ground_truth, combined_volume, n_classes)
 
         splits = ['val', 'train']
         dims = [0,1,2]
@@ -399,8 +398,8 @@ class multi_dim_reconstructor(object):
 
         seg_meters = {
             iterations_denoise : {
-                iterations_erode : SegMeter('val') for iterations_erode in range(4)
-            } for iterations_denoise in range(4) 
+                iterations_erode : SegMeter('val') for iterations_erode in range(10)
+            } for iterations_denoise in range(10) 
         }
 
         savedir = os.path.join(volumes_location, 'volumes')
@@ -416,7 +415,7 @@ class multi_dim_reconstructor(object):
             logger.info(f'Start reconstruction of volumes for split {split}.')
 
             if split == 'train' and not F_optimal_iterations:
-                for it_DN, it_ER in itertools.product(list(range(4)), list(range(4))):
+                for it_DN, it_ER in itertools.product(list(range(10)), list(range(10))):
                     seg_meters[it_DN][it_ER] = seg_meters[it_DN][it_ER].get_avg_score()
                 seg_meters = pd.DataFrame.from_dict({
                     (it_DN, it_ER) : [seg_meters[it_DN][it_ER]['val_score'] , seg_meters[it_DN][it_ER]['val_prec'], seg_meters[it_DN][it_ER]['val_recall']] 
@@ -439,12 +438,11 @@ class multi_dim_reconstructor(object):
                 
                 volumes = {i : np.load(os.path.join(volumes_location, fn, file_name)) for i, fn in enumerate(foldernames)}
                 _, source, nr, _ = file_name.split('_')
-                if split == 'val':
-                    mask_filename = os.path.join(ground_truth_location, f'{source}_masks', f'image{nr}', 'mask_array.npy')
-                    ground_truth = np.load(mask_filename)
-                    plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'rawmask_{source}_{nr}'), ground_truth=ground_truth)
-                else:
-                    plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'rawmask_{source}_{nr}'))
+                
+                mask_filename = os.path.join(ground_truth_location, f'{source}_masks', f'image{nr}', 'mask_array.npy')
+                ground_truth = np.load(mask_filename)
+                plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'rawmask_{split}_{source}_{nr}'), ground_truth=ground_truth)
+                
 
                 logger.debug(f'Volume {source}, nr {nr}')
 
@@ -462,7 +460,7 @@ class multi_dim_reconstructor(object):
                     combined_volume = combine_volumes(volumes)
                     combined_volume = clean_mask(combined_volume, iterations_denoise=BEST_IT_DN, iterations_erode=BEST_IT_ER)
                     
-                    plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_train_denoise{iterations_denoise}_erode{iterations_erode}_{source}_{nr}'), combined_volume=combined_volume)
+                    plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_train_denoise{iterations_denoise}_erode{iterations_erode}_{source}_{nr}'), ground_truth = ground_truth, combined_volume=combined_volume)
                     np.save(os.path.join(savedir, f'morphcombined_train_{source}_{nr}') ,combined_volume)
 
 
