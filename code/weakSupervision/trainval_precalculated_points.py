@@ -40,8 +40,8 @@ import logging
 
 cudnn.benchmark = True
 
-LEARNING_RATE_STEPS = [10, 50, 50]   # Learning rate reduction per step
-MAX_WAIT_STEPS = [5,5,6]              # Tries to decrease the loss with a given learning rate
+LEARNING_RATE_STEPS = [1, 10, 50, 50]   # Learning rate reduction per step
+MAX_WAIT_STEPS = [3,5,5,6]              # Tries to decrease the loss with a given learning rate
 
 
 def setuplogger():
@@ -116,7 +116,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                                      split="train",
                                      datadir=datadir,
                                      exp_dict=exp_dict,
-                                     dataset_size=exp_dict['dataset_size'])
+                                     dataset_size=exp_dict['dataset_size'], precalculated_points = True)
 
     mask_counts = train_set.count_values_masks() # dict with counts per label {0 : ... ,  1 : ... , ...}
 
@@ -132,7 +132,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                                    split="val",
                                    datadir=datadir,
                                    exp_dict=exp_dict,
-                                   dataset_size=exp_dict['dataset_size'])
+                                   dataset_size=exp_dict['dataset_size'], precalculated_points = True)
 
     # test set
     logger.info('define test set')
@@ -140,7 +140,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                                     split="test",
                                     datadir=datadir,
                                     exp_dict=exp_dict,
-                                    dataset_size=exp_dict['dataset_size'])
+                                    dataset_size=exp_dict['dataset_size'], precalculated_points = True)
 
     logger.info('make dataloaders from the defined validation and test set')
     val_loader = DataLoader(val_set,

@@ -232,6 +232,21 @@ class SpineSets(torch.utils.data.Dataset):
             logger.info(f'Dataset length before : {self.selected_image_df.shape}')
             self.selected_image_df = self.selected_image_df[self.selected_image_df['source'] == separate_source]
             logger.info(f'Dataset length after : {self.selected_image_df.shape}')
+
+        # Calculate the amount of annotation points in each slice
+
+        self.selected_image_df['bg_annotation_points'] = self.selected_image_df.tgt.apply(
+            lambda filename : sum((np.load(f'{filename[:-4]}_points.npy') == 0))
+        )
+        for i in range(1,6):
+            self.selected_image_df[f'class_{i}_annotation_points'] = self.selected_image_df.tgt.apply(
+            lambda filename : sum((np.load(f'{filename[:-4]}_points.npy') == i))
+        )
+
+        if precalculated_points:
+            logging.info(f'Before removing the slices without annotation, the selected image dataframe has {self.selected_image_df.shape[0]} rows.')
+            self.selected_image_df = self.selected_image_df[self.selected_image_df[['bg_annotation_points'] + [f'class_{i}_annotation_points' for i in range(1,6)]].any(axis = 1)]
+            logging.info(f'After removing the slices without annotation, the selected image dataframe has {self.selected_image_df.shape[0]} rows.')
         
         random.seed(RANDOM_SEED)
         self.selected_image_df = pd.concat([self.selected_image_df  , self.selected_image_df.img.apply(lambda _ : random.randint(0, 4)).rename('crop_nr')], axis=1)
