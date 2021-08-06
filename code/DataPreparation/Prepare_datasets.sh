@@ -46,3 +46,8 @@ do
 
         done
 done
+
+python3.8 $PATH_CODE/unify_point_files.py \
+        --source $PATH_OP \
+        --foldername dataset_D_contrast_3 \
+        --dimension 2
