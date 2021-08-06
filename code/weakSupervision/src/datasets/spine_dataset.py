@@ -236,11 +236,11 @@ class SpineSets(torch.utils.data.Dataset):
         # Calculate the amount of annotation points in each slice
 
         self.selected_image_df['bg_annotation_points'] = self.selected_image_df.tgt.apply(
-            lambda filename : sum((np.load(f'{filename[:-4]}_points.npy') == 0))
+            lambda filename : sum((np.load(filename.replace('.npy', '_points.npy')).astype('uint8') == 0))
         )
         for i in range(1,6):
             self.selected_image_df[f'class_{i}_annotation_points'] = self.selected_image_df.tgt.apply(
-            lambda filename : sum((np.load(f'{filename[:-4]}_points.npy') == i))
+            lambda filename : sum((np.load(filename.replace('.npy', '_points.npy')).astype('uint8') == i))
         )
 
         if precalculated_points:

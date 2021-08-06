@@ -23,7 +23,7 @@ from src.modules.lcfcn import lcfcn_loss
 
 N_CORES = -1
 
-BG_POINTS = 3
+BG_POINTS = 5
 BLOB_POINTS = 1
 
 
