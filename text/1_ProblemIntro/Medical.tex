@@ -54,6 +54,18 @@
     In severe cases, a spinal hernia requires surgical treatment.
     This specialized procedure requires repeated medical imaging to allow the surgeon to investigate the situation before the operation accurately and assure correct positioning of the instruments during the intervention.
 }
+\begin{SCfigure}[][h!]
+    \centering
+    \includegraphics[width=10cm]{/home/thesis/images/REISS_illustration.png}
+    \caption{Artist's impression of the start of the surgical treatment of a lumbar hernia. 
+    This image shows the dilator through which the surgical instruments will be inserted to mill away the bulging disc material.
+    This procedure requires repeated visualization of the instruments and the spine via X-ray images. \textit{This illustration is designed Verhaert NP\&S}.\label{fig:REISS_procedure}}
+\end{SCfigure}
+\par{
+    In image \ref{fig:REISS_procedure}, the start of the surgical treatment procedure for a lumbar hernia is illustrated.
+    One possible benefit of improved automatic interpretation of \acrshort{mri} and \acrshort{ct} scans is providing support for this procedure.
+    This delicate procedure requires interpretation and combination of information from both scan types (at different moments in time), this is a demanding task.
+}
 
 \section{Medical imaging of the human spine\label{sec:medical_imaging}}
 \marginpar{
@@ -61,13 +73,10 @@
         \captionof{figure}{Illustration of \acrshort{ct} and \acrshort{mri} images of a human lumbar spine.}
         \label{fig:mri_ct}
     }
-
-\todo[inline]{Describe Hounsfield scale.}
-
 \par{
-    For spinal pathology diagnosis of the \hlnote{main}{Is this correct? Find reference.} medical imaging techniques are \acrfull{ct}, \acrfull{us} and \acrfull{mri}. 
+    For diagnosis and visualization of spinal pathology several medical imaging techniques are used: \acrfull{ct}, \acrfull{us} and \acrfull{mri}. 
     These techniques allow non-invasive visualization of the spine and discs in three dimensions.
-    Slices from these volumetric scans are illustrated in \ref{fig:mri_ct}.
+    Two dimensional slices from volumetric scans (\acrshort{mri} and \acrshort{ct}) are illustrated in \ref{fig:mri_ct}.
 }
 
 \subsection{CT scan}
@@ -77,7 +86,7 @@
     It is also used in industry for non-destructive component and assembly inspection.
     In geology, it is used to identify materials in a drill core quickly. In archaeology, it is used for the non-destructive investigation of artefacts. } 
     for diagnostic purposes. 
-    A \acrlong{ct} procedure consists of the combination of an array of X-ray attenuation images taken with a \hlnote{rotating X-ray tube}{Add illustration}. 
+    A \acrlong{ct} procedure consists of the combination of an array of X-ray attenuation images taken with a rotating X-ray tube as illustrated in figure \ref{fig:CT_principle}. 
     These images can be combined with a tomography algorithm to reconstruct a volumetric representation of the radiographic density.
 }
 \par{
@@ -87,6 +96,11 @@
     The image quality increases with radiation dose, but so does the probability of radiation-induced cancer.
     Improvement of the reconstruction algorithms to obtain higher-resolution images without reducing the radiation dose is an ongoing area of research. 
 }
+\marginpar{
+        \includegraphics[width=5cm]{images/FDA_CT_Scan.png}
+        \captionof{figure}{Conceptual illustration of the working of a \acrlong{ct} scan. Image from \url{www.fda.gov/radiation-emitting-products/medical-x-ray-imaging/computed-tomography-ct}}
+        \label{fig:CT_principle}
+    }
 
 \subsection{MRI scan}
 \par{
