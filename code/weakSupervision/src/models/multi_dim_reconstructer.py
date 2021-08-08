@@ -314,7 +314,7 @@ class multi_dim_reconstructor(object):
                 volumes_from_loader(model, loader, dim, savedir)
 
     def reconstruct_from_volumes(self, volumes_location, ground_truth_location):
-        def plot_volumes(volumes : Dict, title : str, savename = '3d_reconstruct.png', ground_truth = None, combined_volume = None):
+        def plot_volumes(volumes : Dict, title : str, savename = '3d_reconstruct.png', ground_truth = None, combined_volume = None, volume_scan = None):
 
             fig_h = 12
             rows = 3
@@ -351,6 +351,14 @@ class multi_dim_reconstructor(object):
                     plt.subplot(rows,3,i*3+j+1)
                     plt.imshow(cm.gist_stern_r(np.take(ground_truth, ground_truth.shape[j]//2, axis=j)*51))
                     plt.title(f'Ground truth\nslice along axis {j}')
+
+            if volume_scan is not None:
+                i += 1
+                logger.debug(f'Starting image row {i}')
+                for j in range(3):
+                    plt.subplot(rows,3,i*3+j+1)
+                    plt.imshow(np.take(ground_truth, volume_scan.shape[j]//2, axis=j)*51)
+                    plt.title(f'Scan image\nslice along axis {j}')
                         
             plt.suptitle(title)        
             plt.tight_layout()
@@ -385,10 +393,10 @@ class multi_dim_reconstructor(object):
                 combined_volume[m] = i
             return combined_volume  
 
-        def get_combined_volume(volumes, iterations_denoise, iterations_erode, ground_truth = None):
+        def get_combined_volume(volumes, iterations_denoise, iterations_erode, ground_truth = None, volume_scan=None):
             combined_volume=combine_volumes(volumes)
             combined_volume = clean_mask(combined_volume, iterations_denoise=iterations_denoise, iterations_erode=iterations_erode)
-            plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_denoise{iterations_denoise}_erode{iterations_erode}_{source}_{nr}'), ground_truth=ground_truth, combined_volume=combined_volume)
+            plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_denoise{iterations_denoise}_erode{iterations_erode}_{source}_{nr}'), ground_truth=ground_truth, volume_scan=volume_scan, combined_volume=combined_volume)
             return combined_volume
 
 
@@ -429,6 +437,12 @@ class multi_dim_reconstructor(object):
                 BEST_IT_DN, BEST_IT_ER = max_idx
                 logger.info(f'The optimal iterations for denoising is {BEST_IT_DN} and for erosion is {BEST_IT_ER}')
                 F_optimal_iterations = True
+                for image_name in os.listdir(imagedir):
+                    if not image_name.endswith('.png'):
+                        continue
+                    if f'denoise{BEST_IT_DN}_erode{BEST_IT_ER}' in image_name:
+                        continue
+                    os.remove(os.path.join(imagedir, image_name))
 
                     
 
@@ -441,7 +455,9 @@ class multi_dim_reconstructor(object):
                 
                 mask_filename = os.path.join(ground_truth_location, f'{source}_masks', f'image{nr}', 'mask_array.npy')
                 ground_truth = np.load(mask_filename)
-                plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'rawmask_{split}_{source}_{nr}'), ground_truth=ground_truth)
+                volume_filename = os.path.join(ground_truth_location, f'{source}_images', f'image{nr}', 'volume.npy')
+                volume_scan = np.load(volume_filename)
+                plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'rawmask_{split}_{source}_{nr}'), ground_truth=ground_truth, volume_scan=volume_scan)
                 
 
                 logger.debug(f'Volume {source}, nr {nr}')
@@ -452,7 +468,7 @@ class multi_dim_reconstructor(object):
                     for iterations_denoise, erode_dict in seg_meters.items():
                         logger.debug(f'start evaluation the segmentation meters for iterations denoise {iterations_denoise}')
                         logger.debug(f'Source {source}: calculate with {n} jobs')
-                        combined_volumes = Parallel(n_jobs=n)(delayed(get_combined_volume)(volumes, iterations_denoise, iterations_erode, ground_truth = ground_truth) for iterations_erode in erode_dict.keys())
+                        combined_volumes = Parallel(n_jobs=n)(delayed(get_combined_volume)(volumes, iterations_denoise, iterations_erode, ground_truth = ground_truth, volume_scan=volume_scan) for iterations_erode in erode_dict.keys())
                         for iterations_erode in erode_dict.keys():
                             logger.debug(f'calculation for erode {iterations_erode}')
                             seg_meters[iterations_denoise][iterations_erode].val_on_volume(ground_truth, combined_volumes[iterations_erode], 6) 

@@ -231,7 +231,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     Path(os.path.join(savedir, "images")).mkdir(parents=True, exist_ok=True)
     Path(os.path.join(savedir, "train_images")).mkdir(parents=True, exist_ok=True)
 
-    # hu.torch_save(model_path, model.get_state_dict())
+    hu.torch_save(model_path, model.get_state_dict())
 
     # Run the remaining epochs starting from the last epoch for which values
     # were available in the pkl
