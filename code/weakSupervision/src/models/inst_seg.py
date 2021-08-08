@@ -231,8 +231,8 @@ class Inst_Seg(torch.nn.Module):
 
             assert 'unsupervised_rotation_loss' in loss_name, 'It is necessary to calculate the unsupervised rotation loss before the supervised rotation consistancy loss can be calculated.'
 
-            logger.debug(
-                f'compute rotational point loss with points {torch.unique(points)}')
+            logger.info(
+                f'compute rotational point loss with points {torch.unique(points)} - loss before = {loss}')
             
             # Due to calculation of the unsupervises rotation loss, the variables are already calculated:
             #   rotations
@@ -253,6 +253,7 @@ class Inst_Seg(torch.nn.Module):
                                                            points_rotated[ind].detach(
                 ).float().cuda(),
                     reduction='mean')
+            logger.info(f'loss after : {loss}')
 
         
 
@@ -269,7 +270,7 @@ class Inst_Seg(torch.nn.Module):
             assert 'unsupervised_rotation_loss' in loss_name, 'It is necessary to calculate the unsupervised rotation loss before the supervised rotation consistancy loss can be calculated.'
 
             logger.debug(
-                'Start to compute rotational point loss with multiple classes')
+                f'Start to compute rotational point loss with multiple classes - with points {torch.unique(points, return_counts = True)}')
             
             # Due to calculation of the unsupervises rotation loss, the variables are already calculated:
             #   rotations
@@ -288,72 +289,6 @@ class Inst_Seg(torch.nn.Module):
                 loss += F.cross_entropy(logits_rotated, points_rotated.detach().squeeze(1).cuda(), ignore_index = 255, weight = torch.Tensor(self.weight_vector).to(logits.get_device()))
                 logger.debug(f'Loss after taking into account the rotation consistency point loss : {loss}')
 
-            """
-
-            for i in range(self.n_classes):
-
-                # If this batch does not contain a certain point type, there is
-                # no loss for this point type
-                if i not in torch.unique(points):
-                    continue
-
-                points_temp = points.clone().detach()
-
-                logger.debug(f'Extract rotational loss for class {i}.')
-                # If you are really searching for the background class, you
-                # should give this a temporary different value from 0 and from
-                # the other class labels
-                if i == 0:
-                    points_temp[points == i] = self.n_classes
-                for j in [x for x in range(self.n_classes) if x != i]:
-                    # points temporary only has two types of points: The class
-                    # to be investigated and background (for that channel)
-                    points_temp[points == j] = 0
-                logger.debug(
-                    f'Unique values remaining after bringing the other classes to background: {torch.unique(points_temp)}')
-                logger.debug(
-                    f'To calculate the additional loss for channel {i}, the points tensor becomes {torch.unique(points_temp, return_counts = True)}. The non-zero value will be converted to 1.')
-                points_temp[points == i] = 1
-                # Revert the possible re-naming of the background class
-                points_temp[points == self.n_classes] = 1
-
-                # Extract the layer from the model output
-                index_to_device = torch.tensor([i]).to(logits.device)
-                logits_slice = logits.index_select(1, index_to_device)
-                logits_rotated_slice = logits_rotated.index_select(
-                    1, index_to_device)
-
-                logger.debug(
-                    f'two tensors are sliced : logits slice has dimensions {logits_slice.size()} and logits_flip slice has dimensions {logits_rotated_slice.size()}')
-
-                ind = points_temp != 255
-
-                weight = 1.0 if ('rot_point_loss_multi_weighted' not in loss_name) else self.weight_vector[i]
-
-                logger.debug(f'weight for class i : {weight}')
-
-                if ind.sum() != 0:
-                    loss += F.binary_cross_entropy_with_logits(logits_slice[ind],
-                                                               points_temp[ind].detach(
-                    ).float().cuda(),
-                        reduction='mean') * weight
-
-                    logger.debug(
-                        f'straight logits loss added for channel {i} : {loss}')
-
-                    points_rotated = flips.Hflip()(points_temp)
-                    points_rotated = sst.batch_rotation(
-                        points_rotated, rotations)
-                    ind = points_rotated != 255
-                    loss += F.binary_cross_entropy_with_logits(logits_rotated_slice[ind],
-                                                               points_rotated[ind].detach(
-                    ).float().cuda(),
-                        reduction='mean') * weight
-
-                    logger.debug(
-                        f'rotated logits loss added for channel {i} : {loss}')
-
-            """
 
         
 
@@ -471,6 +406,7 @@ class Inst_Seg(torch.nn.Module):
                 # The higher the difference, the better!
                 loss -= torch.mean(differences)
                 logger.debug(f'differences of channel {i} with the others *** with differences size {differences.size()} *** new loss {loss}')
+            logger.debug(f'loss after adding separation loss: {loss}')
 
 
 

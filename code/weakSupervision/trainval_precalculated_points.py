@@ -40,8 +40,8 @@ import logging
 
 cudnn.benchmark = True
 
-LEARNING_RATE_STEPS = [1, 10, 50, 50]   # Learning rate reduction per step
-MAX_WAIT_STEPS = [3,5,5,6]              # Tries to decrease the loss with a given learning rate
+LEARNING_RATE_STEPS = [1, 10, 10, 50, 50]   # Learning rate reduction per step
+MAX_WAIT_STEPS = [3,5,5,5,6]              # Tries to decrease the loss with a given learning rate
 
 
 def setuplogger():
@@ -132,7 +132,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                                    split="val",
                                    datadir=datadir,
                                    exp_dict=exp_dict,
-                                   dataset_size=exp_dict['dataset_size'], precalculated_points = True)
+                                   dataset_size=exp_dict['dataset_size'], precalculated_points = False)
 
     # test set
     logger.info('define test set')
@@ -140,7 +140,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                                     split="test",
                                     datadir=datadir,
                                     exp_dict=exp_dict,
-                                    dataset_size=exp_dict['dataset_size'], precalculated_points = True)
+                                    dataset_size=exp_dict['dataset_size'], precalculated_points = False)
 
     logger.info('make dataloaders from the defined validation and test set')
     val_loader = DataLoader(val_set,
@@ -171,7 +171,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
     # If there is a pkl file containing stored model weights from the last time the model was trained, get it.
     # if 'reset == True' this file will be deleted when you reach this code
     # line.
-    if os.path.exists(score_list_path):
+    if os.path.exists(score_list_path) and os.path.exists(model_path):
         # resume experiment
         model.load_state_dict(hu.torch_load(model_path))
         score_list = hu.load_pkl(score_list_path)
@@ -227,6 +227,12 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
     min_loss = np.inf
 
+    Path(os.path.join(savedir, "val_images")).mkdir(parents=True, exist_ok=True)
+    Path(os.path.join(savedir, "images")).mkdir(parents=True, exist_ok=True)
+    Path(os.path.join(savedir, "train_images")).mkdir(parents=True, exist_ok=True)
+
+    # hu.torch_save(model_path, model.get_state_dict())
+
     # Run the remaining epochs starting from the last epoch for which values
     # were available in the pkl
     for learning_rate_factor, max_wait in zip(LEARNING_RATE_STEPS, MAX_WAIT_STEPS):
@@ -251,7 +257,13 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
             if min_loss > train_dict['train_loss']:
                 logger.info('Start validation on de train set')
-                train_val_dict, train_metrics_df = model.val_on_loader(train_loader)
+                for image in os.listdir(os.path.join(savedir, "train_images")):
+                    q = os.path.join(savedir, 'train_images', image)
+                    os.remove(q)
+                train_val_dict, train_metrics_df = model.val_on_loader(train_loader,
+                                                                savedir_images=os.path.join(
+                                                                    savedir, "train_images"),
+                                                                n_images=10)
                 score_dict['train_score'] = train_val_dict['train_score']
                 score_dict["train_weighted_dice"] = train_val_dict["train_weighted_dice"]
                 score_dict["train_dice"] = train_val_dict["train_dice"]
@@ -274,8 +286,11 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
 
 
             # Validate the model
+            for image in os.listdir(os.path.join(savedir, "val_images")):
+                q = os.path.join(savedir, 'val_images', image)
+                os.remove(q)
             logger.info('Start validation on de cross validation set')
-            val_dict, val_metrics_df = model.val_on_loader(val_loader,savedir_images=os.path.join(savedir, "images"), n_images=3)
+            val_dict, val_metrics_df = model.val_on_loader(val_loader,savedir_images=os.path.join(savedir, "val_images"), n_images=10)
             val_metrics_df.to_csv(os.path.join(savedir, 'val_metrics_df.csv'))
             score_dict["val_score"] = val_dict["val_score"]
             score_dict["val_weighted_dice"] = val_dict["val_weighted_dice"]
@@ -288,6 +303,9 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                 hu.torch_save(model_path, model.get_state_dict())
                 logger.info("Checkpoint Saved: %s" % savedir)
                 if (e == exp_dict['max_epoch'] - 1) or (e % 10 == 0):
+                    for image in os.listdir(os.path.join(savedir, "images")):
+                        q = os.path.join(savedir, 'images', image)
+                        os.remove(q)
                     test_dict, test_metrics_df = model.val_on_loader(test_loader,
                                                                     savedir_images=os.path.join(
                                                                         savedir, "images"),

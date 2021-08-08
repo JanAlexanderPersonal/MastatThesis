@@ -235,13 +235,14 @@ class SpineSets(torch.utils.data.Dataset):
 
         # Calculate the amount of annotation points in each slice
 
-        self.selected_image_df['bg_annotation_points'] = self.selected_image_df.tgt.apply(
-            lambda filename : sum((np.load(filename.replace('.npy', '_points.npy')).astype('uint8') == 0))
-        )
+        self.selected_image_df = pd.concat([self.selected_image_df  , self.selected_image_df.tgt.apply(
+            lambda filename : np.sum((np.load(filename.replace('.npy', '_points.npy')).astype('uint8') == 0))
+        ).rename('bg_annotation_points')], axis=1)
+
         for i in range(1,6):
-            self.selected_image_df[f'class_{i}_annotation_points'] = self.selected_image_df.tgt.apply(
-            lambda filename : sum((np.load(filename.replace('.npy', '_points.npy')).astype('uint8') == i))
-        )
+            self.selected_image_df = pd.concat([self.selected_image_df  , self.selected_image_df.tgt.apply(
+                lambda filename : np.sum((np.load(filename.replace('.npy', '_points.npy')).astype('uint8') == i))
+            ).rename(f'class_{i}_annotation_points')], axis=1)
 
         if precalculated_points:
             logging.info(f'Before removing the slices without annotation, the selected image dataframe has {self.selected_image_df.shape[0]} rows.')
@@ -302,7 +303,7 @@ class SpineSets(torch.utils.data.Dataset):
                 transforms.Lambda(lambda crops: crops[crop_nr]),
                 transforms.Resize(
                     (self.size, self.size), interpolation=PIL.Image.NEAREST)])
-        logger.debug(f'defined transformation : {transf}')
+        # logger.debug(f'defined transformation : {transf}')
         return transf(image)
 
         
@@ -464,14 +465,19 @@ class SpineSets(torch.utils.data.Dataset):
                 blob_points=self.blob_points,center=False)
         else:
             # Get the pre-defined points and crop this image with the right crop nr
-            points = self.img_tgt_transform(Image.fromarray(np.load(tgt_name.replace('.npy', '_points.npy').astype('uint8'))), crop_nr=crop_nr, normalize = False)
+            predefined_points = np.load(tgt_name.replace('.npy', '_points.npy')).astype('uint8')
+            logging.debug(f'The predefined point annotations were retrieved : shape {predefined_points.shape} and {np.unique(predefined_points, return_counts=True)}')
+            points = np.asarray(self.img_tgt_transform(Image.fromarray(predefined_points), crop_nr=crop_nr, normalize = False))
+            logging.debug(f'The predefined point annotations were cropped : shape {points.shape} and {np.unique(points, return_counts=True)}')
+            if self.n_classes == 2:
+                points[np.isin(points,[1,2,3,4,5])] = 1
 
         logger.debug(f'shapes:')
         logger.debug(
             f'image : {image.shape} with value range {image.min()} to {image.max()}')
         logger.debug(
             f'mask : {mask.long()[None].shape} with value range {mask.min()} to {mask.max()}')
-        logger.debug(f'points : {torch.LongTensor(points).shape}')
+        logger.debug(f'points : {torch.LongTensor(points).shape} and unique values {np.unique(points, return_counts=True)}')
 
         # Together with the image, the metadata is transferred
 
