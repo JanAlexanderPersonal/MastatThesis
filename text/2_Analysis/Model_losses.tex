@@ -1,4 +1,4 @@
-\section{Loss functions}
+\section{Loss functions\label{sec:LossFunctions}}
 
 Construction a machine learning model requires evaluating the model, comparing the result of this evaluation with a desired output and taking steps to make the observed output resemble the desired output better.
 In other words, to train a model, the optimizer will minimize the loss function.
@@ -59,6 +59,7 @@ To compare the network output with the labels, first, the (weighted) cross entro
 
 \begin{equation}
 \mathcal{L}_P(X_i) = -\sum_{\vec{p} \in \mathcal{I}_i} w_{\mathcal{Y}_i(\vec{p})}.\log\left[\sigma_{\mathcal{Y}_i(\vec{p})}\left(\vec{z_i(\vec{p})}\right)\right]
+\label{eq:LP}
 \end{equation}
 
 This loss function is minimized when the network output $z_i(\vec{p})[k]$ with $k=\mathcal{Y}_i(\vec{p})$ the class label for $\vec{p}$ is maximal while the other logits for this position are minimal.
