@@ -1,6 +1,7 @@
 \chapter{Artificial intelligence \& Machine Learning\label{sec:ai_and_ml}}
 \par{
-    Machine learning is a branch of \Gls{ai}. 
+    Machine learning is a branch of \Gls{ai}, The study of using computers to automatically perform tasks which once were considered only humans could
+    do. This includes, but is not restricted to, interpretation of speech and images. 
     The field of \Gls{machinevision} is a branch of machine learning.
     Some impressive steps forward have been made in the past decade, mainly thanks to the emergence of \Gls{deepl}.
 }
@@ -35,23 +36,80 @@
 }
 
 \subsection{Neural Networks}
-\todo[inline]{Illustration}
+\subsubsection{General neural network architecture}
+
+\begin{SCfigure}[][h!]
+    \centering
+    \input{images/NeuralNetwork_concept.tex}
+    \caption{
+        Concept of an Artificial (feed-forward) Neural Network. 
+        The illustrated network has 4 layers: the input layer, two hidden layers and the output layer.
+        The hidden layers first perform a feature extraction transformation on the input data.
+        Based on these features, the ouput layer can generate the model result.
+        This simple network illustrates different characteristics of neural networks: 
+        First, this concept is flexible.
+        Architectures with more than two hidden layers are common. 
+        The number of neurons in the hidden layers is another degree of flexibility. 
+        Second, a neural network has a high number of parameters. This small network consists of $n\times m + m \times t + t \times k$ weights $w$ and the activation functions in each layer.
+        The concept of a \acrfull{cnn} is to reduce the number of weights in certain layers by imposing these to represent a single convolution filter.
+        \label{fig:ann}
+        }
+\end{SCfigure}
+
 \par{
     An \acrshort{ann} is a collection of connected nodes, or \textit{neurons}. 
-    These are typically structured in layers. 
+    These are typically structured in layers, such as in figure \ref{fig:ann}. 
     There is always an \textit{input} layer and an \textit{output} layer. Between these two, one can find the \textit{hidden} layers\footnote{When there is at least one hidden layer, one talks about a deep network. In practice, \acrshort{cnn}s have multiple hidden layers.}.
     To calculate a node value, the incoming node values are weighted by the connection weights and the result of this linear combination is transformed by an activation function\footnote{
         $\vec{x}$ : values of the nodes connected to node $j$\\
         $\vec{w}$ : connection weights\\
-        $\sigma(.)$ : activation function
+        $\sigma(.)$ : activation function (e.g. ReLu, tanh, ...)
     }:
     \begin{eqnarray}
         z_j(\vec{x} | \vec{w}) &=& \frac{\vec{w}^T\vec{x}}{\sum w_k} \\
         y_j(\vec{x} | \vec{w}) &=& \sigma(z_j)
     \end{eqnarray}
 }
+\par{
+    The parameters defining the architecture of the network, such as the number of hidden layers, the number of nodes per layer and the design of possible convolution layers are called the model \textit{hyperparameters}.
+}
 
-\todo[inline]{Short and to-the-point introduction of convolution neural networks}
+\subsubsection{Convolution neural network}
+
+\acrshort{ann} models can be trained to perform numerous different tasks due to the high number of degrees of freedom in the model.
+However, this high number of degrees of freedom also entails problems and risks:
+
+\begin{itemize}
+    \item The model weights have to be stored in computer memory. 
+    This is limited and restricts how deep\footnote{The depth of a network is the number of hidden layers.} a network can be build.
+    A deeper network can be beneficial because it is capable of extracting more high level features by combining the lower level features in the preceding layers. 
+    \item An over-parametrized network is very prone to overfitting on the train set. 
+    An overfitted model has not learned the generalizing relationship between the input and the labels but rather the quircks of the specific train set used.
+    \item There are some more technical problems, such as \textit{vanishing gradients} that are associated with naively copying the network shown in figure \ref{fig:ann}. 
+\end{itemize}
+\begin{SCfigure}[][h!]
+    \centering
+    \includegraphics[width=10cm]{/home/thesis/images/LeNet_architecture.png}
+    \caption{
+        Illustration of LeNet architecture, a famous \Gls{cnn} architecture.
+        Image taken from the famous paper \texttt{Gradient-Based Learning Applied to Document Recognition} by Yann LeCun, Léon Battou, Yoshua Bengio and Patrick Haffner.
+        }
+\end{SCfigure}
+
+The convolution layer is a proven technique to reduce the problems mentioned above\footnote{
+    An in-depth discussion of neural network theory is outside of the scope of this book.
+    This text aims to reiterate key concepts the reader is assumed to have some prior familiarity with.
+    For readers who are not satisfied with the level of detail provided here, there are several valuable sources available.
+    Books such as \texttt{Hands-on Machine Learning with Scikit-Learn, Keras \& Tensorflow} by Aurélien Géron or \texttt{Deep Learning with PyTorch} by Eli Stevens, Luca Antiga and Thomas Viehmann offer sound insights and explanations.
+}.
+The convolution layer is suitable for data with a grid-like structure, such as images or volumes.
+The structure of the data allows a high level of weight-sharing. 
+Neurons in a convolution layer are not connected to all nodes of the previous layer, instead, each has a limited receptive field.
+
+
+
+
+\subsubsection{Training a neural network}
 \par{
     Constructing a network requires evaluating it, comparing the evaluation output to a known desired output, and taking steps to bring the model output closer to the desired output. 
     The procedure used to fit the weights of a neural network to the 
