@@ -1,7 +1,7 @@
 % This file was created by tikzplotlib v0.9.8.
 \begin{tikzpicture}
 
-\begin{groupplot}[group style={group size=4 by 1}]
+\begin{groupplot}[group style={group size=5 by 1}]
 \nextgroupplot[
 axis line style={white!15!black},
 height=5cm,
@@ -11,10 +11,10 @@ width=9cm,
 x grid style={white!80!black},
 xlabel={Gender},
 xmajorticks=false,
-xmin=-0.5, xmax=1.5,
+xmin=-0.5, xmax=2.5,
 xtick style={color=white!15!black},
-xtick={0,1},
-xticklabels={F,M},
+xtick={0,1,2},
+xticklabels={F,M,Unknown},
 y grid style={white!80!black},
 ylabel={Age},
 ymajorticks=false,
@@ -100,10 +100,10 @@ width=9cm,
 x grid style={white!80!black},
 xlabel={Gender},
 xmajorticks=false,
-xmin=-0.5, xmax=1.5,
+xmin=-0.5, xmax=2.5,
 xtick style={color=white!15!black},
-xtick={0,1},
-xticklabels={F,M},
+xtick={0,1,2},
+xticklabels={F,M,Unknown},
 y grid style={white!80!black},
 ymajorticks=false,
 ymin=11.05, ymax=97.95,
@@ -185,10 +185,10 @@ width=9cm,
 x grid style={white!80!black},
 xlabel={Gender},
 xmajorticks=false,
-xmin=-0.5, xmax=1.5,
+xmin=-0.5, xmax=2.5,
 xtick style={color=white!15!black},
-xtick={0,1},
-xticklabels={F,M},
+xtick={0,1,2},
+xticklabels={F,M,Unknown},
 y grid style={white!80!black},
 ymajorticks=false,
 ymin=11.05, ymax=97.95,
@@ -198,8 +198,8 @@ yticklabels={}
 \path [draw=white!30.1960784313725!black, fill=white!50.1960784313725!black, semithick]
 (axis cs:-0.4,32.25)
 --(axis cs:0.4,32.25)
---(axis cs:0.4,62)
---(axis cs:-0.4,62)
+--(axis cs:0.4,62.839151266256)
+--(axis cs:-0.4,62.839151266256)
 --(axis cs:-0.4,32.25)
 --cycle;
 \path [draw=white!30.1960784313725!black, fill=white!82.7450980392157!black, semithick]
@@ -216,8 +216,8 @@ table {%
 };
 \addplot [semithick, white!30.1960784313725!black]
 table {%
-0 62
-0 77
+0 62.839151266256
+0 77.6673511293635
 };
 \addplot [semithick, white!30.1960784313725!black]
 table {%
@@ -226,8 +226,8 @@ table {%
 };
 \addplot [semithick, white!30.1960784313725!black]
 table {%
--0.2 77
-0.2 77
+-0.2 77.6673511293635
+0.2 77.6673511293635
 };
 \addplot [semithick, white!30.1960784313725!black]
 table {%
@@ -251,14 +251,35 @@ table {%
 };
 \addplot [semithick, white!30.1960784313725!black]
 table {%
--0.4 58
-0.4 58
+-0.4 58.4969199178645
+0.4 58.4969199178645
 };
 \addplot [semithick, white!30.1960784313725!black]
 table {%
 0.6 31
 1.4 31
 };
+
+\nextgroupplot[
+axis line style={white!15!black},
+height=5cm,
+scaled y ticks=manual:{}{\pgfmathparse{#1}},
+tick align=outside,
+title={Dataset = PLoS},
+width=9cm,
+x grid style={white!80!black},
+xlabel={Gender},
+xmajorticks=false,
+xmin=-0.5, xmax=2.5,
+xtick style={color=white!15!black},
+xtick={0,1,2},
+xticklabels={F,M,Unknown},
+y grid style={white!80!black},
+ymajorticks=false,
+ymin=11.05, ymax=97.95,
+ytick style={color=white!15!black},
+yticklabels={}
+]
 
 \nextgroupplot[
 axis line style={white!15!black},
@@ -278,10 +299,10 @@ width=9cm,
 x grid style={white!80!black},
 xlabel={Gender},
 xmajorticks=false,
-xmin=-0.5, xmax=1.5,
+xmin=-0.5, xmax=2.5,
 xtick style={color=white!15!black},
-xtick={0,1},
-xticklabels={F,M},
+xtick={0,1,2},
+xticklabels={F,M,Unknown},
 y grid style={white!80!black},
 ymajorticks=false,
 ymin=11.05, ymax=97.95,

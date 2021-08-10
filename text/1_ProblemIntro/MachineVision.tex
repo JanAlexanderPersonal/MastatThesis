@@ -91,21 +91,37 @@ However, this high number of degrees of freedom also entails problems and risks:
     \centering
     \includegraphics[width=10cm]{/home/thesis/images/LeNet_architecture.png}
     \caption{
-        Illustration of LeNet architecture, a famous \Gls{cnn} architecture.
-        Image taken from the famous paper \texttt{Gradient-Based Learning Applied to Document Recognition} by Yann LeCun, Léon Battou, Yoshua Bengio and Patrick Haffner.
+        Illustration of LeNet, a famous \Gls{cnn} architecture.
+        Image taken from the famous paper \texttt{Gradient-Based Learning Applied to Document Recognition} by Yann LeCun, Léon Battou, Yoshua Bengio and Patrick Haffner. \label{fig:LeNet}
         }
 \end{SCfigure}
-
-The convolution layer is a proven technique to reduce the problems mentioned above\footnote{
-    An in-depth discussion of neural network theory is outside of the scope of this book.
-    This text aims to reiterate key concepts the reader is assumed to have some prior familiarity with.
-    For readers who are not satisfied with the level of detail provided here, there are several valuable sources available.
-    Books such as \texttt{Hands-on Machine Learning with Scikit-Learn, Keras \& Tensorflow} by Aurélien Géron or \texttt{Deep Learning with PyTorch} by Eli Stevens, Luca Antiga and Thomas Viehmann offer sound insights and explanations.
-}.
-The convolution layer is suitable for data with a grid-like structure, such as images or volumes.
-The structure of the data allows a high level of weight-sharing. 
-Neurons in a convolution layer are not connected to all nodes of the previous layer, instead, each has a limited receptive field.
-
+\par{
+    The convolution layer is a proven technique to reduce the problems mentioned above\footnote{
+        An in-depth discussion of neural network theory is outside of the scope of this book.
+        This text aims to reiterate key concepts the reader is assumed to have some prior familiarity with.
+        For readers who are not satisfied with the level of detail provided here, there are several valuable sources available.
+        Books such as \texttt{Hands-on Machine Learning with Scikit-Learn, Keras \& Tensorflow} by Aurélien Géron or \texttt{Deep Learning with PyTorch} by Eli Stevens, Luca Antiga and Thomas Viehmann offer sound insights and explanations.
+    }.
+    The convolution layer is suitable for data with a grid-like structure, such as images or volumes.
+    The structure of the data allows a high level of weight-sharing. 
+    Neurons in a convolution layer are not connected to all nodes of the previous layer, instead, each has a limited receptive field.
+    Regardless of the size of the image, a convolution layer with a $5\times 5$ convolution \textit{kernel} only has 25 weights.
+}
+\par{
+    In figure \ref{fig:LeNet} this idea is illustrated. 
+    The nodes of the feature maps in stack $C1$ are all constructed based on a small part of the input image.
+    Convolution layer $C1$ has different channels. 
+    This means that 6 different basic features can be extracted by this layer, e.g. horizontal lines, vertical lines and right or left slanted lines\footnote{
+        These filter kernels are trained on the train data by the backpropagation algorithm, the mentioned features are possible, but will not be imposed by the engineer.
+        In the training proces, they just \textit{could} show up. 
+        }.
+    By stacking different convolution layers, the network can learn higher level features by combination of the lower level features.
+}
+\par{
+    Often, a convolution layer is followed by a \textit{pooling} layer. 
+    This is a dimension reduction step.
+    This layer converts pixel rectangles (e.g. $2\times 2$) to a single pixel by taking the maximum or sometimes the average of the pixel values.
+}
 
 
 
@@ -115,6 +131,18 @@ Neurons in a convolution layer are not connected to all nodes of the previous la
     The procedure used to fit the weights of a neural network to the 
     A network is fitted to the \textit{train set} by the optimization algorithm, based on the \textbf{loss}.
     The \acrshort{ml} engineer wants to judge the performance of the model based on one or several \textbf{metrics}, calculated on the \textit{train set}, the \textit{cross-validation set} and eventually on the \textit{test set}.
+}
+\par{
+    The evaluation on the test set, separated from the train set on which the model is fitted, is done in order to provide the best possible estimation of the model performance on unseen data.
+    When training a model, the objective is to obtain a model which generalizes well to future problems\footnote{
+        Provided these future problems are samples from the same population as the train set.
+    }. One wants the model to learn the general relationship between the input data and the output.
+    A model which is capable to produce the ouputs for the specific set it is trained on but is not capable of doing this for new data is \textit{overtrained}.
+    It has learned the specific quircks of the train set rather than the generalizing relationship\footnote{
+        It is also possible that the new data is sampled from a different population than the train data.
+        In this case, the model might have learned the desired relationship for the original population, but this relationship turns out to be different for the population in practice.
+        }.
+    To avoid this, or at least identify the problem, the evaluation on the test set is necessary.
 }
 
 \subsection{Artificial intelligence for healthcare applications}
@@ -130,18 +158,23 @@ Neurons in a convolution layer are not connected to all nodes of the previous la
     Measuring blood pressure is time-consuming and disturbing for the patient however. 
     the \acrshort{ppg} signal is relatively easy to measure. This only requires a watch-size sensor\footnote{Several commercial sports watches already use a \acrshort{ppg} sensor to measure the athletes hear rate.} 
     around the wrist, that can be worn continuously.
-    Infering the blood pressure from such a \acrshort{ppg} signal allows the healthcare worker to access valuable information continuously, cheaper and without inconvenience for the patient.
-    \todo[inline]{references + ppg watch image}
+    Infering the blood pressure from such a \acrshort{ppg} signal\cite{Khalid2018} allows the healthcare worker to access valuable information continuously, cheaper and without much inconvenience for the patient.
 }
+\marginpar{
+        \includegraphics[width=5cm]{/home/thesis/images/ppg_verhaert.jpg}
+        \captionof{figure}{Illustration of a ppg sensor, typically worn around the wrist. 
+        Apart from the heart rate measurement, this signal can be used to estimate the patients blood pressure without much effort from the medical staff or inconvenience for the patient. 
+        Image provided by \textit{Verhaert NP\&S}}
+        \label{fig:xVertSeg_Age}
+    }
 \par{
     Different researchers investigate \Gls{machinevision} applications for medical applications. 
-    Research on image classification for medical diagnosis is conducted among others for melanoma (skin cancer) diagnosis on camera (\acrshort{rgb}) images [xxx] 
-    and for breast cancer diagnosis on mammographic\footnote{A mammography is an X-ray scan of the human breast.} scans [xxx].
+    Research on image classification for medical diagnosis is conducted among others for melanoma (skin cancer) diagnosis on camera (\acrshort{rgb}) images \cite{Vocaturo2019}.
 }
 \section{Machine vision}
 \par{
     \Gls{machinevision} is the branch of \Gls{ai} focussed on image processing.
-    The machine vision task performed in this work is called instance \Gls{segmentation}.
+    The machine vision task performed in this work is called (instance) \Gls{segmentation}.
     This chapter explains what this means. 
     The segmentation task is compared to other machine vision tasks.
 }
@@ -156,11 +189,11 @@ Neurons in a convolution layer are not connected to all nodes of the previous la
     Depending on the question asked ad inference time, one can distinguish the following tasks, which are also illustrated in figure \ref{fig:machinevisiontasks}.
 }
 \begin{description}
-    \item[Image classification] is the task of determining what object category\footnote{A slightly more advanced task is to be able to destinguish several classes in one image.} is present in the image. Is there a cat in this image?
-    \item[Object counting] is the task of counting how many instances of each category are in the image. How many cats are there in this picture? 
-    \item[Object detection] consists not only of identification of the object. Also, the spatial position is requested, for example in the form of a bounding box. Where is the cat in this picture if a cat is present?
+    \item[Image classification] is the task of determining what object category\footnote{A slightly more advanced task is to be able to destinguish several classes in one image.} is present in the image, e.g. \textit{Is there a sheep in this image?}
+    \item[Object counting] is the task of counting how many instances of each category are in the image, e.g. \textit{How many sheep are there in this picture?} 
+    \item[Object detection] consists not only of identification of the object. Also, the spatial position is requested, for example in the form of a bounding box. \textit{Where is the sheep in this picture if a sheep is present?}
     \item[Semantic segmentation] requires a class estimation for each image pixel. Pixels that do not belong to a specific class are called the \textit{background}.
-    \item[Instance segmentation] requires not only that the semantic class is determined for each pixel, but also that two individuals of the same class\footnote{For each pixel, the model predicts not only if it belongs to a cat, but also which of several possible cats it belongs to.} are distinguished.   
+    \item[Instance segmentation] requires not only that the semantic class is determined for each pixel, but also that two individuals of the same class\footnote{For each pixel, the model predicts not only if it belongs to a sheep, but also which of several possible sheep it belongs to.} are distinguished.   
 \end{description}
 \par{
     The different machine vision tasks above are ranked in order of how informative the model output is.
@@ -177,12 +210,6 @@ Neurons in a convolution layer are not connected to all nodes of the previous la
 \end{SCfigure}
 
 
-\subsection{The convolution layer}
-
-The building block of virtually every modern machine vision network, including the ones in this thesis, is the convolution layer.
-
-\todo[inline]{weight sharing, feature extraction}
-
 \subsection{Data for training machine vision models}
 \par{
     To perform the tasks discussed in chapter \ref{sec:machinevisiontasks}, one needs to build a suitable model.
@@ -195,18 +222,18 @@ The building block of virtually every modern machine vision network, including t
 \par{
     To build a model to perform the tasks discussed in \ref{sec:machinevisiontasks}, this model needs to be trained.
     This requires a set of \textit{labelled} images.
-    Collection of this dataset - most importantly, the labels - proves to be a challenge. 
+    Collection of this dataset - and the dataset labels - proves to be a challenge. 
     Training a model with \textit{weak labels} compared to \textit{strong labels} could help to mitigate the labelling cost problem.
 }
 \par{
     In the classic approach, the supervision type closely resembles the intended model output.
     To train a model that can classify an image\footnote{Given an image, the model outputs if this picture is a representation of class \textit{cat}, \textit{dog} or another animal or object. }, 
     one has to \textit{train} the model on a set of labelled images where a human indicated the class.
-    To train a model to perform image segmentation\footnote{segmentation means that the model classifies each pixel.}, an expert needs to provide a set of images in which each picture, the objects are delineated.  
+    To train a model to perform image segmentation\footnote{segmentation means that the model classifies each pixel.}, an expert needs to provide a set of images where for each picture, the objects are delineated.  
 }
 \par{
-    In the classic approach, the data labels closely resemble the output sought to obtain from the model.
-    The idea behind \Gls{weaklysupervisedl} is to train a model with cheaper annotations that contain less information than the desired model output, making use of the latent information available in the labels without explicitly indication.
+    The idea behind \Gls{weaklysupervisedl} is to train a model with cheaper annotations that contain less information than the desired model output, 
+    making use of the latent information available in the labels without explicitly indication.
     Figure \ref{fig:ImageLabelTypes} illustrates several types of image supervision : 
     From left to right on the top row, this shows point supervision and squiggle annotation, common annotation types for weak supervision.
     On the second row, bounding box annotation and complete mask annotation are illustrated.
@@ -227,12 +254,7 @@ The building block of virtually every modern machine vision network, including t
 \par{
     The objective of \Gls{weaklysupervisedl} is to construct a robust model based on \textit{cheap} (incomplete, noisy or imprecise) labels, sometimes described as \textit{indirect supervision}.
     Numerous creative approaches have been conceived.
-    Since the provided annotations in \Gls{weaklysupervisedl} are not full labels, these are sometimes described as \textit{hints} instead
-    %\footnote{
-    %    This is based on the insightfull talk at \url{ 
-    %        https://youtu.be/4EjYxVVCAaE
-    %    }. For example, the destinction between labels and hints.
-    %}.
+    Since the provided annotations in \Gls{weaklysupervisedl} are not full labels, these are sometimes described as \textit{hints} instead \cite{ECCV2020}.
     The basic concept of \Gls{weaklysupervisedl} is that there are two sources of information to draw from: The hints and the prior knowledge about the problem (Priors).
     These \textit{Priors} can be any form of prior knowledge about the object to be segmented\footnote{or any other machine vision task.}.
     Priors can be the object size, shape or location, the number of instances, the similarity across images or the similarity with external images.
@@ -243,14 +265,13 @@ The building block of virtually every modern machine vision network, including t
     Making a model predict bounding boxes from a dataset annotated with bounding boxes means considering these as \textit{strong labels}. 
     If one uses the same dataset to construct a model that predicts pixel-wise masks, the labels are \textit{weak labels} or \textit{hints}.
 }
-
-
 For a segmentation task, weak labels can be:
 \begin{description}
     \item[Image level labels]: In this case, only the object class of the object in the image is provided. 
     This would be a full label for a classification task, but it is a weak label for a segmentation task\footnote{Image with image level annotation can, for some problems, be obtained in large numbers by web-scraping.}.
     \item[Point annotation]: This annotation technique, the subject of this work, consists of asking the expert to indicate the classes with one or several points. This technique is used in \cite{Laradji2020, Laradji2018, McEver2020}.
-    In \cite{Mainis}, instead of \textit{random} point annotation, the author makes use of \textit{extreme} point annotation.  
+    In \cite{Mainis}, instead of \textit{random} point annotation, the author makes use of \textit{extreme} point annotation. This work chooses to investigate random point annotation.
+    This is believed to approximate the fastest and most natural action of simply pointing at an object best.
     \item[Squiggles]: This annotation technique is related to the point annotation technique. Instead of points, the expert is asked to indicate the classes with a squiggly line.
     \item[Bounding boxes]: A bounding box (a rectangle circumscribing the object) is a less precise form of object localization than pixel-wise segmentation.
     \item[Image description]: This task combines the problem of \acrlong{nlp} with the problem of image segmentation. The annotation of the image is derived from verbal or written description of the image. 
