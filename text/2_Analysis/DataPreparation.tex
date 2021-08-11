@@ -75,6 +75,7 @@ the following parameterset was chosen:
     \item[clip limit:] $9.10^{-3}$. This parameter suppresses noise in the most dark regions (which contain least information).
 \end{description}
 
+\newpage
 \section{Train, validation and test split considerations\label{sec:trainValTestSplit}}
 
 To allow evaluation of the models produced, a test set is split from the development set.
@@ -91,4 +92,73 @@ This is done\footnote{
     \item[Grouped data:] The scans of the same patient can be assumed to be correlated to eachother. These scans should not be spread over different splits. The data is split at patient level.
 \end{description}
 
-\todo{Table with split}
+For each datasource, the intended split is $\frac{4}{6}$ for train set, $\frac{1}{6}$ for cross validation set and $\frac{1}{6}$ for test set.
+This distribution is not perfect, but acceptable, as is indicated by the values in table \ref{tab:summary_split}.
+
+\begin{SCtable}[\sidecaptionrelwidth][h]
+ 
+    \input{tables/summary_split.tex}
+    \caption{Number of volumes by datasource and by split.\label{tab:summary_split}}
+  
+  \end{SCtable}
+
+The result of this operation is detailed in appendix \ref{sec:appendix_split} on page \pageref{sec:appendix_split}.
+
+\section{Cropping}
+
+The networks used require input images of size $352 p \times 352 p$, which corresponds to $352 mm \times 352 mm$.
+The image slices have different dimensions.
+The incomming images are cropped or padded, depending wether the image dimension is smaller or larger than the crop window.
+
+When the image is cropped, one of 5 crops is selected, see figure \ref{fig:crop}:
+\begin{description}
+    \item[crop 0:] Crop from the top left corner of the image.
+    \item[crop 1:] Crop from the top right corner of the image.
+    \item[crop 2:] Crop from the bottom left corner of the image.
+    \item[crop 3:] Crop from the bottom right corner of the image.
+    \item[crop 4:] Center crop of the image.  
+\end{description}
+
+Not all slices are sufficiently large to produce 5 different crops. This is illustrated in figure \ref{fig:smallcrop}. In this case, one of the slice dimensions has to be padded (symmetrically) to obtain an image of the desired dimensions.
+
+When a slice is fetched from the train set, a random crop is selected from these 5.
+This adds an extra level of variance to the training data. This avoids for example that the network learns that the spine is always at the same location in the images.
+
+For the slices sourced from the cross validation and train set however, reproducability is important.
+For each slice, the crop number is fixed.
+This way, the cross validation metric, evaluated to avoid over fitting is always calculated on the same images.
+
+When reconstructing the volumes, in the second step of the model concept (see chapter \ref{sec:model_concept}), 
+all different crops are evaluated in the model and the responses for these crops are joined by averaging the model responses in the overlap regions.
+
+\begin{SCfigure}[][htb]
+    \centering
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/slice017.png}
+    \end{minipage} 
+    \begin{minipage}{0.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/cropping_slice017.png}
+    \end{minipage}
+    \caption{
+        Illustration of image cropping where the image is larger than the crop window dimensions. The original size of the image is $443 \times 443$ and the crop window used has dimensions $352 \times 352$.
+        Crop 0 to 4 are 5 different images, but have a considerable overlap. \label{fig:crop}
+        }
+    
+\end{SCfigure}
+
+\begin{SCfigure}[][htb]
+    \centering
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/slice202.png}
+    \end{minipage} 
+    \begin{minipage}{0.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/cropping_slice202.png}
+    \end{minipage}
+    \caption{
+        Illustration of image cropping where the image is larger than the crop window dimensions.
+        The original size of the image is $291 \times 424$ and the crop window used has dimensions $352 \times 352$.
+        Crop 0 to 4 are not all different images. Since the image height is lower than the crop window height, this dimension is padded, not cropped.
+        This results in crop 0 being equal to crop 2 and crop 1 being equal to crop 3. \label{fig:smallcrop}
+        }
+    
+\end{SCfigure}
