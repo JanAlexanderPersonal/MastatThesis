@@ -17,19 +17,18 @@
 \section{Machine vision for medical applications}
 
 \par{
-    For segmentation tasks, the U-net \cite{Ronneberger2015} is widely used\footnote{The U-net architecture was developed specifically for biometical applications.}. 
-    This architecture can be represented by a characteristic U-shape (\ref{fig:unet}), as the name indicates.
+    For segmentation tasks, the U-net architecture\cite{Ronneberger2015} is widely used\footnote{The U-net architecture was developed specifically for biometical applications.}. 
+    This architecture can be represented by a characteristic U-shape (see figure \ref{fig:unet}), as the name indicates.
     This architecture is based on a \textit{contracting} resolution path followed by an \textit{expanding} path. 
     The contracting path refers to the resolution reduction in each step. 
     These steps consist of two convolution layers of which the result is used in two ways. 
-    First, the convolution layer result is \textit{down-sampled} (the layer dimension is reduced) with a max-pooling layer \todo{do the convolutions maintain the dimensions?}.
-    In each contracting step, the number of feature channels is increased, allowing the network to propagate context information.
+    First, the convolution layer result is \textit{down-sampled} (the layer dimension is reduced) with a max-pooling layer.
+    In each contracting step, the number of feature channels is increased, allowing the network to propagate context information and produce feature maps with more high level features.
     Second, this convolution layer result is concatenated with the corresponding feature maps in the expanding path.
     These expanding steps consist of inverse convolution layers, expanding the layer dimensions. To some extend, the expanding path is symmetric  to the contracting path, giving the network its U-shape. 
     The connections where the convolution layer results of the contracting path are concatenated to the corresponding layers in the expanding path are called the \textit{skip connections}.
-    Through these connections, the network is able to propagate information efficiently over different resolution levels.
-
-    The 2-dimensional network developed in \ref{Ronneberger2015} was first adapted for three-dimensional problems in \ref{Cicek2016}.
+    Through these connections, the network is able to propagate information efficiently over different resolution levels\footnote{Skip connections have proven efficient tools to decrease problems such as gradient vanishing.}.
+    The 2-dimensional network developed in \cite{Ronneberger2015} was first adapted for three-dimensional problems in \cite{Cicek2016}.
 }
 \begin{SCfigure}[][htb]
     \includegraphics[width=10cm]{/home/thesis/images/UNet_Ronneberger.png}
@@ -39,6 +38,11 @@
     The gray arrows indicate the feature maps in the contracting path are copied and concatenated to the feature maps of the expanding path.}
     \label{fig:unet}
 \end{SCfigure}
+\par{
+    Various segmentation architectures are based on similar ideas: first a high level feature map is created in a contracting path. 
+    This feature maps is sometimes called the image \textit{encoding}. 
+    Subsequently, this feature map is \textit{decoded} in an expanding path to form the segmentation mask. 
+}
 
 
 \subsection{Automated segmentation of the human spine}
@@ -49,11 +53,14 @@
     A parameteric geometrical model of a spine is optimized to fit the scan geometry as good as possible.
     These techniques showed to suffer from difficulties to generalize
     \footnote{Before the general introduction of deep learning, limits to the model's capability to generalize were observed in many different applications.
-    This could be improved with deep learning networks, at the cost of requiring higher data volumes and often higher computation cost.}. 
+    This could be improved with deep learning networks, at the cost of requiring higher data volumes, higher data variability and often higher computation cost.
+    Simply put, the higher number of model degrees of freedom, combined with the ability to work without human encoded features allows a better representation of the complex and variable reality.}. 
     When the scan geometry does not match closely to an ideal spine, for example when a patient has severe scoliosis, this approach runs into problems.
+    Before the general introduction of deep learning networks, techniques such as Viola-Jones detectors were used such as in \cite{Zukic2014}. 
+    A project of which the dataset is discussed on page \pageref{sec:DataUSiegen}.
 }
 \par{
-    Deep learning models were developed for the problem \cite{Sekuboyina2017, Janssens, Chuang2019, Lessmann2018}.
+    Deep learning models were developed for the problem \cite{Sekuboyina2017, Janssens2018, Chuang2019, Lessmann2018}.
     The model in \cite{Sekuboyina2017}\footnote{This model is developed on the xVertSeg dataset, which is one of the datasets used in this work. It is described starting on page \pageref{sec:xVertSeg}.} 
     uses a multi-step approach. First, the \acrfull{roi} (the lumbar region) is selected using a multilayer perceptron evaluated on the respones of a Canny Edge filter.
     This \acrshort{roi} is then sliced (sagittal) and crops ($270mm \times 270mm$\footnote{The article also mentions $27mm \times 27mm$, which seems to be a typo.}) are segmented with a 2D U-net. 
@@ -61,7 +68,7 @@
     In \cite{Janssens2018}, a similar 2 step approach is used. Here, the author chose to use a 3D U-net to evaluate patches from the \acrshort{roi} instead of a 2D U-net.
 }
 \par{
-    An interesting approach to the problem is published in \cite{Lessmann2018, Chuang2019}. 
+    An interesting approach to the problem is published in \cite{Lessmann2018, Chuang2019} by Lessman and Chuang. 
     The approach presented in this work makes used of the available prior anatomical knowledge of the human spine: 
     the vertebrae are located right next to each other and always occur in the same, known order.  
     The basis of the network in \cite{Lessmann2018} is an extended 3D U-Net, combined with an elaborate inference scheme.
@@ -118,7 +125,7 @@
     Researchers devised a varied range of ideas to decrease the labelling cost by leveraging weak labels to infer strong results.
     Chapter \ref{sec:weak_supervision} discribes a number of different annotation types.
 }
-\subsection{Overview of different approaches}
+\subsection{General overview of techniques and approaches}
 \par{
     Given an image-level class label, the \Gls{caml} \todo{reference} allows to identify the picture regions responsible for a classification result \cite{Ahn2018, Ahn2019}
     \footnote{Other so-called \textit{saliency detection} methods exist, for example methods based on partial image occlusion [xxx].}.

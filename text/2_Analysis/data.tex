@@ -11,7 +11,13 @@ This chapter discusses these datasets based on different criteria:
 
 \section{Global dataset overview}
 
-\todo[inline]{Overview of the datasets gathered. MRI / CT, number of images, type of annotation + WHO performed the annotation? Was it a medical doctor or one of the researchers?}
+Table \ref{tab:datasetReference} provides an overview of the 5 datasets sourced for this work.
+This table shows there are important differences between the datasets in imaging mode and dataset size.
+Figure \ref{fig:AllDataset_dims} also indicates the differences in image dimensions and resolutions.
+For more details on the data quantity, please consult chapter \ref{seg:datasetcomparison}. 
+Notably, the fact that some images were taken from the same patient is important to recognize, 
+it means the dataset is grouped. 
+
 
 \begin{SCtable}[\sidecaptionrelwidth][h]
  
@@ -29,11 +35,14 @@ This chapter discusses these datasets based on different criteria:
      \hline
      \hline
     \end{tabular}
-    \caption{List of dataset references. For more details on the data quantity, please consult chapter \ref{seg:datasetcomparison}. 
-    Notably, the fact that some images were taken from the same patient is important to recognize. It means the dataset is grouped. 
+    \caption{List of dataset references. 
     The agreement with prof. T. Vrtovec regarding the xVertSeg dataset can be found in appendix \ref{seg:datasetagreement}.\label{tab:datasetReferences}}
 
 \end{SCtable}
+
+In table \ref{tab:dataOrientation} illustrates the difference in anatomical orientation of the volumes in the different datasets.
+To execute the modelling approach discussed in chapter \ref{sec:model_concept}, all volume orientations were uniformized to assure that for all datasets the volume slices along dimension 0 represent the transverse slices, 
+the slices along dimension 1 represent the frontal slices and the slices along dimension 2 are sagittal plane coupes of the volume.
 
 \begin{SCtable}[\sidecaptionrelwidth][h]
  
@@ -50,10 +59,17 @@ This chapter discusses these datasets based on different criteria:
      \hline
      \hline
     \end{tabular}
-    \caption{List of dataset references. For more details on the data quantity, please consult chapter \ref{seg:datasetcomparison}. 
-    $^\dagger$ The Craniocaudal axis in the PLoS dataset is inverted.}
+    \caption{List of dataset orientations. Clarification of the names of the anatomical axis is given in figure \ref{fig:anatomicalPlains}.
+    The names of the axis, $X$, $Y$ and $Z$ represent the \texttt{numpy} axis \texttt{0}, \texttt{1} and \texttt{2}.
+    $^\dagger$ The Craniocaudal axis in the PLoS dataset is inverted.\label{tab:dataOrientation}}
 
 \end{SCtable}
+
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=10cm]{/home/thesis/images/Anatomical_Planes.png}
+    \caption{Clarification of the anatomical planes\label{fig:anatomicalPlains}}
+  \end{SCfigure}
 
 \begin{SCfigure}[][htb]
     \centering
@@ -63,17 +79,23 @@ This chapter discusses these datasets based on different criteria:
     \begin{minipage}{0.45\textwidth}
         \includegraphics[width=.98\textwidth]{automated_graphs/AllDataset_SpacingBoxplot.png}
     \end{minipage}
-    \caption{Boxplots comparing the scan dimensions and initial resolution of the different datasets.}
-    \label{fig:AllDataset_dims}
+    \caption{Boxplots comparing the scan dimensions and initial resolution of the different datasets.
+    The left column indicates the volume dimensions (in mm) in the different datasets. 
+    The graphs indicate there are important differences between the datasets. Notice that both the USiegen and the MyoSegmenTUM dataset are cropped severely in the left-right direction.
+    The right column represents the vixel spacings in the different volumes of the different datasets.
+    In the preprocessing step all volumes are resampled on a $1mm \times 1mm \times 1mm$ grid, see page \pageref{sec:resampling}. \label{fig:AllDataset_dims} }
+    
 \end{SCfigure}
-
+\FloatBarrier
 \section{Comparison of the different datasets\label{seg:datasetcomparison}}
-
-
 \input{/home/thesis/2_Analysis/data_xVertSeg}
+\FloatBarrier
 \input{/home/thesis/2_Analysis/data_USiegen}
+\FloatBarrier
 \input{/home/thesis/2_Analysis/data_PLoS}
+\FloatBarrier
 \input{/home/thesis/2_Analysis/data_MyoSegmenTUM}
+\FloatBarrier
 \input{/home/thesis/2_Analysis/data_UWSpine}
 
 % Data preparation part

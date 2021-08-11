@@ -2,9 +2,9 @@
 
 
 
-The xVertSeg \cite{Ibragimov2012, xxx} was kindly made available by prof. T. Vrtovec (University of Ljubljana, Faculty of Electrical Engineering, Slovenia), see appendix \ref{seg:datasetagreement} for the agreement.
+The xVertSeg \cite{Ibragimov2014, Korez2015} was kindly made available by prof. T. Vrtovec (University of Ljubljana, Faculty of Electrical Engineering, Slovenia), see appendix \ref{seg:datasetagreement} for the agreement.
 This dataset contains 25 \acrfull{ct} scans of the lumbar spine, of which 15 \acrshort{ct} scans are fully labeled.
-Given the provided data, I can assume these 15 scans were collected from 15 different patients.
+Given the provided metadata\footnote{patient age and gender.}, it is clear these 15 scans were collected from 15 different patients.
 
 For each of these 15 scans, full instance segmenation masks for all 5 lumbar vertebrae are provided. The delineation was performed by a skilled professional.
 
@@ -18,7 +18,7 @@ Apart from vertebrae classified as \textit{normal}, the dataset contains \textit
 
 \subsubsection{Original Objective of the Dataset}
 
-The objective of the \textit{xVertSeg challenge}\footnote{see \url{http://lit.fe.uni-lj.si/xVertSeg/database.php}} (2015) was organized by the University of Ljubljana.
+The dataset was collected for the \textit{xVertSeg challenge}\footnote{see \url{http://lit.fe.uni-lj.si/xVertSeg/database.php}, this challenge was organized by the University of Ljubljana in 2015}.
 Based on the 15 provided scans with corresponding masks, the participans were required to construct a model to make predictions on the test set of 10 unlabelled scans.
 
 The challenge consisted of two tasks:
@@ -45,15 +45,16 @@ A box plot of the age distribution between genders is shown in figure \ref{fig:x
 \subsubsection{Technical information}
 
 The xVertSeg dataset contains 15 \acrshort{ct} annotated scans. 
-This dataset is very interesting due to the high quality and high resolution of the images.
 On figure \ref{fig:xVertSeg_image002}, two slices of the same patient (002) are represented.
 The slices show the complete, uncropped sections of the torso and abdominal region of the patient. 
-There is no \acrshort{roi} cropping.
+There is no \acrshort{roi} cropping in the transverse plain.
+The average left-right axis span of the volumes is 417 mm. Along the anteroposterior direction, this is 421 mm. 
+Along the craniocaudal axis, the volumes are cropped. The average volume extend in this direction is 279 mm.
 
 \begin{SCfigure}[][htb]
     \centering
     \includegraphics[width=.95\textwidth]{automated_graphs/xVertSeg_image002.png}
-    \caption{xVertSeg scan \textit{image002}. \label{fig:xVertSeg_image002}}
+    \caption{xVertSeg scan \textit{image002}. \label{fig:xVertSeg_image002}. In the xVertSeg dataset, the volume left-right axis is not cropped. These images only show part of the sacrum, but multiple thoricic vertebrae are visible.}
 \end{SCfigure}
 
 The distribution of the scan dimensions is shown in figure \ref{fig:AllDataset_dims}. This also illustrates the \textit{xVertSeg} dataset consists of large, high resolution images.

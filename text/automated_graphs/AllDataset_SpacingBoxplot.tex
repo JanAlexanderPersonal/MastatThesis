@@ -5,7 +5,7 @@
 \definecolor{color1}{rgb}{0.76421568627451,0.531862745098039,0.125980392156863}
 \definecolor{color2}{rgb}{0.084313725490196,0.543137254901961,0.416666666666667}
 
-\begin{groupplot}[group style={group size=1 by 4}]
+\begin{groupplot}[group style={group size=1 by 5}]
 \nextgroupplot[
 axis line style={white!15!black},
 height=5cm,
@@ -384,6 +384,121 @@ table {%
 table {%
 1.6 3.99999999999995
 2.4 3.99999999999995
+};
+
+\nextgroupplot[
+axis line style={white!15!black},
+height=5cm,
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+tick align=outside,
+title={Dataset = PLoS},
+width=5cm,
+x grid style={white!80!black},
+xmajorticks=false,
+xmin=-0.5, xmax=2.5,
+xtick style={color=white!15!black},
+xticklabels={},
+y grid style={white!80!black},
+ylabel={spacing [mm]},
+ymajorticks=false,
+ymin=0.0178900930285454, ymax=4.60867190033197,
+ytick style={color=white!15!black}
+]
+\path [draw=white!18.8235294117647!black, fill=color0, semithick]
+(axis cs:-0.4,1.25)
+--(axis cs:0.4,1.25)
+--(axis cs:0.4,1.25)
+--(axis cs:-0.4,1.25)
+--(axis cs:-0.4,1.25)
+--cycle;
+\path [draw=white!18.8235294117647!black, fill=color1, semithick]
+(axis cs:0.6,1.25)
+--(axis cs:1.4,1.25)
+--(axis cs:1.4,1.25)
+--(axis cs:0.6,1.25)
+--(axis cs:0.6,1.25)
+--cycle;
+\path [draw=white!18.8235294117647!black, fill=color2, semithick]
+(axis cs:1.6,1.99999982118607)
+--(axis cs:2.4,1.99999982118607)
+--(axis cs:2.4,2)
+--(axis cs:1.6,2)
+--(axis cs:1.6,1.99999982118607)
+--cycle;
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+0 1.25
+0 1.25
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+0 1.25
+0 1.25
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+-0.2 1.25
+0.2 1.25
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+-0.2 1.25
+0.2 1.25
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+1 1.25
+1 1.25
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+1 1.25
+1 1.25
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+0.8 1.25
+1.2 1.25
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+0.8 1.25
+1.2 1.25
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+2 1.99999982118607
+2 1.99999976158142
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+2 2
+2 2
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+1.8 1.99999976158142
+2.2 1.99999976158142
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+1.8 2
+2.2 2
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+-0.4 1.25
+0.4 1.25
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+0.6 1.25
+1.4 1.25
+};
+\addplot [semithick, white!18.8235294117647!black]
+table {%
+1.6 2
+2.4 2
 };
 
 \nextgroupplot[

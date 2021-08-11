@@ -31,17 +31,17 @@ rm *.toc
 rm *.log
 rm *.fls
 rm *.dvi
-rm *.blg
+# rm *.blg
 rm *.acn
 rm *.alg
 rm *.glg
 rm *.gls
 rm *.ist
 rm *.xdy
-rm *.glo
+# rm *.glo
 rm *.acr
 rm *.fdb_latexmk
-rm *.bbl
+# rm *.bbl
 rm *.aux
 rm *.bcf
 rm *.xml
