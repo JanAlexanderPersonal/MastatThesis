@@ -1,28 +1,28 @@
-[1] Config.pm:302> INFO - This is Biber 2.9
-[1] Config.pm:305> INFO - Logfile is 'main.blg'
-[81] biber:313> INFO - === Wed Aug 11, 2021, 20:32:48
-[126] Biber.pm:371> INFO - Reading 'main.bcf'
-[308] Biber.pm:857> INFO - Found 30 citekeys in bib section 0
-[354] Biber.pm:3981> INFO - Processing section 0
-[391] Biber.pm:4154> INFO - Looking for bibtex format file 'bibreferences.bib' for section 0
-[429] bibtex.pm:1468> INFO - LaTeX decoding ...
-[766] bibtex.pm:1294> INFO - Found BibTeX data source 'bibreferences.bib'
-[782] Utils.pm:169> WARN - Duplicate entry key: 'DasCLuciaMS2017' in file 'bibreferences.bib', skipping ...
-[813] Utils.pm:169> WARN - month field 'jun' in entry 'Laradji2019' is not an integer - this will probably not sort properly.
-[832] Utils.pm:169> WARN - month field 'jun' in entry 'Bearman2015' is not an integer - this will probably not sort properly.
-[943] Utils.pm:169> WARN - month field 'sep' in entry 'SemTorch76:online' is not an integer - this will probably not sort properly.
-[1274] Utils.pm:169> WARN - month field 'apr' in entry 'Lessmann2018' is not an integer - this will probably not sort properly.
-[1330] Utils.pm:169> WARN - month field 'apr' in entry 'Ibragimov2014' is not an integer - this will probably not sort properly.
-[1350] Utils.pm:169> WARN - month field 'aug' in entry 'Korez2015' is not an integer - this will probably not sort properly.
-[1383] Utils.pm:169> WARN - month field 'nov' in entry 'Chu2015' is not an integer - this will probably not sort properly.
-[1531] Utils.pm:169> WARN - I didn't find a database entry for 'Mainis' (section 0)
-[1532] Utils.pm:169> WARN - I didn't find a database entry for 'Ahn2018' (section 0)
-[1532] Utils.pm:169> WARN - I didn't find a database entry for 'Durian2019' (section 0)
-[1532] Utils.pm:169> WARN - I didn't find a database entry for 'Laradji' (section 0)
-[1637] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
-[1637] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
-[1637] Biber.pm:3809> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'en-US'
-[1638] Biber.pm:3815> INFO - No sort tailoring available for locale 'en-US'
-[1737] bbl.pm:617> INFO - Writing 'main.bbl' with encoding 'UTF-8'
-[1778] bbl.pm:720> INFO - Output to main.bbl
-[1778] Biber.pm:110> INFO - WARNINGS: 12
+[0] Config.pm:302> INFO - This is Biber 2.9
+[0] Config.pm:305> INFO - Logfile is 'main.blg'
+[56] biber:313> INFO - === Wed Aug 11, 2021, 20:42:32
+[105] Biber.pm:371> INFO - Reading 'main.bcf'
+[270] Biber.pm:857> INFO - Found 30 citekeys in bib section 0
+[306] Biber.pm:3981> INFO - Processing section 0
+[325] Biber.pm:4154> INFO - Looking for bibtex format file 'bibreferences.bib' for section 0
+[368] bibtex.pm:1468> INFO - LaTeX decoding ...
+[644] bibtex.pm:1294> INFO - Found BibTeX data source 'bibreferences.bib'
+[660] Utils.pm:169> WARN - Duplicate entry key: 'DasCLuciaMS2017' in file 'bibreferences.bib', skipping ...
+[684] Utils.pm:169> WARN - month field 'jun' in entry 'Laradji2019' is not an integer - this will probably not sort properly.
+[700] Utils.pm:169> WARN - month field 'jun' in entry 'Bearman2015' is not an integer - this will probably not sort properly.
+[778] Utils.pm:169> WARN - month field 'sep' in entry 'SemTorch76:online' is not an integer - this will probably not sort properly.
+[997] Utils.pm:169> WARN - month field 'apr' in entry 'Lessmann2018' is not an integer - this will probably not sort properly.
+[1052] Utils.pm:169> WARN - month field 'apr' in entry 'Ibragimov2014' is not an integer - this will probably not sort properly.
+[1073] Utils.pm:169> WARN - month field 'aug' in entry 'Korez2015' is not an integer - this will probably not sort properly.
+[1111] Utils.pm:169> WARN - month field 'nov' in entry 'Chu2015' is not an integer - this will probably not sort properly.
+[1240] Utils.pm:169> WARN - I didn't find a database entry for 'Mainis' (section 0)
+[1240] Utils.pm:169> WARN - I didn't find a database entry for 'Ahn2018' (section 0)
+[1240] Utils.pm:169> WARN - I didn't find a database entry for 'Durian2019' (section 0)
+[1241] Utils.pm:169> WARN - I didn't find a database entry for 'Laradji' (section 0)
+[1334] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'variable = shifted' with 'variable = non-ignorable'
+[1334] UCollate.pm:68> INFO - Overriding locale 'en-US' defaults 'normalization = NFD' with 'normalization = prenormalized'
+[1334] Biber.pm:3809> INFO - Sorting list 'nty/global//global/global' of type 'entry' with template 'nty' and locale 'en-US'
+[1335] Biber.pm:3815> INFO - No sort tailoring available for locale 'en-US'
+[1427] bbl.pm:617> INFO - Writing 'main.bbl' with encoding 'UTF-8'
+[1466] bbl.pm:720> INFO - Output to main.bbl
+[1466] Biber.pm:110> INFO - WARNINGS: 12
