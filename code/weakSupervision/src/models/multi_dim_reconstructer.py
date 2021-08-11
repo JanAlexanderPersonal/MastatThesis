@@ -17,6 +17,7 @@ import tikzplotlib
 from joblib import Parallel, delayed
 
 from src.models.metrics.seg_meter import SegMeter
+from PIL import Image as Img
 
 from pprint import pformat
 
@@ -324,6 +325,9 @@ class multi_dim_reconstructor(object):
             if combined_volume is not None:
                 fig_h += 4
                 rows += 1
+            if volume_scan is not None:
+                fig_h += 4
+                rows += 1
 
             logger.debug(f'figure height {fig_h}cm and rows : {rows}')
 
@@ -356,8 +360,9 @@ class multi_dim_reconstructor(object):
                 i += 1
                 logger.debug(f'Starting image row {i}')
                 for j in range(3):
+                    image = Img.fromarray((np.take(volume_scan, volume_scan.shape[j]//2, axis=j)*255).astype('uint8')).convert('RGB')
                     plt.subplot(rows,3,i*3+j+1)
-                    plt.imshow(np.take(ground_truth, volume_scan.shape[j]//2, axis=j)*51)
+                    plt.imshow(image)
                     plt.title(f'Scan image\nslice along axis {j}')
                         
             plt.suptitle(title)        
@@ -438,11 +443,13 @@ class multi_dim_reconstructor(object):
                 logger.info(f'The optimal iterations for denoising is {BEST_IT_DN} and for erosion is {BEST_IT_ER}')
                 F_optimal_iterations = True
                 for image_name in os.listdir(imagedir):
-                    if not image_name.endswith('.png'):
-                        continue
                     if f'denoise{BEST_IT_DN}_erode{BEST_IT_ER}' in image_name:
                         continue
-                    os.remove(os.path.join(imagedir, image_name))
+                    logger.info(f'Remove path : {os.path.join(imagedir, image_name)}')
+                    try:
+                        os.remove(os.path.join(imagedir, image_name))
+                    except :
+                        os.rmdir(os.path.join(imagedir, image_name))
 
                     
 
@@ -455,8 +462,9 @@ class multi_dim_reconstructor(object):
                 
                 mask_filename = os.path.join(ground_truth_location, f'{source}_masks', f'image{nr}', 'mask_array.npy')
                 ground_truth = np.load(mask_filename)
-                volume_filename = os.path.join(ground_truth_location, f'{source}_images', f'image{nr}', 'volume.npy')
+                volume_filename = os.path.join(ground_truth_location, f'{source}_images', f'image{nr}', 'image_array.npy')
                 volume_scan = np.load(volume_filename)
+                logger.debug(f'Volume scan datatype {volume_scan.dtype}')
                 plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'rawmask_{split}_{source}_{nr}'), ground_truth=ground_truth, volume_scan=volume_scan)
                 
 
