@@ -1,8 +1,9 @@
 
+
 \subsection{UniSiegen dataset\label{sec:DataUSiegen}}
 
 This dataset is made available in 2014 by the University of Siegen, Germany.
-It was constructed by dr. D. Zukic \cite{Zukic2014} as part of his PhD project.
+Dr D. Zukic \cite{Zukic2014} constructed it as part of his PhD project.
 
 \marginpar{
         \input{automated_graphs/USiegen_ageboxplot.tex}
@@ -24,13 +25,13 @@ The average Dice score compared to the manual reference was reported to be 79.3\
 
 \subsubsection{Patient statistics}
 
-In \cite{Zukic2014}, it is not fully made clear which scans are taken from the same patient.
-It is made clear however that the 26 scans were not obtained from 26 patients.
-I inferred the information from the naming of the scans and the provided gender en age information\footnote{
+In \cite{Zukic2014}, it is not entirely made clear which scans are taken from the same patient.
+It is made clear, however that the 26 scans were not obtained from 26 patients.
+The information was inferred from the naming of the scans and the provided gender en age information\footnote{
     Wrongfully assuming two scans come from the same patient does not cause data leakage.
 }.
 
-Figure \ref{fig:USiegen_Age} illustrates that the USiegen dataset contains almost double the amount of female patients compared to male patients.
+Figure \ref{fig:USiegen_Age} illustrates that the USiegen dataset contains almost double the number of female patients compared to male patients.
 These patients are relatively young compared to the patients in the \textit{xVertSeg} dataset.
 
 Only three of the patients in this dataset were categorized as having no spinal pathologies.
@@ -41,8 +42,8 @@ Several \acrlong{mri} techniques were used to obtain the dataset: T1, T2 \& TIRM
 I do not take into account this factor in the model development or the dataset split.
 
 The volumes in the USiegen dataset are strongly cropped. 
-Both in the anteroposterior and the craniocaudal direction the volumes are on average 370 mm.
-In the left-right direction however, the volumes have been cropped severely. The volumes are on average only 68 mm wide.
+Both in the anteroposterior and the craniocaudal direction, the volumes are on average 370 mm.
+In the left-right direction, however, the volumes have been cropped severely. The volumes are, on average, only 68 mm wide.
 The images have been cropped to only include the \acrshort{roi}.
 Along this left-right dimension, the voxel spacing is large. 
 

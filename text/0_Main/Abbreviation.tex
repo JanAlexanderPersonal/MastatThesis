@@ -3,19 +3,19 @@
 {
         name={Weakly Supervised},
         description={Weakly supervised machine learning where the ground truth labels are only partially available. 
-        In the context of image segmentation, this can mean that the labels are only provided at image level or that point level annotation in the image is provided.
-        The model is trained on incomplete, noisy or limited labels, the desired result remains the complete segmentation of the image.
+        In image segmentation, this can mean that the labels are only provided at the image level or that the image's point-level annotation is provided.
+        The model is trained on incomplete, noisy or limited labels. The desired result remains the complete segmentation of the image.
         Just like in the case of \textit{Fully Supervised Learning} the objective is to model the relationship between an \textit{input} and an \textit{output}. 
-        Due to the labels being incomplete, there is a stronger need to identify the internal structure of the data, as is the case for \textit{Unsupervised learning}.
+        Due to the labels being incomplete, there is a more substantial need to identify the internal structure of the data, as is the case for \textit{Unsupervised learning}.
         }
 }
 
 \newglossaryentry{segmentation}{
         name={Segmentation},
         description={
-                The \textit{segmentation} problem in machine vision consists of the classification of each individual pixel or voxel. 
-                The problem of \textit{semantic} segmentation is to detect, for each pixel, the object category it belongs to. 
-                \textit{Instance} segmentation digs deeper. It identifies for each pixel the object instance it belongs to.
+                The \textit{segmentation} problem in machine vision consists of the classification of each pixel or voxel. 
+                The problem of \textit{semantic} segmentation is to detect, for each pixel, the object category to which it belongs. 
+                \textit{Instance} segmentation digs deeper. It identifies for each pixel the object instance to which it belongs.
                 The difference is that it differentiates between two objects of the same object category in the picture. 
                 }
         }
@@ -31,7 +31,7 @@ description={
         name={Ground Truth},
         description={
                 The \textit{Ground Truth} is a term used in machine learning to indicate the ideal expected result. 
-                In the context of Instance Segmentation, the ground truth is the true class of every pixel or voxel. 
+                In the context of Instance Segmentation, the ground truth is the actual class of every pixel or voxel. 
         }
         }
 
@@ -40,7 +40,7 @@ description={
         name={Unsupervised},
         description={
                 In an \textit{Unsupervised} machine learning problem, no labels are present. 
-                The aim is not to model the relationship between an \textit{input} and an \textit{output}, the aim is to model the structure of the data.
+                The aim is not to model the relationship between an \textit{input} and an \textit{output}. The aim is to model the structure of the data.
                 Frequent applications of these techniques are clustering and dimensionality reduction of data. 
                 }
 }
@@ -56,9 +56,9 @@ description={
 
 \newglossaryentry{tomography}
 {
-        name={Tomography},
+        name={Computated Tomography},
         description={
-                Imaging of a volume through the use of a penetrating wave. 
+                CT is the imaging of a volume through the use of a penetrating wave X-ray wave. 
                 Through these waves, a collection of images, called \textit{tomograms}, are produced.
                 The mathematical procedure to reconstruct the original volume based on these images is called \textit{tomographic reconstruction}.
                 A \acrfull{ct} scan is produced through tomographic reconstruction of several X-ray radiographs.
@@ -69,7 +69,7 @@ description={
 {
         name={Machine vision},
         description={
-                The branch of Artificial Intelligence with the objective of invering results from images. 
+                The branch of Artificial Intelligence to automatically obtain information from images. 
                 In this work, these images can be both two dimensional (\textit{pictures}) as three dimensional (\textit{volumes}).
                 }
 }
@@ -79,7 +79,7 @@ description={
         name={Artificial Intelligence},
         description={
                 The study of using computers to automatically perform tasks which once were considered only humans could do.
-                This includes, but is not restricted to, interpretation of speech and images. It is often refered to with the acronym \textsc{ai}.
+                This includes, but is not restricted to, the interpretation of speech and images. It is often referred to with the acronym \textsc{ai}.
                 }
 }
 
@@ -87,10 +87,10 @@ description={
 {
         name={Deep Learning},
         description={
-                Deep learning is a branch of Machine Learning where a set of multiple sequential layers is used to progressively extract higher-level features from the raw input data.
-                Different deep learning architectures have proven to allow the construction of well performing models for problems where other machine learning techniques seem to be less performant such as
+                Deep learning is a branch of Machine Learning where a set of multiple sequential layers is used to extract higher-level features from the raw input data progressively.
+                Different deep learning architectures have proven to allow the construction of well-performing models for problems where other machine learning techniques seem to be less performant such as
                 computer vision (with convolution layers) and natural language processing (with recurrent networks such as LSTM). 
-                The key to the succes of deep learning networks is the ability to automatically perform feature extraction in the first layers without requiring human guidance.
+                The key to the success of deep learning networks is the ability to automatically perform feature extraction in the first layers without requiring human guidance.
                 }
 }
 
@@ -99,8 +99,8 @@ description={
         name={Class Activation Map},
         description={
                 Technique to identify region of an image \textit{responsible} for the classification result.
-                The class activation map indicates the descriminative elements of an image that cause the \acrshort{cnn} to identify the category.
-                There are several techniques that aim to do this, of which the CAM technique can be considered the most popular one.
+                The class activation map indicates the discriminative elements of an image that cause the \acrshort{cnn} to identify the category.
+                Several techniques aim to do this, of which the CAM technique can be considered the most popular one.
                 The CAM technique is based on the feature maps obtained in the last convolution layer.
         },
         first={Class Activation Map (CAM)},
@@ -120,7 +120,7 @@ description={
         name={Features},
         description={
                 A feature is a property of a phenomenon.
-                For all machine learning tasks, it is crucial to obtain informative, descriminative and independant features.
+                For all machine learning tasks, it is crucial to obtain informative, discriminative and independent features.
                 The transformation extracting informative and non-redundant features from the original measured (\textit{raw}) data is the \textit{feature extraction} step.
                 The feature set is crucial in the subsequent learning or inference step.
                 In deep learning applications, the feature set (specifically the feature set resulting from a contracting path) is often called the \textit{encoding}.

@@ -1,8 +1,9 @@
 
+
 \chapter{Single dimension model combination\label{seq:combination}}
 
 All models are designed for $352 \times 352$ crops of the 2D slices.
-The extimation of the slice is obtained by combining the model estimations over all crops taken from this slice.
+The estimation of the slice is obtained by combining the model estimations on all crops taken from this slice.
 
 \section{Volume combination procedure}
 
@@ -15,16 +16,16 @@ Combining the results of three different single dimension models is performed in
 \subsection{Rule based result combination}
 Three single dimension models are trained:
 \begin{description}
-    \item[Transverse slices] offer little of the context to indicate which of the lumbar vertebrae they contain. 
-    It seems difficult even for a human expert to indicate which vertebra is visible on the slice.
+    \item[Transverse slices] offer little context to indicate which of the lumbar vertebrae they contain. 
+    It does not seem easy even for a human expert to indicate which vertebra is visible on the slice.
     The model trained on these slices is intended only for semantic segmentation.
-    For each pixel is inferred only if it represents a vertebra or not, without distinction between the different lumbar vertebrae. 
+    Each pixel is inferred only if it represents a vertebra, without distinction between the different lumbar vertebrae. 
     \item[Sagittal \& Coronal slices] do offer the necessary context to distinguish between $L_1$ to $L_5$. 
     The models trained on these slices do indicate the specific lumbar vertebra index. 
 \end{description}
 
 Based on the observation that all trained models accurately predict the background, these three models are combined in a straightforward way\footnote{
-    The resulting estimations from a model for an input volume is again a three dimensional volume ($\in \mathbb{N}^3$) with the same dimensions.
+    The resulting estimations from a model for an input volume is again a three-dimensional volume ($\in \mathbb{N}^3$) with the same dimensions.
 }.
 
 \begin{algorithm}[H]
@@ -51,29 +52,29 @@ Based on the observation that all trained models accurately predict the backgrou
 \todo[inline]{Image illustrating the combination}
 
 \subsection{Morphological smoothing}
-After the rule based combination of estimations from different single dimension models, the result is smoothened with standard morphological filters.
+After the rule-based combination of estimations from different single dimension models, the result is smoothened with standard morphological filters.
 These filters are combinations of the morphological \textit{erosion} and \textit{dilation} operators.
 \todo[inline]{How deep should these morphological filters be discussed?}
 \begin{itemize}
-    \item Possible noise is supressed by first opening and than closing the volumes.
-    \item The estimated volumes are observed to overestimate the extend of the vertebrae. For this reason, an erosion step is performed to decrease the overall extend of the class masks.
+    \item Possible noise is suppressed by first opening and then closing the volumes.
+    \item The estimated volumes are observed to overestimate the extent of the vertebrae. For this reason, an erosion step is performed to decrease the overall extent of the class masks.
 \end{itemize}
 
-The above mentioned procedure has two Hyperparameters: the number of iterations for the denoising filters and the number of iterations for the erosion filter.
-Both hyperparameters are estimated by calculation of the same evaluation metric, the weigh dice score on the validation set, as for the single dimensional model evaluation. 
+The procedure mentioned above has two Hyperparameters: the number of iterations for the denoising filters and the number of iterations for the erosion filter.
+Both hyperparameters are estimated by calculating the same evaluation metric, the weigh dice score on the validation set, as for the single-dimensional model evaluation. 
 
 
 \begin{SCfigure}[][htb]
     \centering
     \includegraphics[width=.95\textwidth]{images/morphmask_denoise1_erode1_MyoSegmenTUM_036.png}
     \caption{
-        Result of the combination of the three single dimension model resuls for volume MyoSegmenTUM nr 43.
-        The colours indicate the vertebra classes. In the first row, illustrating the model trained on transversal slices, only one semantic class is estimated.
+        Result of the combination of the three single dimension model results for volume MyoSegmenTUM nr 43.
+        The colours indicate the vertebra classes. Only one semantic class is estimated in the first row, illustrating the model trained on transversal slices.
         On the first three rows, slices of the resulting segmentations from the single dimension models are shown. 
-        It is clear these masks contain some artefacts and are not always in agreement with eachother.
+        It is clear these masks contain some artefacts and are not always in agreement with each other.
         On the fourth row, the result after mask combination and morphological smoothing is shown. 
         This corresponds more closely to the ground truth mask, shown on the fifth row.
-        It is this final mask, shown on the fourth row, that will be used as a pseudo mask to approximate the unknown ground truth mask.
+        This final mask, shown on the fourth row, will be used as a pseudo mask to approximate the unknown ground truth mask.
         In the last row, the corresponding images are shown.
     }
 \end{SCfigure}

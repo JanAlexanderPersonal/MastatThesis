@@ -25,7 +25,7 @@
     When a scan is sliced along the craniocaudal axis\footnote{
         The nomenclature of anatomical planes and axis is illustrated in figure \ref{fig:anatomicalPlains} on page \pageref{fig:anatomicalPlains}.
         The craniocaudal axis is the vertical axis when the patient is standing up.} 
-    a human can distinguish all 5 lumbar vertebrae (after some practice).
+    a human can distinguish all five lumbar vertebrae (after some practice).
     Therefore, one may hope the single-dimension models trained on sagittal or frontal slices will be able to do the same.
     Even though delineating a vertebra on a transverse slice is possible, identifying which vertebra is presented is challenging for a human.
     Supported by a brief test, it was confirmed that trying to estimate 5 vertebra classes from the transverse slices only provides very confusing results.
@@ -98,7 +98,7 @@
 \subsection{Evolution of the model performance with increased labelling effort}
 \par{
     The most basic modelling hyperparameter for a point annotation modelling campaign is the number of labelling points one asks the expert to provide.
-    This section presents experimental results to estimate the influence of the number of annotation points on the resulting model performance.
+    This section presents experimental results to estimate the number of annotation points on the resulting model performance.
     Intuitively, one would expect the model performance to increase with the number of annotation points provided.
     This hypothesis turns out to be false.
 }
@@ -109,8 +109,8 @@
 \end{SCfigure}
 \par{
     Figure \ref{fig:addedLossComponents} shows the weighted dice score actually decreases with more annotation points.
-    This is caused by the increased recall of the model. 
-    The model becomes very eager to find class points, this causes a lot of background pixels to be wrongly classified as class points.
+    The increased recall of the model causes this. 
+    The model becomes very eager to find class points. This causes many background pixels to be wrongly classified as class points.
     The resulting decrease in precision causes the F1 score to decrease.
 }
 \todo[inline]{Werk verder uit met afbeelding en tabel}

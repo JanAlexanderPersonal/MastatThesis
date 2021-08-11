@@ -1,3 +1,4 @@
+
 \newgeometry{total={210mm,297mm},left=20mm,right=20mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
 \begin{partwithabstract}{Results \& Experiments}
     \par{
@@ -5,20 +6,20 @@
     based on point annotation of these 6 classes ($L1$ to $L5$ and 1 background class).
 }
 \par{
-    First, as described in chapter \ref{sec:reference_model}, first a reference is calculated to compare the performance of the weakly supervised models with.
-    The reference models are models with the same architecture trained on the same dataset as the weakly supervised models. 
+    First, as described in chapter \ref{sec:reference_model}, first, a reference is calculated to compare the performance of the weakly supervised models.
+    The reference models have the same architecture trained on the same dataset as the weakly supervised models. 
     Contrary to the weakly supervised models, the reference models are trained with full annotation masks instead of point annotated masks. 
 }
 \par{
     The first step in the modelling procedure based on point annotation masks is the construction of \textit{single-dimension} models.
     Single-dimension indicates that these models investigate the performance of a model that outputs 2D segmentation masks based on 2D input images.
-    By slicing the scan volumes along one of three main dimensional axis, a stack of two dimensional images is created together with the point annotation maps extracted from the segmentation masks of these images.
+    By slicing the scan volumes along one of three central dimensional axes, a stack of two-dimensional images is created together with the point annotation maps extracted from the segmentation masks of these images.
     Chapter \ref{sec:singleDimension} presents the results of several experiments. 
     Models with different loss functions are trained on different point annotation maps where a different number of annotation points is extracted from the full masks.
 }
 \par{
     the second step in the modelling procedure is the combination of the single-dimension models to estimate pseudo-masks.
-    These pseudo masks can finally be used to train a model as if it where true full annotation masks.
+    These pseudo masks can finally be used to train a model as pseudo full annotation masks.
     Chapter \ref{sec:combination}, discusses the technique used to combine single-dimension models.
 }
 \end{partwithabstract}

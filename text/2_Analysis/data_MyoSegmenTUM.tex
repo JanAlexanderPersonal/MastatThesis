@@ -5,17 +5,17 @@ It was constructed for the MyoSegmenTUM project \cite{Durian2019}.
 It consists of 54 collections of \acrshort{mri} scans of the spine.
 In this work, only the T2 weighted \acrlong{mri} scans are used.
 The dataset also contains volumes with enhanced fat tissue response. Since the objective of this work is related to bone tissue rather than fat tissue, these volumes were not used.
-Neither were the segmentation masks for the different dorasal muscles, which are also present in this dataset.
+Neither was the segmentation masks for the different dorsal muscles, which are also present in this dataset.
 
 \subsubsection{Original Objective of the Dataset}
 
-The MyoSegmenTUM Spine dataset is compiled as a reference dataset for development of segmentation algorithms of the lumbar spine vertebral bodies and  muscle groups.
+The MyoSegmenTUM Spine dataset is compiled as a reference dataset for developing segmentation algorithms of the lumbar spine vertebral bodies and muscle groups.
 Information about this project can be found in \cite{Durian2019}.
 
 \subsubsection{Patient statistics}
 
 In figure \ref{fig:OSF_ageboxplot}, the age distribution of the patients in the MyoSegmenTUM dataset is shown.
-There are clearly more women (39) included in this dataset than men (15).
+There are more women (39) included in this dataset than men (15).
 The male patients in this dataset are, on average, clearly younger than the female patients.
 
 \marginpar{
@@ -28,7 +28,7 @@ The male patients in this dataset are, on average, clearly younger than the fema
 \subsubsection{Technical information}
 
 As shown in figure \ref{fig:OSF_02}, coupes from the second volume of the MyoSegmenTUM dataset are shown.
-As is also indicated in figure \ref{fig:AllDataset_dims}, the dimensions of the MyoSegmenTUM volumes is consistently $220 mm \times 220 mm \times 80 mm$, where the shortest dimension is the cropped left-right axis.
+As is also indicated in figure \ref{fig:AllDataset_dims}, the dimensions of the MyoSegmenTUM volumes is consistent $220 mm \times 220 mm \times 80 mm$, where the shortest dimension is the cropped left-right axis.
 There are only three volumes that deviate slightly from this.
 
 \begin{SCfigure}[][htb]
@@ -41,4 +41,4 @@ There are only three volumes that deviate slightly from this.
 
 \textbf{Remark:} For three volumes (nr 33, 53 and 54) for which the dimension of the image volume and the label mask do not correspond. 
 It is not clear how these masks should be used. 
-These volumes were discarted, bringing the final number of volumes used from the MyoSegmenTUM dataset to 51.
+These volumes were discarded, bringing the final number of volumes used from the MyoSegmenTUM dataset to 51.
