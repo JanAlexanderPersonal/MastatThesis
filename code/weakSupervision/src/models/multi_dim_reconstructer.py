@@ -394,6 +394,9 @@ class multi_dim_reconstructor(object):
         
         def combine_volumes(volumes : Dict[int, np.ndarray]) -> np.ndarray:
             combined_volume = np.zeros_like(volumes[0])
+            struct = morph.generate_binary_structure(3, 3)
+            volumes = {key : morph.binary_closing(volume, structure=struct, iterations=1) for key, volume in volumes.items()}
+            
             for i in range(1,6):
                 m = (volumes[0] == 1) & (volumes[1] == i) & (volumes[2] == i)
                 combined_volume[m] = i
@@ -486,7 +489,7 @@ class multi_dim_reconstructor(object):
                     combined_volume = combine_volumes(volumes)
                     combined_volume = clean_mask(combined_volume, iterations_denoise=BEST_IT_DN, iterations_erode=BEST_IT_ER)
                     
-                    plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_train_denoise{iterations_denoise}_erode{iterations_erode}_{source}_{nr}'), ground_truth = ground_truth, combined_volume=combined_volume)
+                    plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_train_denoise{BEST_IT_DN}_erode{BEST_IT_ER}_{source}_{nr}'), ground_truth = ground_truth, combined_volume=combined_volume, volume_scan = volume_scan)
                     np.save(os.path.join(savedir, f'morphcombined_train_{source}_{nr}') ,combined_volume)
 
 
