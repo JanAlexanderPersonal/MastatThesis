@@ -2,29 +2,29 @@
 
 The \textit{PLoS} dataset was compiled for \cite{Chu2015} in 2015 by dr. C. Chu, University of Bern, Bern, Switzerland and made publically available \footnote{See : \url{ http://doi.org/10.5281/zenodo.22304 }} .
 It consists of 23 T2-weighted spine \acrshort{mri} scans. 
-Contrary to other datasets, the segmenation labels in this dataset do not provide information to destinguish the individual vertebrae from each other.
+Contrary to other datasets, the segmentation labels in this dataset do not distinguish the individual vertebrae from each other.
 
 \subsubsection{Original Objective of the Dataset}
 
-In \cite{Chu2015} the development of a random forest regression approach for spine vertebrae segmenation and classificiation is described.
-The results of several random forest regressors and classifiers is unified with a voting mechanism.
+In \cite{Chu2015} the development of a random forest regression approach for spine vertebrae segmentation and classification is described.
+The results of several random forest regressors and classifiers are unified with a voting mechanism.
 This approach obtains a mean Dice metric score of 88.7\%.
 
 \subsubsection{Patient statistics}
 
-Due to the anomimization process, the \textit{PLoS} dataset does not contain patient information.
-This means that it is not possible to produce any statistics regarding patient age or gender.
+Due to the anonymization process, the \textit{PLoS} dataset does not contain patient information.
+This means that it is not possible to derive any statistics regarding patient age or gender.
 
 \subsubsection{Technical information}
 
 As is indicated in figure \ref{fig:AllDataset_dims}, and in figure \ref{fig:PLoS_img02}, the PLoS image volumes are cropped in the left-right direction.
-The volumes are consistently $381mm \times 381 mm \times 78 mm$, where the shortest dimension is in the left-right direction.
+The volumes are consistent $381mm \times 381 mm \times 78 mm$, where the shortest dimension is in the left-right direction.
 
 \begin{SCfigure}[][htb]
     \centering
     \includegraphics[width=.95\textwidth]{automated_graphs/PLoS_img02.png}
     \caption{
-        PLoS dataset scan \textit{img02}. \label{fig:PLoS_img02}. The craniocaudal direction is cropped in a way comparable to the volumes in the USiegen dataset, but, the direction of this axis is inverted.
-        The left-right axis is cropped similar to the USiegen data volumes.
+        PLoS dataset scan \textit{img02}. \label{fig:PLoS_img02}. The craniocaudal direction is cropped in a way comparable to the volumes in the Siegen dataset, but the direction of this axis is inverted.
+        The left-right axis is cropped, similar to the Siegen data volumes.
     }
 \end{SCfigure}

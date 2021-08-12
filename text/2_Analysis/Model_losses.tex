@@ -1,17 +1,18 @@
+
 \section{Loss functions\label{sec:LossFunctions}}
 
-Construction a machine learning model requires evaluating the model, comparing the result of this evaluation with a desired output and taking steps to make the observed output resemble the desired output better.
+Construction of a machine learning model requires evaluating the model, comparing the result of this evaluation with the desired output and taking steps to make the observed output resemble the desired output better.
 In other words, to train a model, the optimizer will minimize the loss function.
-To use the gradient descent algorithm, this loss function needs to be a differentiable function.
+To use the gradient descent algorithm, this loss function needs to be differentiable.
 
 Several loss functions will be discussed below, both unsupervised and supervised loss functions.
 A supervised loss function considers the difference between the network prediction and a known (weak) label.
 An unsupervised loss function considers characteristics of the network output itself. No labels are used in calculating an unsupervised loss function.
-The desirable characteristics that are enforced by the unsupervised loss functions can be part of the \textit{priors}, the knowledge on the problem one has on beforehand
+The desirable characteristics that are enforced by the unsupervised loss functions can be part of the \textit{priors}, the knowledge on the problem one has beforehand
 \footnote{To be able to work with weaker, less informative labels, one needs to enter more prior knowledge into the problem}. 
 
 
-Hoping to make the notation in this section clearer, I list a number of notations I use in the table below.
+In order to make the notation in this section clearer, table \ref{tab:loss_notations} list the notations used in the loss function components.
 
 \begin{SCtable}[\sidecaptionrelwidth][h]
  
@@ -32,12 +33,13 @@ Hoping to make the notation in this section clearer, I list a number of notation
      \hline
      \hline
     \end{tabular}
-    \caption{List of symbols used in the loss functions}
+    \caption{List of symbols used in the loss functions\label{tab:loss_notations}}
 
 \end{SCtable}
 
-In this project, $n=6$. Label $\mathcal{Y}_i(\vec{p})=0$ indicates the background class and the lubar vertebrae $L_m$ are indicated with $\mathcal{Y}_i(\vec{p})=m$ ($m\in[1,2,3,4,5]$).
-In the fully supervised case, $\mathcal{I}_i$ spans the complet slice $i$. In the weakly supervised case, there are only a handfull of positions $\vec{p}$ for which a label exists.
+In this project, $n=6$ for the coronal and sagittal slice models and $n=2$ for the transverse slice models. 
+Label $\mathcal{Y}_i(\vec{p})=0$ indicates the background class and the lubar vertebrae $L_m$ are indicated with $\mathcal{Y}_i(\vec{p})=m$ ($m\in[1,2,3,4,5]$).
+In the fully supervised case, $\mathcal{I}_i$ spans the complete slice $i$. In the weakly supervised case, there are only a handful of positions $\vec{p}$ for which a label exists.
 
 The softmax function $\sigma$ is related to the sigmoid function $S$. It is defined as:
 
@@ -63,7 +65,7 @@ To compare the network output with the labels, first, the (weighted) cross entro
 \end{equation}
 
 This loss function is minimized when the network output $z_i(\vec{p})[k]$ with $k=\mathcal{Y}_i(\vec{p})$ the class label for $\vec{p}$ is maximal while the other logits for this position are minimal.
-This loss function thus encourages the network to take the right decision and to be certain about that decision.
+This loss function thus encourages the network to make the right decision and be sure about that decision.
 
 \subsubsection{Prior extend loss}
 The second supervised loss function used is the \textit{prior extend} loss.
@@ -77,10 +79,10 @@ Then $\mathbf{d}$ is converted to a semi-mask:
     \mathbf{d}_k(\vec{q}) &=& \max_{\vec{p}:\mathcal{Y}_i(\vec{p})=k}||\vec{q} - \vec{p}||\\
     \mathbf{m}_k(\vec{q}) &=& \mathbf{I}\left( (-\mathbf{d}(\vec{q}) + r) > 0 \right)
 \end{eqnarray}
-Now, $\mathbf{m}$ is 1 for positions closer than distance $r$ from the points and it is 0 for positions far from labels with value $k$.
+Now, $\mathbf{m}$ is 1 for positions closer than distance $r$ from the points, and it is 0 for positions far from labels with value $k$.
 Where $\mathbf{m}_k=0$, the model output should not indicate output class $k$. Where $\mathbf{m}_k=1$, the output class is unknown\footnote{Only channel $k$ is concerned, since one only knows what class these points do not belong to, there is not more information about the other classes.}.
 
-The loss function is the binary cross entropy between $\mathbf{m}_k$ and the sigmoid of the k$^{th}$ channel of the logits $z_i$ with weight vector $\{1, 0\}$.
+The loss function is the binary cross-entropy between $\mathbf{m}_k$ and the sigmoid of the k$^{th}$ channel of the logits $z_i$ with weight vector $\{1, 0\}$.
 
 \begin{equation}
     \mathcal{L}_E(X_i) = \sum_{k\in\mathcal{K}}\sum_{\vec{q}\in X_i}  (1-\mathbf{m}_k(\vec{q})) \log(\mathbf{S}(z_i(\vec{q})_k)) 
@@ -110,10 +112,10 @@ Then the consistency loss function $\mathcal{L}_C$ is defined as
 \end{equation}.
 
 In this project, two transformations are combined: rotations of $[90^{\circ}, 180^{\circ}, 270^{\circ}]$ and the horizontal flip.
-Each time the loss is called, 1 transformation $t$ is randomly selected from the list and the transformation consistency loss is calculated using this transformation.
+Each time the loss is called, 1 transformation $t$ is randomly selected from the list, and the transformation consistency loss is calculated using this transformation.
 
 \subsubsection{Separation loss}
-As mentioned when discussing the cross entropy loss in §\ref{sec:crossentropy}, this loss encourages the model to output the right label and to decrease the output values for the other labels.
+As mentioned when discussing the cross-entropy loss in §\ref{sec:crossentropy}, this loss encourages the model to output the correct label and to decrease the output values for the other labels.
 As discussed, the right label is often not know for most of the locations in a weakly supervised problem.
 Apart from a limited number of points, there is no such incentive for weakly supervised networks.
 For this reason, the separation loss $\mathcal{L}_S$ is introduced.
@@ -122,4 +124,4 @@ This loss component consists of the negative sum of the absolute difference of t
     \mathcal{L}_S(X_i) = - \sum_{\vec{p}} \sum_{m\in \mathcal{K}} \sum_{n \in \mathcal{K}, n>m} \mathbf{S}(z_i[m]) - \mathbf{S}(z_i[n])
 \end{equation}
 
-This loss component thus provides an incentive to the network to make a decision, even in areas where little annotation points are available.
+This loss component thus provides an incentive to the network to make a decision, even in areas where few annotation points are available.

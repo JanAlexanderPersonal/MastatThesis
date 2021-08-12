@@ -22,28 +22,28 @@ Numerous metrics are possible, I will focus on the important metrics used for mu
 
 Table \ref{tab:confusionMatrix} illustrates a confusion matrix for a model for a problem with 3 classes ($C_j:j\in \{1;2;3\}$). 
 A model predicts the class for all observations in the set.
-The confusion matrix allows to compare these preditions against the true class\footnote{The true class is the label for this observation.}.
+The confusion matrix allows comparing these predictions against the true class\footnote{The true class is the label for this observation.}.
 
 $a_{0,0}$, $a_{1,1}$, $a_{2,2}$ are the correctly labelled observations. 
 The predicted class corresponds to the actual class.
 This is not necessarily the case for all observations. For example, $a_{1,2}$ observations with true class $C_2$ the model predicted to belong to class $C_1$.
-In general $a_{i,j}$ is the number of observations for which the model predicted $C_i$ and for which the label is $C_j$.
+In general, $a_{i,j}$ is the number of observations for which the model predicted $C_i$ and for which the label is $C_j$.
 Based on the confusion matrix, 3 metrics can be calculated: the model \textit{precision}, the \textit{recall} and the \textit{F-score}.\newline
 
 
 \subsection{Class imbalance\label{sec:class_imbalance}}
 
 To construct an appropriate set of metrics to use for a problem, the class distribution of the dataset\footnote{
-    One hopes that through a good data collection strategy, the dataset is representative for the population we ultimately want to do inference on.
+    One hopes that through a good data collection strategy, the dataset represents the population on which we ultimately want to infer.
 
     } needs to be taken into account.
-Imagine for example that one aims to segment pixels in a set of pictures where 95\% of the pixels is of the \textit{background} class and 5\% of the pixels is of the class to be segmented.
-A model can now easily obtain 95\% accuracy by predicting every pixel as \textit{background}. This is clearly not a metric suitable for the problem.
+Imagine, for example, that one aims to segment pixels in a set of pictures where 95\% of the pixels is of the \textit{background} class and 5\% of the pixels is of the class to be segmented.
+A model can now quickly obtain 95\% accuracy by predicting every pixel as \textit{background}. This is not a metric suitable for the problem.
 
-For an evaluation metric to be useful, it has to avoid the kind this kind of pitfalls.
+For an evaluation metric to be useful, it has to avoid the kind this kind of pitfall.
 In this work, I investigate a problem where most of the image under investigation is \textit{background}. 
-There is about 1 pixel of each of the lumbar vertebra classes for 500 backgound pixels.
-To correctly evaluate the performance of the model, the different performance metrics for the different classes are weighted with the inverse of their relative occurance.
+There is about 1 pixel of each of the lumbar vertebra classes for 500 background pixels.
+The different performance metrics for the different classes are weighted with the inverse of their relative occurrence to evaluate the model's performance correctly.
 \newpage
 \subsection{Precision}
 
@@ -68,11 +68,11 @@ In general, the Precision$_i$ for class $C_i$ in a problem with $k$ classes is g
     &=& \frac{a_{i, i}}{\sum_{j=0}^{k-1} a_{i, j}} \label{eq:precision_i}
 \end{eqnarray}
 
-One can thus calculate the precision metric for each individual class. 
+One can thus calculate the precision metric for each class. 
 To calculate a precision metric for the complete classifier
 , one now has two options.
-One can aggregate the class precisions by taking the arithmatic mean or by taking a weighted mean.
-When aggregating by taking the arithmatic mean, this is called the Macro-precision: $Precision_M$.
+One can aggregate the class precisions by taking the arithmetic mean or by taking a weighted mean.
+When aggregating by taking the arithmetic mean, this is called the Macro-precision: $Precision_M$.
 To take the weighted mean, each precision term $Precision_i$ is weighted by the number of observations with label $C_i$. 
 This is called the weighted-mean precision: $Precision_w$.
 
@@ -99,7 +99,7 @@ Again, one can define the recall for the classifier as the weighted average of t
 
 \subsection{Dice score\label{sec:dice}}
 
-The objective is of course to build a model with both a high precision and a high recall.
+The objective is, of course, to build a model with both high precision and a high recall.
 There is often a trade-off to be made. 
 Increasing the recall tends to reduce the precision
 \footnote{To increase recall$_i$, you need to encourage the model to predict $C_i$. Unfortunately, this increases the probability that an observation is wrongly classified as $C_i$, thus decreasing precison$_i$.}.
@@ -125,7 +125,7 @@ There are two macro F1-scores in use:
     The macro F1*-score is given by\\ $F1_M^*=2 . \frac{precision_M \times recall_M }{precision_M + recall_M }$
 \end{description}
 
-I choose to use the weighted macro F1-score. This is the most common implementation. It is also the implementation used in the \texttt{sklearn} package for example.
+I choose to use the weighted macro F1-score. This is the most common implementation. It is also the implementation used in the \texttt{sklearn} package, for example.
 This approach is consistent with the approach I use for all other metrics. \\
 
 \subsection{Intersection over Union}
@@ -142,7 +142,7 @@ In general, the class specific \acrfull{iou} for class $C_i$ is given by:
     \text{IoU}_i = \frac{a_{i,i}}{\sum_{j=0}^{k-1} a_{i, j} + \sum_{j=0}^{k-1} a_{j,i} - a_{i,i}} 
 \end{equation}
 
-Again, a macro IoU score can be calculated by taking the arithmatic mean of the class IoU scores.
+Again, a macro IoU score can be calculated by taking the arithmetic mean of the class IoU scores.
 
 \subsubsection{Classifier accuracy}
 
@@ -156,6 +156,4 @@ In general, the classifier accuracy is defined by
     \text{accuracy} = \frac{\sum_{i=1}^{k-1}a_{i,i}}{\sum_{i=0}^{k-1} \sum_{=0}^{k-1} a_{i,j}   } 
 \end{equation}
 
-\subsubsection{Cohen Kappa}
 
-\todo[inline]{elaborate and implement Cohen Kappa}

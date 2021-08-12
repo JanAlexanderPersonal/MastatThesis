@@ -1,11 +1,11 @@
 \chapter{Data preprocessing}
 
 The available data volumes have to be preprocessed before being used in the neural network classifier.
-The preprocessing steps consist of re-sampling, slicing, contrast enhancement and cropping.  
+The preprocessing steps consist of resampling, slicing, contrast enhancement and cropping.  
 
 There is not one obvious way to combine the different datasets and available labels in one project.
 The chosen approach in this work is discussed below.
-First, the convertion of the full class labels to point labels is discussed. 
+First, the conversion of the full class labels to point labels is discussed. 
 Secondly, the split of the datafiles in a train set, a validation set and a test set is discussed.
 
 \section{Image preprocessing}
@@ -19,7 +19,7 @@ values - and metadata.
 For a medical image, there are two types of metadata:
 \begin{description}
     \item [Describing the patient \& medical data:] patient identification, pathologies, date of scan, date of birth, gender, weight, height,\dots
-    \item [Technical meta-data:] The size (number of pixels per dimension), pixel spacing (distance between pixels along a dimension), orientation vector, image modality \& other information regarding the image aquisition.
+    \item [Technical meta-data:] The size (number of pixels per dimension), pixel spacing (distance between pixels along a dimension), orientation vector, image modality \& other information regarding the image acquisition.
 \end{description}
 
 For a discussion of the data used in this work, chapter \ref{sec:datasets} can be consulted. 
@@ -27,31 +27,31 @@ For a discussion of the data used in this work, chapter \ref{sec:datasets} can b
 \subsection{Resampling and slicing\label{sec:resampling}}
 
 In figure \ref{fig:AllDataset_dims}, the differences regarding the dimension and resolution for the different volumes in the combined dataset are illustrated. 
-It is necessarily to uniformize the data input to the network. 
+It is necessary to uniformize the data input to the network. 
 This requires uniformization of the image spacing vector in all directions\footnote{A typical \acrshort{cnn} is not scale-invariant.}. 
 I chose to resample on a $1mm\times 1mm \times 1mm$ isotropic grid. 
 If necessary, images are rotated to uniformize the orientation vectors. 
-Every image is now a 3-dimensional array\footnote{Both \acrshort{ct} and \acrshort{mri} images have only 1 channel.} with the same sequency of dimensions and the same spacing along these dimensions.
+Every image is now a 3-dimensional array\footnote{Both \acrshort{ct} and \acrshort{mri} images have only one channel.} with the same sequence of dimensions and the same spacing along these dimensions.
 The chosen uniform dimension sequence is:
 \begin{enumerate} 
     \item Craniocaudal axis; perpendicular to the transverse plane.
     \item Anteroposterior axis; perpendicular to the coronal (frontal) plane.
     \item Left-right axis; perpendicular to the sagittal plane.
 \end{enumerate}
-The inputs for the 2D models are obtained by \textit{slicing} the volume along one of the dimensions.
+The inputs for the 2D models are obtained by \textit{slicing} the volume along with one of the dimensions.
 This means that from each scan volume, three different sets of two-dimensional slices can be generated, depending on the slicing axis\footnote{The slicing axis is the axis perpendicular to which ones slices the volume}.
 
 When resampling the image itself, linear interpolation is used. 
-To resample the classification masks on a new grid, the \textit{nearest neighbor} method is used\footnote{
+To resample the classification masks on a new grid, the \textit{nearest neighbour} method is used\footnote{
     SimpleITK \cite{sitk} provides useful tools to perform these operations.
     } 
 since factorial data must not be interpolated. 
 
 \subsection{Contrast enhancement}
-To two-dimensional images obtainded from slicing the volumes are preprocessed with the \acrfull{clahe} algorithm. 
+To two-dimensional images obtained from slicing, the volumes are preprocessed with the \acrfull{clahe} algorithm. 
 The difference with ordinary histogram equalization is that the \acrshort{clahe} method calculates different histograms for different sections of the image.
-This technique allows to improve the local contrast in each region of an image.
-When an image contains regions that are significantly lighter or darker than the rest of the image (as is the case for both \acrshort{ct} and \acrshort{mri} images) the AHE methods perform better than histogram equalization based on the complete image.
+This technique allows improving the local contrast in each region of an image.
+When an image contains regions that are significantly lighter or darker than the rest of the image (as is the case for both \acrshort{ct} and \acrshort{mri} images), the AHE methods perform better than histogram equalization based on the complete image.
 
 \begin{SCfigure}[][htb]
     \centering
@@ -65,30 +65,100 @@ When an image contains regions that are significantly lighter or darker than the
 \end{SCfigure}
 
 \acrfull{clahe} is an improvement on adaptive histogram equalization.
-By limiting the contrast amplificiation, it avoids that noise is amplified in (near) constant regions of the image.
+Limiting the contrast amplification avoids that noise is amplified in (near) constant regions of the image.
 The parameters of this operation were adjusted manually.
-Based on trail and error iterations, where the quality of the contrast improvement was estimated with the human eye based on visualizations from all datasets,
-the following parameterset was chosen:
+Based on trial and error iterations, where the quality of the contrast improvement was estimated with the human eye based on visualizations from all datasets,
+the following parameters were chosen:
 \begin{description}
     \item[Number of grey bins:] 256 (maximum possible when working with 8-bit encoded images).
-    \item[Kernel size:] 50. This parameter defines the extend of the \textit{local} region used by the algorithm.
-    \item[clip limit:] $9.10^{-3}$. This parameter suppresses noise in the most dark regions (which contain least information).
+    \item[Kernel size:] 50. This parameter defines the extent of the \textit{local} region used by the algorithm.
+    \item[clip limit:] $9.10^{-3}$. This parameter suppresses noise in the darkest regions (which contain the least information).
 \end{description}
 
+\newpage
 \section{Train, validation and test split considerations\label{sec:trainValTestSplit}}
 
 To allow evaluation of the models produced, a test set is split from the development set.
 The objective is to evaluate how well a model generalizes to new data\footnote{
-    New data is to be interpreted here a new sample from \textit{the same population} as the development sample.
-    Unfortunately, I cannot claim that the different datasets I collected certainly form a perfect representation of the population of medical images of the lumbar spine.}. 
-To provide an honest estimate of the out-of-sample performance, the test dataset should be representative of the investigated population and (hidden) correlations with elements of the development sample should be avoided.
+    New data is to be interpreted here as a new sample from \textit{the same population} as the development sample.
+    Unfortunately, I cannot claim that the different datasets I collected indeed form a perfect representation of the population of medical images of the lumbar spine.}. 
+To provide an honest estimate of the out-of-sample performance, the test dataset should represent the investigated population and (hidden) correlations with elements of the development sample should be avoided.
 
 This is done\footnote{
     To accomplish this, I used the function \texttt{GroupedStratifiedSplit} at \url{https://github.com/scikit-learn/scikit-learn/pull/18649/}. 
-    This class is not yet part of the official \texttt{sci-kit learn} library release (at the time of writing), but functions well for this application.} taking into account the following:
+    This class is not yet part of the official \texttt{sci-kit learn} library release (at the time of writing) but functions well for this application.} taking into account the following:
 \begin{description}
-    \item[Stratified data:] The combination of data from different sources is obviously stratified. Every source is considered a subpopulation. The datasplit is made such that the proportion of scans orginating from each datasource in every split is proportional to their occurance in the total population.
-    \item[Grouped data:] The scans of the same patient can be assumed to be correlated to eachother. These scans should not be spread over different splits. The data is split at patient level.
+    \item[Stratified data:] The combination of data from different sources is stratified. Every source is considered a subpopulation. The data split is made such that the proportion of scans originating from each data source in every split is proportional to their occurrence in the total population.
+    \item[Grouped data:] The scans of the same patient can be assumed to be correlated to each other. These scans should not be spread over different splits. The data is split at patient level.
 \end{description}
 
-\todo{Table with split}
+For each datasource, the intended split is $\frac{4}{6}$ for train set, $\frac{1}{6}$ for cross validation set and $\frac{1}{6}$ for test set.
+This distribution is not perfect but acceptable, as is indicated by the values in table \ref{tab:summary_split}.
+
+\begin{SCtable}[\sidecaptionrelwidth][h]
+ 
+    \input{tables/summary_split.tex}
+    \caption{Number of volumes by datasource and by split.\label{tab:summary_split}}
+  
+  \end{SCtable}
+
+The result of this operation is detailed in appendix \ref{sec:appendix_split} on page \pageref{sec:appendix_split}.
+
+\section{Cropping}
+
+The networks used require input images of size $352 p \times 352 p$, corresponding to $352 mm \times 352 mm$.
+The image slices have different dimensions.
+The incoming images are cropped or padded, depending on whether the image dimension is smaller or larger than the crop window.
+
+When the image is cropped, one of 5 crops is selected, see figure \ref{fig:crop}:
+\begin{description}
+    \item[crop 0:] Crop from the top left corner of the image.
+    \item[crop 1:] Crop from the top right corner of the image.
+    \item[crop 2:] Crop from the bottom left corner of the image.
+    \item[crop 3:] Crop from the bottom right corner of the image.
+    \item[crop 4:] Center crop of the image.  
+\end{description}
+
+Not all slices are sufficiently large to produce 5 different crops. This is illustrated in figure \ref{fig:smallcrop}. In this case, one of the slice dimensions must be padded (symmetrically) to obtain an image of the desired dimensions.
+
+When a slice is fetched from the train set, a random crop is selected from these 5.
+This adds an extra level of variance to the training data. This avoids, for example, that the network learns that the spine is always at the same location in the images.
+
+For the slices sourced from the cross-validation and train set, however, reproducibility is essential.
+For each slice, the crop number is fixed.
+This way, the cross-validation metric, evaluated to avoid overfitting is always calculated on the same images.
+
+When reconstructing the volumes, in the second step of the model concept (see chapter \ref{sec:model_concept}), 
+all different crops are evaluated in the model, and the responses for these crops are joined by averaging the model responses in the overlap regions.
+
+\begin{SCfigure}[][htb]
+    \centering
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/slice017.png}
+    \end{minipage} 
+    \begin{minipage}{0.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/cropping_slice017.png}
+    \end{minipage}
+    \caption{
+        Illustration of image cropping where the image is larger than the crop window dimensions. The original size of the image is $443 \times 443$, and the crop window used has dimensions $352 \times 352$.
+        Crop 0 to 4 are 5 different images but have a considerable overlap. \label{fig:crop}
+        }
+    
+\end{SCfigure}
+
+\begin{SCfigure}[][htb]
+    \centering
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/slice202.png}
+    \end{minipage} 
+    \begin{minipage}{0.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/cropping_slice202.png}
+    \end{minipage}
+    \caption{
+        Illustration of image cropping where the image is larger than the crop window dimensions.
+        The original size of the image is $291 \times 424$, and the crop window used has dimensions $352 \times 352$.
+        Crop 0 to 4 are not all different images. Since the image height is lower than the crop window height, this dimension is padded, not cropped.
+        This results in crop 0 being equal to crop 2 and crop 1 being equal to crop 3. \label{fig:smallcrop}
+        }
+    
+\end{SCfigure}

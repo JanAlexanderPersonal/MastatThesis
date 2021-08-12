@@ -10,37 +10,36 @@
 
 \par{
     In this section, the results of experiments with different model hyperparameters are compared to each other.
-    The point annotation sets are generated from the available full annotation masks for each individual slice.
+    The point annotation sets are generated from the available full annotation masks for each slice.
     In this work, different datasets were used with different levels of provided annotation. 
     Annotation differences between different datasets are listed in table \ref{tab:datasetReferences} on page \pageref{tab:datasetReferences}.
 }
 \par{
-    For three datasets\footnote{The 3 datasets for which full annotation is available are the xVertSeg dataset, the UniSiegen dataset and the MyoSegmentum dataset. Of which the MyoSegmentum dataset is the largest by far.},
-    full annotation masks are available, meaning that these scan volumes are labelled with volumes for each the the five lumbar vertebrae.
-    For each voxel, the ground truth is indicated up to the point of knowing wether it belongs to a lumbar vertebra and if so, which vertebra.
-    For one dataset (PLoS) only semantic segmentation is available. This means that the lumbar vertebrae are indicated, but not destinguished. 
-    With each voxel in the PLoS dataset, a ground truth is associated that indicates if it belongs to a lumbar vertebra. There is no label however to indicate which of the lumbar vertebrae this is.
+    For three datasets\footnote{The three datasets for which complete annotation is available are the xVertSeg dataset, the UniSiegen dataset and the MyoSegmentum dataset. Of which the MyoSegmentum dataset is the largest by far.},
+    full annotation masks are available, meaning that these scan volumes are labelled with volumes for each of the five lumbar vertebrae.
+    For each voxel, the ground truth indicates whether it belongs to a lumbar vertebra and which vertebra.
+    For one dataset (PLoS), only semantic segmentation is available. It means that the lumbar vertebrae are indicated as one class but not distinguished. 
+    With each voxel in the PLoS dataset, ground truth is associated that indicates if it belongs to a lumbar vertebra. There is no label, however, to indicate which of the lumbar vertebrae this is.
 }
 \par{
     When a scan is sliced along the craniocaudal axis\footnote{
         The nomenclature of anatomical planes and axis is illustrated in figure \ref{fig:anatomicalPlains} on page \pageref{fig:anatomicalPlains}.
         The craniocaudal axis is the vertical axis when the patient is standing up.} 
-    a human can distinguish all 5 lumbar vertebrae (after some practice).
-    One may therefor hope the single-dimension models trained on sagittal or frontal slices will be able to do the same.
-    Eventhough delineation of a vertebra on a transverse slice is possible. 
-    Yet, identification of which vertebra is presented is a very difficult task for a human.
-    Supported by a brief test, it was confirmed that trying to estimate 5 vertebra classes from the transverse slices only provides very confused results.
+    a human can distinguish all five lumbar vertebrae (after some practice).
+    Therefore, one may hope the single-dimension models trained on sagittal or frontal slices will be able to do the same.
+    Even though delineating a vertebra on a transverse slice is possible, identifying which vertebra is presented is challenging for a human.
+    Supported by a brief test, it was confirmed that trying to estimate 5 vertebra classes from the transverse slices only provides very confusing results.
     The models trained on the transverse slices only intend to label the slice pixels as either background (0) or vertebra (1), 
     whereas the models trained on the sagittal and frontal slices intend to indicate which of 6 classes\footnote{0 for background, 1 for $L1$, 2 for $L2$, 3 for $L3$, 4 for $L4$ and 5 for $L2$} the pixel belongs to.
 }
 \par{
     The models trained to segment sagittal and frontal slices were trained on datasets xVertSeg, UniSiegen and MyoSegmenTUM.
     From the available full masks, point annotation labels were extracted.
-    The models trained to segment transverse slices\footnote{This segmentation is, as stated not based on destinguising separate lumbar vertebrae from each other.} 
+    The models trained to segment transverse slices\footnote{This segmentation is, as stated not based on distinguishing separate lumbar vertebrae from each other.} 
     are trained on the same three datasets and additionally on the PLoS dataset.    
 }
 \par{
-    Comparison of the model performance results is made based on the weighted dice score calculated on the test set.
+    The model performance results are compared based on the weighted dice score calculated on the test set.
     This metric is described in chapter \ref{sec:dice} on page \pageref{sec:dice}.
 }
 
@@ -48,26 +47,26 @@
 \subsection{Evaluation of the model Hyperparameters}
 
 \par{
-    With the objective to obtain the best model hyperparameters to train the single-dimension models, several tests were conducted to estimate the influence of model components and model hyperparameters\footnote{
-        One could argue that the number of annotation points is not a \textit{model} hyperparameter. It is an important parameter for the \textit{modelling} approach in general.
+    To obtain the best model hyperparameters to train the single-dimension models, several tests were conducted to estimate the influence of model components and model hyperparameters\footnote{
+        One could argue that the number of annotation points is not a \textit{model} hyperparameter. It is an essential parameter for the \textit{modelling} approach in general.
     } on the model performance.
 }
 
-\subsubsection{Weighted vs. unweighted point loss performance}
+\subsubsection{Weighted vs unweighted point loss performance}
 
 \par{
     Equation \ref{eq:LP} on page \pageref{eq:LP} defines the point loss $\mathcal{L}_P$. 
     In this equation, the factor $w_{\mathcal{Y}_i(\vec{p})}$ indicates a weight that can be assigned to each of the output classes.
     Since data classes can be unbalanced, these weights can help to counter this imbalance.
-    In this problem (based on the available datasets) there are about 500 times more background voxels than voxels belonging to a lumbar vertebra.
+    In this problem (based on the available datasets), there are about 500 times more background voxels than voxels belonging to a lumbar vertebra.
     By weighing with a factor proportional\footnote{The weighting vector is normalized.} to this ratio, this imbalance can be countered\footnote{
-        When full data labels are available the counts of the voxel types are available for the train set (one should not include the counts of the validation \& test set to avoid data leakage).
+        When full data labels are available, the counts of the voxel types are available for the train set (one should not include the counts of the validation \& test set to avoid data leakage).
         In principle, this information is not necessarily available when only point level annotation is available. In this work, it is considered that (at least an approximation) of the ratios can be available as prior knowledge.
     }. In the unweighted case, $w_{\cdot} = 1$.
 }
 \par{
     In figure \ref{fig:weighted_vs_unweighted}, the difference between the weighted dice score \& the average dice score on the test set is compared for two models trained on the transverse slices.
-    This result shows the result of the non-weighted segmentation is better than the result of the model trained with weighted loss.
+    This result shows that the result of the non-weighted segmentation is better than the result of the model trained with weighted loss.
     Contrary to fully supervised models, in the weakly supervised case, the ratio between \textit{labelled} points is not as unbalanced as the ratio between the actual class pixels in the result.
     This explains the weighted point loss performance compared to the unweighted point loss performance.
     An approach that is not tested in this work is to weigh proportional to the inverse of the number of \textit{annotation} points per class instead of weighing proportional to the number of \textit{ground truth} pixels.
@@ -82,10 +81,10 @@
 
 \subsubsection{Value of the added loss components}
 \par{
-    In this work, two loss components were added to the consistency loss published in \cite{Laradji}.
-    The four loss components used in this work are described in more detail in \ref{sec:LossFunctions}.
+    In this work, two-loss components were added to the consistency loss published in \cite{Laradji}.
+    
     Where \cite{Laradji} is based only on the point loss $\mathcal{L}_P$ and the consistency loss $\mathcal{L}_C$, this work makes use of two extra loss components:
-    the prior extend loss $\mathcal{L}_E$ and the separation loss $\mathcal{L}_S$.
+    the prior extend loss $\mathcal{L}_E$ and the separation loss $\mathcal{L}_S$. The four-loss components used in this work are described in more detail in \ref{sec:LossFunctions}.
     Figure \ref{fig:addedLossComponents} shows experimental results validating the positive influence these added loss terms have on the model performance.
 }
 
@@ -98,8 +97,20 @@
 
 \subsection{Evolution of the model performance with increased labelling effort}
 \par{
-    Probably the most basic modelling hyperparameter for a point annotation modelling campaign is the number of labelling points one asks the expert to provide.
-    This section presents experimental results to estimate the influence of the number of annotation points on the resulting model performance.
-    Intuitively, one would expect the model performance increases with the number of annotation points provided.
-    This turns out to be false.
+    The most basic modelling hyperparameter for a point annotation modelling campaign is the number of labelling points one asks the expert to provide.
+    This section presents experimental results to estimate the number of annotation points on the resulting model performance.
+    Intuitively, one would expect the model performance to increase with the number of annotation points provided.
+    This hypothesis turns out to be false.
 }
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{images/BlobPoints_influence.png}
+    \caption{Evolution of the weakly supervised model performance with increased number of annotation points.}
+\end{SCfigure}
+\par{
+    Figure \ref{fig:addedLossComponents} shows the weighted dice score actually decreases with more annotation points.
+    The increased recall of the model causes this. 
+    The model becomes very eager to find class points. This causes many background pixels to be wrongly classified as class points.
+    The resulting decrease in precision causes the F1 score to decrease.
+}
+\todo[inline]{Werk verder uit met afbeelding en tabel}

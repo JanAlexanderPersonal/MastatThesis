@@ -10,7 +10,7 @@
         Building these applications requires expensive labelled datasets.
         This research investigates techniques to reduce the dataset labelling cost by working with point annotation instead of full annotation.
         Experiments are conducted on openly available datasets and demonstrate the usefulness of two new loss components and a combination technique of different model results to generate pseudo masks.
-        As a final result, this work demonstrates one can obtain xxx \% of the performance of a fully annotated model at xxx \% of the labelling cost. \todo[inline]{add numbers}
+        As a final result, this work demonstrates that one can obtain xxx \% of the performance of a fully annotated model at xxx \% of the labelling cost. \todo[inline]{add numbers}
     }
 }
 \section*{Thesis objective \& Motivation}
@@ -24,13 +24,13 @@
     Acquiring these datasets and the corresponding labels is time-consuming and expensive. 
     Maximisation of the return of a given data and labelling budget through is a goal shared by all \acrshort{ml} practitioners.
     The use of weak labels, or sometimes called \textit{hints}, is one approach to improve this.
-    This approach aims to train a model that is capable of inferring more informative results than the information level explicitly available in the labelling.
+    This approach aims to train a model capable of inferring more informative results than the information level explicitly available in the labelling.
 }
 \par{
     This project presents a model for the automated segmentation of the lumbar vertebrae of the human spine based on point level annotated medical scans.
     I work with both \acrshort{ct} scan volumes and \acrshort{mri} scan volumes.
     Since point level annotation is faster and cheaper than providing a complete label mask (estimated at 8.4\% of the cost by \cite{Bearman2015}), this technique provides a cost-benefit. 
-    The labels only contain the true class of a mere handful of voxels, the information contained in point labels is weaker than the segmentation information inferred by the model.
+    The labels only contain the true class of a mere handful of voxels. The information contained in point labels is weaker than the segmentation information inferred by the model.
 }
 
 
@@ -55,7 +55,7 @@
     Next, the image is sliced along one of the three principal axes.
     The contrast of the 2D image slices is first enhanced with the \acrfull{clahe} algorithm.
     Then the images are cropped (or padded, if needed) to form $352 px \times 352 px$ slices.
-    All models are build with this image size. This is sufficient to contain all 5 lumbar vertebrae $L_1$ to $L_5$ in one image.
+    All models are built with this image size, sufficient to contain all 5 lumbar vertebrae $L_1$ to $L_5$ in one image.
 }
 
 
@@ -77,14 +77,14 @@
 \subsection*{Weakly supervised models}
 \par{
     The segmentation of the volume image is based on a 2D \acrfull{cnn}, pre-trained on a large classification dataset.
-    Upsampling layers are added to this network to allow the network to estimate 6 segmentation channels (5 lumbar vertebrae and the background class). 
+    Upsampling layers are added to this network to estimate 6 segmentation channels (5 lumbar vertebrae and the background class). 
     By training three different weakly supervised models on 3 sets of 2D images sliced along the 3 main volume dimensions, three sets of segmentation masks are obtained. 
     The combination of these different segmentation masks is used as an \textit{erzatz} label set to train a fully supervised model on one volumetric dimension.
 }
 
 \subsubsection*{Loss function}
 \par{
-    To train a the weakly supervised network, several loss components, both supervised and unsupervised are combined.
+    To train a weakly supervised network, several loss components, both supervised and unsupervised, are combined.
 }
 \par{
     The weighted cross-entropy loss is optimised for the fully supervised reference model, a classic choice for this problem.
@@ -105,7 +105,7 @@
     The second unsupervised loss term is the separation loss term.  \todo[inline]{elaborate}
 }
 \par{
-    Finally, $\mathcal{L}_E$, the maximal extend supervised loss term takes into account that a lumbar vertebra has a limited size.
+    Finally, $\mathcal{L}_E$, the maximal extend supervised loss term, takes into account that a lumbar vertebra has a limited size.
     The Euclidian distance field $\mathbf{d}$ from the annotation point is converted to a semi-mask for each class $k$:
     \begin{eqnarray}
         \mathbf{d}_k(\vec{q}) &=& \max_{\vec{p}:\mathcal{Y}_i(\vec{p})=k}||\vec{q} - \vec{p}||\\
@@ -121,7 +121,7 @@
 
 \subsubsection*{Model result combination}
 \par{
-    The combination of the results of the three models trained on the three geometric axis is a pseudo-mask of higher quality than the results of the individual models.
+    Combining the results of the three models trained on the three geometric axes is a pseudo-mask of higher quality than the results of the individual models.
     After morphological smoothing, the pseudo mask is used to train the final model (on sagittal slices).
 }
 
