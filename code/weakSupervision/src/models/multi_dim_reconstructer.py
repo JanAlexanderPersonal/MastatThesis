@@ -15,6 +15,7 @@ import math
 import warnings
 import tikzplotlib
 from joblib import Parallel, delayed
+import shutil
 
 from src.models.metrics.seg_meter import SegMeter
 from PIL import Image as Img
@@ -449,7 +450,8 @@ class multi_dim_reconstructor(object):
                     try:
                         os.remove(os.path.join(imagedir, image_name))
                     except :
-                        os.rmdir(os.path.join(imagedir, image_name))
+                        shutil.rmtree(os.path.join(imagedir, image_name), ignore_errors=True)
+                        
 
                     
 
