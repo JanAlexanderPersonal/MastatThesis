@@ -31,7 +31,7 @@ def setuplogger():
     root_logger.addHandler(handler)
 
 
-def reconstruct_3d(exp_dict, model_type_name, savedir, ground_truth):
+def reconstruct_3d(exp_dict, model_type_name, savedir, ground_truth, pseudo_dataset = None):
 
     logger.debug(f'model type name : {model_type_name}')
     logger.debug(f'save directory : {savedir}')
@@ -46,6 +46,10 @@ def reconstruct_3d(exp_dict, model_type_name, savedir, ground_truth):
     with open(os.path.join(savedir, 'exp_dict_reconstruct.json'), 'w') as f:
         json.dump(exp_dict, f)
 
+    if pseudo_dataset is not None:
+        logger.info(f'Replace the train set masks for pseudo-masks in {pseudo_dataset}')
+        reconstructor.split_pseudomask_volumes(savedir, pseudo_dataset, dim = 2)
+
 
 if __name__ == "__main__":
     setuplogger()
@@ -58,6 +62,7 @@ if __name__ == "__main__":
     parser.add_argument('-sd', '--savedir', default=None)
     parser.add_argument('-gt', '--ground_truth',
                         default='dataset_1_contrast_3')
+    parser.add_argument('-pd', '--pseudo_dataset', default = None)
 
     args = parser.parse_args()
 
@@ -66,5 +71,6 @@ if __name__ == "__main__":
     model_type_name = args.model_name
     save_dir = args.savedir
     ground_truth = args.ground_truth
+    pseudo_dataset = args.pseudo_dataset
 
-    reconstruct_3d(exp_dict, model_type_name, save_dir, ground_truth)
+    reconstruct_3d(exp_dict, model_type_name, save_dir, ground_truth, pseudo_dataset)

@@ -37,6 +37,10 @@ from matplotlib import  cm
 
 from typing import Dict
 
+sys.path.append('/root/space/code/utils/')
+
+import utils as ut
+
 from torch.utils.data import DataLoader
 MULTI_PROCESS = True
 N_JOBS = {'MyoSegmenTUM' : -1, 'USiegen' : -1, 'xVertSeg':1, 'PLoS' : -1}
@@ -518,11 +522,36 @@ class multi_dim_reconstructor(object):
                     plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_train_denoise{BEST_IT_DN}_erode{BEST_IT_ER}_{source}_{nr}'), ground_truth = ground_truth, combined_volume=combined_volume, volume_scan = volume_scan)
                     np.save(os.path.join(savedir, f'morphcombined_train_{source}_{nr}') ,combined_volume)
 
+    def split_pseudomask_volumes(self, volumes_source : str, volumes_target : str, dim : int = 2):
 
+        # in the source directory, we should find volumes according to naming convention:
+        #       morphcombined_train_xVertSeg_001.npy
+        #       morphcombined_train_xVertSeg_002.npy
 
-                
+        README_TEXT = ['Pay attention, the following mask files have been replaced by PSEUDO mask files : ']
 
-                
+        for filename in os.listdir(os.path.abspath(volumes_source)):
+            if not filename.endswith('.npy'):
+                continue
+            _, split, dataset_source, number = filename.strip('.npy').split('_')
 
+            logger.info(f'Split : {split} and number {number}')
 
+            if not split == 'train':
+                continue
 
+            arr = np.load(filename)
+            # Find the folder with masks for this specific volume
+
+            target_path = os.path.join(volumes_target,  f'{dataset_source}_masks', f'image{number}')
+            shutil.rmtree(target_path, ignore_errors=True)
+            Path(target_path).mkdir(parents=True, exist_ok=True)
+            README_TEXT.append(f'\t{dataset_source}\t{number}')
+            np.save(os.path.join(target_path, 'pseudomask_array'), arr)
+            ut.mask_to_slices_save(arr, dim, target_path)
+
+        # Write the read me file
+        with open(os.path.join(volumes_target, 'readme.txt')) as f:
+            f.write(
+                '\n'.join(README_TEXT)
+            )
