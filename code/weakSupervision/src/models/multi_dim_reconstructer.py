@@ -373,21 +373,24 @@ class multi_dim_reconstructor(object):
             tikzplotlib.save(os.path.join(savename, 'graph'), axis_width ='12cm', axis_height =f'{fig_h}cm')
             plt.close('all')
 
-        def clean_mask(volume : np.ndarray, iterations_denoise: int = 1, iterations_erode:int = 1):
+        def clean_mask(volume : np.ndarray, iterations_denoise: int = 1, iterations_erode:int = 1, full = True):
             """ Function to clean up a mask
             """
-            def remove_noise(volume, iterations_denoise, iterations_erode):
+            def remove_noise(volume, iterations_denoise, iterations_erode, full = True):
                 struct = morph.generate_binary_structure(3, 3)
-                return morph.binary_erosion(
-                    morph.binary_closing(
-                        morph.binary_opening(volume, structure=struct, iterations = iterations_denoise)
-                        , structure=struct, iterations = iterations_denoise
-                    ), structure=struct, iterations = iterations_erode
-                )
+                if full:
+                    return morph.binary_erosion(
+                        morph.binary_closing(
+                            morph.binary_opening(volume, structure=struct, iterations = iterations_denoise)
+                            , structure=struct, iterations = iterations_denoise
+                        ), structure=struct, iterations = iterations_erode
+                    )
+                else:
+                    return morph.binary_closing( volume, structure=struct, iterations = iterations_denoise)
             
             temp = np.zeros((*volume.shape, 6), dtype = int)
             for i in range(6):
-                temp[:,:,:, i] = remove_noise((volume==i), iterations_denoise, iterations_erode)
+                temp[:,:,:, i] = remove_noise((volume==i), iterations_denoise, iterations_erode, full=full)
 
             volume = np.argmax(temp, axis = 3)
             return volume
@@ -395,10 +398,33 @@ class multi_dim_reconstructor(object):
         def combine_volumes(volumes : Dict[int, np.ndarray]) -> np.ndarray:
             combined_volume = np.zeros_like(volumes[0])
             struct = morph.generate_binary_structure(3, 3)
-            volumes = {key : morph.binary_closing(volume, structure=struct, iterations=1) for key, volume in volumes.items()}
-            
+            volumes = {key : clean_mask(volume, full = False) for key, volume in volumes.items()}
+            counts = [np.unique(volumes[key], return_counts = True) for key in range(3)]
+            logger.debug(f'Counts original : {counts}')
+            for i in range(3):
+                c = counts[i]
+                if c[1].size > 1:
+                    c = c[1]
+                    counts[i] = np.sum(c[1:])
+                else:
+                    counts[i] = 0 
+            counts = np.array(counts)
+            relative = counts / np.max(counts)
+            ignore = None
+            if any(relative < .35) :
+                ignore = np.argmin(counts)
+                logger.warning(f'Result {ignore} will be ignored because too small.')
+            logger.debug(f'Counts : {counts} ** relative : {relative} ** ignore {ignore}')
             for i in range(1,6):
-                m = (volumes[0] == 1) & (volumes[1] == i) & (volumes[2] == i)
+                if ignore is None:
+                    m = (volumes[0] == 1) & (volumes[1] == i) & (volumes[2] == i)
+                elif ignore == 0:
+                    m = (volumes[1] == i) & (volumes[2] == i)
+                elif ignore == 1:
+                    m = (volumes[0] == 1) & (volumes[2] == i)
+                elif ignore == 2:
+                    m = (volumes[0] == 1) & (volumes[1] == i)
+                # logger.debug(f'set {np.sum(m)} elemets to {i}')
                 combined_volume[m] = i
             return combined_volume  
 
@@ -415,8 +441,8 @@ class multi_dim_reconstructor(object):
 
         seg_meters = {
             iterations_denoise : {
-                iterations_erode : SegMeter('val') for iterations_erode in range(10)
-            } for iterations_denoise in range(10) 
+                iterations_erode : SegMeter('val') for iterations_erode in range(6)
+            } for iterations_denoise in range(6) 
         }
 
         savedir = os.path.join(volumes_location, 'volumes')
@@ -432,7 +458,7 @@ class multi_dim_reconstructor(object):
             logger.info(f'Start reconstruction of volumes for split {split}.')
 
             if split == 'train' and not F_optimal_iterations:
-                for it_DN, it_ER in itertools.product(list(range(10)), list(range(10))):
+                for it_DN, it_ER in itertools.product(list(range(6)), list(range(6))):
                     seg_meters[it_DN][it_ER] = seg_meters[it_DN][it_ER].get_avg_score()
                 seg_meters = pd.DataFrame.from_dict({
                     (it_DN, it_ER) : [seg_meters[it_DN][it_ER]['val_score'] , seg_meters[it_DN][it_ER]['val_prec'], seg_meters[it_DN][it_ER]['val_recall']] 
@@ -461,7 +487,7 @@ class multi_dim_reconstructor(object):
             for file_name in tqdm(os.listdir(os.path.join(volumes_location, foldernames[0]))):
                 if not file_name.endswith('_res.npy'):
                     continue
-                
+                logger.info(f'Start extracting file {file_name}')
                 volumes = {i : np.load(os.path.join(volumes_location, fn, file_name)) for i, fn in enumerate(foldernames)}
                 _, source, nr, _ = file_name.split('_')
                 
