@@ -2,14 +2,15 @@
 \par{
     As a reference to compare the models trained on weakly-supervised data with, the model performance of a model trained on the same fully supervised data is taken as a reference.
     In this chapter, the results of these fully supervised reference experiments are discussed.
+    The metric based on which the experiment results are compared is the weighted dice score, see equation \ref{eq:weighted_dice} on page \pageref{eq:weighted_dice}.
 }
 
 \section{Experiment results}
 \par{
     The fully supervised experiments serve two goals.
     First is to calculate a reference model performance with which to compare the weakly supervised model results.
-    The second is to choose two hyperparameters for the point supervised experiments.
-    It is assumed that a network architecture that yields a good fully supervised model result is also an excellent choice with which to build a weakly supervised model.
+    The second is to support hyperparameter choices for the point supervised experiments.
+    It is assumed that a network architecture that yields a good fully supervised model is also a suitable choice to build a weakly supervised model.
     The possible influence of the context slices\footnote{The context slice idea is discussed in detail in chapter \ref{section:twoDplus} on page \pageref{section:twoDplus}.} is also evaluated with these experiments.
 }
 \par{
