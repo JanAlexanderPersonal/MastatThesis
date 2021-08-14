@@ -36,10 +36,10 @@ import matplotlib.pyplot as plt
 from matplotlib import  cm
 
 from typing import Dict
-
+import sys
 sys.path.append('/root/space/code/utils/')
 
-import utils as ut
+import utils as slice_utils
 
 from torch.utils.data import DataLoader
 MULTI_PROCESS = True
@@ -530,28 +530,31 @@ class multi_dim_reconstructor(object):
 
         README_TEXT = ['Pay attention, the following mask files have been replaced by PSEUDO mask files : ']
 
+        logging.info(f'Fetch pseudo masks from {volumes_source} and replace the train slices in {volumes_target}')
+
         for filename in os.listdir(os.path.abspath(volumes_source)):
             if not filename.endswith('.npy'):
                 continue
             _, split, dataset_source, number = filename.strip('.npy').split('_')
 
-            logger.info(f'Split : {split} and number {number}')
+            logger.info(f'Dataset source: {dataset_source} * Split : {split} and number {number}')
 
             if not split == 'train':
                 continue
 
-            arr = np.load(filename)
+            arr = np.load(os.path.join(volumes_source, filename))
             # Find the folder with masks for this specific volume
 
             target_path = os.path.join(volumes_target,  f'{dataset_source}_masks', f'image{number}')
+            logging.info(f'remove files in {target_path}')
             shutil.rmtree(target_path, ignore_errors=True)
             Path(target_path).mkdir(parents=True, exist_ok=True)
             README_TEXT.append(f'\t{dataset_source}\t{number}')
             np.save(os.path.join(target_path, 'pseudomask_array'), arr)
-            ut.mask_to_slices_save(arr, dim, target_path)
+            slice_utils.mask_to_slices_save(arr, dim, target_path)
 
         # Write the read me file
-        with open(os.path.join(volumes_target, 'readme.txt')) as f:
+        with open(os.path.join(volumes_target, 'readme.txt'), 'w+') as f:
             f.write(
                 '\n'.join(README_TEXT)
             )

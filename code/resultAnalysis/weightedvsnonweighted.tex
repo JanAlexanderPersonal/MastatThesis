@@ -1,3 +1,11 @@
+\documentclass{standalone}
+\usepackage[utf8]{inputenc}
+\usepackage{pgfplots}
+\DeclareUnicodeCharacter{2212}{−}
+\usepgfplotslibrary{groupplots,dateplot}
+\usetikzlibrary{patterns,shapes.arrows}
+\pgfplotsset{compat=newest}
+\begin{document}
 % This file was created by tikzplotlib v0.9.9.
 \begin{tikzpicture}
 
@@ -181,3 +189,5 @@ yticklabels={weighted point loss,non-weighted point loss}
   rotate=0.0
 ]{weighted point loss vs non-weighted point loss};
 \end{tikzpicture}
+
+\end{document}

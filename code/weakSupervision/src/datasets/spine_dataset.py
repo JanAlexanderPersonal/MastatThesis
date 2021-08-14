@@ -151,7 +151,7 @@ class SpineSets(torch.utils.data.Dataset):
                 logger.debug(f' * image slice path : {image_slice_path}')
                 patient_id = f'{source}_{patient_nr:03d}'
                 for mask_slice in os.listdir(mask_slice_path):
-                    if not mask_slice.endswith('.npy') or mask_slice.endswith('points.npy') or mask_slice in ['points_volume.npy', 'mask_array.npy']:
+                    if not mask_slice.endswith('.npy') or mask_slice.endswith('points.npy') or mask_slice in ['points_volume.npy', 'mask_array.npy', 'pseudomask_array.npy']:
                         continue
                     #logger.debug(mask_slice)
                     #logger.debug(SLICE_NR.findall(mask_slice))

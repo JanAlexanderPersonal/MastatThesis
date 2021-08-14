@@ -127,8 +127,7 @@ RECONSTRUCT_DICTS['Combine_one_stack'] = {
         "sources": [
             "xVertSeg",
             "USiegen",
-            "MyoSegmenTUM",
-            "PLoS"
+            "MyoSegmenTUM"
         ]
     },
     "dataset_size": {
