@@ -130,7 +130,11 @@ Based on the confusion matrix, 3 metrics can be calculated: the model \textit{pr
         \item[weighted F1-score]: Calculate the F1 score for all classes and calculated the weighted average as is done in equation \ref{eq:weighted_metric} to calculate the weighted precision.
     \end{description}
 }
-I choose to use the weighted F1-score. 
+In this work, the weighted F1-score or weighted Dice score is used to evaluate the experiment results in part \ref{part:results} starting at page \pageref{part:results}.
+For clarity, the expression defining $\text{Dice}_w$ is iterated below\footnote{Remark that $\sum_{j=0}^{k-1} a_{j,i}$ corresponds to all true labels that are equal to $i$.}:
+\begin{equation}
+    \text{Dice}_w = \frac{\sum_{i=0}^{k-1} \left[ \text{Dice}_i \sum_{j=0}^{k-1} a_{j,i} \right] }{\sum_{i=0}^{k-1} \sum_{j=0}^{k-1} a_{i,j} } \label{eq:weighted_dice}
+\end{equation}
 
 \subsection{Intersection over Union}
 
