@@ -1,0 +1,27 @@
+% This file was created by tikzplotlib v0.9.8.
+\begin{tikzpicture}
+
+\begin{axis}[
+height=5cm,
+tick align=outside,
+width=5cm,
+x grid style={white!69.0196078431373!black},
+xmin=-0.5, xmax=349.5,
+xtick pos=both,
+xtick style={color=black},
+y dir=reverse,
+y grid style={white!69.0196078431373!black},
+ymin=-0.5, ymax=349.5,
+ytick pos=left,
+ytick style={color=black}
+]
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=349.5, ymin=349.5, ymax=-0.5] {images/prior_extend-000.png};
+\addplot [draw=black, fill=black, mark=*, only marks, scatter]
+table{%
+x  y
+120 80
+100 35
+};
+\end{axis}
+
+\end{tikzpicture}
