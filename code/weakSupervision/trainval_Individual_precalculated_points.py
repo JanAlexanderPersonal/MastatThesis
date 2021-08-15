@@ -275,7 +275,7 @@ def trainval_source(exp_dict: Dict, savedir_base: str, datadir: str,
 
             if score_dict["val_score"] >= model.val_score_best:
                 logger.info('SCORE IMPROVED')
-                hu.torch_save(model_path, model.get_state_dict())
+                hu.torch_save(os.path.join(savedir, "model.pth"), model.get_state_dict())
                 logger.info("Checkpoint Saved: %s" % savedir)
                 if (e == exp_dict['max_epoch'] - 1) or (model.waiting >= 5) or (e % 10 == 0):
                     test_dict, test_metrics_df = model.val_on_loader(test_loader,
