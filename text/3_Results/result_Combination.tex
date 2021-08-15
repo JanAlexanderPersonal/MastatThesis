@@ -158,34 +158,35 @@ Table \ref{tab:combination_1} illustrates this concept.
           \textbf{Transverse} &
           \textbf{Coronal} &
           \textbf{Sagittal} \\ \hline
-        \begin{tabular}[c]{@{}l@{}}Context\\ Slices {[}mm{]}\end{tabular}   & 1     & 1     & 1     \\ \cline{1-1}
-        \begin{tabular}[c]{@{}l@{}}Points per\\ class instance\end{tabular} & 1     & 1     & 1     \\ \cline{1-1}
-        \begin{tabular}[c]{@{}l@{}}Background \\ points\end{tabular}        & 5     & 3     & 3     \\ \cline{1-1}
+        \begin{tabular}[c]{@{}l@{}}Context\\ Slices {[}mm{]}\end{tabular}           & 1      & 1      & 1      \\ \cline{1-1}
+        \begin{tabular}[c]{@{}l@{}}Points per\\ class instance\end{tabular}         & 1      & 1      & 1      \\ \cline{1-1}
+        \begin{tabular}[c]{@{}l@{}}Background \\ points\end{tabular}                & 5      & 3      & 3      \\ \cline{1-1}
         Dataset &
           \begin{tabular}[c]{@{}l@{}}PLoS\\ xVertSeg\\ USiegen\\ MyoSegmenTUM\end{tabular} &
           \multicolumn{2}{l}{\begin{tabular}[c]{@{}l@{}}xVertSeg\\ USiegen\\ MyoSegmenTUM\end{tabular}} \\ \cline{1-1}
-        \begin{tabular}[c]{@{}l@{}}Segmentation\\ classes\end{tabular}      & 2     & 6     & 6     \\ \cline{1-1}
-        \begin{tabular}[c]{@{}l@{}}Weighted \\ dice score\end{tabular}      & 0.476 & 0.339 & 0.350 \\ \hline
-        \begin{tabular}[c]{@{}l@{}}Weighted\\ dice score\\ combination\end{tabular} &
-          \multicolumn{3}{c}{\textit{0.51}} \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Segmentation\\ classes\end{tabular}              & 2      & 6      & 6      \\ \cline{1-1}
+        \begin{tabular}[c]{@{}l@{}}Weighted \\ dice score\end{tabular}              & 0.46   & 0.38   & 0.38   \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Weighted\\ dice score\\ combination\end{tabular} & \multicolumn{3}{c}{0.51} \\ \hline
         \end{tabular}
     \caption{Combination of three point supervised models with algorithm \ref{alg:combination}. 
     These models were constructed with a fixed number of background points and a fixed number of class labels per class instance.
     This test indicates that the segmentation mask obtained from the result of single dimension models with algorithm \ref{alg:combination} allows to obtain a new segmentation mask with a higher metric score, the pseudo masks.
-    Pay attention, the weighted dice scores for the individual models are evaluated on the test set, while the weighted dice score for the combination is evaluated on the cross validation set. \label{tab:combination_1}
+    The weighted dice scores are evaluated on the cross validation set, this causes the difference with the values in figure \ref{fig:points_influence}. \label{tab:combination_1}
     }
 
 \end{SCtable}
 
 In table \ref{combination_1}, the segmentation quality is calculated on the validation set.
 Since there are two hyperparameters (the number of denoise iterations and the number of erosion iterations) to optimise in the combination algorithm \ref{alg:combination}, 
-the algorithm is evaluated with a matrix of these hyperparameters and 
-
+the algorithm is evaluated with a matrix of these hyperparameters to choose the optimal hyperparameter set to construct the pseudo masks for the test set.
+In figure \ref{fig:hyperparameter_combination_1}, this obtimization procedure is illustrated.
+The optimal hyperparameter set in this case was 1 denoise iteration and 1 erosion iteration.
 \marginpar{
-        \includegraphics{images/combination_optimization_1.png}
+        \includegraphics[width=5cm]{images/combination_optimization_1.png}
         \captionof{figure}{Illustration of the hyperparameter optimization procedure for the combination detailed in \ref{combination_1}}
         \label{fig:hyperparameter_combination_1}
     }
+
 
 \begin{SCfigure}[][htb]
     \centering

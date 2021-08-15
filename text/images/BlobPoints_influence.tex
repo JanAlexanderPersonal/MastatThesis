@@ -1,0 +1,96 @@
+% This file was created by tikzplotlib v0.9.9.
+\begin{tikzpicture}
+
+\definecolor{color0}{rgb}{0.917647058823529,0.917647058823529,0.949019607843137}
+\definecolor{color1}{rgb}{0.298039215686275,0.447058823529412,0.690196078431373}
+\definecolor{color2}{rgb}{0.333333333333333,0.658823529411765,0.407843137254902}
+
+\begin{groupplot}[group style={group size=1 by 2}]
+\nextgroupplot[
+axis background/.style={fill=color0},
+axis line style={white},
+height=6cm,
+scaled x ticks=manual:{}{\pgfmathparse{#1}},
+tick align=outside,
+tick pos=left,
+title={Coronal slice model performance},
+unbounded coords=jump,
+width=8cm,
+x grid style={white},
+xlabel={weighted dice score},
+xmajorgrids,
+xmin=0.7, xmax=7.3,
+xtick style={color=white!15!black},
+xticklabels={},
+y grid style={white},
+ylabel={weighted dice score},
+ymajorgrids,
+ymin=0.273358795995079, ymax=0.353871087143575,
+ytick style={color=white!15!black}
+]
+\addplot [line width=0.7pt, color1, dotted, mark=asterisk, mark size=3.5, mark options={solid}]
+table {%
+1 0.33948922260711
+5 0.288722857918392
+7 0.277018445592738
+};
+\addplot [line width=0.7pt, color2, dotted, mark=asterisk, mark size=3.5, mark options={solid}]
+table {%
+1 nan
+5 0.328977175916458
+7 0.289645262055529
+};
+
+\nextgroupplot[
+axis background/.style={fill=color0},
+axis line style={white},
+height=6cm,
+legend cell align={left},
+legend style={
+  fill opacity=0.8,
+  draw opacity=1,
+  text opacity=1,
+  at={(0.03,0.03)},
+  anchor=south west,
+  draw=none,
+  fill=color0
+},
+tick align=outside,
+tick pos=left,
+title={Sagittal slice model performance},
+unbounded coords=jump,
+width=8cm,
+x grid style={white},
+xlabel={blob\_points},
+xmajorgrids,
+xmin=0.7, xmax=7.3,
+xtick style={color=white!15!black},
+y grid style={white},
+ylabel={weighted dice score},
+ymajorgrids,
+ymin=0.273358795995079, ymax=0.353871087143575,
+ytick style={color=white!15!black}
+]
+\addplot [line width=0.7pt, color1, dotted, mark=asterisk, mark size=3.5, mark options={solid}]
+table {%
+1 0.350211437545916
+5 0.312020085278096
+7 0.332644165770826
+};
+\addlegendentry{3}
+\addplot [line width=0.7pt, color2, dotted, mark=asterisk, mark size=3.5, mark options={solid}]
+table {%
+1 nan
+5 0.332808469419218
+7 0.305078197615681
+};
+\addlegendentry{5}
+\end{groupplot}
+
+\draw ({$(current bounding box.south west)!0.5!(current bounding box.south east)$}|-{$(current bounding box.south west)!0.98!(current bounding box.north west)$}) node[
+  scale=0.6,
+  anchor=north,
+  text=white!15!black,
+  rotate=0.0
+]{Influence of the number of annotation points};
+\end{tikzpicture}
