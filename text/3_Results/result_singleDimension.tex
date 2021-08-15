@@ -1,13 +1,10 @@
 \chapter{Single dimension experiments \label{sec:singleDimension}}
-
 \par{
     This chapter discusses the results of several experiments in the construction of single-dimensional models.
     The objective of these experiments is to investigate the influence different model hyperparameters have on the model performance.
     Based on this investigation, the hyperparameters for the single-dimensional models in the final step can be chosen.  
 }
-
 \section{Single dimension weakly supervised models}
-
 \par{
     In this section, the results of experiments with different model hyperparameters are compared to each other.
     The point annotation sets are generated from the available full annotation masks for each slice.
@@ -42,18 +39,13 @@
     The model performance results are compared based on the weighted dice score calculated on the test set.
     This metric is described in chapter \ref{sec:dice} on page \pageref{sec:dice}.
 }
-
-
 \subsection{Evaluation of the model Hyperparameters}
-
 \par{
     To obtain the best model hyperparameters to train the single-dimension models, several tests were conducted to estimate the influence of model components and model hyperparameters\footnote{
         One could argue that the number of annotation points is not a \textit{model} hyperparameter. It is an essential parameter for the \textit{modelling} approach in general.
     } on the model performance.
 }
-
 \subsubsection{Weighted vs unweighted point loss performance}
-
 \par{
     Equation \ref{eq:LP} on page \pageref{eq:LP} defines the point loss $\mathcal{L}_P$. 
     In this equation, the factor $w_{\mathcal{Y}_i(\vec{p})}$ indicates a weight that can be assigned to each of the output classes.
@@ -67,36 +59,66 @@
 \par{
     In figure \ref{fig:weighted_vs_unweighted}, the difference between the weighted dice score \& the average dice score on the test set is compared for two models trained on the transverse slices.
     This result shows that the result of the non-weighted segmentation is better than the result of the model trained with weighted loss.
+    At first, this seemed surprising.
     Contrary to fully supervised models, in the weakly supervised case, the ratio between \textit{labelled} points is not as unbalanced as the ratio between the actual class pixels in the result.
     This explains the weighted point loss performance compared to the unweighted point loss performance.
-    An approach that is not tested in this work is to weigh proportional to the inverse of the number of \textit{annotation} points per class instead of weighing proportional to the number of \textit{ground truth} pixels.
+    An approach that is not tested in this work is to weigh proportional to the inverse of the number of \textit{annotation} points per class instead of weighing proportional to the number of \textit{ground truth} pixels\footnote{
+        It seems worthwile for future researchers to investigate such an approach deeper. 
+        As it is clear from this chapter and from chapter \ref{sec:numberofpoints}, extracting more annotation points (or asking the expert to provied more annotation points) does not necessarily guarantee a better model performance.
+    }.
+    Figure \ref{fig:recall_weighted_vs_unweighted} provides more insight in the disappointing performance of the model trained with a weighted point loss compared to the model trained with the unweighted point loss:
+    Due to the overweighing of the classes, the model trained with the weighted point loss does not predict the background class anymore! 
+    This results in a recall score of 0.00 for this class.
+    Based on these observations, the subsequent models in this work are trained with the non-weighted point loss component.
+    As mentioned earlier, one could investigate other weighting schemes to optimize with regard to the point labels provided.
+    Eventhough this is an interesting topic, it was not investigated further in this work.
 }
-
-
+\begin{samepage}
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{images/weightedvsnonweighted_transverse.png}
+    \caption{
+        Illustration of the difference in model performance (weighted dice score) between a weighted point loss function and the unweighted point loss function for a point annotated models trained on transverse slices.
+        The models are trained with point annotations extracted from the available ground truth masks. For these models, 
+        10 points were extracted from the background mask and 3 points were extracted from each instance of each class in the slice. 
+        The texture on the plots of the transverse model performance bars try to help the reader identify that these models do not destinguish the vertebrae from each other but only predict a voxel to be a vertebra or not.
+    \label{fig:weighted_vs_unweighted_transverse}}
+\end{SCfigure}\nopagebreak
 \begin{SCfigure}[][htb]
     \centering
     \includegraphics[width=.95\textwidth]{images/weightedvsnonweighted.png}
-    \caption{Illustration of the difference in model performance between a weighted point loss function and the unweighted point loss function\label{fig:weighted_vs_unweighted}}
+    \caption{
+        Illustration of the difference in model performance between a weighted point loss function and the unweighted point loss function for a point annotated models trained on frontal and coronal slices.
+        The models are trained with point annotations extracted from the available ground truth masks. For these models, 
+        5 points were extracted from the background mask and 5 points were extracted from each instance of each class in the slice. 
+        \label{fig:weighted_vs_unweighted}}
+\end{SCfigure}
+\end{samepage}
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{images/perClass_weighted_nonweighted.png}
+    \caption{
+        Detailed recall results per class and per data source for the sagittal models referenced in figure \ref{fig:weighted_vs_unweighted}.
+        \label{fig:recall_weighted_vs_unweighted}}
 \end{SCfigure}
 
 
 \subsubsection{Value of the added loss components}
 \par{
-    In this work, two-loss components were added to the consistency loss published in \cite{Laradji}.
-    
-    Where \cite{Laradji} is based only on the point loss $\mathcal{L}_P$ and the consistency loss $\mathcal{L}_C$, this work makes use of two extra loss components:
+    In this work, two-loss components were added to the consistency loss published in \cite{Laradji2020a}.
+    Where \cite{Laradji2020a} is based only on the point loss $\mathcal{L}_P$ and the consistency loss $\mathcal{L}_C$, this work makes use of two extra loss components:
     the prior extend loss $\mathcal{L}_E$ and the separation loss $\mathcal{L}_S$. The four-loss components used in this work are described in more detail in \ref{sec:LossFunctions}.
     Figure \ref{fig:addedLossComponents} shows experimental results validating the positive influence these added loss terms have on the model performance.
 }
-
-
 \begin{SCfigure}[][htb]
     \centering
-    \includegraphics[width=.95\textwidth]{images/TransverseModel_Losscomponents.png}
-    \caption{Evaluation of the added value of loss components. \label{fig:addedLossComponents}}
+    \includegraphics[width=.95\textwidth]{images/Losscomponents.png}
+    \caption{Evaluation of the added value of loss components. 
+    The texture on the bars representing the transverse model performance help the reader remember the transverse model does not destinguish between the lumbar vertebrae.
+    \label{fig:addedLossComponents}}
 \end{SCfigure}
 
-\subsection{Evolution of the model performance with increased labelling effort}
+\subsection{Evolution of the model performance with increased labelling effort\label{sec:numberofpoints}}
 \par{
     The most basic modelling hyperparameter for a point annotation modelling campaign is the number of labelling points one asks the expert to provide.
     This section presents experimental results to estimate the number of annotation points on the resulting model performance.
@@ -109,8 +131,8 @@
     \caption{Evolution of the weakly supervised model performance with increased number of annotation points.}
 \end{SCfigure}
 \par{
-    Figure \ref{fig:addedLossComponents} shows the weighted dice score actually decreases with more annotation points.
-    The increased recall of the model causes this. 
+    Figure \ref{fig:addedLossComponents} shows the weighted dice score actually decreases with more annotation points for models trained with unweighted point loss.
+    
     The model becomes very eager to find class points. This causes many background pixels to be wrongly classified as class points.
     The resulting decrease in precision causes the F1 score to decrease.
 }

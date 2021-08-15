@@ -104,11 +104,11 @@ This distribution is not perfect but acceptable, as is indicated by the values i
 
 The result of this operation is detailed in appendix \ref{sec:appendix_split} on page \pageref{sec:appendix_split}.
 
-\section{Cropping}
-
+\section{Cropping\label{sec:cropping}}
 The networks used require input images of size $352 p \times 352 p$, corresponding to $352 mm \times 352 mm$.
 The image slices have different dimensions.
 The incoming images are cropped or padded, depending on whether the image dimension is smaller or larger than the crop window.
+
 
 When the image is cropped, one of 5 crops is selected, see figure \ref{fig:crop}:
 \begin{description}

@@ -22,6 +22,7 @@ The result of this operation is detailed in the following tables.
 
 \chapter{Used software \& Reproducability of this research}
 
+\section{Reproducability of the used environment}
 The reproducability of this work has been ensured in several ways:
 \begin{description}
   \item[Data]: All datasets used in this project are publically available. For some datasets, it is required to request permission, like the author of this work has done.
@@ -73,6 +74,9 @@ It aims to list the more advanced tools, crucial for this work.
    \hline
    matplotlib & 3.4.2 & data visualization \\ 
    seaborn & 0.11.1 & data visualization \\
+   \multicolumn{3}{c}{Neural network experiment management} \\
+   \hline
+   haven & xxx & experiment management \\ 
    \hline
    \hline
   \end{tabular}
@@ -84,6 +88,12 @@ Table \ref{tab:UsedTools} is not an exhaustive list of all libraries used in thi
 One can quickly dublicate the environment used in this work by building the \textit{Docker} environment defined in xxx.
 
 \todo[inline]{CONDA version}
+
+\section{Other}
+The formatting of this document, bringing Tufte layout elements in the \LaTeX memoir class, is based on the excelent post found on \url{https://tex.stackexchange.com/questions/275565/tufte-layout-in-painless-memoir}.
+The Neural network architecture illustrations xxx were made using this project: \url{https://github.com/HarisIqbal88/PlotNeuralNet}.
+The conceptual illustration of the neural network idea on page xxx is based on xxx.
+
 
 
 \newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm}

@@ -995,6 +995,82 @@
       \verb :home/jan/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Laradji et al. - 2018 - Where Are the Blobs Counting by Localization with Point Supervision.pdf:pdf
       \endverb
     \endentry
+    \entry{Laradji2020a}{article}{}
+      \name{author}{9}{}{%
+        {{hash=022086949e078e6d8906851da13d3fd6}{%
+           family={Laradji},
+           familyi={L\bibinitperiod},
+           given={Issam},
+           giveni={I\bibinitperiod}}}%
+        {{hash=f69d1b6540f285ca044e6c7de45f84e3}{%
+           family={Rodriguez},
+           familyi={R\bibinitperiod},
+           given={Pau},
+           giveni={P\bibinitperiod}}}%
+        {{hash=e29e0c60ded971e962eabb103e6c94b6}{%
+           family={Ma{ñ}as},
+           familyi={M\bibinitperiod},
+           given={Oscar},
+           giveni={O\bibinitperiod}}}%
+        {{hash=c58a5f1a86dc38fff8a6b8a7e0ce7c1c}{%
+           family={Lensink},
+           familyi={L\bibinitperiod},
+           given={Keegan},
+           giveni={K\bibinitperiod}}}%
+        {{hash=a36cf2a6200c0c5eaca361c784d2963f}{%
+           family={Law},
+           familyi={L\bibinitperiod},
+           given={Marco},
+           giveni={M\bibinitperiod}}}%
+        {{hash=b22a75172e0ea3f51f5c0ec83e4c948d}{%
+           family={Kurzman},
+           familyi={K\bibinitperiod},
+           given={Lironne},
+           giveni={L\bibinitperiod}}}%
+        {{hash=32457a799548fb797e1b5fd0f9ac599a}{%
+           family={Parker},
+           familyi={P\bibinitperiod},
+           given={William},
+           giveni={W\bibinitperiod}}}%
+        {{hash=93ee720c9a96ab0f1d67654be0d6ee24}{%
+           family={Vazquez},
+           familyi={V\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=193b9ca6685cb6578499da34933e41bf}{%
+           family={Nowrouzezahrai},
+           familyi={N\bibinitperiod},
+           given={Derek},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{84b95dc1401bd0fd894ecba9cd46a3e1}
+      \strng{fullhash}{22c8d3aa89f407e8277609af7efa583a}
+      \strng{bibnamehash}{84b95dc1401bd0fd894ecba9cd46a3e1}
+      \strng{authorbibnamehash}{84b95dc1401bd0fd894ecba9cd46a3e1}
+      \strng{authornamehash}{84b95dc1401bd0fd894ecba9cd46a3e1}
+      \strng{authorfullhash}{22c8d3aa89f407e8277609af7efa583a}
+      \field{sortinit}{L}
+      \field{sortinithash}{2c7981aaabc885868aba60f0c09ee20f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Coronavirus Disease 2019 (COVID-19) has spread aggressively across the world causing an existential health crisis. Thus, having a system that automatically detects COVID-19 in tomography (CT) images can assist in quantifying the severity of the illness. Unfortunately, labelling chest CT scans requires significant domain expertise, time, and effort. We address these labelling challenges by only requiring point annotations, a single pixel for each infected region on a CT image. This labeling scheme allows annotators to label a pixel in a likely infected region, only taking 1-3 seconds, as opposed to 10-15 seconds to segment a region. Conventionally, segmentation models train on point-level annotations using the cross-entropy loss function on these labels. However, these models often suffer from low precision. Thus, we propose a consistency-based (CB) loss function that encourages the output predictions to be consistent with spatial transformations of the input images. The experiments on 3 open-source COVID-19 datasets show that this loss function yields significant improvement over conventional point-level loss functions and almost matches the performance of models trained with full supervision with much less human effort. Code is available at: $\backslash$url{\{}https://github.com/IssamLaradji/covid19{\_}weak{\_}supervision{\}}.}
+      \field{eprinttype}{arXiv}
+      \field{month}{7}
+      \field{title}{{A Weakly Supervised Consistency-based Learning Method for COVID-19 Segmentation in CT Images}}
+      \field{year}{2020}
+      \verb{eprint}
+      \verb 2007.02180
+      \endverb
+      \verb{file}
+      \verb :home/jan/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Laradji et al. - 2020 - A Weakly Supervised Consistency-based Learning Method for COVID-19 Segmentation in CT Images.pdf:pdf
+      \endverb
+      \verb{urlraw}
+      \verb http://arxiv.org/abs/2007.02180
+      \endverb
+      \verb{url}
+      \verb http://arxiv.org/abs/2007.02180
+      \endverb
+    \endentry
     \entry{Lessmann2018}{article}{}
       \name{author}{4}{}{%
         {{hash=8ebe9ad407b31087fe4e2d286e081609}{%
@@ -1353,11 +1429,8 @@
       \endverb
     \endentry
   \enddatalist
-  \missing{Ahn2018}
   \missing{Alam2014}
-  \missing{Durian2019}
-  \missing{Laradji}
-  \missing{Mainis}
+  \missing{Maninis2018}
 \endrefsection
 \endinput
 
