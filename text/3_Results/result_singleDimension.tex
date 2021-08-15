@@ -30,7 +30,7 @@
     Even though delineating a vertebra on a transverse slice is possible, identifying which vertebra is presented is challenging for a human.
     Supported by a brief test, it was confirmed that trying to estimate 5 vertebra classes from the transverse slices only provides very confusing results.
     The models trained on the transverse slices only intend to label the slice pixels as either background (0) or vertebra (1), 
-    whereas the models trained on the sagittal and frontal slices intend to indicate which of 6 classes\footnote{0 for background, 1 for $L1$, 2 for $L2$, 3 for $L3$, 4 for $L4$ and 5 for $L2$} the pixel belongs to.
+    whereas the models trained on the sagittal and frontal slices intend to indicate which of 6 classes\footnote{0 for background and $i\in [1,2,3,4,5]$ for the corresponding $L i \in [L1,L2, L3, L4, L5]$.} the pixel belongs to.
 }
 \par{
     The models trained to segment sagittal and frontal slices were trained on datasets xVertSeg, UniSiegen and MyoSegmenTUM.

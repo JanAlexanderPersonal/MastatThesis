@@ -127,14 +127,14 @@
 }
 \subsection{General overview of techniques and approaches}
 \par{
-    Given an image-level class label, the \Gls{caml} \todo{reference} allows to identify the picture regions responsible for a classification result \cite{Ahn2018, Ahn2019}
+    Given an image-level class label, the \Gls{caml} \todo{reference} allows to identify the picture regions responsible for a classification result \cite{Ahn2019}
     \footnote{Other so-called \textit{saliency detection} methods exist, for example methods based on partial image occlusion [xxx].}.
     This approach makes much sense, for example, in cases where models are trained on web-scraped images.
     This approach is extended to the case of point-annotation in \cite{McEver2020}. 
     The rationale behind point annotation is that when an expert is required to label the images, optimal use needs to be made of the expert's time.
     Based on estimations \cite{Bearman2015} the time consumption of point annotation and image level annotation is small, yet the information quality is higher (see also chapter \ref{sec:weak_supervision}).
     An expert does not need significantly more time to click on an object compared to providing an image label\footnote{
-        It should be noted that point annotation refers to \textit{random} point annotation. Some authors \cite{Mainis} use \textit{extreme} point annotation. 
+        It should be noted that point annotation refers to \textit{random} point annotation. Some authors \cite{Maninis2018} use \textit{extreme} point annotation. 
         Where the expert is requested to indicate points at the edge of the segment region.
     }, yet the point provides valuable localization information.
     In \cite{McEver2020}, the case is even made that for large and dense images, point annotations could even help the expert to keep track of the already labelled objects.
