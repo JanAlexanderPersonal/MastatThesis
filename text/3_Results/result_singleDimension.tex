@@ -128,11 +128,11 @@
 \begin{SCfigure}[][htb]
     \centering
     \includegraphics[width=.95\textwidth]{images/BlobPoints_influence.png}
-    \caption{Evolution of the weakly supervised model performance with increased number of annotation points.}
+    \caption{Evolution of the weakly supervised model performance with increased number of annotation points.\label{fig:points_influence}}
 \end{SCfigure}
+
 \par{
     Figure \ref{fig:addedLossComponents} shows the weighted dice score actually decreases with more annotation points for models trained with unweighted point loss.
-    
     The model becomes very eager to find class points. This causes many background pixels to be wrongly classified as class points.
     The resulting decrease in precision causes the F1 score to decrease.
 }
