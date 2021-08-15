@@ -16,21 +16,43 @@
 \par{
     In figure \ref{fig:referenceExperiments}, the results of the reference experiments are shown.
     These results show the network based on VGG16 yields better results than the alternatives based on RESNET50 and U-Net.
-    Despite what was hoped for, the context slices do not seem to increase the model performance.
-    Remarkably, there is little difference between the models trained with a weighted cross-entropy loss and the non-weighted cross-entropy loss.
+    Despite what was hoped for, the context slices do not seem to strongly increase the model performance.
+    Remarkably, there is little difference between the models trained with a weighted cross-entropy loss and the non-weighted cross-entropy loss\footnote{
+        The weighted cross entropy loss is defined in chapter \ref{sec:crossentropy} on page \pageref{sec:crossentropy}. 
+        The objective of a weighted cross entropy is to improve the model performance for under-represented classes in an unbalanced dataset by adding a factor inverse proportional to the class prevalence to the cross entropy loss.
+    } when considering the weighted dice score.
+    In figures \ref{fig:referenceWeighted} and \ref{fig:referencenonWeighted}, the model result based on the FCN8 VGG16 model with context slices at 1 mm from the central slice is compared in detail for the models trained with weighted and the unweighted cross entropy function.
+    Based on these images, some conclusions can be drawn:
+    \begin{enumerate}
+        \item The prediction of the background class is practically perfect, for all datasets.
+        \item The model trained with an unweighted cross entropy loss underperforms compared to the model trained with the weighted cross entropy loss for the prediction of the $L1$ class.
+    \end{enumerate}
 }
 \begin{SCfigure}[][htb]
     \centering
     \includegraphics[width=.95\textwidth]{images/FullySupervised.png}
     \caption{Results of the fully supervised experiments.
     The indicated model performance metrics are calculated on the test set.
+    The columns represent de weighted dice scores for models based on the same network architecture with different loss functions.
     \label{fig:referenceExperiments}}
 \end{SCfigure}
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{images/full_perClass_perSource_weighted.png}
+    \caption{Detailed result for the fully supervised model trained with context slices at 1 mm from the central slice and with a weighted cross entropy loss function.
+    \label{fig:referenceWeighted}}
+\end{SCfigure}
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{images/full_perClass_perSource_notweighted.png}
+    \caption{Detailed result for the fully supervised model trained with context slices at 1 mm from the central slice and with a unweighted cross entropy loss function.
+    \label{fig:referencenonWeighted}}
+\end{SCfigure}
 
-\todo[inline]{
-    Assure the models are fully converged. 
-    Express this uncertainty on the results --> mention the need to decide under time pressure.
-}
+
 
 \section{Conclusion}
-Based on the results shown in figure \ref{fig:referenceExperiments}, it was decided to perform the weakly supervised experiments with the model based on VGG16 FCN8 with 1 context slice.
+\par{
+    Based on the results shown in figure \ref{fig:referenceExperiments}, it was decided to perform the weakly supervised experiments with the model based on VGG16 FCN8 with 1 context slice.
+    The reference performance metric to compare experiments with models trained on weakly supervised data with is $\text{Dice}_w=0,76$.
+}
