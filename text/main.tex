@@ -215,11 +215,23 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 
 \begin{document}
-
+\frontmatter
 \newgeometry{total={210mm,297mm},left=20mm,right=20mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
-\input{/home/thesis/0_Main/titlepage}
+\includepdf[fitpaper=true, pages=-]{/home/thesis/images/titel-adapted.pdf}
+%\input{/home/thesis/0_Main/titlepage}
 
-\cleardoublepage
+\clearpage\null\newpage
+\vspace{5cm}
+\chapter*{Admission for circulating the work}
+\addcontentsline{toc}{chapter}{Admission for circulating the work}
+\par{The author and the promoter give permission to consult this master dissertation
+and to copy it or parts of it for personal use. Each other use falls under the
+restrictions of the copyright, in particular concerning the obligation to mention
+explicitly the source when using results of this master dissertation.}
+\clearpage\null\newpage
+
+\input{/home/thesis/0_Main/Foreword}
+
 %%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%
 %%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%---%%%
 
@@ -242,9 +254,11 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 \restoregeometry
 \newgeometry{total={210mm,297mm},left=20mm,right=20mm,bindingoffset=5mm, top=25mm,bottom=20mm} 
 \input{/home/thesis/0_Main/main_abstract}
+\mainmatter
 \clearpage
 \restoregeometry
 \input{/home/thesis/1_ProblemIntro/PART_Problem_intro}
+
 
 \newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
 \begin{partwithabstract}{Modelling methods \& Analysis}
@@ -273,6 +287,9 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 %\nocite{*} 
 \printbibliography
+
+\clearpage\null\newpage
+
 
 \end{document}
 
