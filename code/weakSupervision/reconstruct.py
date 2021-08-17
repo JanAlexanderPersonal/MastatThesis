@@ -39,9 +39,9 @@ def reconstruct_3d(exp_dict, model_type_name, savedir, ground_truth, pseudo_data
     reconstructor = rec.multi_dim_reconstructor(
         exp_dict, model_type_name=model_type_name)
     logger.info('START CONSTRUCTING THE VOLUMES')
-    #reconstructor.make_3D_volumes(savedir)
+    reconstructor.make_3D_volumes(savedir)
     logger.info('START COMBINING THE VOLUMES')
-    #reconstructor.reconstruct_from_volumes(savedir, ground_truth)
+    reconstructor.reconstruct_from_volumes(savedir, ground_truth)
 
     with open(os.path.join(savedir, 'exp_dict_reconstruct.json'), 'w') as f:
         json.dump(exp_dict, f)

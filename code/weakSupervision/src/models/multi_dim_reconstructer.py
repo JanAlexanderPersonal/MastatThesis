@@ -128,7 +128,7 @@ class multi_dim_reconstructor(object):
                                         split=split,
                                         datadir=os.path.join(dataset_location, f'dataset_{i}_contrast_{C}'),
                                         exp_dict=model_dict,
-                                        dataset_size=model_dict['dataset_size'])
+                                        dataset_size=model_dict['dataset_size']) 
 
                     # make sure this dataset contains the full crop list:
                     # this operation will also sort the selected image list
@@ -165,7 +165,7 @@ class multi_dim_reconstructor(object):
             output_location (str): Location to output the generated 3D volumes to
         """
 
-        def combine_crops(crops_dict : Dict, orig_shape : Tuple) -> np.ndarray:
+        def combine_crops(crops_dict : Dict, orig_shape : Tuple, slice_id, scan_id, output_location) -> np.ndarray:
             """Function to combine the results (probabilities as sigmoid of logits) for each of the image slice crops  
 
             Args:
@@ -180,6 +180,8 @@ class multi_dim_reconstructor(object):
             """
             crop_dim = crops_dict[0].shape # This results in the dimensions [Channels, H, W] --> to get H & W, you need crop_dim[1] & crop_dim[2]
             logger.debug(f'new cropdict : original size {orig_shape} resulting in crops {[i for i in crops_dict.keys()]} with dimension {crop_dim}')
+            if len([i for i in crops_dict.keys()]) > 1:
+                logger.debug(f'new cropdict : original size {orig_shape} resulting in crops {[i for i in crops_dict.keys()]} with dimension {crop_dim}')
             padding = (max(0, (crop_dim[1] - orig_shape[0]) / 2.0),max(0, (crop_dim[2] - orig_shape[1]) / 2.0))
             # cut off the padding
             logger.debug(f'padding : {padding}')
@@ -192,6 +194,7 @@ class multi_dim_reconstructor(object):
             result.fill(np.nan)
             logger.debug(f'Result dimensions: {result.shape}')
 
+            plt.figure()
             # Crops only give partial information, each time a part of the results table stays low
             count = 0
             h, w = min(orig_shape[0], crop_dim[1]), min(orig_shape[1], crop_dim[2])
@@ -203,18 +206,34 @@ class multi_dim_reconstructor(object):
                 elif crop_nr == 1:
                     result[:, :h, -w:, count] = im
                 elif crop_nr == 2:
-                    result[:, -h:, -w:, count] = im
-                elif crop_nr == 3:
                     result[:, -h:, :w, count] = im
+                elif crop_nr == 3:
+                    result[:, -h:, -w:, count] = im
                 else:
                     raise ValueError
-
                 count += 1
+                if slice_id%25 == 0:
+                    plt.subplot(3,2,crop_nr+1)
+                    plt.imshow(cm.gist_stern_r(np.argmax(im, axis=0) * 51))
+                    plt.title(f'crop {crop_nr}')
+
+            result = np.argmax(np.nanmean(result, axis=3), axis = 0)
+            
+            if slice_id%25 == 0:
+                plt.subplot(3,2,5)
+                plt.imshow(cm.gist_stern_r(result * 51))
+                plt.title(f'combination of crops')
+                plt.suptitle(f'{scan_id}_{slice_id}_crops')
+                plt.tight_layout()
+                plt.savefig(os.path.join(output_location,'', f'{scan_id}_{slice_id}_crops.pdf'))
+                plt.close('all')
+
+                
 
             # Now, average over the last dimension of result to combine the crops, ignoring the nan values (where no value was returned)
             # Combine the 6 channels to one estimation for this slice
 
-            return np.argmax(np.nanmean(result, axis=3), axis = 0)
+            return result
 
         def combine_slices(slices_dict : Dict, stack_dim : int) -> np.ndarray:
             """combine a dictionary of slices to a complete 3D array with
@@ -283,7 +302,7 @@ class multi_dim_reconstructor(object):
                     elif batch_scan_ids[i] == scan_id: # New slice of the same scan
                         logger.debug(f'*** Slice {slice_id} of scan {scan_id} is finished *** ')
                         # Add the previous slice to the dict --> we are starting the crops of a new slice after this
-                        slice_dict[slice_id] = combine_crops(crops_dict, orig_shape)
+                        slice_dict[slice_id] = combine_crops(crops_dict, orig_shape, slice_id, scan_id, output_location)
                         # Start a new crops_dict
                         crops_dict = {batch_crop_nrs[i] : pr}
                         orig_shape = batch['meta'][i]['orig_shape']
@@ -292,7 +311,7 @@ class multi_dim_reconstructor(object):
                         logger.debug(f'New slice started -> slice : {slice_id} or scan {scan_id}')
                     else: # New scan
                         # add the previous slice to complete the previous scan
-                        slice_dict[slice_id] = combine_crops(crops_dict, orig_shape)
+                        slice_dict[slice_id] = combine_crops(crops_dict, orig_shape, slice_id, scan_id, output_location)
                         logger.debug(f'Finish scan {scan_id} and save in file scan_{scan_id}')
                         volume = combine_slices(slice_dict, stack_dim)
                         # Start the saving processes in independend process
@@ -320,7 +339,7 @@ class multi_dim_reconstructor(object):
                 volumes_from_loader(model, loader, dim, savedir)
 
     def reconstruct_from_volumes(self, volumes_location, ground_truth_location):
-        def plot_volumes(volumes : Dict, title : str, savename = '3d_reconstruct.png', ground_truth = None, combined_volume = None, volume_scan = None):
+        def plot_volumes(volumes : Dict, title : str, savename = '3d_reconstruct.pdf', ground_truth = None, combined_volume = None, volume_scan = None):
 
             fig_h = 12
             rows = 3
@@ -372,9 +391,7 @@ class multi_dim_reconstructor(object):
                         
             plt.suptitle(title)        
             plt.tight_layout()
-            plt.savefig(savename)
-            Path(savename).mkdir(parents=True, exist_ok=True)
-            tikzplotlib.save(os.path.join(savename, 'graph'), axis_width ='12cm', axis_height =f'{fig_h}cm')
+            plt.savefig(savename, bbox_inches='tight')
             plt.close('all')
 
         def clean_mask(volume : np.ndarray, iterations_denoise: int = 1, iterations_erode:int = 1, full = True):
@@ -435,7 +452,7 @@ class multi_dim_reconstructor(object):
         def get_combined_volume(volumes, iterations_denoise, iterations_erode, ground_truth = None, volume_scan=None):
             combined_volume=combine_volumes(volumes)
             combined_volume = clean_mask(combined_volume, iterations_denoise=iterations_denoise, iterations_erode=iterations_erode)
-            plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_denoise{iterations_denoise}_erode{iterations_erode}_{source}_{nr}'), ground_truth=ground_truth, volume_scan=volume_scan, combined_volume=combined_volume)
+            plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_denoise{iterations_denoise}_erode{iterations_erode}_{source}_{nr}.pdf'), ground_truth=ground_truth, volume_scan=volume_scan, combined_volume=combined_volume)
             return combined_volume
 
 
@@ -445,8 +462,8 @@ class multi_dim_reconstructor(object):
 
         seg_meters = {
             iterations_denoise : {
-                iterations_erode : SegMeter('val') for iterations_erode in range(6)
-            } for iterations_denoise in range(6) 
+                iterations_erode : SegMeter('val') for iterations_erode in range(4)
+            } for iterations_denoise in range(4) 
         }
 
         savedir = os.path.join(volumes_location, 'volumes')
@@ -462,7 +479,7 @@ class multi_dim_reconstructor(object):
             logger.info(f'Start reconstruction of volumes for split {split}.')
 
             if split == 'train' and not F_optimal_iterations:
-                for it_DN, it_ER in itertools.product(list(range(6)), list(range(6))):
+                for it_DN, it_ER in itertools.product(list(range(4)), list(range(4))):
                     seg_meters[it_DN][it_ER] = seg_meters[it_DN][it_ER].get_avg_score()
                 seg_meters = pd.DataFrame.from_dict({
                     (it_DN, it_ER) : [seg_meters[it_DN][it_ER]['val_score'] , seg_meters[it_DN][it_ER]['val_prec'], seg_meters[it_DN][it_ER]['val_recall']] 
@@ -500,7 +517,7 @@ class multi_dim_reconstructor(object):
                 volume_filename = os.path.join(ground_truth_location, f'{source}_images', f'image{nr}', 'image_array.npy')
                 volume_scan = np.load(volume_filename)
                 logger.debug(f'Volume scan datatype {volume_scan.dtype}')
-                plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'rawmask_{split}_{source}_{nr}'), ground_truth=ground_truth, volume_scan=volume_scan)
+                # plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'rawmask_{split}_{source}_{nr}.pdf'), ground_truth=ground_truth, volume_scan=volume_scan)
                 
 
                 logger.debug(f'Volume {source}, nr {nr}')
@@ -519,7 +536,7 @@ class multi_dim_reconstructor(object):
                     combined_volume = combine_volumes(volumes)
                     combined_volume = clean_mask(combined_volume, iterations_denoise=BEST_IT_DN, iterations_erode=BEST_IT_ER)
                     
-                    plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_train_denoise{BEST_IT_DN}_erode{BEST_IT_ER}_{source}_{nr}'), ground_truth = ground_truth, combined_volume=combined_volume, volume_scan = volume_scan)
+                    plot_volumes(volumes, f'{source} image {nr}', savename=os.path.join(imagedir, f'morphmask_train_denoise{BEST_IT_DN}_erode{BEST_IT_ER}_{source}_{nr}.pdf'), ground_truth = ground_truth, combined_volume=combined_volume, volume_scan = volume_scan)
                     np.save(os.path.join(savedir, f'morphcombined_train_{source}_{nr}') ,combined_volume)
 
     def split_pseudomask_volumes(self, volumes_source : str, volumes_target : str, dim : int = 2):

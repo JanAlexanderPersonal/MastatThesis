@@ -1,0 +1,16 @@
+crops_dict = {crop_nr : im[:,math.floor(padding[0]): crop_dim[1] - math.ceil(padding[0]), math.floor(padding[1]): crop_dim[2] - math.ceil(padding[1])] for crop_nr, im in crops_dict.items()}
+
+for crop_nr, im in crops_dict.items():
+                logger.debug(f'Add crop {crop_nr} to result ')
+                if crop_nr == 0:
+                    result[:, :h, :w, count] = im
+                elif crop_nr == 1:
+                    result[:, :h, -w:, count] = im
+                elif crop_nr == 2:
+                    result[:, -h:, -w:, count] = im
+                elif crop_nr == 3:
+                    result[:, -h:, :w, count] = im
+                else:
+                    raise ValueError
+
+                count += 1
