@@ -42,7 +42,7 @@ cudnn.benchmark = True
 
 F_stop_at_epoch = False
 
-LEARNING_RATE_STEPS = [1, 5000, 20000]
+LEARNING_RATE_STEPS = [1, 10, 10]
 MAX_WEIGHT_STEPS = [4,4,8]
 
 
@@ -225,6 +225,8 @@ def trainval_source(exp_dict: Dict, savedir_base: str, datadir: str,
     logger.info('Overlap detection success!')
 
     min_loss = np.inf
+
+    hu.torch_save(os.path.join(savedir, "model.pth"), model.get_state_dict())
 
     # Run the remaining epochs starting from the last epoch for which values
     # were available in the pkl
