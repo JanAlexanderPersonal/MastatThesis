@@ -1,4 +1,3 @@
-*.pdf
 /Data/*!(.md)
 /Data/*/*
 /literature_review/*.pdf
