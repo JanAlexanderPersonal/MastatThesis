@@ -116,7 +116,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                                      split="train",
                                      datadir=datadir,
                                      exp_dict=exp_dict,
-                                     dataset_size=exp_dict['dataset_size'], precalculated_points = False)
+                                     dataset_size=exp_dict['dataset_size'], precalculated_points = False, separate_source=separate_source)
 
     mask_counts = train_set.count_values_masks() # dict with counts per label {0 : ... ,  1 : ... , ...}
 
@@ -202,7 +202,7 @@ def trainval(exp_dict: Dict, savedir_base: str, datadir: str,
                               collate_fn=ut.collate_fn,
                               batch_size=exp_dict["batch_size"],
                               drop_last=True,
-                              num_workers=4, separate_source=separate_source)
+                              num_workers=4)
 
     for name, data_set in zip(['train', 'val', 'test'], [
                               train_set, val_set, test_set]):
