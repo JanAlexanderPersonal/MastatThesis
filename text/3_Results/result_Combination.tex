@@ -143,7 +143,9 @@ The combination of the rules and morphological smoothing operations discussed ab
     }
     $y_f \leftarrow ((y_f \circ \mathbf{B}) \bullet \mathbf{B}) \ominus \mathbf{B}$
    \caption{Rule based combination of model results from three single dimension models\label{alg:combination}}
-\end{algorithm}Only one semantic class is estimated in the first row, illustrating the model trained on transversal slices.
+\end{algorithm}
+
+Only one semantic class is estimated in the first row, illustrating the model trained on transversal slices.
 On the first three rows, slices of the resulting segmentations from the single dimension models are shown. 
 It is clear these masks contain some artefacts and are not always in agreement with each other.
 On the fourth row, the result after mask combination and morphological smoothing is shown. 
@@ -184,7 +186,7 @@ In the last row, the corresponding images are shown.
     The optimal hyperparameter set in this case was 2 denoise iterations and 1 erosion iteration.
 }
 \marginpar{
-        \includegraphics[width=5cm]{images/combination_optimization_1.png}
+        \includegraphics[width=5cm]{images/combination_optimization_1.pdf}
         \captionof{figure}{Illustration of the hyperparameter optimization procedure for the combination detailed in \ref{tab:combination_1}}
         \label{fig:hyperparameter_combination_1}
     }
