@@ -10,24 +10,31 @@ All three of these networks are based on the encoder-decoder principle.
 
 \todo[inline]{elaborate the network introductions}
 \begin{description}
-    \item[the VGG16 network: ] This is a classic classification network. 
+    \item[the VGG16 network: ] This is a classic classification network, developed by K. Simonyan \& A. Zimmerman. 
     The used network is illustrated in figure \ref{fig:vgg16}. 
     Inspired by \cite{Laradji2020}, the network is adapted for segmentation (This segmentation architecture is called VGG16 FCN8).
-    \item[The RESNET50 network:] This is a 
+    \item[The RESNET50 network:] The \Gls{resnet} (Kaiming He et al.) is a classification architecture that can be made very deep (more than 150 layers).
+    This depth is possible thanks to the skip connections. The network tested in this work is an implementation of the RESNET50 architecture, adapted with a FCN8 upsampling segmentation part.
     \item[The U-Net network: ] The U-Net is a network specifically designed for segmentation tasks. As was already described in chapter \ref{sec:MachineVisionMedical} on page \pageref{sec:MachineVisionMedical}, this network architecture was originally published in \cite{Ronneberger2015}.
 \end{description}
 
 \begin{SCfigure}[][htb]
     \centering
-    \includegraphics[width=.95\textwidth]{vgg16_upscore.pdf}
-    \caption{VGG16 based network. \label{fig:vgg16}}
+    \centering
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/VGG16_FCN8.pdf}
+    \end{minipage} 
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/UNET.pdf}
+    \end{minipage} 
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.7\textwidth]{images/RESNET.pdf}
+    \end{minipage} 
+    \caption{Illustrations of the tested network architectures.
+    Due to the size of the RESNET50 network, only one \textit{residual block} is illustrated.
+    \label{fig:vgg16}}
 \end{SCfigure}
 
-\begin{SCfigure}[][htb]
-    \centering
-    \includegraphics[width=.95\textwidth]{unet.pdf}
-    \caption{Unet based network}
-\end{SCfigure}
 
 \subsection{2D+ approach and \textit{context slices}\label{section:twoDplus}}
 
@@ -46,7 +53,7 @@ When evaluating slice with index $n$ the slices with indices $\left[n-k; n+k\rig
 Several values for $k$ are tested. When $k=0$, no extra slices are taken. The same slice is just entered in all 3 network channels. When $k=1$, the indices directly next to the investigated slices are taken.
 Due to the isotropic resampling (see section \ref{sec:resampling}), these slices are physically at 1 mm distance from the centre slice. When $k=5$, the slices at $5 mm$ distance from the centre slice are used.
 
-\subsection{Annotation points}
+\subsection{Annotation points\label{sec:annotationPoints}}
 \par{
     An important hyperparameter is the number of annotation points per instance slice.
     This consists of two parameters: the background annotation points and the class annotation points.
@@ -68,7 +75,7 @@ Due to the isotropic resampling (see section \ref{sec:resampling}), these slices
     Based on the results obtained from this first step, three models are now trained based on a single set of annotation points, obtained from the annotation of slices along one dimension of the volume.
     Apart from the slices along the chosen dimension, the number of annotation points in the slices along the other two dimensions are not fixed.
 }
-
+\FloatBarrier
 \subsection{Model training strategy}
 
 To optimize the model weights, the optimization scheme in algorithm \ref{alg:model_training} is executed.

@@ -7,11 +7,40 @@
 \restoregeometry
 
 \chapter{Conclusions}
+\par{
+    This research aimed to identify techniques for multi-label segmentation of volumetric scans of the human lumbar vertebra.
+    The research was based on 5 publically available datasets, containing both \acrshort{ct} and \acrshort{mri} scans.
+    The solution proposed in this document is based on previous research, the consistency loss introduced in\cite{Laradji}, extended with two new loss function components.  
+}
+\par{
+    Further, the resulting models, trained with this technique are combined with a new algorithm to obtain pseudo masks with which the final model can be trained.
+    This combination step was proven to be a valuable step to increase the segmentation mask performance, measured with the weighted dice metric.
+}
+\par{
+    The result of this work indicated that the developed techniques allow to obtain a weighted dice score of xxx for a model trained with labels that represent 8 to 24 \% of the cost of full label masks.
+    This result should be compared to the weighted dice score of 0.76 for a model that was trained on full label masks.
+}
+\par{
+    The results in this thesis have demonstrated that well-chosen additional loss terms can improve the performance of the consistency loss model and 
+    that the combination of the results of two-dimensional models trained on slices along a different dimensional axis can produce a three-dimensional segmentation mask of higher quality than the original masks.
+}
 
 \chapter{Remarks for future work}
-
-\begin{enumerate}
-    \item Finer prior extrend: per vertebra, per direction
-    \item Dig deeper in the difference between datasets
-    \item Dig deeper how weighted loss might help - Is oversampling a better idea?
-\end{enumerate}
+The research presented in this work raises a number of unanswered questions and could inspire others to investigate this problem further.
+Personally, I believe the following subjects desirve further investigation and exploration:
+\begin{description}
+    \item[Finer prior extrend:] The prior extend loss introduced in this work\footnote{The prior extent loss is introduced on page \pageref{fig:prior_extent}} is based on a single maximal radius $r=110mm$ 
+    of the lumbar vertebrae. This could be refined by imposing a different $r$ value per vertebra or even by imposing different values along different axis of the vertebrae.
+    \item[dataset difference:] This work makes use of a collection of different publically available datasets. The difference in performance between these is striking.
+    The developed model performance is unequal for the different datasets. This means that one cannot claim this model is generally applicable. It is only suitable for a limited range of scan types.
+    It would be interesting to investigate how the model could be trained that is more generally applicable. Are there fundamental differences between the datasets that can be adressed with improved pre-processing?
+    Can an adapted sampling scheme (under- or oversampling) help? 
+    \item[Weights for the point loss:] This work demonstrated that a weighted point loss function does not improve the model performance. One could argue that the chosen weighing strategy was not optimal.
+    Could it be a better idea to choose weights inverse proportional to the number of annotation points per class? Can another weighing scheme be conceived? 
+    \item[Optimal number of annotation points:] This research did not conclude on determining the optimal number of class instance annotation points. There are two contradicting observations.
+    First, there is the observation that the performance of the single dimension models decreases with more annotation points per class instance. 
+    On the other hand, decreasing the annotation points decreases the number of training slices for the other two slice dimensions on which no expert annotation was provided.
+    \item[Prior position loss:] One aspect of prior knowledge that has not been used in this work is the known sequence of the vertebrae. In \cite{Lessmann2018}, 
+    the known anatomical sequence of vertebrae was used for vertebrae identification.
+    Although this proved not to be necessary in this work, one can wonder if including this information, for example in a way similar to \cite{Lessmann2018}, could help to reduce the model training time.
+\end{description}

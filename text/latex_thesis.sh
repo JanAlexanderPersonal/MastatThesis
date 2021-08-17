@@ -1,16 +1,16 @@
 #!/bin/bash
 # run the latest pdf container (interactive)
 
-# rm /home/thesis/PlotNeuralNets/*.tex
-rm /home/thesis/PlotNeuralNets/*.aux
+#rm /home/thesis/PlotNeuralNets/*.tex
+#rm /home/thesis/PlotNeuralNets/*.aux
 
 echo "Maak images netwerken"
-#python3.8 /home/thesis/PlotNeuralNets/unet.py > /home/thesis/PlotNeuralNets/unet.tex
-#python3.8 /home/thesis/PlotNeuralNets/vgg16_upscore.py > /home/thesis/PlotNeuralNets/vgg16.tex
 
-pdflatex /home/thesis/PlotNeuralNets/unet.tex
-pdflatex /home/thesis/PlotNeuralNets/vgg16_upscore.tex
-pdflatex /home/thesis/PlotNeuralNets/resnet.tex
+# python3.8 /home/thesis/PlotNeuralNets/vgg16_upscore.py > /home/thesis/PlotNeuralNets/vgg16.tex
+
+#pdflatex /home/thesis/PlotNeuralNets/unet.tex
+#pdflatex /home/thesis/PlotNeuralNets/vgg16_upscore.tex
+#pdflatex /home/thesis/PlotNeuralNets/resnet.tex
 
 echo "Make main document"
 pdflatex main.tex

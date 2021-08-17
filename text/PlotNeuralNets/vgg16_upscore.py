@@ -6,8 +6,8 @@ sys.path.append(os.path.abspath('/home/thesis/PlotNeuralNets/'))
 from pycore.tikzeng import *
 from pycore.blocks import *
 
-OFFSET_X = 1
-OFFSET_Y = -10
+OFFSET_X = 2
+OFFSET_Y = 5
 
 # defined your arch
 arch = [
@@ -40,20 +40,21 @@ arch = [
 
     to_ConvConvRelu( name='fc7', s_filer=16, n_filer=(4096, 4096), offset=f"({OFFSET_X},0,0)", to="(p5-east)", width=(6, 6), height=15, depth=15, caption="conv6"),
 
-    to_Conv( name = 'score', s_filer=16, n_filer=6, offset=f"({OFFSET_X},0,0)", to='(fc7-east)', width=1, height=15, depth=15, caption="scoring" ),
+    to_Conv( name = 'score', s_filer=16, n_filer=6, offset=f"({OFFSET_X},0,0)", to='(fc7-east)', width=1, height=15, depth=15, caption="features" ),
     
-    #flatten
 
 
-    to_ConvRes( name='up3',   offset=f"({OFFSET_X / 2},{OFFSET_Y},0)", to="(p3-east)",    s_filer=352, n_filer=(6), width=(1), height=35, depth=35, opacity=0.5 ),
+    to_ConvRes( name='res3',   offset=f"({OFFSET_X },0,0)", to="(score-east)",    s_filer=32, n_filer=(6), width=(1), height=23, depth=23, opacity=0.5 ),
+    to_Conv( name = 'up3', s_filer=32, n_filer=6, offset=f"(0,{OFFSET_Y},0)", to='(res3-west)', width=1, height=23, depth=23 ),
     
-    to_Sum("s3", to="(up3-east)", offset=f"({OFFSET_X},0,0)"),
+    to_Sum("s3", to="(res3-east)", offset=f"({OFFSET_X},0,0)"),
 
-    to_ConvRes( name='up4',   offset=f"({OFFSET_X / 2},{OFFSET_Y},0)", to="(p4-east)",    s_filer=352, n_filer=(6), width=(1), height=35, depth=35, opacity=0.5 ),
+    to_ConvRes( name='res4',   offset=f"({OFFSET_X},0,0)", to="(s3-east)",    s_filer=64, n_filer=(6), width=(1), height=30, depth=30, opacity=0.5 ),
+    to_Conv( name = 'up4', s_filer=64, n_filer=6, offset=f"(0,{OFFSET_Y},0)", to='(res4-west)', width=1, height=30, depth=30 ),
     
-    to_Sum("s4", to="(up4-east)", offset=f"({OFFSET_X*2},0,0)"),
+    to_Sum("s4", to="(res4-east)", offset=f"({OFFSET_X},0,0)"),
 
-    to_ConvRes( name='up7',   offset=f"({OFFSET_X / 2},{OFFSET_Y},0)", to="(score-east)",    s_filer=352, n_filer=(6), width=(1), height=35, depth=35, opacity=0.5 ),
+    to_ConvRes( name='res5',   offset=f"({OFFSET_X},0,0)", to="(s4-east)",    s_filer=352, n_filer=(6), width=(1), height=40, depth=40, opacity=0.5 ),
     
     
     #connections
@@ -62,18 +63,12 @@ arch = [
     to_connection( "p3", "cr4"),
     to_connection( "p4", "cr5"),
     to_connection( "p5", "fc7"),
-
-    to_connection( "p3", "up3"),
-    to_connection('up3', "s3"),
-    to_connection('s3', "up4"),
-    to_connection('p4', "up4"),
-    to_connection('up4', "s4"),
-    to_connection('s4', "up7"),
-
-    to_connection( 'fc7', 'score'),
-
-    to_connection('score', "up7"),
-
+    to_connection( "fc7", "score"),
+    to_connection( "score", "res3"),
+    to_connection( "res3", "s3"),
+    to_connection( "s3", "res4"),
+    to_connection( "res4", "s4"),
+    to_connection( "s4", "res5"),
 
     to_end() 
     ]

@@ -12,6 +12,7 @@
 (indexentry :tkey (("WISE" "\\glossentry{wise}") ) :locref "{}{x}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("Features" "\\glossentry{features}") ) :locref "{}{x}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("COVID-19" "\\glossentry{covid}") ) :locref "{}{x}" :attr "pageglsnumberformat" ) 
+(indexentry :tkey (("ResNet" "\\glossentry{resnet}") ) :locref "{}{x}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("Weakly Supervised" "\\glossentry{weaklysupervisedl}") ) :locref "{}{1}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("Machine vision" "\\glossentry{machinevision}") ) :locref "{}{1}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("Artificial Intelligence" "\\glossentry{ai}") ) :locref "{}{6}" :attr "pageglsnumberformat" ) 
@@ -54,3 +55,4 @@
 (indexentry :tkey (("WISE" "\\glossentry{wise}") ) :locref "{}{17}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("COVID-19" "\\glossentry{covid}") ) :locref "{}{17}" :attr "pageglsnumberformat" ) 
 (indexentry :tkey (("WISE" "\\glossentry{wise}") ) :locref "{}{17}" :attr "pageglsnumberformat" ) 
+(indexentry :tkey (("ResNet" "\\glossentry{resnet}") ) :locref "{}{36}" :attr "pageglsnumberformat" ) 

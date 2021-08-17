@@ -21,8 +21,7 @@ Notably, the fact that some images were taken from the same patient is vital to 
 \begin{SCtable}[\sidecaptionrelwidth][h]
  
     \begin{tabular}{ l l l l l} 
-     \hline
-     \hline
+     \toprule
      Name & reference & imaging & Quantity & Annotation \\
           &           & technology & [images] & \\
      \hline 
@@ -31,8 +30,7 @@ Notably, the fact that some images were taken from the same patient is vital to 
     UniSiegen  & \cite{Zukic2014} & \acrshort{mri} & 17 & full \\
     PLoS & \cite{Chu2015} & \acrshort{mri} & 23 & semantic \\
     MyoSegmenTUM & \cite{Burian2019} & \acrshort{mri} &  54 & full \\
-     \hline
-     \hline
+     \bottomrule
     \end{tabular}
     \caption{List of dataset references. 
     The agreement with prof. T. Vrtovec regarding the xVertSeg dataset can be found in appendix \ref{seg:datasetagreement}.\label{tab:datasetReferences}}
@@ -46,8 +44,7 @@ the slices along dimension 1 represent the frontal slices, and the slices along 
 \begin{SCtable}[\sidecaptionrelwidth][h]
  
     \begin{tabular}{ l l l l} 
-     \hline
-     \hline
+     \toprule
      Name & X & Y & Z \\
      \hline 
     UWSpine & Left-right & Anteroposterior & Craniocaudal \\
@@ -55,8 +52,7 @@ the slices along dimension 1 represent the frontal slices, and the slices along 
     UniSiegen  &  Anteroposterior & Craniocaudal & Left-right \\
     PLoS & Left-right & Anteroposterior & Craniocaudal$^\dagger$ \\
     MyoSegmenTUM &  Anteroposterior & Craniocaudal & Left-right \\
-     \hline
-     \hline
+     \bottomrule
     \end{tabular}
     \caption{List of dataset orientations. Clarification of the names of the anatomical axis is given in figure \ref{fig:anatomicalPlains}.
     The names of the axis, $X$, $Y$ and $Z$ represent the \texttt{numpy} axis \texttt{0}, \texttt{1} and \texttt{2}.

@@ -143,12 +143,13 @@ The combination of the rules and morphological smoothing operations discussed ab
     }
     $y_f \leftarrow ((y_f \circ \mathbf{B}) \bullet \mathbf{B}) \ominus \mathbf{B}$
    \caption{Rule based combination of model results from three single dimension models\label{alg:combination}}
-\end{algorithm}
-
-\section{Pseudo mask performance}
-Using algorithm \ref{alg:combination}, a segmentation volume can be obtained with a higher weighted dice metric than the each of the individual segmentation volumes obtained from the single dimension models.
-This is tested by combining three models.
-Table \ref{tab:combination_1} illustrates this concept.
+\end{algorithm}Only one semantic class is estimated in the first row, illustrating the model trained on transversal slices.
+On the first three rows, slices of the resulting segmentations from the single dimension models are shown. 
+It is clear these masks contain some artefacts and are not always in agreement with each other.
+On the fourth row, the result after mask combination and morphological smoothing is shown. 
+This corresponds more closely to the ground truth mask, shown on the fifth row.
+This final mask, shown on the fourth row, will be used as a pseudo mask to approximate the unknown ground truth mask.
+In the last row, the corresponding images are shown.
 
 \begin{SCtable}[\sidecaptionrelwidth][h]
 
@@ -175,35 +176,93 @@ Table \ref{tab:combination_1} illustrates this concept.
     }
 
 \end{SCtable}
-
-In table \ref{combination_1}, the segmentation quality is calculated on the validation set.
-Since there are two hyperparameters (the number of denoise iterations and the number of erosion iterations) to optimise in the combination algorithm \ref{alg:combination}, 
-the algorithm is evaluated with a matrix of these hyperparameters to choose the optimal hyperparameter set to construct the pseudo masks for the test set.
-In figure \ref{fig:hyperparameter_combination_1}, this obtimization procedure is illustrated.
-The optimal hyperparameter set in this case was 1 denoise iteration and 1 erosion iteration.
+\par{
+    In table \ref{tab:combination_1}, the segmentation quality is calculated on the validation set.
+    Since there are two hyperparameters (the number of denoise iterations and the number of erosion iterations) to optimise in the combination algorithm \ref{alg:combination}, 
+    the algorithm is evaluated with a matrix of these hyperparameters to choose the optimal hyperparameter set to construct the pseudo masks for the test set.
+    In figure \ref{fig:hyperparameter_combination_1}, this obtimization procedure is illustrated.
+    The optimal hyperparameter set in this case was 2 denoise iterations and 1 erosion iteration.
+}
 \marginpar{
         \includegraphics[width=5cm]{images/combination_optimization_1.png}
-        \captionof{figure}{Illustration of the hyperparameter optimization procedure for the combination detailed in \ref{combination_1}}
+        \captionof{figure}{Illustration of the hyperparameter optimization procedure for the combination detailed in \ref{tab:combination_1}}
         \label{fig:hyperparameter_combination_1}
     }
-
+\par{
+    The result of this procedure is illustrated in figures \ref{fig:comb1_1} and \ref{fig:comb1_2}.
+    In the second figure, the model trained on transversal slices is predicting almost exclusively background labels.
+    The check in algorithm \ref{alg:combination} for volume class cardinality is usefule in this type of cases.
+}   
+\par{
+    The procedure described in the last two chapters now allows to train a network with only point annotated labels by using the results of the pseudo mask volume.
+    Mind however that the results in chapter \ref{sec:singleDimension} and the results combined in this chapter were obtained with a different set of point annotations for each dimension.
+    This was done to make comparison possible.
+}
+\par{
+    In reality, an expert will generate a single stack of annotations, not three.
+    As described in chapter \ref{sec:annotationPoints} on page \pageref{sec:annotationPoints}, one of the single dimensional models will be trained on this stack of annotated slices.
+    The other two however, will be trained on stacks where the same annotation points are used, but now as these are found back when slicing in the two other dimensions.
+}
 
 \begin{SCfigure}[][htb]
     \centering
-    \includegraphics[width=.95\textwidth]{images/morphmask_denoise1_erode1_MyoSegmenTUM_036.png}
+    \includegraphics[width=.95\textwidth]{images/comb1_denoise2_erode1_MyoSegmenTUM_036.png}
     \caption{
-        Result of the combination of the three single dimension model results for volume MyoSegmenTUM nr 43.
+        Result of the combination of the three single dimension model results for volume MyoSegmenTUM nr 36.
         The colours indicate the vertebra classes. Only one semantic class is estimated in the first row, illustrating the model trained on transversal slices.
         On the first three rows, slices of the resulting segmentations from the single dimension models are shown. 
         It is clear these masks contain some artefacts and are not always in agreement with each other.
         On the fourth row, the result after mask combination and morphological smoothing is shown. 
         This corresponds more closely to the ground truth mask, shown on the fifth row.
         This final mask, shown on the fourth row, will be used as a pseudo mask to approximate the unknown ground truth mask.
-        In the last row, the corresponding images are shown.
+        In the last row, the corresponding images are shown. \label{fig:comb1_1}
+    }
+\end{SCfigure}
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{images/comb1_denoise2_erode1_xVertSeg_009.png}
+    \caption{
+        Result of the combination of the three single dimension model results for volume xVertSeg 009.
+        The colours indicate the vertebra classes. The layout of this image is the same as the layout of figure \ref{fig:comb1_1}.
+        This image illustrates a case where the usefulness of the rule in algorithm \ref{alg:combination}  to ignore a single dimension model result with a cardinality 
+        of the class set under 35\% of the max value is shown.\label{fig:comb1_2}
     }
 \end{SCfigure}
 
 \chapter{Pseudo mask training}
+
+\par{
+    As described in chapter \ref{sec:annotationPoints} on page \pageref{sec:annotationPoints}, only one stack of slices will be annotated by the expert.
+    This means that for the slices along one of the geometric dimensions, a 
+}
+
+
+
+\begin{SCtable}[\sidecaptionrelwidth][h]
+
+    \begin{tabular}{l|lll}
+        \hline
+        \textbf{\begin{tabular}[c]{@{}l@{}}Slice \\ direction\end{tabular}} &
+          \textbf{Transverse} &
+          \textbf{Coronal} &
+          \textbf{Sagittal} \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Context\\ Slices {[}mm{]}\end{tabular}           & 1        & 1        & 1    \\ \cline{1-1}
+        \begin{tabular}[c]{@{}l@{}}Points per\\ class instance\end{tabular}         & variable & variable & 3    \\ \cline{1-1}
+        \begin{tabular}[c]{@{}l@{}}Background \\ points\end{tabular}                & variable & variable & 5    \\ \cline{1-1}
+        Dataset &
+          \begin{tabular}[c]{@{}l@{}}PLoS\\ xVertSeg\\ USiegen\\ MyoSegmenTUM\end{tabular} &
+          \multicolumn{2}{l}{\begin{tabular}[c]{@{}l@{}}xVertSeg\\ USiegen\\ MyoSegmenTUM\end{tabular}} \\ \cline{1-1}
+        \begin{tabular}[c]{@{}l@{}}Segmentation\\ classes\end{tabular}              & 2        & 6        & 6    \\ \cline{1-1}
+        \begin{tabular}[c]{@{}l@{}}Weighted \\ dice score\end{tabular}              & 0.00     & 0.00     & 0.00 \\ \hline
+        \begin{tabular}[c]{@{}l@{}}Weighted\\ dice score\\ combination\end{tabular} & \multicolumn{3}{c}{0.00}   \\ \hline
+        \end{tabular}
+    \caption{Combination of three point supervised models with algorithm \ref{alg:combination}. 
+    These models were constructed with a fixed number of background points and a fixed number of class labels per class instance.
+    This test indicates that the segmentation mask obtained from the result of single dimension models with algorithm \ref{alg:combination} allows to obtain a new segmentation mask with a higher metric score, the pseudo masks.
+    The weighted dice scores are evaluated on the cross validation set, this causes the difference with the values in figure \ref{fig:points_influence}. \label{tab:combination_1}
+    }
+
+\end{SCtable}
 
 Time to evaluate
 performance

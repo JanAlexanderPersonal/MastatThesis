@@ -68,7 +68,57 @@
       \endverb
       \keyw{Categorization,Grouping and Shape,Recognition: Detection,Retrieval,Segmentation}
     \endentry
-    \entry{Bearman2015}{article}{}
+    \entry{Alam2014}{article}{}
+      \name{author}{4}{}{%
+        {{hash=411c9c5da5d4b93c37c58a32c1b39624}{%
+           family={Alam},
+           familyi={A\bibinitperiod},
+           given={Muhammad\bibnamedelima M.},
+           giveni={M\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=085cff9695139fd8612829bd18c01d91}{%
+           family={Waqas},
+           familyi={W\bibinitperiod},
+           given={Muhammad},
+           giveni={M\bibinitperiod}}}%
+        {{hash=87e4f858fd62d1f2eeb08f302f4d2630}{%
+           family={Shallwani},
+           familyi={S\bibinitperiod},
+           given={Hussain},
+           giveni={H\bibinitperiod}}}%
+        {{hash=b6cb988aea32dfe48fb402c2c28e17b2}{%
+           family={Javed},
+           familyi={J\bibinitperiod},
+           given={Gohar},
+           giveni={G\bibinitperiod}}}%
+      }
+      \strng{namehash}{9a418e2a1f3bf1d2daa6d490864e0e28}
+      \strng{fullhash}{280a2480b8aa5ed3b775cd5da0964bda}
+      \strng{bibnamehash}{9a418e2a1f3bf1d2daa6d490864e0e28}
+      \strng{authorbibnamehash}{9a418e2a1f3bf1d2daa6d490864e0e28}
+      \strng{authornamehash}{9a418e2a1f3bf1d2daa6d490864e0e28}
+      \strng{authorfullhash}{280a2480b8aa5ed3b775cd5da0964bda}
+      \field{sortinit}{A}
+      \field{sortinithash}{d77c7cdd82ff690d4c3ef13216f92f0b}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Study Design: A cross-sectional study. Purpose: To describe the characteristics of lumbar vertebrae of Pakistani patients reporting at a tertiary care hospital and compare with studies from other populations. Overview of Literature: Several studies have been conducted to determine morphometry of lumbar vertebrae. Most of the studies involve Caucasian populations, still data on other populations still sparse. This is the first study describing lumbar morphometry of a Pakistani population. Methods: An observational study was conducted based on a review of thin-cut (3 mm) computed topographic images of lumbar vertebrae. Two-hundred and twenty vertebrae from forty-nine patients were studied, and various dimensions were analyzed. Results: Generally, the size of the vertebrae, vertebral canals and recesses were found to be greater in male patients. The difference was statistically significant for transverse and anteroposterior diameters of the vertebral bodies and sagittal diameter of pedicles on the left side (p {<}0.05). Comparison of populations revealed statistically significant differences in pedicle dimensions between Pakistani population and others. Conclusions: This study provides anatomical knowledge of the lumbar region in a sample population of Pakistan. There were significant differences in various dimensions of lumbar vertebrae between female and male patients. This would prove to be critical for performing a safe operation. {©} 2014 by Korean Society of Spine Surgery.}
+      \field{issn}{19767846}
+      \field{journaltitle}{Asian Spine Journal}
+      \field{number}{4}
+      \field{title}{{Lumbar morphometry: A study of lumbar vertebrae from a Pakistani population using computed tomography scans}}
+      \field{volume}{8}
+      \field{year}{2014}
+      \field{pages}{421\bibrangedash 426}
+      \range{pages}{6}
+      \verb{doi}
+      \verb 10.4184/asj.2014.8.4.421
+      \endverb
+      \verb{file}
+      \verb :home/jan/Downloads/asj-8-421.pdf:pdf
+      \endverb
+      \keyw{Lumbar vertebra,Pakistan,Pakistani population,Vertebral dimensions}
+    \endentry
+    \entry{Bearman2015}{inproceedings}{}
       \name{author}{4}{}{%
         {{hash=5155a3548e01d929465f663f1b3297e1}{%
            family={Bearman},
@@ -91,6 +141,9 @@
            given={Li},
            giveni={L\bibinitperiod}}}%
       }
+      \list{publisher}{1}{%
+        {Springer, Cham}%
+      }
       \strng{namehash}{9229c14a9d01f41add2565e35739f764}
       \strng{fullhash}{01bc8b1db84fa6b0d17a3db8d16e8d3a}
       \strng{bibnamehash}{9229c14a9d01f41add2565e35739f764}
@@ -101,11 +154,20 @@
       \field{sortinithash}{276475738cc058478c1677046f857703}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{abstract}{The semantic image segmentation task presents a trade-off between test time accuracy and training-time annotation cost. Detailed per-pixel annotations enable training accurate models but are very time-consuming to obtain, image-level class labels are an order of magnitude cheaper but result in less accurate models. We take a natural step from image-level annotation towards stronger supervision: we ask annotators to point to an object if one exists. We incorporate this point supervision along with a novel objectness potential in the training loss function of a CNN model. Experimental results on the PASCAL VOC 2012 benchmark reveal that the combined effect of point-level supervision and objectness potential yields an improvement of 12.9{\%} mIOU over image-level supervision. Further, we demonstrate that models trained with point-level supervision are more accurate than models trained with image-level, squiggle-level or full supervision given a fixed annotation budget.}
+      \field{abstract}{The semantic image segmentation task presents a trade-off between test time accuracy and training time annotation cost. Detailed per-pixel annotations enable training accurate models but are very timeconsuming to obtain; image-level class labels are an order of magnitude cheaper but result in less accurate models. We take a natural step from image-level annotation towards stronger supervision: we ask annotators to point to an object if one exists. We incorporate this point supervision along with a novel objectness potential in the training loss function of a CNN model. Experimental results on the PASCAL VOC 2012 benchmark reveal that the combined effect of point-level supervision and objectness potential yields an improvement of 12.9{\%} mIOU over image-level supervision. Further, we demonstrate that models trained with pointlevel supervision are more accurate than models trained with image-level, squiggle-level or full supervision given a fixed annotation budget.}
+      \field{booktitle}{Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)}
       \field{eprinttype}{arXiv}
+      \field{isbn}{9783319464770}
+      \field{issn}{16113349}
       \field{month}{6}
-      \field{title}{{What's the Point: Semantic Segmentation with Point Supervision}}
-      \field{year}{2015}
+      \field{title}{{What's the point: Semantic segmentation with point supervision}}
+      \field{volume}{9911 LNCS}
+      \field{year}{2016}
+      \field{pages}{549\bibrangedash 565}
+      \range{pages}{17}
+      \verb{doi}
+      \verb 10.1007/978-3-319-46478-7_34
+      \endverb
       \verb{eprint}
       \verb 1506.02106
       \endverb
@@ -118,6 +180,7 @@
       \verb{url}
       \verb http://arxiv.org/abs/1506.02106
       \endverb
+      \keyw{Data annotation,Semantic segmentation,Weak supervision}
     \endentry
     \entry{ECCV2020}{misc}{}
       \name{author}{3}{}{%
@@ -244,6 +307,30 @@
       \verb 10.1186/s12891-019-2528-x
       \endverb
     \endentry
+    \entry{SemTorch76:online}{misc}{}
+      \name{author}{1}{}{%
+        {{hash=4e146af181e32fe72488e89287fd8333}{%
+           family={Castillo},
+           familyi={C\bibinitperiod},
+           given={David\bibnamedelima Lacalle},
+           giveni={D\bibinitperiod\bibinitdelim L\bibinitperiod}}}%
+      }
+      \strng{namehash}{4e146af181e32fe72488e89287fd8333}
+      \strng{fullhash}{4e146af181e32fe72488e89287fd8333}
+      \strng{bibnamehash}{4e146af181e32fe72488e89287fd8333}
+      \strng{authorbibnamehash}{4e146af181e32fe72488e89287fd8333}
+      \strng{authornamehash}{4e146af181e32fe72488e89287fd8333}
+      \strng{authorfullhash}{4e146af181e32fe72488e89287fd8333}
+      \field{sortinit}{C}
+      \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{annotation}{(Accessed on 02/14/2021)}
+      \field{howpublished}{$\backslash$url{\{}https://pypi.org/project/SemTorch/{\}}}
+      \field{month}{9}
+      \field{title}{{SemTorch {·} PyPI}}
+      \field{year}{2020}
+    \endentry
     \entry{Chu2015}{article}{}
       \name{author}{6}{}{%
         {{hash=08764fdfe0301b3f68d0f8029d4d6609}{%
@@ -297,11 +384,12 @@
       \field{sortinithash}{963e9d84a3da2344e8833203de5aed05}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{issn}{1932-6203}
-      \field{journaltitle}{PLOS ONE}
+      \field{abstract}{In this paper, we address the problems of fully automatic localization and segmentation of 3D vertebral bodies from CT/MR images. We propose a learning-based, unified random forest regression and classification framework to tackle these two problems. More specifically, in the first stage, the localization of 3D vertebral bodies is solved with random forest regression where we aggregate the votes from a set of randomly sampled image patches to get a probability map of the center of a target vertebral body in a given image. The resultant probability map is then further regularized by Hidden Markov Model (HMM) to eliminate potential ambiguity caused by the neighboring vertebral bodies. The output from the first stage allows us to define a region of interest (ROI) for the segmentation step, where we use random forest classification to estimate the likelihood of a voxel in the ROI being foreground or background. The estimated likelihood is combined with the prior probability, which is learned from a set of training data, to get the posterior probability of the voxel. The segmentation of the target vertebral body is then done by a binary thresholding of the estimated probability. We evaluated the present approach on two openly available datasets: 1) 3D T2-weighted spine MR images from 23 patients and 2) 3D spine CT images from 10 patients. Taking manual segmentation as the ground truth (each MR image contains at least 7 vertebral bodies from T11 to L5 and each CT image contains 5 vertebral bodies from L1 to L5), we evaluated the present approach with leave-one-out experiments. Specifically, for the T2-weighted MR images, we achieved for localization a mean error of 1.6 mm, and for segmentation a mean Dice metric of 88.7{\%} and a mean surface distance of 1.5 mm, respectively. For the CT images we achieved for localization a mean error of 1.9 mm, and for segmentation a mean Dice metric of 91.0{\%} and a mean surface distance of 0.9 mm, respectively.}
+      \field{issn}{19326203}
+      \field{journaltitle}{PLoS ONE}
       \field{month}{11}
       \field{number}{11}
-      \field{title}{{Fully Automatic Localization and Segmentation of 3D Vertebral Bodies from CT/MR Images via a Learning-Based Method}}
+      \field{title}{{Fully automatic localization and segmentation of 3D vertebral bodies from CT/MR images via a learning-based method}}
       \field{volume}{10}
       \field{year}{2015}
       \field{pages}{e0143327}
@@ -493,6 +581,61 @@
       \verb :home/jan/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Glocker et al. - 2012 - Automatic localization and identification of vertebrae in arbitrary field-of-view CT scans.pdf:pdf
       \endverb
     \endentry
+    \entry{Glocker}{inproceedings}{}
+      \name{author}{5}{}{%
+        {{hash=5bc19448e90c8f3e88e5fbd50f12ac15}{%
+           family={Glocker},
+           familyi={G\bibinitperiod},
+           given={Ben},
+           giveni={B\bibinitperiod}}}%
+        {{hash=13b07c284d6b6f094f24f10c7d10a565}{%
+           family={Zikic},
+           familyi={Z\bibinitperiod},
+           given={Darko},
+           giveni={D\bibinitperiod}}}%
+        {{hash=f225ea6221588341169080776608bf01}{%
+           family={Konukoglu},
+           familyi={K\bibinitperiod},
+           given={Ender},
+           giveni={E\bibinitperiod}}}%
+        {{hash=4f4576afef67d89b9b1099129d2e0fb7}{%
+           family={Haynor},
+           familyi={H\bibinitperiod},
+           given={David\bibnamedelima R},
+           giveni={D\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=51503dff68ec68a34224e2be9281b7d3}{%
+           family={Criminisi},
+           familyi={C\bibinitperiod},
+           given={Antonio},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{2ec50a23da7ada82bf31fcb6223977a1}
+      \strng{fullhash}{0c5520e260b8069d9f43812053dcb3de}
+      \strng{bibnamehash}{2ec50a23da7ada82bf31fcb6223977a1}
+      \strng{authorbibnamehash}{2ec50a23da7ada82bf31fcb6223977a1}
+      \strng{authornamehash}{2ec50a23da7ada82bf31fcb6223977a1}
+      \strng{authorfullhash}{0c5520e260b8069d9f43812053dcb3de}
+      \field{sortinit}{G}
+      \field{sortinithash}{5e8d2bf9d38de41b1528bd307546008f}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Accurate localization and identification of vertebrae in spinal imaging is crucial for the clinical tasks of diagnosis, surgical planning, and post-operative assessment. The main difficulties for automatic methods arise from the frequent presence of abnormal spine curvature, small field of view, and image artifacts caused by surgical implants. Many previous methods rely on parametric models of appearance and shape whose performance can substantially degrade for pathological cases. We propose a robust localization and identification algorithm which builds upon supervised classification forests and avoids an explicit parametric model of appearance. We overcome the tedious requirement for dense annotations by a semi-automatic labeling strategy. Sparse centroid annotations are transformed into dense probabilistic labels which capture the inherent identification uncertainty. Using the dense labels, we learn a discriminative centroid classifier based on local and contextual intensity features which is robust to typical characteristics of spinal pathologies and image artifacts. Extensive evaluation is performed on a challenging dataset of 224 spine CT scans of patients with varying pathologies including high-grade scoliosis, kyphosis, and presence of surgical implants. Additionally, we test our method on a heterogeneous dataset of another 200, mostly abdominal, CTs. Quantitative evaluation is carried out with respect to localization errors and identification rates, and compared to a recently proposed method. Our approach is efficient and outperforms state-of-the-art on pathological cases. {©} 2013 Springer-Verlag.}
+      \field{booktitle}{Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)}
+      \field{isbn}{9783642407628}
+      \field{issn}{03029743}
+      \field{number}{PART 2}
+      \field{title}{{Vertebrae localization in pathological spine CT via dense classification from sparse annotations}}
+      \field{volume}{8150 LNCS}
+      \field{year}{2013}
+      \field{pages}{262\bibrangedash 270}
+      \range{pages}{9}
+      \verb{doi}
+      \verb 10.1007/978-3-642-40763-5_33
+      \endverb
+      \verb{file}
+      \verb :home/jan/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Glocker et al. - Unknown - Vertebrae Localization in Pathological Spine CT via Dense Classification from Sparse Annotations.pdf:pdf
+      \endverb
+    \endentry
     \entry{Glocker2013}{article}{}
       \name{author}{5}{}{%
         {{hash=5bc19448e90c8f3e88e5fbd50f12ac15}{%
@@ -546,51 +689,6 @@
       \endverb
       \verb{file}
       \verb :home/jan/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Glocker et al. - 2013 - Vertebrae localization in pathological spine CT via dense classification from sparse annotations.pdf:pdf
-      \endverb
-    \endentry
-    \entry{Glocker}{report}{}
-      \name{author}{5}{}{%
-        {{hash=9856a4e2748d585c6184510482752377}{%
-           family={Glocker},
-           familyi={G\bibinitperiod},
-           given={B},
-           giveni={B\bibinitperiod}}}%
-        {{hash=edfa9ade84f875b314c3ef42e917b343}{%
-           family={Zikic},
-           familyi={Z\bibinitperiod},
-           given={D},
-           giveni={D\bibinitperiod}}}%
-        {{hash=9284378dcf485d0de721bba3465ac76d}{%
-           family={Konukoglu},
-           familyi={K\bibinitperiod},
-           given={E},
-           giveni={E\bibinitperiod}}}%
-        {{hash=3d2d96b1abbe6560485e80b74ae4aab6}{%
-           family={Haynor},
-           familyi={H\bibinitperiod},
-           given={D\bibnamedelima R},
-           giveni={D\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
-        {{hash=241527a2ce0d72b23d1fb9fc5bf4744a}{%
-           family={Criminisi},
-           familyi={C\bibinitperiod},
-           given={A},
-           giveni={A\bibinitperiod}}}%
-      }
-      \strng{namehash}{17e780788d1ccd19dd1faf049bbac4c4}
-      \strng{fullhash}{b1163531a371a44c25b5d785a1b43f63}
-      \strng{bibnamehash}{17e780788d1ccd19dd1faf049bbac4c4}
-      \strng{authorbibnamehash}{17e780788d1ccd19dd1faf049bbac4c4}
-      \strng{authornamehash}{17e780788d1ccd19dd1faf049bbac4c4}
-      \strng{authorfullhash}{b1163531a371a44c25b5d785a1b43f63}
-      \field{sortinit}{G}
-      \field{sortinithash}{5e8d2bf9d38de41b1528bd307546008f}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{abstract}{Accurate localization and identification of vertebrae in spinal imaging is crucial for the clinical tasks of diagnosis, surgical planning, and post-operative assessment. The main difficulties for automatic methods arise from the frequent presence of abnormal spine curvature, small field of view, and image artifacts caused by surgical implants. Many previous methods rely on parametric models of appearance and shape whose performance can substantially degrade for pathological cases. We propose a robust localization and identification algorithm which builds upon supervised classification forests and avoids an explicit para-metric model of appearance. We overcome the tedious requirement for dense annotations by a semi-automatic labeling strategy. Sparse centroid annotations are transformed into dense probabilistic labels which capture the inherent identification uncertainty. Using the dense labels, we learn a discriminative centroid classifier based on local and contextual intensity features which is robust to typical characteristics of spinal pathologies and image artifacts. Extensive evaluation is performed on a challenging dataset of 224 spine CT scans of patients with varying pathologies including high-grade scoliosis, kyphosis, and presence of surgical implants. Additionally, we test our method on a heterogeneous dataset of another 200, mostly abdominal, CTs. Quantitative evaluation is carried out with respect to localization errors and identification rates, and compared to a recently proposed method. Our approach is efficient and outperforms state-of-the-art on pathological cases.}
-      \field{title}{{Vertebrae Localization in Pathological Spine CT via Dense Classification from Sparse Annotations}}
-      \field{type}{techreport}
-      \verb{file}
-      \verb :home/jan/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Glocker et al. - Unknown - Vertebrae Localization in Pathological Spine CT via Dense Classification from Sparse Annotations.pdf:pdf
       \endverb
     \endentry
     \entry{Ibragimov2014}{article}{}
@@ -727,7 +825,7 @@
       \verb :home/jan/Downloads/JHE2018-1548647.pdf:pdf
       \endverb
     \endentry
-    \entry{Klinder2008}{report}{}
+    \entry{Klinder2008}{inproceedings}{}
       \name{author}{5}{}{%
         {{hash=84e60d8ad5883e24a6a6cb6c16e1c48b}{%
            family={Klinder},
@@ -765,10 +863,19 @@
       \field{sortinithash}{9fd838a31ba64d981e8f44562bd33f89}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{abstract}{Including prior shape in the form of anatomical models is a well-known approach for improving segmentation results in medical images. Currently, most approaches are focused on the modeling and segmentation of individual objects. In case of object constellations, a simultaneous segmentation of the ensemble that uses not only prior knowledge of individual shapes but also additional information about spatial relations between the objects is often beneficial. In this paper, we present a two-scale framework for the modeling and segmentation of the spine as an example for object constellations. The global spine shape is expressed as a consecution of local vertebra coordinate systems while individual vertebrae are modeled as triangulated surface meshes. Adaptation is performed by attracting the model to image features but restricting the attraction to a former learned shape. With the developed approach, we obtained a segmentation accuracy of 1.0 mm in average for ten thoracic CT images improving former results.}
-      \field{title}{{LNCS 5241 - Spine Segmentation Using Articulated Shape Models}}
-      \field{type}{techreport}
+      \field{abstract}{Including prior shape in the form of anatomical models is a well-known approach for improving segmentation results in medical images. Currently, most approaches are focused on the modeling and segmentation of individual objects. In case of object constellations, a simultaneous segmentation of the ensemble that uses not only prior knowledge of individual shapes but also additional information about spatial relations between the objects is often beneficial. In this paper, we present a two-scale framework for the modeling and segmentation of the spine as an example for object constellations. The global spine shape is expressed as a consecution of local vertebra coordinate systems while individual vertebrae are modeled as triangulated surface meshes. Adaptation is performed by attracting the model to image features but restricting the attraction to a former learned shape. With the developed approach, we obtained a segmentation accuracy of 1.0 mm in average for ten thoracic CT images improving former results. {©} 2008 Springer-Verlag Berlin Heidelberg.}
+      \field{booktitle}{Lecture Notes in Computer Science (including subseries Lecture Notes in Artificial Intelligence and Lecture Notes in Bioinformatics)}
+      \field{isbn}{354085987X}
+      \field{issn}{03029743}
+      \field{number}{PART 1}
+      \field{title}{{Spine segmentation using articulated shape models}}
+      \field{volume}{5241 LNCS}
       \field{year}{2008}
+      \field{pages}{227\bibrangedash 234}
+      \range{pages}{8}
+      \verb{doi}
+      \verb 10.1007/978-3-540-85988-8_28
+      \endverb
       \verb{file}
       \verb :home/jan/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Klinder et al. - 2008 - LNCS 5241 - Spine Segmentation Using Articulated Shape Models.pdf:pdf;:home/jan/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Klinder et al. - 2008 - LNCS 5241 - Spine Segmentation Using Articulated Shape Models(2).pdf:pdf
       \endverb
@@ -922,6 +1029,7 @@
       \field{labeltitlesource}{title}
       \field{abstract}{Instance segmentation methods often require costly per-pixel labels. We propose a method that only requires point-level annotations. During training, the model only has access to a single pixel label per object, yet the task is to output full segmentation masks. To address this challenge, we construct a network with two branches: (1) a localization network (L-Net) that predicts the location of each object; and (2) an embedding network (E-Net) that learns an embedding space where pixels of the same object are close. The segmentation masks for the located objects are obtained by grouping pixels with similar embeddings. At training time, while L-Net only requires point-level annotations, E-Net uses pseudo-labels generated by a class-agnostic object proposal method. We evaluate our approach on PASCAL VOC, COCO, KITTI and CityScapes datasets. The experiments show that our method (1) obtains competitive results compared to fully-supervised methods in certain scenarios; (2) outperforms fully- and weakly- supervised methods with a fixed annotation budget; and (3) is a first strong baseline for instance segmentation with point-level supervision.}
       \field{eprinttype}{arXiv}
+      \field{journaltitle}{020 IEEE International Conference on Image Processing (ICIP)}
       \field{number}{1}
       \field{title}{{Proposal-Based Instance Segmentation With Point Supervision}}
       \field{year}{2020}
@@ -995,82 +1103,6 @@
       \verb :home/jan/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Laradji et al. - 2018 - Where Are the Blobs Counting by Localization with Point Supervision.pdf:pdf
       \endverb
     \endentry
-    \entry{Laradji2020a}{article}{}
-      \name{author}{9}{}{%
-        {{hash=022086949e078e6d8906851da13d3fd6}{%
-           family={Laradji},
-           familyi={L\bibinitperiod},
-           given={Issam},
-           giveni={I\bibinitperiod}}}%
-        {{hash=f69d1b6540f285ca044e6c7de45f84e3}{%
-           family={Rodriguez},
-           familyi={R\bibinitperiod},
-           given={Pau},
-           giveni={P\bibinitperiod}}}%
-        {{hash=e29e0c60ded971e962eabb103e6c94b6}{%
-           family={Ma{ñ}as},
-           familyi={M\bibinitperiod},
-           given={Oscar},
-           giveni={O\bibinitperiod}}}%
-        {{hash=c58a5f1a86dc38fff8a6b8a7e0ce7c1c}{%
-           family={Lensink},
-           familyi={L\bibinitperiod},
-           given={Keegan},
-           giveni={K\bibinitperiod}}}%
-        {{hash=a36cf2a6200c0c5eaca361c784d2963f}{%
-           family={Law},
-           familyi={L\bibinitperiod},
-           given={Marco},
-           giveni={M\bibinitperiod}}}%
-        {{hash=b22a75172e0ea3f51f5c0ec83e4c948d}{%
-           family={Kurzman},
-           familyi={K\bibinitperiod},
-           given={Lironne},
-           giveni={L\bibinitperiod}}}%
-        {{hash=32457a799548fb797e1b5fd0f9ac599a}{%
-           family={Parker},
-           familyi={P\bibinitperiod},
-           given={William},
-           giveni={W\bibinitperiod}}}%
-        {{hash=93ee720c9a96ab0f1d67654be0d6ee24}{%
-           family={Vazquez},
-           familyi={V\bibinitperiod},
-           given={David},
-           giveni={D\bibinitperiod}}}%
-        {{hash=193b9ca6685cb6578499da34933e41bf}{%
-           family={Nowrouzezahrai},
-           familyi={N\bibinitperiod},
-           given={Derek},
-           giveni={D\bibinitperiod}}}%
-      }
-      \strng{namehash}{84b95dc1401bd0fd894ecba9cd46a3e1}
-      \strng{fullhash}{22c8d3aa89f407e8277609af7efa583a}
-      \strng{bibnamehash}{84b95dc1401bd0fd894ecba9cd46a3e1}
-      \strng{authorbibnamehash}{84b95dc1401bd0fd894ecba9cd46a3e1}
-      \strng{authornamehash}{84b95dc1401bd0fd894ecba9cd46a3e1}
-      \strng{authorfullhash}{22c8d3aa89f407e8277609af7efa583a}
-      \field{sortinit}{L}
-      \field{sortinithash}{2c7981aaabc885868aba60f0c09ee20f}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{abstract}{Coronavirus Disease 2019 (COVID-19) has spread aggressively across the world causing an existential health crisis. Thus, having a system that automatically detects COVID-19 in tomography (CT) images can assist in quantifying the severity of the illness. Unfortunately, labelling chest CT scans requires significant domain expertise, time, and effort. We address these labelling challenges by only requiring point annotations, a single pixel for each infected region on a CT image. This labeling scheme allows annotators to label a pixel in a likely infected region, only taking 1-3 seconds, as opposed to 10-15 seconds to segment a region. Conventionally, segmentation models train on point-level annotations using the cross-entropy loss function on these labels. However, these models often suffer from low precision. Thus, we propose a consistency-based (CB) loss function that encourages the output predictions to be consistent with spatial transformations of the input images. The experiments on 3 open-source COVID-19 datasets show that this loss function yields significant improvement over conventional point-level loss functions and almost matches the performance of models trained with full supervision with much less human effort. Code is available at: $\backslash$url{\{}https://github.com/IssamLaradji/covid19{\_}weak{\_}supervision{\}}.}
-      \field{eprinttype}{arXiv}
-      \field{month}{7}
-      \field{title}{{A Weakly Supervised Consistency-based Learning Method for COVID-19 Segmentation in CT Images}}
-      \field{year}{2020}
-      \verb{eprint}
-      \verb 2007.02180
-      \endverb
-      \verb{file}
-      \verb :home/jan/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Laradji et al. - 2020 - A Weakly Supervised Consistency-based Learning Method for COVID-19 Segmentation in CT Images.pdf:pdf
-      \endverb
-      \verb{urlraw}
-      \verb http://arxiv.org/abs/2007.02180
-      \endverb
-      \verb{url}
-      \verb http://arxiv.org/abs/2007.02180
-      \endverb
-    \endentry
     \entry{Lessmann2018}{article}{}
       \name{author}{4}{}{%
         {{hash=8ebe9ad407b31087fe4e2d286e081609}{%
@@ -1108,11 +1140,16 @@
       \field{sortinithash}{2c7981aaabc885868aba60f0c09ee20f}
       \field{labelnamesource}{author}
       \field{labeltitlesource}{title}
-      \field{abstract}{Precise segmentation and anatomical identification of the vertebrae provides the basis for automatic analysis of the spine, such as detection of vertebral compression fractures or other abnormalities. Most dedicated spine CT and MR scans as well as scans of the chest, abdomen or neck cover only part of the spine. Segmentation and identification should therefore not rely on the visibility of certain vertebrae or a certain number of vertebrae. We propose an iterative instance segmentation approach that uses a fully convolutional neural network to segment and label vertebrae one after the other, independently of the number of visible vertebrae. This instance-by-instance segmentation is enabled by combining the network with a memory component that retains information about already segmented vertebrae. The network iteratively analyzes image patches, using information from both image and memory to search for the next vertebra. To efficiently traverse the image, we include the prior knowledge that the vertebrae are always located next to each other, which is used to follow the vertebral column. This method was evaluated with five diverse datasets, including multiple modalities (CT and MR), various fields of view and coverages of different sections of the spine, and a particularly challenging set of low-dose chest CT scans. The proposed iterative segmentation method compares favorably with state-of-the-art methods and is fast, flexible and generalizable.}
+      \field{abstract}{Precise segmentation and anatomical identification of the vertebrae provides the basis for automatic analysis of the spine, such as detection of vertebral compression fractures or other abnormalities. Most dedicated spine CT and MR scans as well as scans of the chest, abdomen or neck cover only part of the spine. Segmentation and identification should therefore not rely on the visibility of certain vertebrae or a certain number of vertebrae. We propose an iterative instance segmentation approach that uses a fully convolutional neural network to segment and label vertebrae one after the other, independently of the number of visible vertebrae. This instance-by-instance segmentation is enabled by combining the network with a memory component that retains information about already segmented vertebrae. The network iteratively analyzes image patches, using information from both image and memory to search for the next vertebra. To efficiently traverse the image, we include the prior knowledge that the vertebrae are always located next to each other, which is used to follow the vertebral column. The network concurrently performs multiple tasks, which are segmentation of a vertebra, regression of its anatomical label and prediction whether the vertebra is completely visible in the image, which allows to exclude incompletely visible vertebrae from further analyses. The predicted anatomical labels of the individual vertebrae are additionally refined with a maximum likelihood approach, choosing the overall most likely labeling if all detected vertebrae are taken into account. This method was evaluated with five diverse datasets, including multiple modalities (CT and MR), various fields of view and coverages of different sections of the spine, and a particularly challenging set of low-dose chest CT scans. For vertebra segmentation, the average Dice score was 94.9 ± 2.1{\%} with an average absolute symmetric surface distance of 0.2 ± 10.1mm. The anatomical identification had an accuracy of 93{\%}, corresponding to a single case with mislabeled vertebrae. Vertebrae were classified as completely or incompletely visible with an accuracy of 97{\%}. The proposed iterative segmentation method compares favorably with state-of-the-art methods and is fast, flexible and generalizable.}
       \field{eprinttype}{arXiv}
+      \field{issn}{13618423}
+      \field{journaltitle}{Medical Image Analysis}
       \field{month}{4}
       \field{title}{{Iterative fully convolutional neural networks for automatic vertebra segmentation and identification}}
-      \field{year}{2018}
+      \field{volume}{53}
+      \field{year}{2019}
+      \field{pages}{142\bibrangedash 155}
+      \range{pages}{14}
       \verb{doi}
       \verb 10.1016/j.media.2019.02.005
       \endverb
@@ -1128,7 +1165,59 @@
       \verb{url}
       \verb http://arxiv.org/abs/1804.04383%20http://dx.doi.org/10.1016/j.media.2019.02.005
       \endverb
-      \keyw{Spine segmentation}
+      \keyw{Deep learning,Iterative instance segmentation,Spine segmentation,Vertebra identification,Vertebra segmentation}
+    \endentry
+    \entry{Maninis2018}{article}{}
+      \name{author}{4}{}{%
+        {{hash=5ce839454526d07b6f1bf581db015b15}{%
+           family={Maninis},
+           familyi={M\bibinitperiod},
+           given={K.\bibnamedelimi K.},
+           giveni={K\bibinitperiod\bibinitdelim K\bibinitperiod}}}%
+        {{hash=b03f8faf35fa97e390bf1dad33f9975f}{%
+           family={Caelles},
+           familyi={C\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=4b484fe1e091cdb1954da7fda351cdaf}{%
+           family={Pont-Tuset},
+           familyi={P\bibinithyphendelim T\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+        {{hash=b7b12884e34fc715e60fab1ba670bc7d}{%
+           family={{Van Gool}},
+           familyi={V\bibinitperiod},
+           given={L.},
+           giveni={L\bibinitperiod}}}%
+      }
+      \strng{namehash}{df91051199f22170e12612659ebf621c}
+      \strng{fullhash}{48b8c81cc027c9abf1cbdfed87a19261}
+      \strng{bibnamehash}{df91051199f22170e12612659ebf621c}
+      \strng{authorbibnamehash}{df91051199f22170e12612659ebf621c}
+      \strng{authornamehash}{df91051199f22170e12612659ebf621c}
+      \strng{authorfullhash}{48b8c81cc027c9abf1cbdfed87a19261}
+      \field{sortinit}{M}
+      \field{sortinithash}{cfd219b90152c06204fab207bc6c7cab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{This paper explores the use of extreme points in an object (left-most, right-most, top, bottom pixels) as input to obtain precise object segmentation for images and videos. We do so by adding an extra channel to the image in the input of a convolutional neural network (CNN), which contains a Gaussian centered in each of the extreme points. The CNN learns to transform this information into a segmentation of an object that matches those extreme points. We demonstrate the usefulness of this approach for guided segmentation (grabcut-style), interactive segmentation, video object segmentation, and dense segmentation annotation. We show that we obtain the most precise results to date, also with less user input, in an extensive and varied selection of benchmarks and datasets. All our models and code are publicly available on http://www.vision.ee.ethz.ch/{\~{}}cvlsegmentation/dextr/.}
+      \field{eprinttype}{arXiv}
+      \field{isbn}{9781538664209}
+      \field{issn}{10636919}
+      \field{journaltitle}{Proceedings of the IEEE Computer Society Conference on Computer Vision and Pattern Recognition}
+      \field{title}{{Deep Extreme Cut: From Extreme Points to Object Segmentation}}
+      \field{year}{2018}
+      \field{pages}{616\bibrangedash 625}
+      \range{pages}{10}
+      \verb{doi}
+      \verb 10.1109/CVPR.2018.00071
+      \endverb
+      \verb{eprint}
+      \verb 1711.09081
+      \endverb
+      \verb{file}
+      \verb :home/jan/Downloads/1711.09081.pdf:pdf
+      \endverb
     \endentry
     \entry{McEver2020}{article}{}
       \name{author}{2}{}{%
@@ -1266,16 +1355,6 @@
       \verb :home/jan/.local/share/data/Mendeley Ltd./Mendeley Desktop/Downloaded/Sekuboyina et al. - 2017 - A localisation-segmentation approach for multi-label annotation of lumbar vertebrae using deep nets.pdf:pdf
       \endverb
       \keyw{xvertseg}
-    \endentry
-    \entry{SemTorch76:online}{misc}{}
-      \field{sortinit}{S}
-      \field{sortinithash}{322b1d5276f2f6c1bccdcd15920dbee6}
-      \field{labeltitlesource}{title}
-      \field{annotation}{(Accessed on 02/14/2021)}
-      \field{howpublished}{$\backslash$url{\{}https://pypi.org/project/SemTorch/{\}}}
-      \field{month}{9}
-      \field{title}{{SemTorch {·} PyPI}}
-      \field{year}{2020}
     \endentry
     \entry{Vocaturo2019}{article}{}
       \name{author}{3}{}{%
@@ -1429,8 +1508,8 @@
       \endverb
     \endentry
   \enddatalist
-  \missing{Alam2014}
-  \missing{Maninis2018}
+  \missing{Laradji}
+  \missing{Laradji2020a}
 \endrefsection
 \endinput
 
