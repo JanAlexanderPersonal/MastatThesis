@@ -42,7 +42,7 @@ sys.path.append('/root/space/code/utils/')
 import utils as slice_utils
 
 from torch.utils.data import DataLoader
-MULTI_PROCESS = True
+MULTI_PROCESS = False
 N_JOBS = {'MyoSegmenTUM' : -1, 'USiegen' : -1, 'xVertSeg':1, 'PLoS' : -1}
 import logging
 
@@ -317,12 +317,7 @@ class multi_dim_reconstructor(object):
                         logger.debug(f'Finish scan {scan_id} and save in file scan_{scan_id}')
                         volume = combine_slices(slice_dict, stack_dim)
                         # Start the saving processes in independend process
-                        save_res = Process(target=np.save, args=(os.path.join(output_location, f'scan_{scan_id}_res'), volume))
-
-                        if MULTI_PROCESS:
-                            save_res.start()
-                        else:
-                            save_res.run()
+                        np.save(os.path.join(output_location, f'scan_{scan_id}_res'), volume)
 
                         # start a new scan and a new slice
                         slice_dict = dict()
@@ -330,6 +325,13 @@ class multi_dim_reconstructor(object):
                         orig_shape = batch['meta'][i]['orig_shape']
                         scan_id = batch_scan_ids[i]
                         slice_id = batch_slice_ids[i]
+
+            # Save the last scan
+            slice_dict[slice_id] = combine_crops(crops_dict, orig_shape, slice_id, scan_id, output_location)
+            logger.debug(f'Finish scan {scan_id} and save in file scan_{scan_id}')
+            volume = combine_slices(slice_dict, stack_dim)
+            # Start the saving processes in independend process
+            np.save(os.path.join(output_location, f'scan_{scan_id}_res'), volume)
         
         
         for dim, model in self.models.items():
