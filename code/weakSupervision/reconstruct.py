@@ -31,13 +31,13 @@ def setuplogger():
     root_logger.addHandler(handler)
 
 
-def reconstruct_3d(exp_dict, model_type_name, savedir, ground_truth, pseudo_dataset = None):
+def reconstruct_3d(exp_dict, model_type_name, savedir, ground_truth, separate_source = None, pseudo_dataset = None):
 
     logger.debug(f'model type name : {model_type_name}')
     logger.debug(f'save directory : {savedir}')
 
     reconstructor = rec.multi_dim_reconstructor(
-        exp_dict, model_type_name=model_type_name)
+        exp_dict, model_type_name=model_type_name, separate_source=separate_source)
     logger.info('START CONSTRUCTING THE VOLUMES')
     reconstructor.make_3D_volumes(savedir)
     logger.info('START COMBINING THE VOLUMES')
@@ -63,6 +63,7 @@ if __name__ == "__main__":
     parser.add_argument('-gt', '--ground_truth',
                         default='dataset_1_contrast_3')
     parser.add_argument('-pd', '--pseudo_dataset', default = None)
+    parser.add_argument('-ss', '--separate_source', default=None)
 
     args = parser.parse_args()
 
@@ -72,5 +73,6 @@ if __name__ == "__main__":
     save_dir = args.savedir
     ground_truth = args.ground_truth
     pseudo_dataset = args.pseudo_dataset
+    separate_source = args.separate_source
 
-    reconstruct_3d(exp_dict, model_type_name, save_dir, ground_truth, pseudo_dataset)
+    reconstruct_3d(exp_dict, model_type_name, save_dir, ground_truth, separate_source=separate_source, pseudo_dataset = pseudo_dataset)

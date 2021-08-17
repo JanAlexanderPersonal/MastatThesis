@@ -59,7 +59,7 @@ class multi_dim_reconstructor(object):
         dataset_location (str) : normally, this is identical to the model_location. In this folder, you will search for 'dataset_D_contrast_C' where 'C' and 'D' will be replaced for the dimension and the contrast number 
     """
 
-    def __init__(self, model_dict : Dict, model_type_name : str, model_location : str = '/root/space/output',  dataset_location : str = None, contrast : int = 3):
+    def __init__(self, model_dict : Dict, model_type_name : str, model_location : str = '/root/space/output',  dataset_location : str = None, contrast : int = 3, separate_source:str = None):
         def get_models(model_dict : Dict, model_type_name : str, model_location : str = 'root/space/output') -> Dict:
             """Get the models based on the model_dict and the indicated model locations
 
@@ -103,7 +103,7 @@ class multi_dim_reconstructor(object):
 
             return models_dict
 
-        def get_dataloaders(model_dict : Dict, dataset_location : str = '/root/space/output', C : int = 3) -> Dict:
+        def get_dataloaders(model_dict : Dict, dataset_location : str = '/root/space/output', C : int = 3, separate_source = None) -> Dict:
             """Get dictionary of dataloaders for every model, we have 3 dataloaders:
                     train, test and val (cross-validation set)
 
@@ -124,11 +124,13 @@ class multi_dim_reconstructor(object):
                 loaders = dict()
                 for split in ['val', 'train', 'test']:
                     logger.info(f'get dataloader for split {split} and dimension {i}')
+                    logger.info(f'Separate source : {separate_source}')
                     ds = datasets.get_dataset(dataset_dict=model_dict["dataset"],
                                         split=split,
                                         datadir=os.path.join(dataset_location, f'dataset_{i}_contrast_{C}'),
                                         exp_dict=model_dict,
-                                        dataset_size=model_dict['dataset_size']) 
+                                        dataset_size=model_dict['dataset_size'], 
+                                        separate_source=separate_source) 
 
                     # make sure this dataset contains the full crop list:
                     # this operation will also sort the selected image list
@@ -153,7 +155,7 @@ class multi_dim_reconstructor(object):
 
         logger.debug(f'model dict keys : {list(model_dict.keys())}')
         self.models = get_models(model_dict, model_type_name.replace('C', str(contrast)),  model_location)
-        self.dataloaders = get_dataloaders(model_dict, dataset_location, contrast)
+        self.dataloaders = get_dataloaders(model_dict, dataset_location, contrast, separate_source=separate_source)
         logger.info(f'Models and dataloaders loaded')
 
     def make_3D_volumes(self, output_location):

@@ -243,7 +243,7 @@ RECONSTRUCT_DICTS['Combine_one_stack'] = {
 }
 }
 
-RECONSTRUCT_DICTS['Combine_one_stack_xVertSeg'] = {
+RECONSTRUCT_DICTS['Combine_one_stack_MyoSegmenTUM'] = {
     0 : {
     "batch_size": 6,
     "dataset": {
@@ -257,7 +257,9 @@ RECONSTRUCT_DICTS['Combine_one_stack_xVertSeg'] = {
         "n_classes": 2,
         "name": "spine_dataset",
         "sources": [
-            "xVertSeg"
+            "xVertSeg",
+            "USiegen",
+            "MyoSegmenTUM"
         ]
     },
     "dataset_size": {
@@ -283,7 +285,7 @@ RECONSTRUCT_DICTS['Combine_one_stack_xVertSeg'] = {
     },
     "num_channels": 1,
     "optimizer": "adam",
-    "hash" : "3e5358f0452d2db6d657654e4f57dc9a"
+    "hash" : "3e5358f0452d2db6d657654e4f57dc9a_MyoSegmenTUM"
 },
 1 : {
     "batch_size": 6,
@@ -298,7 +300,9 @@ RECONSTRUCT_DICTS['Combine_one_stack_xVertSeg'] = {
         "n_classes": 6,
         "name": "spine_dataset",
         "sources": [
-            "xVertSeg"
+            "xVertSeg",
+            "USiegen",
+            "MyoSegmenTUM"
         ]
     },
     "dataset_size": {
@@ -324,7 +328,7 @@ RECONSTRUCT_DICTS['Combine_one_stack_xVertSeg'] = {
     },
     "num_channels": 1,
     "optimizer": "adam",
-    "hash" : "b3fb0dcb40c8bdc09c3a4e211650be3e"
+    "hash" : "b3fb0dcb40c8bdc09c3a4e211650be3e_MyoSegmenTUM"
 },
 2: {
     "batch_size": 6,
@@ -339,7 +343,9 @@ RECONSTRUCT_DICTS['Combine_one_stack_xVertSeg'] = {
         "n_classes": 6,
         "name": "spine_dataset",
         "sources": [
-            "xVertSeg"
+            "xVertSeg",
+            "USiegen",
+            "MyoSegmenTUM"
         ]
     },
     "dataset_size": {
@@ -365,6 +371,6 @@ RECONSTRUCT_DICTS['Combine_one_stack_xVertSeg'] = {
     },
     "num_channels": 1,
     "optimizer": "adam",
-    "hash" :  "b3fb0dcb40c8bdc09c3a4e211650be3e"
+    "hash" :  "b3fb0dcb40c8bdc09c3a4e211650be3e_MyoSegmenTUM"
 }
 }

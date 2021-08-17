@@ -149,6 +149,15 @@ EXP_GROUPS['full_spine_dataset_c6'] = [
             'fcn8_vgg16'], [ 'cross_entropy', 'weighted_cross_entropy'], [0,1,3])]
 
 
+EXP_GROUPS['full_spine_dataset_c6_separate_source'] = [
+    template_exp_spine(
+        debug=False,
+        loss = l,
+        context_span=cp,
+        base=b) for b, l, cp in itertools.product([
+            'fcn8_vgg16'], [ 'cross_entropy'], [0,1])]
+
+
 EXP_GROUPS['weakly_spine_dataset_c6_weighted_red'] = [
     template_exp_spine(
         debug=False,
