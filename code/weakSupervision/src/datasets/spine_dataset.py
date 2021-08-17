@@ -179,6 +179,7 @@ class SpineSets(torch.utils.data.Dataset):
         num_scans = len(scan_list)
         logger.debug(f'{num_scans} scans found that contain in total {len(img_list)} images.')
         logger.debug(f'as dataframe: {self.full_image_df.head(10)}')
+        
 
         # Train-Test split:
         # By using a fixed random seed, the split between train, validation and test is always the same.
@@ -251,7 +252,7 @@ class SpineSets(torch.utils.data.Dataset):
         
         random.seed(RANDOM_SEED)
         self.selected_image_df = pd.concat([self.selected_image_df  , self.selected_image_df.img.apply(lambda _ : random.randint(0, 4)).rename('crop_nr')], axis=1)
-        
+        self.fixed_crop_list = False
         self.img_list = self.selected_image_df.to_dict(orient = 'records')
 
     def return_img_dfs(self) -> Tuple[pd.DataFrame]:
@@ -329,7 +330,7 @@ class SpineSets(torch.utils.data.Dataset):
                 for i in [2, 3]:
                     crops.remove(i)
             if im.shape[1] <= crop_dim[1]:
-                for i in [1, 2]:
+                for i in [1, 3]:
                     try:
                         crops.remove(i)
                     except ValueError:
@@ -353,7 +354,7 @@ class SpineSets(torch.utils.data.Dataset):
         # The sorting is important to assure the recombination in 3D volumes can take place correctly
         self.selected_image_df = pd.concat(temp, axis=0, ignore_index=True).sort_values(by=['scan_id', 'slice_id', 'crop_nr'])
         self.img_list = self.selected_image_df.to_dict(orient = 'records')
-
+        self.fixed_crop_list = True
         logger.info(f'After expanding the dataframe with all relevant crops, the datafame contains {self.selected_image_df.shape[0]} rows' )
 
 
@@ -444,7 +445,7 @@ class SpineSets(torch.utils.data.Dataset):
 
 
         # For the validation and test set, you want to get identical crop nr's but for the train set some more variability could be beneficial
-        if self.split in ['val', 'test']:
+        if self.split in ['val', 'test'] or self.fixed_crop_list:
             crop_nr = out['crop_nr']
         elif self.split == 'train':
             crop_nr = random.randint(0, 4)
