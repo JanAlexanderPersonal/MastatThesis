@@ -1,23 +1,15 @@
-% Please add the following required packages to your document preamble:
-% \usepackage{multirow}
-\begin{tabular}{ll|lllll}
-\hline
-\multicolumn{2}{l}{\multirow{2}{*}{Weighted dice score}}               & \multicolumn{5}{c|}{Trained and evaluated on} \\
-\multicolumn{2}{l}{} &
-    all datasets &
-    \begin{tabular}[c]{@{}l@{}}MyoSegmenTUM \\ only\end{tabular} &
-    \begin{tabular}[c]{@{}l@{}}USiegen\\ only\end{tabular} &
-    \begin{tabular}[c]{@{}l@{}}xVertSeg\\ only\end{tabular} &
-    \begin{tabular}[c]{@{}l@{}}PLoS \\ only\end{tabular} \\ \hline
-Reference                                                   &          & 0.76     & 0.00     & .000    & 00      &     \\ \hline
-\multirow{3}{*}{\begin{tabular}[c]{@{}l@{}}Single-\\ dimension models\\ with annotation\\ poins on sagittal\\ slices\end{tabular}} &
-    Transverse &
-    0.53 &
-    0.64 &
-    0.71 &
-    0.62 &
-    0.70 \\
-                                                            & Frontal  & 0.41     & 0.46     & 0.37    & 0.41    &     \\
-                                                            & Sagittal & 0.34     & 0.36     & 0.28    & 0.36    &     \\ \hline
-\begin{tabular}[c]{@{}l@{}}Pseudo mask\\ model\end{tabular} &          & 0.55     & 0.00     & 0.00    & .000    &     \\ \hline
-\end{tabular}
+\begin{tabular}{lllllll}
+    \hline
+    \multicolumn{2}{l}{\multirow{2}{*}{\begin{tabular}[c]{@{}l@{}}class-weighted \\ dice score\end{tabular}}}          & \multicolumn{5}{c}{Trained and evaluated on} \\ \cline{3-7} 
+    \multicolumn{2}{l}{} &
+      \begin{tabular}[c]{@{}l@{}}all \\ datasets\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}MyoSeg-\\ menTUM \\ only\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}USiegen\\ only\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}xVert\\ Seg\\ only\end{tabular} &
+      \begin{tabular}[c]{@{}l@{}}PLoS \\ only\end{tabular} \\ \hline
+    \multicolumn{2}{l}{Reference}                                                                                      & 0.76    & 0.00    & .000   & 00     &        \\ \hline
+    \multirow{3}{*}{\begin{tabular}[c]{@{}l@{}}Single- dim.\\ (anotated on\\ sagittal slices)\end{tabular}} & Transv.  & 0.53    & 0.64    & 0.71   & 0.62   & 0.70   \\
+                                                                                                            & Frontal  & 0.41    & 0.46    & 0.37   & 0.41   &        \\
+                                                                                                            & Sagittal & 0.34    & 0.36    & 0.28   & 0.36   &        \\ \hline
+    \multicolumn{2}{l}{Pseudo mask model}                                                                              & 0.55    & 0.00    & 0.00   & .000   &        \\ \hline
+    \end{tabular}
