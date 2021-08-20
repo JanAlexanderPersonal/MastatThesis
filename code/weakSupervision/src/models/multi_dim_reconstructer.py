@@ -436,7 +436,7 @@ class multi_dim_reconstructor(object):
             counts = np.array(counts)
             relative = counts / np.max(counts)
             ignore = None
-            if any(relative < .35) :
+            if any(relative < .35) and False : # This is not used anymore
                 ignore = np.argmin(counts)
                 logger.warning(f'Result {ignore} will be ignored because too small.')
             logger.debug(f'Counts : {counts} ** relative : {relative} ** ignore {ignore}')

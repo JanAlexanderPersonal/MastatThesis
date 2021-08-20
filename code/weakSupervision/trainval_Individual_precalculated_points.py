@@ -313,7 +313,7 @@ def trainval_source(exp_dict: Dict, savedir_base: str, datadir: str,
 
     # Revert the model to the last stored value and perform the final validation
 
-    model.load_state_dict(hu.torch_load(model_path))
+    model.load_state_dict(hu.torch_load(os.path.join(savedir, "model.pth")))
     logger.info('Start final validation on de test set')
     test_dict, test_metrics_df = model.val_on_loader(test_loader,
                                                                 savedir_images=os.path.join(

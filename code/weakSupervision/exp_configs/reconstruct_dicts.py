@@ -503,7 +503,7 @@ RECONSTRUCT_DICTS['Combine_one_stack_xVertSeg'] = {
     },
     "num_channels": 1,
     "optimizer": "adam",
-    "hash" :  "b3fb0dcb40c8bdc09c3a4e211650be3e_sVertSeg"
+    "hash" :  "b3fb0dcb40c8bdc09c3a4e211650be3e_xVertSeg"
 }
 }
 
