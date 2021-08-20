@@ -1,4 +1,4 @@
-\chapter{Artificial intelligence \& Machine Learning\label{sec:ai_and_ml}}
+\chapter{Artificial intelligence \& Machine Learning\label{sec:ai_and_ml}}\thispagestyle{empty}
 \par{
     Machine learning is a branch of \Gls{ai}, The study of using computers to automatically perform tasks that once were considered only humans could do. This includes, but is not restricted to, the interpretation of speech and images. 
     The field of \Gls{machinevision} is a branch of machine learning.
@@ -75,13 +75,18 @@
 
 \subsubsection{Convolution neural network}
 
-\acrshort{ann} models can be trained to perform numerous different tasks due to the high number of degrees of freedom in the model.
+\acrshort{ann} models can be trained to perform numerous different tasks due to the high number of degrees of freedom in the model\footnote{
+    An in-depth discussion of neural network theory is outside of the scope of this book.
+    This text aims to reiterate critical concepts the reader is assumed to have some prior familiarity with.
+    There are several valuable sources available for readers who are not satisfied with the level of detail provided here.
+    Books such as \texttt{Hands-on Machine Learning with Scikit-Learn, Keras \& Tensorflow} by Aurélien Géron or \texttt{Deep Learning with PyTorch} by Eli Stevens, Luca Antiga and Thomas Viehmann offer valuable insights and explanations.
+}.
 However, this high number of degrees of freedom also entails problems and risks:
 
 \begin{itemize}
     \item The model weights have to be stored in computer memory. 
     This is limited and restricts how deep\footnote{The depth of a network is the number of hidden layers.} the network can be.
-    A deeper network can be beneficial because it can extract more high-level features by combining the lower level features in the preceding layers. 
+    A deeper network can be beneficial because it can extract more high-level \Gls{features} by combining the lower level features in the preceding layers. 
     \item An over-parametrized network is very prone to overfitting on the train set. 
     An overfitted model has not learned the generalizing relationship between the input and the labels but rather the quirks of the specific train set used.
     \item There are some more technical problems, such as \textit{vanishing gradients} that are associated with naively copying the network shown in figure \ref{fig:ann}. 
@@ -95,12 +100,7 @@ However, this high number of degrees of freedom also entails problems and risks:
         }
 \end{SCfigure}
 \par{
-    The convolution layer is a proven technique to reduce the problems mentioned above\footnote{
-        An in-depth discussion of neural network theory is outside of the scope of this book.
-        This text aims to reiterate critical concepts the reader is assumed to have some prior familiarity with.
-        There are several valuable sources available for readers who are not satisfied with the level of detail provided here.
-        Books such as \texttt{Hands-on Machine Learning with Scikit-Learn, Keras \& Tensorflow} by Aurélien Géron or \texttt{Deep Learning with PyTorch} by Eli Stevens, Luca Antiga and Thomas Viehmann offer valuable insights and explanations.
-    }.
+    The convolution layer is a proven technique to reduce the problems mentioned above.
     The convolution layer is suitable for data with a grid-like structure, such as images or volumes.
     The structure of the data allows a high level of weight-sharing. 
     Neurons in a convolution layer are not connected to all nodes of the previous layer. Instead, each has a limited receptive field.
@@ -124,6 +124,13 @@ However, this high number of degrees of freedom also entails problems and risks:
 
 
 \subsubsection{Training a neural network}
+\marginpar{
+        \includegraphics[width=5cm]{/home/thesis/images/ppg_verhaert.jpg}
+        \captionof{figure}{Illustration of a ppg sensor, typically worn around the wrist. 
+        Apart from the heart rate measurement, this signal can be used to estimate the patients blood pressure without much effort from the medical staff or inconvenience for the patient. 
+        Image provided by \textit{Verhaert NP\&S}}
+        \label{fig:xVertSeg_Age}
+    }
 \par{
     Constructing a network requires evaluating it, comparing the evaluation output to a known desired output, and taking steps to bring the model output closer to the desired output. 
     The procedure used to fit the weights of a neural network to the 
@@ -144,7 +151,6 @@ However, this high number of degrees of freedom also entails problems and risks:
 }
 
 \subsection{Artificial intelligence for healthcare applications}
-
 \par{
     Various researchers are exploring the opportunities of \Gls{ai} in medical practice.
     This could reduce the burden of repetitive tasks on medical caregivers and support both medical diagnosis and procedures.
@@ -158,13 +164,6 @@ However, this high number of degrees of freedom also entails problems and risks:
     around the wrist, that can be worn continuously.
     Inferring the blood pressure from such a \acrshort{ppg} signal\cite{Khalid2018} allows the healthcare worker to access valuable information continuously, cheaper and without much inconvenience for the patient.
 }
-\marginpar{
-        \includegraphics[width=5cm]{/home/thesis/images/ppg_verhaert.jpg}
-        \captionof{figure}{Illustration of a ppg sensor, typically worn around the wrist. 
-        Apart from the heart rate measurement, this signal can be used to estimate the patients blood pressure without much effort from the medical staff or inconvenience for the patient. 
-        Image provided by \textit{Verhaert NP\&S}}
-        \label{fig:xVertSeg_Age}
-    }
 \par{
     Different researchers investigate \Gls{machinevision} applications for medical applications. 
     Research on image classification for medical diagnosis is conducted among others for melanoma (skin cancer) diagnosis on camera (\acrshort{rgb}) images \cite{Vocaturo2019}.
@@ -214,7 +213,7 @@ However, this high number of degrees of freedom also entails problems and risks:
     For \Gls{machinevision} tasks\footnote{and many other tasks.}, the current standard approach is \Gls{deepl}.
     The cost to generate, store and communicate images and computation power has dropped in the past decades.
     This evolution allows to train a model  on previously unimaginable quantities of data\footnote{The \textit{ImageNet} database (\url{http://image-net.org/challenges/LSVRC/index}) consists of more than $14.10^6$ images.}.
-    This technique allows a model with a high number of degrees of freedom to be trainded\footnote{learn by example, so you will} without the need for expert-crafted features. 
+    This technique allows a model with a high number of degrees of freedom to be trainded without the need for expert-crafted \Gls{features}. 
 }
 \subsubsection{Weak supervision types\label{sec:weak_supervision}}
 \par{
@@ -224,7 +223,7 @@ However, this high number of degrees of freedom also entails problems and risks:
     Training a model with \textit{weak labels} compared to \textit{strong labels} could help to mitigate the labelling cost problem.
 }
 \par{
-    In the classic approach, the supervision type closely resembles the intended model output.
+    In the classic approach, the supervision type closely resembles the intended model output, the \Gls{groundtruth}.
     To train a model that can classify an image\footnote{Given an image, the model outputs if this picture is a representation of class \textit{cat}, \textit{dog} or another animal or object. }, 
     one has to \textit{train} the model on a set of labelled images where a human indicated the class.
     To train a model to perform image segmentation\footnote{segmentation means that the model classifies each pixel.}, an expert needs to provide a set of images where for each picture, the objects are delineated.  
@@ -281,14 +280,19 @@ For a segmentation task, weak labels can be:
     For example, instead of image-level labels, in \cite{Laradji2018}, the number of instances of the specific class\footnote{Which happens to be penguins.} is provided. 
 }
 \par{
-    In \cite{Bearman2015}, Bearman et al. compare the annotation time required for images from the PASCAL VOC 2012 dataset.
+    Bearman et al.\cite{Bearman2015} compare the annotation time required for images from the PASCAL VOC 2012 dataset.
     The authors report an average time per image of 239.7 seconds per image for full image pixel annotation, 20.0 seconds per image for image-level labels and 22.1 seconds per image for point annotation.
     As is repeated in \ref{sec:PreviousWork_weaklySupervised}, point level annotation is attractive since it barely requires more of the expert's time while delivering more precise information.
     The point label contains valuable localization information, absent from the image level annotation.
+    Besides this, the reported cost for labelling additional instances of the same class is only 0.9s per addition instance.
+    The image labelling time consists of a \textit{startup cost} of 18,5s followed by the time to annotate the first instance of the first labelled class of 2.4s.
+    This means that the time to label the 2,8 class instances that are on average present in an image from the PASCAL VOC 2012 dataset takes 23,3 s per image.
+    The observation that labelling additional instances of a class results in such a low increase in labelling time is used in this work.
+    In chapter \ref{sec:combination} on page \pageref{sec:combination}, the time to provide multiple labels for the \textit{same} class instance will be estimated based on the same addition of 0,9 s.
 }
 \\[5pt]
 \par{
-    Many techniques to train models on weakly supervised data are more computationally intensive than those on fully supervised data.
+    Techniques to train models on weakly supervised data are more computationally intensive than those on fully \Gls{supervisedl} data.
     The loss function consists of multiple parts and might involve repeated evaluation of the model on the same batch. 
     A two-step process is sometimes used where a first model generates pseudo masks to train a second model on this pseudo mask as if it were a fully supervised task.
     Weakly supervised learning is based on the idea that the cost of human experts is fixed or even increasing while the cost of computation power is decreasing.

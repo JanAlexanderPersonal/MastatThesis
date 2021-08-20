@@ -1,4 +1,4 @@
-\chapter{Single dimension model combination\label{sec:combination}}
+\chapter{Single dimension model combination\label{sec:combination}}\thispagestyle{empty}
 In chapter \ref{sec:singleDimension}, the construction of single dimension models is discussed.
 These models extimate the segmentation masks of $352\times 352$ patches of scan volume slices along one of the three main axis.
 In this chapter, the results of these single dimension models are combined to form a \textit{pseudo} mask that is subsequently used as labelling to train the final segmentation network.
@@ -43,10 +43,7 @@ The volume combination rules are based on two observations:\footnote{
     \item The precision (see equation \ref{eq:precision_i} on page \pageref{eq:precision_i}) with which the background class is predicted in all models is very high.
             This means $\mathcal{P} \left( label = background \mid prediction = background \right)$ is high for all models. 
             If there is one model that indicates a position is background, this position could be estimated to be background with high probability.
-    \item The rule mentioned above can be nuanced\footnote{The opportunity to use the results of the other two single dimension models to correct a \textit{lapse} of one of the single dimension models can be recognized as one of the strengths of the combination procedure.}.
-    It was observed that single dimension models can miss the mask\footnote{This is caused by the large differences between the different datasets used, see chapter \ref{sec:datasets} at page \pageref{sec:datasets}.}. 
-    For some volumes, the recall of the vertebra class is extremely low. The single dimension model predicts the background class for allmost all positions.
-    When this is observed, it does not make much sense to stick to the first rule.
+    \item All models tend to over-estimate the extend of the vertebrae. This causes a low recall score. Often the xxx
 \end{enumerate}
 The observations mentioned above can be combined in algorithm \ref{alg:combination}.
 
@@ -74,12 +71,7 @@ Both hyperparameters are estimated by calculating the same evaluation metric, th
 
 \subsection{Volume combination algorithm}
 The combination of the rules and morphological smoothing operations discussed above result in the following algorithm to combine the segmentation volumes from the single dimension models\footnote{
-    The cardinality of a set $\mathbf{A}$, written as $|\mathbf{A}|$, is the number of elements in a set.
-    The cardinality of the class label sets $c_.$ thus represents the voxel count in each segmentation volumes that is estimated to be \textit{not background}.
-    Suspiciously low voxel counts classified other than background are defined as lower than 35\% of the highest class label cardinality.
-    This last factor has not been optimised. It is an engineering estimate.
-    If a volume is found to be have such a low class label cardinality, this volume reference is stored as $d_{ignore}$ and the volume is ignore in the combination protocol.
-    In practice, the low cardinality volumes are all the segmentation volumes obtained from the model trained on point annotated tranverse slices.
+    The algorithm shown here is based on the two observations mentioned.
 }:
 
 \begin{algorithm}[H]
@@ -96,51 +88,16 @@ The combination of the rules and morphological smoothing operations discussed ab
     $y_t \leftarrow y_t \bullet \mathbf{B}$ \;
     $y_s \leftarrow y_s \bullet \mathbf{B}$ \;
     $y_c \leftarrow y_c \bullet \mathbf{B}$ \;
-    \tcp{(relative) cardinality of the class label sets}
-    $c_t \leftarrow |\{ y_t \neq 0 \}|$ \;
-    $c_s \leftarrow |\{ y_s \neq 0 \}|$ \;
-    $c_c \leftarrow |\{ y_c \neq 0 \}|$ \;
-    $r_t \leftarrow \frac{c_t}{max(c_t, c_s, c_c)}$ \;
-    $r_s \leftarrow \frac{c_s}{max(c_t, c_s, c_c)}$ \;
-    $r_c \leftarrow \frac{c_c}{max(c_t, c_s, c_c)}$ \;
-    \lIf{$\exists d \in [ t,s,c ] : r_d < 0.35$}{$d_{ignore} \leftarrow d$}\lElse{$d_{ignore} \leftarrow \emptyset$}
     \For{all $\vec{p}$}{
         $i \in [ 1, 2, 3, 4, 5]$ \;
-        \Switch{$d_{ignore}$}{
-            \Case{$\emptyset$}{
-                \lIf{$y_t[\vec{p}] = 1 \wedge y_s[\vec{p}] = i \wedge y_c[\vec{p}] = i$}{
-                    $y_f[\vec{p}] \leftarrow i$ 
-                }
-                \lElse{
-                    $y_f[\vec{p}] \leftarrow 0$ 
-                }
+            \lIf{$y_t[\vec{p}] = 1 \wedge y_s[\vec{p}] = i \wedge y_c[\vec{p}] = i$}{
+                $y_f[\vec{p}] \leftarrow i$ 
             }
-            \Case{$t$}{
-                \lIf{$y_s[\vec{p}] = i \wedge y_c[\vec{p}] = i$}{
-                    $y_f[\vec{p}] \leftarrow i$ 
-                }
-                \lElse{
-                    $y_f[\vec{p}] \leftarrow 0$
-                }
-            }
-            \Case{$s$}{
-                \lIf{$y_t[\vec{p}] = 1 \wedge y_c[\vec{p}] = i$}{
-                    $y_f[\vec{p}] \leftarrow i$ 
-                }
-                \lElse{
-                    $y_f[\vec{p}] \leftarrow 0$ 
-                }
-            }
-            \Case{$c$}{
-                \lIf{$y_t[\vec{p}] = 1 \wedge y_s[\vec{p}] = i$}{
-                    $y_f[\vec{p}] \leftarrow i$ 
-                }
-                \lElse{
-                    $y_f[\vec{p}] \leftarrow 0$ 
-                }
+            \lElse{
+                $y_f[\vec{p}] \leftarrow 0$ 
             }
         }
-    }
+    
     $y_f \leftarrow ((y_f \circ \mathbf{B}) \bullet \mathbf{B}) \ominus \mathbf{B}$
    \caption{Rule based combination of model results from three single dimension models\label{alg:combination}}
 \end{algorithm}
@@ -191,9 +148,8 @@ In the last row, the corresponding images are shown.
         \label{fig:hyperparameter_combination_1}
     }
 \par{
-    The result of this procedure is illustrated in figures \ref{fig:comb1_1} and \ref{fig:comb1_2}.
-    In the second figure, the model trained on transversal slices is predicting almost exclusively background labels.
-    The check in algorithm \ref{alg:combination} for volume class cardinality is usefule in this type of cases.
+    The result of this procedure is illustrated in figures \ref{fig:comb1_1}, \ref{fig:comb1_2} and \ref{fig:comb1_3}.
+    These images illustrate that the result of the combination procedure is an improvement compared to the results of the individual models.
 }   
 \par{
     The procedure described in the last two chapters now allows to train a network with only point annotated labels by using the results of the pseudo mask volume.
@@ -208,7 +164,7 @@ In the last row, the corresponding images are shown.
 
 \begin{SCfigure}[][htb]
     \centering
-    \includegraphics[width=.95\textwidth]{images/comb1_denoise2_erode1_MyoSegmenTUM_036.png}
+    \includegraphics[width=.95\textwidth]{images/comb1_denoise2_erode1_MyoSegmenTUM_036.pdf}
     \caption{
         Result of the combination of the three single dimension model results for volume MyoSegmenTUM nr 36.
         The colours indicate the vertebra classes. Only one semantic class is estimated in the first row, illustrating the model trained on transversal slices.
@@ -222,20 +178,33 @@ In the last row, the corresponding images are shown.
 \end{SCfigure}
 \begin{SCfigure}[][htb]
     \centering
-    \includegraphics[width=.95\textwidth]{images/comb1_denoise2_erode1_xVertSeg_009.png}
+    \includegraphics[width=.95\textwidth]{images/comb1_denoise2_erode1_xVertSeg_009.pdf}
     \caption{
-        Result of the combination of the three single dimension model results for volume xVertSeg 009.
-        The colours indicate the vertebra classes. The layout of this image is the same as the layout of figure \ref{fig:comb1_1}.
-        This image illustrates a case where the usefulness of the rule in algorithm \ref{alg:combination}  to ignore a single dimension model result with a cardinality 
-        of the class set under 35\% of the max value is shown.\label{fig:comb1_2}
+        Result of the combination of the three single dimension model results for volume xVertSeg 009. The layout of this picture is identical to figure \ref{fig:comb1_1}.\label{fig:comb1_2}
+    }
+\end{SCfigure}
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{images/comb1_denoise2_erode1_USiegen_004.pdf}
+    \caption{
+        Result of the combination of the three single dimension model results for volume USiegen 004. The layout of this picture is identical to figure \ref{fig:comb1_1}.\label{fig:comb1_3}
     }
 \end{SCfigure}
 
 \chapter{Pseudo mask training}
-
+\marginpar{
+        \includegraphics[width=5cm]{images/combination_optimization_precalc.pdf}
+        \captionof{figure}{Illustration of the hyperparameter optimization procedure (see also table \ref{tab:combination_precalc})}
+        \label{fig:hyperparameter_combination_precalc}
+    }
 \par{
     As described in chapter \ref{sec:annotationPoints} on page \pageref{sec:annotationPoints}, only one stack of slices will be annotated by the expert.
-    This means that for the slices along one of the geometric dimensions, a 
+    This means that for the slices along one of the geometric dimensions, a known number of annotation points will be provided.
+    For the slices perpendicular to the other two geometric axis, the annotation points will have to be deduced from this original stack.
+}
+\par{
+    In this final results chapter, the following experiment is discussed:
+
 }
 
 
@@ -262,13 +231,20 @@ In the last row, the corresponding images are shown.
     \caption{Combination of three point supervised models with algorithm \ref{alg:combination}. 
     These models were constructed with a fixed number of background points and a fixed number of class labels per class instance.
     This test indicates that the segmentation mask obtained from the result of single dimension models with algorithm \ref{alg:combination} allows to obtain a new segmentation mask with a higher metric score, the pseudo masks.
-    The weighted dice scores are evaluated on the cross validation set, this causes the difference with the values in figure \ref{fig:points_influence}. \label{tab:combination_1}
+    The weighted dice scores are evaluated on the cross validation set, this causes the difference with the values in figure \ref{fig:points_influence}. \label{tab:combination_precalc}
     }
 
 \end{SCtable}
+\newpage
 
-Time to evaluate
-performance
+\marginpar{
+        \includegraphics[width=5cm]{images/PseudoSupervised.pdf}
+        \captionof{figure}{Class-weighted dice score for models trained on pseudo-masks}
+        \label{fig:PseudoSupervised_dice}
+    }
+
+\todo[inline]{Time to evaluate}
+
 
 \begin{SCtable}[\sidecaptionrelwidth][h]
 

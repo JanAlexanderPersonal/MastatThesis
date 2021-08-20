@@ -29,6 +29,18 @@ This is not necessarily the case for all observations. For example, $a_{1,2}$ ob
 In general, $a_{i,j}$ is the number of observations for which the model predicted $C_i$ and for which the label is $C_j$.
 Based on the confusion matrix, 3 metrics can be calculated: the model \textit{precision}, the \textit{recall} and the \textit{F-score}.
 }
+
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{images/Metrics.pdf}
+    \caption{Illustration of different evaluation metrics. 
+    The observations for which the model correctly predicts a positive label are called the \textit{True Positive} (TP) values.
+    The observations for which a positive label is wrongfully predicted are the \textit{False Positive} (FP) labels. 
+    When an observation is positive, but the model fails to predict this, this is a \textit{False Negative} (FN) observation.
+    On observation that is negative and is correctly predicted to be by the model is a \textit{True Negative} (TN) observation.
+    }
+\end{SCfigure}
+
 \subsection{Class imbalance\label{sec:class_imbalance}}
 \par{
     To construct an appropriate set of metrics to use for a problem, the class distribution of the dataset\footnote{

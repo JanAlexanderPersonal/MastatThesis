@@ -1,16 +1,12 @@
-\chapter{The human spine}
+\chapter{The human spine}\thispagestyle{empty}
 \par{
     This document presents a model for automatic segmentation of \acrfull{ct} and \acrfull{mri} images of the lumbar spine.
     This chapter introduces these terms\footnote{This work is not a medical desideration. For in-depth knowledge on the anatomy and physiology of the spine, consult the specialized literature.}.
     Secondly, it gives a basic overview of the medical imaging techniques. 
     Finally, it touches upon a specific medical procedure in which this information is used: the minimally invasive surgery of a spinal hernia.
 }
-
-
-
 \section{Anatomy of the human spine}
 
-\todo[inline]{Assure all citations are ok.}
 \par{
     The spinal column, vertebral column or backbone \footnote{NL: \textit{wervelkolom}} is a structure of 34 bones. 
     It holds the body upright while providing it with the mobility to bend and twist.
@@ -18,7 +14,6 @@
     Moreover, the vertebral column serves as a conduit for significant nerves running from the brain to the toes.
     The spinal column, as illustrated in figure \ref{fig:spineimage} can be divided into five regions:
 }
-
 \begin{description}
     \item[the Cervical spine:] 7 vertebrae of the neck, indicated by C$_1$ to C$_7$\footnote{Vertebrae are numbered from the head down. C1 (\textit{atlas}) is the vertebra closest to the head}.
     \item[the Thoracic spine:] 12 vertebrae of the middle back (T$_1$ to T$_{12}$).
@@ -31,7 +26,7 @@
 \begin{SCfigure}[][h!]
     \centering
     \includegraphics[width=10cm]{/home/thesis/images/SpineModel.jpeg}
-    \caption{\label{fig:spineimage}Model of the human spine. The five vertebrae in green form the lumbar spine. They are referred to as \textit{L1} to \textit{L5} from top to bottom. }
+    \caption{\label{fig:spineimage}Model of the human spine. The five vertebrae in green form the lumbar spine. They are referred to as \textit{L1} to \textit{L5} from top to bottom. Photo source: \url{shutterstock.com}}
 \end{SCfigure}
 
 \section{Pathologies of the human spine}
@@ -39,11 +34,17 @@
     This document does not aim to provide an exhaustive list of all human spinal pathologies. 
     Two pathologies are interesting to discuss further as an introduction to this work since they occur in the data used in this project, see page \pageref{sec:datasets} for further details.
 }
+\begin{SCfigure}[][h!]
+    \centering
+    \includegraphics[width=10cm]{/home/thesis/images/REISS_illustration.png}
+    \caption{Artist's impression of the start of the surgical treatment of a lumbar hernia. 
+    This image shows the dilator through which the surgical instruments will be inserted to mill away the bulging disc material.
+    This procedure requires repeated visualization of the instruments and the spine via X-ray images. \textit{This illustration is designed by Verhaert NP\&S}.\label{fig:REISS_procedure}}
+\end{SCfigure}
 \par{
     First, there is \textit{scoliosis}, which is a sideways curve of the spine.
     The severity of this condition can vary from relatively mild to severe. 
     In severe cases, scoliosis can affect the patient's movement and breathing.
-    \todo[inline]{image}.
 }
 \par{
     Second, there is the \textit{spinal hernia} or spinal disc herniation\footnote{Spinal disc herniation is sometimes referred to as a \textit{slipped disc}.}. 
@@ -54,17 +55,11 @@
     In severe cases, a spinal hernia requires surgical treatment.
     This specialized procedure requires repeated medical imaging to allow the surgeon to accurately investigate the situation before the operation and assure correct positioning of the instruments during the intervention.
 }
-\begin{SCfigure}[][h!]
-    \centering
-    \includegraphics[width=10cm]{/home/thesis/images/REISS_illustration.png}
-    \caption{Artist's impression of the start of the surgical treatment of a lumbar hernia. 
-    This image shows the dilator through which the surgical instruments will be inserted to mill away the bulging disc material.
-    This procedure requires repeated visualization of the instruments and the spine via X-ray images. \textit{This illustration is designed Verhaert NP\&S}.\label{fig:REISS_procedure}}
-\end{SCfigure}
 \par{
     In image \ref{fig:REISS_procedure}, the start of the surgical treatment procedure for a lumbar hernia is illustrated.
     One possible benefit of improved automatic interpretation of \acrshort{mri} and \acrshort{ct} scans is providing support for this procedure.
-    This delicate procedure requires interpretation and combination of information from both scan types (at different times). This is a demanding task.
+    This delicate procedure requires interpretation and registration of information from both scan types (at different times). 
+    This is a demanding task for which automated support could be useful.
 }
 
 \section{Medical imaging of the human spine\label{sec:medical_imaging}}
@@ -78,11 +73,11 @@
     These techniques allow non-invasive visualization of the spine and discs in three dimensions.
     Two dimensional slices from volumetric scans (\acrshort{mri} and \acrshort{ct}) are illustrated in \ref{fig:mri_ct}.
 }
-
+\newpage
 \subsection{CT scan}
 \par{
     The \acrfull{ct}\footnote{Also known as CAT-scan, for Computed Axial Tomography or Computer-assisted Tomography.} is a non-invasive medical imaging procedure
-    \footnote{CT scans are primarily used for medical purposes. 
+    \footnote{\Gls{tomography} scans are primarily used for medical purposes. 
     It is also used in industry for non-destructive component and assembly inspection.
     In geology, it is used to identify materials in a drill core quickly. In archaeology, it is used for the non-destructive investigation of artefacts. } 
     for diagnostic purposes. 
