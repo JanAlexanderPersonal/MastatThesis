@@ -3,7 +3,7 @@
 /literature_review/*.pdf
 /meetings/
 /code/*/tensorboard/
-/text/automated_graphs
+#/text/automated_graphs
 
 .vscode/
 
