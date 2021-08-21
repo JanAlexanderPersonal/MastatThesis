@@ -21,7 +21,7 @@ However, there are advantages to choosing 2D networks over 3D networks:
 
 \subsection{Model training approach}
 
-An approach used often in weakly supervised learning is the generation of \textit{ersatz} or \textit{pseudo} mask labels.
+An approach used often in weakly supervised learning is the generation of \textit{ersatz} or \textit{pseudo} mask labels\cite{Laradji2019,Laradji2019a, Ahn2019,McEver2020}, see page \pageref{sec:PreviousWork_weaklySupervised}.
 This project intends to use this approach too.
 
 A scan volume can be sliced along 3 different axes: the transverse axis, the coronal axis and the sagittal axis (see figure \ref{fig:anatomicalPlains}). 
@@ -32,7 +32,7 @@ This final segmentation mask, which should be as least as good as the best of th
 
 \begin{SCfigure}[][htb]
     \centering
-    \includegraphics[width=.85\textwidth]{/home/thesis/images/Training_concept.pdf}
+    \includegraphics[width=.95\textwidth]{/home/thesis/images/Training_concept.pdf}
     \caption{\label{fig:model_training_concept}Illustration of the model training approach. 
     This is based on the conbination of 3 different models based on different volume slices.}
 \end{SCfigure}

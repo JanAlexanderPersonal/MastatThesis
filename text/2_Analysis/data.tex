@@ -56,16 +56,9 @@ the slices along dimension 1 represent the frontal slices, and the slices along 
     \end{tabular}
     \caption{List of dataset orientations. Clarification of the names of the anatomical axis is given in figure \ref{fig:anatomicalPlains}.
     The names of the axis, $X$, $Y$ and $Z$ represent the \texttt{numpy} axis \texttt{0}, \texttt{1} and \texttt{2}.
-    $^\dagger$ The Craniocaudal axis in the PLoS dataset is inverted.\label{tab:dataOrientation}}
-
+    $^\dagger$ The Craniocaudal axis in the PLoS dataset is inverted.\label{tab:dataOrientation}
+    }
 \end{SCtable}
-
-\begin{SCfigure}[][htb]
-    \centering
-    \includegraphics[width=10cm]{/home/thesis/images/Anatomical_Planes.png}
-    \caption{Clarification of the anatomical planes\label{fig:anatomicalPlains}}
-  \end{SCfigure}
-
 \begin{SCfigure}[][htb]
     \centering
     \begin{minipage}{.45\textwidth}
@@ -78,10 +71,20 @@ the slices along dimension 1 represent the frontal slices, and the slices along 
     The left column indicates the volume dimensions (in mm) in the different datasets. 
     The graphs indicate there are important differences between the datasets. Notice that both the USiegen and the MyoSegmenTUM dataset are cropped severely in the left-right direction.
     The right column represents the vixel spacings in the different volumes of the different datasets.
-    In the preprocessing step all volumes are resampled on a $1mm \times 1mm \times 1mm$ grid, see page \pageref{sec:resampling}. \label{fig:AllDataset_dims} }
-    
+    In the preprocessing step all volumes are resampled on a $1mm \times 1mm \times 1mm$ grid, see page \pageref{sec:resampling}. \label{fig:AllDataset_dims} 
+    }
 \end{SCfigure}
 \FloatBarrier
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=10cm]{/home/thesis/images/Anatomical_Planes.png}
+    \caption{\label{fig:anatomicalPlains}Clarification of the anatomical planes. 
+    For some images further in this document, for example figure \ref{fig:comb1_1} at page \pageref{fig:comb1_1}, the anatomical axes will be referred to by numbering:
+    Slices perpendicular to dimension 0 are slices in the transverse plane.
+    Slices perpendicular to dimension 1 are slices in the frontal plane.
+    Slices perpendicular to dimension 2 are slices in the sagittal plane.  
+    }
+\end{SCfigure}
 \section{Comparison of the different datasets\label{seg:datasetcomparison}}
 \input{/home/thesis/2_Analysis/data_xVertSeg}
 \FloatBarrier

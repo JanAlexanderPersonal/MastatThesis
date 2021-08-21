@@ -70,7 +70,7 @@ In the case of point supervised data, $\mathcal{I}_i$ only consists of a handful
 This loss component is in this case called the point loss component $\mathcal{L}_P$.
 
 \subsubsection{Prior extend loss}
-The second supervised loss function used is the \textit{prior extend} loss.
+The second \Gls{supervisedl} loss function used is the \textit{prior extend} loss.
 This loss function describes the prior knowledge that the dimensions of a vertebra are limited. 
 Based on \cite{Alam2014}, the maximal extent of a human lumbar vertebrae was set to be $r=110mm$.
 This means that a point label $\mathcal{Y}_i(\vec{p})=m: m\in[1,2,3,4,5]$ indicating that $\vec{p}$ is a point in vertebra $L_m$, also means that all points outside of a cicle with radius $r$ cannot be points of $L_m$.
@@ -109,7 +109,7 @@ The loss function is the binary cross-entropy between $\mathbf{m}_k$ and the sig
 \subsection{Unsupervised loss functions}
 
 \subsubsection{Transformation consistency loss}
-The first unsupervised loss function is the unsupervised consistency loss \todo{cite Laradji}. 
+The first \Gls{unsupervisedl} loss function is the unsupervised consistency loss\cite{Laradji2021}. 
 The idea behind this loss is that the model output should be consistent for geometric transformations of the input.
 A set of geometrical transformations $T=\left\{ t_1, t_2, \dots, t_n \right\}$ is defined. 
 Then the consistency loss function $\mathcal{L}_C$ is defined as

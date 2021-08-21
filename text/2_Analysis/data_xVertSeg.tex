@@ -42,6 +42,7 @@ A box plot of the age distribution between genders is shown in figure \ref{fig:x
         This table counts the spine pathologies and normal vertebrae observed over all 15 patients in the xVertSeg dataset.}   
 \end{SCtable}
 
+
 \subsubsection{Technical information}
 
 The xVertSeg dataset contains 15 \acrshort{ct} annotated scans. 
@@ -54,7 +55,20 @@ Along the craniocaudal axis, the volumes are cropped. The average volume extend 
 \begin{SCfigure}[][htb]
     \centering
     \includegraphics[width=.95\textwidth]{automated_graphs/xVertSeg_image002.png}
-    \caption{xVertSeg scan \textit{image002}. \label{fig:xVertSeg_image002}. In the xVertSeg dataset, the volume left-right axis is not cropped. These images only show part of the sacrum, but multiple thoricic vertebrae are visible.}
+    \caption{xVertSeg scan \textit{image002}. In the xVertSeg dataset, the volume left-right axis is not cropped. 
+    These images only show part of the sacrum, but multiple thoricic vertebrae are visible.\label{fig:xVertSeg_image002}}
+\end{SCfigure}
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{images/xVertSeg004_s210_mask.pdf}
+    \caption{\label{fig:xVertSeg004_s210_mask} xVertSeg scan \textit{image004}. This sagittal slice shows the xVertSeg labels include the \textit{vertebra lamina}.
+    \newline\noindent Colour legend: \newline
+\noindent\mycircle{colL1}  L1 %\newline 
+\hspace{2mm}\mycircle{colL2}  L2 %\newline 
+\hspace{2mm}\mycircle{colL3}  L3 %\newline 
+\hspace{2mm}\mycircle{colL4}  L4 %\newline 
+\hspace{2mm}\mycircle{colL5}  L5
+    }
 \end{SCfigure}
 
 The distribution of the scan dimensions is shown in figure \ref{fig:AllDataset_dims}. This also illustrates that the \textit{xVertSeg} dataset consists of large, high-resolution images.

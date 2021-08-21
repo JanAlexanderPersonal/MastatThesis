@@ -5,21 +5,19 @@
 \definecolor{color1}{rgb}{0.835294117647059,0.368627450980392,0}
 
 \begin{axis}[
-axis line style={white!15!black},
 height=5cm,
 tick align=outside,
+tick pos=left,
 width=9cm,
-x grid style={white!80!black},
-xmajorticks=false,
+x grid style={white!69.0196078431373!black},
 xmin=0.5, xmax=3.5,
-xtick style={color=white!15!black},
+xtick style={color=black},
 xtick={1,2,3},
 xticklabels={left-right (x),anteroposterior (y),craniocaudal (z)},
-y grid style={white!80!black},
+y grid style={white!69.0196078431373!black},
 ylabel={dimension [mm]},
-ymajorticks=false,
 ymin=147.344568, ymax=576.684072,
-ytick style={color=white!15!black}
+ytick style={color=black}
 ]
 \addplot [color0, opacity=1]
 table {%
@@ -31,12 +29,12 @@ table {%
 1 464.0768
 1 557.16864
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 0.925 295.5264
 1.075 295.5264
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 0.925 557.16864
 1.075 557.16864
@@ -51,12 +49,12 @@ table {%
 2 491.8562
 2 557.16864
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 1.925 295.5264
 2.075 295.5264
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 1.925 557.16864
 2.075 557.16864
@@ -71,12 +69,12 @@ table {%
 3 319.5245
 3 466.3386
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 2.925 166.86
 3.075 166.86
 };
-\addplot [white!10!black, opacity=1]
+\addplot [black, opacity=1]
 table {%
 2.925 466.3386
 3.075 466.3386

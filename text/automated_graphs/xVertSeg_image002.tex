@@ -3,42 +3,38 @@
 
 \begin{groupplot}[group style={group size=2 by 1}]
 \nextgroupplot[
-axis line style={white!15!black},
 height=5cm,
 tick align=outside,
+tick pos=left,
 width=9cm,
-x grid style={white!80!black},
+x grid style={white!69.0196078431373!black},
 xlabel={Left-right axis (x) [mm]},
-xmajorticks=false,
 xmin=-0.5, xmax=442.5,
-xtick style={color=white!15!black},
+xtick style={color=black},
 y dir=reverse,
-y grid style={white!80!black},
+y grid style={white!69.0196078431373!black},
 ylabel={Anteroposterior axis (y) [mm]},
-ymajorticks=false,
 ymin=-0.5, ymax=442.5,
-ytick style={color=white!15!black}
+ytick style={color=black}
 ]
-\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=442.5, ymin=442.5, ymax=-0.5] {xVertSeg_image002-042.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=442.5, ymin=442.5, ymax=-0.5] {xVertSeg_image002-044.png};
 
 \nextgroupplot[
-axis line style={white!15!black},
 height=5cm,
 tick align=outside,
+tick pos=left,
 width=9cm,
-x grid style={white!80!black},
+x grid style={white!69.0196078431373!black},
 xlabel={Anteroposterior axis (y)[mm]},
-xmajorticks=false,
 xmin=-0.5, xmax=442.5,
-xtick style={color=white!15!black},
+xtick style={color=black},
 y dir=reverse,
-y grid style={white!80!black},
+y grid style={white!69.0196078431373!black},
 ylabel={Craniocaudal axis (z) [mm]},
-ymajorticks=false,
 ymin=-0.5, ymax=322.5,
-ytick style={color=white!15!black}
+ytick style={color=black}
 ]
-\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=442.5, ymin=322.5, ymax=-0.5] {xVertSeg_image002-043.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=442.5, ymin=322.5, ymax=-0.5] {xVertSeg_image002-045.png};
 \end{groupplot}
 
 \end{tikzpicture}

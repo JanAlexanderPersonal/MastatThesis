@@ -164,6 +164,23 @@ In the last row, the corresponding images are shown.
 
 \begin{SCfigure}[][htb]
     \centering
+    \centering
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/MyoSegmenTUM020_s21_points.pdf}
+    \end{minipage} 
+    \vspace{1 mm}
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/MyoSegmenTUM020_s75_front_points.pdf}
+    \end{minipage} 
+    \vspace{2 mm}
+    \caption{Illustration of the single-stack labelling procedure.
+    Since the labeller is only providing point annotations for the sagittal slices, slice 21 of MyoSegmenTUM 20 is labelled with the definded 3 class labels per class instance and 5 background point labels.
+    The same annotation points show up in the frontal slice 75 of the same volume. 
+    \protect\input{tables/colourlegend.tex}}
+\end{SCfigure}
+
+\begin{SCfigure}[][htb]
+    \centering
     \includegraphics[width=.95\textwidth]{images/comb1_denoise2_erode1_MyoSegmenTUM_036.pdf}
     \caption{
         Result of the combination of the three single dimension model results for volume MyoSegmenTUM nr 36.
@@ -207,7 +224,39 @@ In the last row, the corresponding images are shown.
 
 }
 
+\begin{SCfigure}[][htb]
+    \centering
+    \centering
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/GroundTruth_morphComb_USiegen_007.pdf}
+    \end{minipage} 
+    \vspace{1 mm}
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/SingleDims_USiegen_007.pdf}
+    \end{minipage} 
+    \vspace{2 mm}
+    \caption{Thee dimensional render to visualize the combination of single-dimensional model results to form the pseudo masks.
+    The upper two figures show the ground truth volumes (as a reference, not used in training) and the pseudo mask volumes which have been constructed by comining the results of the three single dimensional models illustrated on the bottom row of images.
+    The scan illustrated here is USiegen 007.
+    \protect\input{tables/colourlegend.tex}}
+\end{SCfigure}
 
+\begin{SCfigure}[][htb]
+    \centering
+    \centering
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/GroundTruth_morphComb_MyoSegmenTUM_034.pdf}
+    \end{minipage} 
+    \vspace{2 mm}
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/SingleDims_MyoSegmenTUM_034.pdf}
+    \end{minipage} 
+    \vspace{2 mm}
+    \caption{Thee dimensional render to visualize the combination of single-dimensional model results to form the pseudo masks.
+    The upper two figures show the ground truth volumes (as a reference, not used in training) and the pseudo mask volumes which have been constructed by comining the results of the three single dimensional models illustrated on the bottom row of images.
+    The scan illustrated here is MyoSegmenTUM 34.
+    \protect\input{tables/colourlegend.tex}}
+\end{SCfigure}
 
 
 \begin{SCtable}[\sidecaptionrelwidth][h]

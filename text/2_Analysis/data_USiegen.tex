@@ -4,16 +4,11 @@
 
 This dataset is made available in 2014 by the University of Siegen, Germany.
 Dr D. Zukic \cite{Zukic2014} constructed it as part of his PhD project.
-
-\marginpar{
-        \input{automated_graphs/USiegen_ageboxplot.tex}
-        \captionof{figure}{USiegen patients age distribution}
-        \label{fig:USiegen_Age}
-    }
-
 This dataset contains 26 \acrshort{mri} scans of 17 different patients\footnote{This is not clearly stated, but can be inferred from the metadata.}. 
+
 The fact that scans of the same patient are correlated will be taken into account in the train, validation and test split.
 For more details on this split, see section \ref{sec:trainValTestSplit} on page \pageref{sec:trainValTestSplit}.
+
 
 \subsubsection{Original Objective of the Dataset}
 
@@ -24,7 +19,11 @@ The final model developed by dr. D. Zukic consisted of a Viola-Jones detector fo
 The average Dice score compared to the manual reference was reported to be 79.3\%.
 
 \subsubsection{Patient statistics}
-
+\marginpar{
+        \input{automated_graphs/USiegen_ageboxplot.tex}
+        \captionof{figure}{USiegen patients age distribution}
+        \label{fig:USiegen_Age}
+    }
 In \cite{Zukic2014}, it is not entirely made clear which scans are taken from the same patient.
 It is made clear, however that the 26 scans were not obtained from 26 patients.
 The information was inferred from the naming of the scans and the provided gender en age information\footnote{
@@ -52,6 +51,15 @@ Along this left-right dimension, the voxel spacing is large.
     \includegraphics[width=.95\textwidth]{automated_graphs/USiegen_Aka3.png}
     \caption{USiegen dataset scan \textit{Aka3}. \label{fig:USiegen_Aka3}. It is immediately clear the USiegen volumes are cropped differently than the xVertSeg volumes.
     In the craniocaudal direction, both sacrum and coccyx are visible. Along the left-righ axis, the volumes have been cropped severely.}
+\end{SCfigure}
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=.95\textwidth]{images/USiegen004_s20_mask.pdf}
+    \caption{\label{fig:USiegen004_s20_mask}Sagittal slice of USiegen dataset scan compared with the \Gls{groundtruth} mask for this scan.
+    This image illustrates a spine with a crushed vertebra. 
+    It can also be remarked that the ground truth masks provided for the USiegen dataset only contain the vertebra body, not the vertebra laminae.
+    \protect\input{tables/colourlegend.tex}
+    }
 \end{SCfigure}
 
 The original scans in the \textit{USiegen} dataset were cropped in the \textit{left-right} direction. 

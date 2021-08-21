@@ -190,8 +190,14 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 }
 \makeatother
 
+% squares for color indication
 
-
+\newrobustcmd*{\mycircle}[1]{\tikz{\filldraw[draw=#1,fill=#1] (0,0) circle [radius=0.1cm];}}
+\definecolor{colL1}{rgb}{0.8, 0.8, 0.24528301886792458}
+\definecolor{colL2}{rgb}{0.6, 0.6, 0.5744680851063829}
+\definecolor{colL3}{rgb}{0.3999999999999999, 0.4, 0.8}
+\definecolor{colL4}{rgb}{0.27610394265232974, 0.19999999999999996, 0.4}
+\definecolor{colL5}{rgb}{0.0, 0.0, 0.0}
 
 \maxsecnumdepth{subsection} % chapters, sections, and subsections are numbered
 \maxtocdepth{subsection} % chapters, sections, and subsections are in the Table of Contents

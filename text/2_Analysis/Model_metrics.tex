@@ -55,6 +55,7 @@ Based on the confusion matrix, 3 metrics can be calculated: the model \textit{pr
     There is about 1 pixel of each of the lumbar vertebra classes for 500 background pixels.
     The different performance metrics for the different classes are weighted with the inverse of their relative occurrence to evaluate the model's performance correctly.
 }
+\newpage
 \subsection{Precision}
 \par{
     The \textbf{precision}\footnote{the precision is also called the \textit{positive predictive value}.}, for class $i$,\footnote{
@@ -88,10 +89,6 @@ Based on the confusion matrix, 3 metrics can be calculated: the model \textit{pr
         \text{Precision}_w &=& \frac{\sum_{i=0}^{k-1} \left[ \text{Precision}_i \sum_{j=0}^{k-1} a_{j,i} \right] }{\sum_{i=0}^{k-1} \sum_{j=0}^{k-1} a_{i,j} }  \label{eq:weighted_metric}
     \end{eqnarray}
 }
-
-
-
-
 \subsubsection{Recall}
 \par{
     The \textbf{recall}\footnote{The recall is also called the \textit{sensitivity}.} is the numer of correctly predicted $C_i$ observations out of the total number of $C_i$ observations.
@@ -106,10 +103,6 @@ Based on the confusion matrix, 3 metrics can be calculated: the model \textit{pr
     \end{eqnarray}
     The weighted-mean recall and macro-recall are defined in the same way as the multi-label precision metrics, see equation \ref{eq:macro_metric} and equation \ref{eq:weighted_metric}.
 }
-
-
-
-
 \subsection{Dice score\label{sec:dice}}
 \par{
     The objective is, of course, to build a model with both high precision and a high recall.
@@ -118,7 +111,7 @@ Based on the confusion matrix, 3 metrics can be calculated: the model \textit{pr
     \footnote{To increase recall$_i$, you need to encourage the model to predict $C_i$. Unfortunately, this increases the probability that an observation is wrongly classified as $C_i$, thus decreasing precison$_i$.}.
     One needs to find a balance between both.
 }
-\newpage
+
 \par{It is useful to combine both metrics in a single new metric: the \textbf{F1-score}\footnote{The F1-score is also called the Dice-score}. This is accomplished by taking the harmonic mean
 \footnote{The harmonic mean assures that F1 will always be between the values of precision and recall, but it will be closer to the lowest value. If, for example, $recall=0$ and $precision=1$, then $F1=0$.} of precision and recall.
 \begin{equation}

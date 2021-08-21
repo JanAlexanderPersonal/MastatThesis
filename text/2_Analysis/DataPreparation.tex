@@ -1,4 +1,4 @@
-\chapter{Data preprocessing}
+\chapter{Data preprocessing}\thispagestyle{empty}
 
 The available data volumes have to be preprocessed before being used in the neural network classifier.
 The preprocessing steps consist of resampling, slicing, contrast enhancement and cropping.  
@@ -33,11 +33,11 @@ I chose to resample on a $1mm\times 1mm \times 1mm$ isotropic grid.
 If necessary, images are rotated to uniformize the orientation vectors. 
 Every image is now a 3-dimensional array\footnote{Both \acrshort{ct} and \acrshort{mri} images have only one channel.} with the same sequence of dimensions and the same spacing along these dimensions.
 The chosen uniform dimension sequence is:
-\begin{enumerate} 
-    \item Craniocaudal axis; perpendicular to the transverse plane.
-    \item Anteroposterior axis; perpendicular to the coronal (frontal) plane.
-    \item Left-right axis; perpendicular to the sagittal plane.
-\end{enumerate}
+\begin{description} 
+    \item[0:] Craniocaudal axis; perpendicular to the transverse plane.
+    \item[1:] Anteroposterior axis; perpendicular to the coronal (frontal) plane.
+    \item[2:] Left-right axis; perpendicular to the sagittal plane.
+\end{description}
 The inputs for the 2D models are obtained by \textit{slicing} the volume along with one of the dimensions.
 This means that from each scan volume, three different sets of two-dimensional slices can be generated, depending on the slicing axis\footnote{The slicing axis is the axis perpendicular to which ones slices the volume}.
 
@@ -75,7 +75,6 @@ the following parameters were chosen:
     \item[clip limit:] $9.10^{-3}$. This parameter suppresses noise in the darkest regions (which contain the least information).
 \end{description}
 
-\newpage
 \section{Train, validation and test split considerations\label{sec:trainValTestSplit}}
 
 To allow evaluation of the models produced, a test set is split from the development set.
@@ -98,14 +97,18 @@ This distribution is not perfect but acceptable, as is indicated by the values i
 \begin{SCtable}[\sidecaptionrelwidth][h]
  
     \input{tables/summary_split.tex}
-    \caption{Number of volumes by datasource and by split.\label{tab:summary_split}}
+    \caption{Number of volumes by datasource and by split. The scan volumes are split such that scans of the same patient are in the same split set.\label{tab:summary_split}}
   
   \end{SCtable}
 
   \begin{SCtable}[\sidecaptionrelwidth][h]
  
     \input{tables/summary_split_slices.tex}
-    \caption{Number of slices by datasource and by split.\label{tab:summary_split_slices}}
+    \caption{Number of slices by datasource and by split.
+    These values might seem high, yet, the reader should not forget these image slices are highly correlated. 
+    There is very little additional independent information comparing one slice with a slice taken just 1mm further.
+    On top of this, there are many slices which only contain the background class and do not provide much information for the model to train on the lumbar vertebrae classes. 
+    \label{tab:summary_split_slices}}
   
   \end{SCtable}
 
@@ -148,7 +151,8 @@ all different crops are evaluated in the model, and the responses for these crop
     \end{minipage}
     \caption{
         Illustration of image cropping where the image is larger than the crop window dimensions. The original size of the image is $443 \times 443$, and the crop window used has dimensions $352 \times 352$.
-        Crop 0 to 4 are 5 different images but have a considerable overlap. \label{fig:crop}
+        Crop 0 to 4 are 5 different images but have a considerable overlap. This means that in chapter \ref{sec:combination} on page \pageref{sec:combination}, 
+        where the volumes are reconstructed from all relevant crops, for this type of slices four crops (0, 1, 2 \& 3) have to be calculated.\label{fig:crop}
         }
     
 \end{SCfigure}
@@ -165,7 +169,9 @@ all different crops are evaluated in the model, and the responses for these crop
         Illustration of image cropping where the image is larger than the crop window dimensions.
         The original size of the image is $291 \times 424$, and the crop window used has dimensions $352 \times 352$.
         Crop 0 to 4 are not all different images. Since the image height is lower than the crop window height, this dimension is padded, not cropped.
-        This results in crop 0 being equal to crop 2 and crop 1 being equal to crop 3. \label{fig:smallcrop}
+        This results in crop 0 being equal to crop 2 and crop 1 being equal to crop 3. This means that in chapter \ref{sec:combination} on page \pageref{sec:combination}, 
+        where the volumes are reconstructed from all relevant crops, for this type of slices only two crops (0 and 1) have to be calculated.
+        \label{fig:smallcrop}
         }
     
 \end{SCfigure}
