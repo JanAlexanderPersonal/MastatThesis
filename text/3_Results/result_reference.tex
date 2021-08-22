@@ -21,13 +21,43 @@
         The weighted cross entropy loss is defined in chapter \ref{sec:crossentropy} on page \pageref{sec:crossentropy}. 
         The objective of a weighted cross entropy is to improve the model performance for under-represented classes in an unbalanced dataset by adding a factor inverse proportional to the class prevalence to the cross entropy loss.
     } when considering the weighted dice score.
-    In figures \ref{fig:referenceWeighted} and \ref{fig:referencenonWeighted}, the model result based on the FCN8 VGG16 model with context slices at 1 mm from the central slice is compared in detail for the models trained with weighted and the unweighted cross entropy function.
+    In figures \ref{fig:referenceWeighted} and \ref{fig:referencenonWeighted}, the model result based on the FCN8 VGG16 model without context slices is compared in detail for the models trained with weighted and the unweighted cross entropy function.
     Based on these images, some conclusions can be drawn:
     \begin{enumerate}
         \item The prediction of the background class is practically perfect, for all datasets.
         \item The model trained with an unweighted cross entropy loss underperforms compared to the model trained with the weighted cross entropy loss for the prediction of the $L1$ class.
+        \item Other authors \cite{Lessmann2018,Chuang2019} required elaborate evaluation schemes to be able to label the segmented lumbar vertebrae. 
+        Due to the larger view ($352 mm \times 352 mm$ vs $180 mm \times 180 mm \times 180 mm$) this model can use by working with 2D slices, it is possible to have all vertebrae in one image.
+        This proves to allow the model to be trained to identify all five lumbar vertebrae without requiring the evaluation scheme.
+        Observe that $\mathcal{P}(C = Li \mid pred = Lj)$ is low for $i\neq j$.
     \end{enumerate}
 }
+
+\begin{SCtable}[\sidecaptionrelwidth][h]
+ 
+    % Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+% Please add the following required packages to your document preamble:
+% \usepackage{multirow}
+
+\begin{tabular}{cl|llllll}
+    \toprule
+    \multicolumn{2}{l|}{\multirow{2}{*}{values in {[}\%{]}}} & \multicolumn{6}{c}{\textbf{Predicted}}                                            \\
+    \multicolumn{2}{l|}{}                                    & \textbf{BG} & \textbf{L1} & \textbf{L2} & \textbf{L3} & \textbf{L4} & \textbf{L5} \\ \hline
+    \multirow{6}{*}{\textbf{Actual}}      & \textbf{BG}      & 99.9        & 13.2        & 14.5        & 14.2        & 12.9        & 12.1        \\
+     & \textbf{L1} & 0 & 86.6 & 2.1  & 0.1  & 0.2  & 0    \\
+     & \textbf{L2} & 0 & 0.2  & 83.4 & 0.9  & 0.1  & 0    \\
+     & \textbf{L3} & 0 & 0    & 0.1  & 83.9 & 0.4  & 0    \\
+     & \textbf{L4} & 0 & 0    & 0    & 1    & 86.1 & 0.7  \\
+     & \textbf{L5} & 0 & 0    & 0    & 0    & 0.3  & 87.2 \\ \bottomrule
+    \end{tabular}
+
+    \caption{Confusion matrix for the model trained with full label masks (network VGG16-FCN8 and cross correlation loss), evaluated on the test set.
+    The values have been normalized by the total number of voxels classified in each class.
+    The diagonal elements are thus the class precisions: $\mathcal{P}(C = L1 \mid pred = L1) = 0.866$ while $\mathcal{P}(C = L2 \mid pred = L1) = 0.132$.
+    }
+\end{SCtable}
+
 \begin{SCfigure}[][htb]
     \centering
     \includegraphics[width=.95\textwidth]{images/FullySupervised.pdf}
@@ -56,3 +86,5 @@
     Based on the results shown in figure \ref{fig:referenceExperiments}, it was decided to perform the weakly supervised experiments with the model based on VGG16 FCN8 with 1 context slice.
     The reference performance metric to compare experiments with models trained on weakly supervised data with is $\text{Dice}_w=0,76$.
 }
+
+
