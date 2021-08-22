@@ -638,3 +638,86 @@ RECONSTRUCT_DICTS['Combine_one_stack_USiegen'] = {
     "hash" :  "b3fb0dcb40c8bdc09c3a4e211650be3e_USiegen"
 }
 }
+
+RECONSTRUCT_DICTS['Combine_pseudo'] = {
+    2: {
+    "batch_size": 6,
+    "dataset": {
+        "bg_points": -1,
+        "blob_points": 1,
+        "context_span": 0,
+        "crop_size": [
+            352,
+            352
+        ],
+        "n_classes": 6,
+        "name": "spine_dataset",
+        "sources": [
+            "xVertSeg",
+            "USiegen",
+            "MyoSegmenTUM"
+        ]
+    },
+    "dataset_size": {
+        "test": "all",
+        "train": "all",
+        "val": "all"
+    },
+    "lr": 0.0001,
+    "max_epoch": 150,
+    "model": {
+        "base": "fcn8_vgg16",
+        "loss": "cross_entropy",
+        "n_channels": 3,
+        "n_classes": 6,
+        "name": "inst_seg",
+        "prior_extend": 70,
+        "prior_extend_slope": 10
+    },
+    "num_channels": 1,
+    "optimizer": "adam",
+    "hash" : "edc036f241e350ed66b07d6edebaaef2"
+}
+}
+
+RECONSTRUCT_DICTS['Combine_full'] = {
+    2: {
+    "batch_size": 6,
+    "dataset": {
+        "bg_points": -1,
+        "blob_points": 1,
+        "context_span": 0,
+        "crop_size": [
+            352,
+            352
+        ],
+        "n_classes": 6,
+        "name": "spine_dataset",
+        "sources": [
+            "xVertSeg",
+            "USiegen",
+            "MyoSegmenTUM"
+        ]
+    },
+    "dataset_size": {
+        "test": "all",
+        "train": "all",
+        "val": "all"
+    },
+    "lr": 0.0001,
+    "max_epoch": 50,
+    "model": {
+        "base": "fcn8_vgg16",
+        "loss": "cross_entropy",
+        "n_channels": 3,
+        "n_classes": 6,
+        "name": "inst_seg",
+        "prior_extend": 70,
+        "prior_extend_slope": 10
+    },
+    "num_channels": 1,
+    "optimizer": "adam",
+    "hash" : "edc036f241e350ed66b07d6edebaaef2"
+}
+    
+}

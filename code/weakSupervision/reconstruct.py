@@ -14,6 +14,7 @@ import os.path
 import logging
 import argparse
 import json
+import time
 
 
 def setuplogger():
@@ -22,7 +23,7 @@ def setuplogger():
 
     # Create the Logger
     root_logger = logging.getLogger()
-    root_logger.setLevel(logging.INFO)
+    root_logger.setLevel(logging.WARNING)
 
     handler = logging.StreamHandler()
     logger_formatter = logging.Formatter(
@@ -36,19 +37,23 @@ def reconstruct_3d(exp_dict, model_type_name, savedir, ground_truth, separate_so
     logger.debug(f'model type name : {model_type_name}')
     logger.debug(f'save directory : {savedir}')
 
+    start = time.time()
     reconstructor = rec.multi_dim_reconstructor(
         exp_dict, model_type_name=model_type_name, separate_source=separate_source)
+    print(f'Time to load class {time.time() - start}')
+    start = time.time()
     logger.info('START CONSTRUCTING THE VOLUMES')
     reconstructor.make_3D_volumes(savedir)
-    logger.info('START COMBINING THE VOLUMES')
-    reconstructor.reconstruct_from_volumes(savedir, ground_truth)
+    print(f'Time to load class {time.time() - start}')
+    #logger.info('START COMBINING THE VOLUMES')
+    #reconstructor.reconstruct_from_volumes(savedir, ground_truth)
 
-    with open(os.path.join(savedir, 'exp_dict_reconstruct.json'), 'w') as f:
-        json.dump(exp_dict, f)
+    #with open(os.path.join(savedir, 'exp_dict_reconstruct.json'), 'w') as f:
+        #json.dump(exp_dict, f)
 
-    if pseudo_dataset is not None:
-        logger.info(f'Replace the train set masks for pseudo-masks in {pseudo_dataset}')
-        reconstructor.split_pseudomask_volumes(os.path.join(savedir, 'volumes'), pseudo_dataset, dim = 2)
+    #if pseudo_dataset is not None:
+        #logger.info(f'Replace the train set masks for pseudo-masks in {pseudo_dataset}')
+        #reconstructor.split_pseudomask_volumes(os.path.join(savedir, 'volumes'), pseudo_dataset, dim = 2)
 
 
 if __name__ == "__main__":

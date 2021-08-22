@@ -143,7 +143,7 @@ class multi_dim_reconstructor(object):
                     loaders.update({split : DataLoader(ds,
                               sampler=sampler,
                               collate_fn=ut.collate_fn,
-                              batch_size=model_dict["batch_size"] + 4,
+                              batch_size=model_dict["batch_size"] + 6,
                               num_workers = 3,
                               drop_last=False)})
 
