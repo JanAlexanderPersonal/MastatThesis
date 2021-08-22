@@ -7,9 +7,9 @@ This text focuses on the important metrics used for multi-class classification p
 %\begin{table}[]
     \begin{tabular}{cllll}
     \hline
-    \multicolumn{1}{l}{}                &                        & \multicolumn{3}{l}{\textbf{Actual class}}           \\
+    \multicolumn{1}{l}{}                &                        & \multicolumn{3}{l}{\textbf{Predicted class}}           \\
     \multicolumn{1}{l}{}                &                        & $C_0$   & $C_1$   & $C_2$                        \\ \cline{3-5} 
-    \multirow{3}{*}{\rotatebox[origin=c]{90}{\parbox[c]{1cm}{\centering \textbf{Predicted class}}}}   & \multicolumn{1}{l|}{$C_0$} & $a_{0,0}$ & $a_{0,1}$ & \multicolumn{1}{l|}{$a_{0,2}$} \\
+    \multirow{3}{*}{\rotatebox[origin=c]{90}{\parbox[c]{1cm}{\centering \textbf{Actual class}}}}   & \multicolumn{1}{l|}{$C_0$} & $a_{0,0}$ & $a_{0,1}$ & \multicolumn{1}{l|}{$a_{0,2}$} \\
                                         & \multicolumn{1}{l|}{$C_1$} & $a_{1,0}$ & $a_{1,1}$  & \multicolumn{1}{l|}{$a_{1,2}$ } \\
                                         & \multicolumn{1}{l|}{$C_2$} & $a_{2,0}$  & $a_{2,1}$  & \multicolumn{1}{l|}{$a_{2,2}$ } \\ \hline
     \end{tabular}
@@ -25,9 +25,9 @@ This text focuses on the important metrics used for multi-class classification p
     The confusion matrix allows comparing these predictions against the true class\footnote{The true class is the label for this observation.}.
     $a_{0,0}$, $a_{1,1}$, $a_{2,2}$ are the correctly labelled observations. 
 The predicted class corresponds to the actual class.
-This is not necessarily the case for all observations. For example, $a_{1,2}$ observations with true class $C_2$ the model predicted to belong to class $C_1$.
-In general, $a_{i,j}$ is the number of observations for which the model predicted $C_i$ and for which the label is $C_j$.
-Based on the confusion matrix, 3 metrics can be calculated: the model \textit{precision}, the \textit{recall} and the \textit{F-score}.
+This is not necessarily the case for all observations. For example, $a_{2,1}$ observations with true class $C_2$ the model predicted to belong to class $C_1$.
+In general, $a_{i,j}$ is the number of observations for which the model predicted $C_j$ and for which the label is $C_i$.
+Based on the confusion matrix, 3 metrics can be calculated: the model \textit{precision}, the \textit{recall} and the \textit{F-score}. These are illustrated in figure \ref{fig:metrics}.
 }
 
 \begin{SCfigure}[][htb]
@@ -37,7 +37,7 @@ Based on the confusion matrix, 3 metrics can be calculated: the model \textit{pr
     The observations for which the model correctly predicts a positive label are called the \textit{True Positive} (TP) values.
     The observations for which a positive label is wrongfully predicted are the \textit{False Positive} (FP) labels. 
     When an observation is positive, but the model fails to predict this, this is a \textit{False Negative} (FN) observation.
-    On observation that is negative and is correctly predicted to be by the model is a \textit{True Negative} (TN) observation.
+    On observation that is negative and is correctly predicted to be by the model is a \textit{True Negative} (TN) observation.\label{fig:metrics}
     }
 \end{SCfigure}
 
@@ -63,30 +63,30 @@ Based on the confusion matrix, 3 metrics can be calculated: the model \textit{pr
         One will traditionally report the classifier precision as $\frac{TP}{TP+FP}$ without calculating the precision for the negative class where $H_0$ is not rejected.
         The binary confusion matrix clarifies the meaning of TP (True Positive) and FP (False Positive).
         \begin{tabular}{clll}
-            \multicolumn{1}{l}{}                &                        & \multicolumn{2}{l}{\textbf{Actual}}           \\
+            \multicolumn{1}{l}{}                &                        & \multicolumn{2}{l}{\textbf{Pred.}}           \\
             \multicolumn{1}{l}{}                &                        & $H_0$   & $\neg H_0$                         \\ \cline{3-4} 
-            \multirow{2}{*}{\textbf{Pred.}}   & \multicolumn{1}{l|}{$H_0$} & $TN$ & \multicolumn{1}{l|}{$FN$} \\
-                                                & \multicolumn{1}{l|}{$\neg H_0$} & $FP$  & \multicolumn{1}{l|}{$TP$ } \\ \hline
+            \multirow{2}{*}{\textbf{Actual}}   & \multicolumn{1}{l|}{$H_0$} & $TN$ & \multicolumn{1}{l|}{$FP$} \\
+                                                & \multicolumn{1}{l|}{$\neg H_0$} & $FN$  & \multicolumn{1}{l|}{$TP$ } \\ \hline
             \end{tabular}.\\
     } is the proportion of true labels $C_i$ out of all observations predicted to be $C_i$. 
     For example, the precision for class 1 in table \ref{tab:confusionMatrix} is:
     \begin{equation}
-        \text{Precision}_1 = \frac{a_{1,1}}{a_{1,0} + a_{1,1} + a_{1, 2}} \tag{Precision$_1$ in table \ref{tab:confusionMatrix}}
+        \text{Precision}_1 = \frac{a_{1,1}}{a_{0,1} + a_{1,1} + a_{2,1}} \tag{Precision$_1$ in table \ref{tab:confusionMatrix}}
     \end{equation}.
     In general, the Precision$_i$ for class $C_i$ in a problem with $k$ classes is given by equation \ref{eq:precision_i}.
     \begin{eqnarray}
         \text{Precision}_i &=& \mathcal{P} \left( label = C_i \mid prediction = C_i \right) \\
-        &=& \frac{a_{i, i}}{\sum_{j=0}^{k-1} a_{i, j}} \label{eq:precision_i}
+        &=& \frac{a_{i, i}}{\sum_{j=0}^{k-1} a_{j,i}} \label{eq:precision_i}
     \end{eqnarray}
 }
 \par{
     One can thus calculate the precision metric for each class. 
     To calculate a precision metric for the complete multi-label classifier
     , one can either aggregate the class precisions by taking the arithmetic mean (this is called the Macro-precision: $Precision_M$) or by taking the weighted mean (this is called the weighted-mean precision: $Precision_w$).
-    To take the weighted mean, each precision term $Precision_i$ is weighted by the number of observations with label $C_i$. 
+    To take the weighted mean, each precision term $Precision_i$ is weighted by the number of observations with label $C_i$. Thus, more importance is given to classes with higher occurrence. 
     \begin{eqnarray}
         \text{Precision}_M &=& \frac{\sum_{i=0}^{k-1} \text{Precision}_i}{k}  \label{eq:macro_metric}\\
-        \text{Precision}_w &=& \frac{\sum_{i=0}^{k-1} \left[ \text{Precision}_i \sum_{j=0}^{k-1} a_{j,i} \right] }{\sum_{i=0}^{k-1} \sum_{j=0}^{k-1} a_{i,j} }  \label{eq:weighted_metric}
+        \text{Precision}_w &=& \frac{\sum_{i=0}^{k-1} \left[ \text{Precision}_i \sum_{j=0}^{k-1} a_{i,j} \right] }{\sum_{i=0}^{k-1} \sum_{j=0}^{k-1} a_{i,j} }  \label{eq:weighted_metric}
     \end{eqnarray}
 }
 \subsubsection{Recall}
@@ -94,12 +94,12 @@ Based on the confusion matrix, 3 metrics can be calculated: the model \textit{pr
     The \textbf{recall}\footnote{The recall is also called the \textit{sensitivity}.} is the numer of correctly predicted $C_i$ observations out of the total number of $C_i$ observations.
     For example, the recall for class 1 in table \ref{tab:confusionMatrix} is:
     \begin{equation}
-        \text{Recall}_1 = \frac{a_{1,1}}{a_{0,1} + a_{1,1} + a_{2, 1}} \tag{Recall$_1$ in table \ref{tab:confusionMatrix}}
+        \text{Recall}_1 = \frac{a_{1,1}}{a_{1,0} + a_{1,1} + a_{1,2}} \tag{Recall$_1$ in table \ref{tab:confusionMatrix}}
     \end{equation}.
     The general expression for recall$_i$ is equation \ref{eq:recall_i}.
     \begin{eqnarray}
         \text{recall}_i &=& \mathcal{P} \left( prediction = C_i \mid label = C_i \right) \\
-        &=& \frac{a_{i, i}}{\sum_{j=0}^{k-1} a_{j, i}} \label{eq:recall_i}
+        &=& \frac{a_{i, i}}{\sum_{j=0}^{k-1} a_{i,j}} \label{eq:recall_i}
     \end{eqnarray}
     The weighted-mean recall and macro-recall are defined in the same way as the multi-label precision metrics, see equation \ref{eq:macro_metric} and equation \ref{eq:weighted_metric}.
 }
@@ -135,11 +135,12 @@ Based on the confusion matrix, 3 metrics can be calculated: the model \textit{pr
         \item[weighted F1-score]: Calculate the F1 score for all classes and calculated the weighted average as is done in equation \ref{eq:weighted_metric} to calculate the weighted precision.
     \end{description}
 }
-In this work, the weighted F1-score or weighted Dice score is used to evaluate the experiment results in part \ref{part:results} starting at page \pageref{part:results}.
-For clarity, the expression defining $\text{Dice}_w$ is iterated below\footnote{Remark that $\sum_{j=0}^{k-1} a_{j,i}$ corresponds to all true labels that are equal to $i$.}:
+The \textit{inverse} class weighted F1-score or Dice score is used to evaluate the experiment results in algorithm \ref{alg:model_training} and in part \ref{part:results} starting at page \pageref{part:results}.
+The expression defining $\text{Dice}_{wi}$ is iterated below\footnote{Remark that $\sum_{j=0}^{k-1} a_{i,j}$ corresponds to all true labels that are equal to $i$.}:
 \begin{equation}
-    \text{Dice}_w = \frac{\sum_{i=0}^{k-1} \left[ \text{Dice}_i \sum_{j=0}^{k-1} a_{j,i} \right] }{\sum_{i=0}^{k-1} \sum_{j=0}^{k-1} a_{i,j} } \label{eq:weighted_dice}
+    \text{Dice}_{wi} = \frac{\sum_{i=0}^{k-1} \left[ \text{Dice}_i \left( \sum_{j=0}^{k-1} a_{i,j} \right)^{-1} \right] }{\sum_{i=0}^{k-1} \left(\sum_{j=0}^{k-1} a_{i,j} \right)^{-1}} \label{eq:weighted_dice}
 \end{equation}
+The objective of using the inverse of the label occurrence is to increase the importance of the underrepresented classes in unbalanced data.
 
 \subsection{Intersection over Union}
 
@@ -166,7 +167,7 @@ Finally, the classifier accuracy is defined as the proportion of the observation
 
 In general, the classifier accuracy is defined by 
 \begin{equation}
-    \text{accuracy} = \frac{\sum_{i=1}^{k-1}a_{i,i}}{\sum_{i=0}^{k-1} \sum_{=0}^{k-1} a_{i,j}   } 
+    \text{accuracy} = \frac{\sum_{i=1}^{k-1}a_{i,i}}{\sum_{i=0}^{k-1} \sum_{j=0}^{k-1} a_{i,j}   } 
 \end{equation}
 
 
