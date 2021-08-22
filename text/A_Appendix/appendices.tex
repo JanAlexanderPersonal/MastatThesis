@@ -29,7 +29,7 @@ The reproducability of this work has been ensured in several ways:
   \item[Software]: This project was performed completely in python, a publically available programming language. 
   All packages used are open-source.
   To reproduce this research, no software has to be purchased. 
-  \item[Code]: Both code an text of this project can be found on a public GitHub repository
+  \item[Code]: Both code an text of this project can be found on a public \texttt{GitHub} repository: \url{https://github.com/JanAlexanderPersonal/MastatThesis.git}.
   \footnote{It is possible that small adaptations of the code are required to run it on other hardware. For example, to run it using a GPU with less internal memory it could be necessary to reduce the batch size.}. 
   \item[Docker]: The specific environment to run the code mentioned above can also be found in the mentioned GitHub repository in the form a dockerfile.
   It should be noted that this dockerfile requires a GPU that supports CUDA.   
@@ -76,7 +76,7 @@ It aims to list the more advanced tools, crucial for this work.
    seaborn & 0.11.1 & data visualization \\
    \multicolumn{3}{c}{Neural network experiment management} \\
    \hline
-   haven & xxx & experiment management \\ 
+   haven &  & experiment management \\ 
    \hline
    \hline
   \end{tabular}
@@ -85,20 +85,26 @@ It aims to list the more advanced tools, crucial for this work.
 \end{SCtable}
 
 Table \ref{tab:UsedTools} is not an exhaustive list of all libraries used in this work.
-One can quickly dublicate the environment used in this work by building the \textit{Docker} environment defined in xxx.
+One can quickly dublicate the environment used in this work by building the \textit{Docker} environment defined in \texttt{dockerfiles} (part of the \texttt{GitHub} repository).
 
-\section{Hardware}
-GeForce RTX 2080 Ti (4352 CUDA cores)
-total memory 11264 MB
-CUDA version 11.2
+\section{Hardware\label{sec:hardware}}
+The main hardware components of the device used for this work are listed below:
 
-Intel® Core™ i7-9700 CPU @ 3.00GHz $\times$ 8 
+Intel® Core™ i7-9700 CPU @ 3.00GHz $\times$ 8 \\
 RAM : 32 GB
 
+\textsc{GPU}:\\
+\hspace{5mm}GeForce RTX 2080 Ti (4352 CUDA cores)\\
+\hspace{5mm}total memory 11264 MB\\
+\hspace{5mm}CUDA version 11.2
+
+
+
 \section{Other}
-The formatting of this document, bringing Tufte layout elements in the \LaTeX memoir class, is based on the excelent post found on \url{https://tex.stackexchange.com/questions/275565/tufte-layout-in-painless-memoir}.
-The Neural network architecture illustrations xxx were made using this project: \url{https://github.com/HarisIqbal88/PlotNeuralNet}.
-The conceptual illustration of the neural network idea on page xxx is based on xxx.
+The formatting of this document, bringing Tufte layout elements in the \LaTeX{} memoir class, is based on the excelent post found on \url{https://tex.stackexchange.com/questions/275565/tufte-layout-in-painless-memoir}.
+Didier Dufragne gave a few very helpful tips for improving this layout.
+The Neural network architecture illustrations were made using this project: \url{https://github.com/HarisIqbal88/PlotNeuralNet}.
+The conceptual illustration of the neural network idea on page \pageref{fig:ann} is based on \url{https://tex.stackexchange.com/questions/153957/drawing-neural-network-with-tikz}.
 
 
 

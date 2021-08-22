@@ -45,3 +45,106 @@ Only one set of slices along a single dimension needs to be generated and prepro
     \includegraphics[width=.95\textwidth]{/home/thesis/images/Inference_concept.pdf}
     \caption{Inference step. Only one model needs to be evaluated in this step, the model that is trianed in the final step of the training procedure illustrated in figure \ref{fig:model_training_concept}.}
 \end{SCfigure}
+
+\section{Volume combination procedure\label{sec:combinationProcedure}}
+To construct one pseudo mask volume, first, three single dimension model are evaluated to form three stacks of two dimensional estimated segmentation masks, which are then combined to form three segmentation volumes. 
+The resulting set of three segmentation volumes is then combined to form a new segmentation volume.
+It is this last segmentation volume, made out of the combination, that is sliced again to obtain the pseudo masks for the final model.
+The procedure described here was only devised after observation of the single dimensional model results.
+
+\subsection{Recombination of the crops to slices}
+All models are designed for $352 \times 352$ crops of the 2D slices\footnote{More information on the cropping of the slices can be found in chapter \ref{sec:cropping} on page \pageref{sec:cropping}.}.
+To construct a segmentation volume from a single dimensional model, all relevant\footnote{Some slices have dimensions that do not allow to extract 5 different $352 \times 352$ crops. See for example figure \ref{fig:smallcrop} on page \pageref{fig:smallcrop}.} crops of each volume slice are evaluated.
+First the segmentation results on these crops have to be combined again to obtain a segmentation mask of the whole slice.
+Due to the cropping procedure, different crops of the same slice always partly overlap.
+The crops are combined by averaging the logits $z_i$ for the overlapping positions.
+The inferred class is then obtained from the resulting average $z_i$ values for that position. 
+
+\begin{SCfigure}[][htb]
+    \includegraphics[width=0.95\textwidth]{images/USiegen_004_50_crops.png}
+    \caption{Sagittal slice 50 of the USiegen 04 volume has to be evaluated in 4 crops due to its dimensions. The recombination of these crops to form the mask for the slice is illustrated in this figure.}
+\end{SCfigure}
+
+\subsection{Rule based result combination}
+Once a stack of class segmentation masks for all slices of a volume are obtained, these can be combined to form a segmentation volumes.
+Combining the results of three different single dimension models is performed in two steps:
+\begin{enumerate}
+    \item The resulting classification volumes are first combined with a rule-based method.
+    \item After this rule-based combination, the resulting segmentation estimation is smoothened with a morphological filter.
+\end{enumerate}
+
+Three single dimension models are trained:
+\begin{description}
+    \item[Transverse slices] offer little context to indicate which of the lumbar vertebrae they contain. 
+    It does not seem easy even for a human expert to indicate which vertebra is visible on the slice.
+    The model trained on these slices is intended only for semantic segmentation.
+    Each pixel is inferred only if it represents a vertebra, without distinction between the different lumbar vertebrae. 
+    \item[Sagittal \& Coronal slices] do offer the necessary context to distinguish between $L_1$ to $L_5$. 
+    The models trained on these slices do indicate the specific lumbar vertebra index. 
+\end{description}
+
+The volume combination rules are based on two observations:\footnote{
+    The resulting estimations from a model for an input volume is again a three-dimensional volume ($\in \mathbb{N}^3$) with the same dimensions.
+}.
+\begin{enumerate}
+    \item The precision (see equation \ref{eq:precision_i} on page \pageref{eq:precision_i}) with which the background class is predicted in all models is very high.
+            This means $\mathcal{P} \left( label = background \mid prediction = background \right)$ is high for all models. 
+            If there is one model that indicates a position is background, this position could be estimated to be background with high probability.
+    \item All models tend to over-estimate the extend of the vertebrae. This causes a low recall score. The direction in which the predictions tend to \textit{bleed out} is different for the different models. 
+\end{enumerate}
+The observations mentioned above can be combined in algorithm \ref{alg:combination}.
+
+\subsection{Morphological smoothing}
+After the rule-based combination of estimations from different single dimension models, the result is smoothened with standard morphological filters.
+These filters are combinations of the morphological \textit{erosion} and \textit{dilation} operators\footnote{
+    This document is not intended to provide an elaborate explanation on morphological operations.
+    For the readers conventience, the following symbolic notations are repeated:
+    \begin{description}
+        \item[Erosion] of set $\mathbf{A}$ by structural element $\mathbf{B}$ : $\mathbf{A} \ominus \mathbf{B}$ 
+        \item[Dilation] of set $\mathbf{A}$ by structural element $\mathbf{B}$ : $\mathbf{A} \oplus \mathbf{B}$ 
+        \item[Opening] of set $\mathbf{A}$ by structural element $\mathbf{B}$ : $\mathbf{A} \circ \mathbf{B} = (\mathbf{A} \ominus \mathbf{B}) \oplus \mathbf{B}$
+        \item[Closing] of set $\mathbf{A}$ by structural element $\mathbf{B}$ : $\mathbf{A} \bullet \mathbf{B} = (\mathbf{A} \oplus \mathbf{B}) \ominus \mathbf{B}$
+    \end{description}
+}.
+
+\begin{itemize}
+    \item Noise in the single dimension segmentation masks is suppressed with an opening operation on the individual segmentation volumes of the single dimension models.
+    \item Noise in the combined volumes is suppressed by first opening and then closing the volumes.
+    \item The estimated volumes are observed to overestimate the extent of the vertebrae. For this reason, an erosion step is performed to decrease the overall extent of the class masks.
+\end{itemize}
+
+The procedure mentioned above has two hyperparameters: the number of iterations for the denoising filters and the number of iterations for the erosion filter.
+Both hyperparameters are estimated by calculating the same evaluation metric, the weighted dice score on the validation set, as for the single-dimensional model evaluation. 
+
+\subsection{Volume combination algorithm}
+The combination of the rules and morphological smoothing operations discussed above result in the following algorithm to combine the segmentation volumes from the single dimension models\footnote{
+    The algorithm shown here is based on the two observations mentioned.
+}:
+
+\begin{algorithm}[H]
+    \SetAlgoLined
+    \KwData{
+        Results $y_.$ of three models indicating an estimated class for all positions $\vec{p}$ in the volume. \;
+        Transverse model $y_t \in \mathbb{N}^3: \forall y_t(\vec{p}) \in \{ 0, 1 \}$ \;
+        Sagittal model $y_s \in \mathbb{N}^3: \forall y_t(\vec{p}) \in \{ 0, 1, 2, 3, 4, 5 \}$ \;
+        Coronal model $y_c \in \mathbb{N}^3: \forall y_t(\vec{p}) \in \{ 0, 1, 2, 3, 4, 5 \}$  \;
+        Binary $\mathbf{B}$ structure with rank 3 and connectivity 3 \;
+    }
+    \KwResult{Combination of the three model results $y_f$.}
+    \tcp{Closing operation on all $y_.$}
+    $y_t \leftarrow y_t \bullet \mathbf{B}$ \;
+    $y_s \leftarrow y_s \bullet \mathbf{B}$ \;
+    $y_c \leftarrow y_c \bullet \mathbf{B}$ \;
+    \For{all $\vec{p}$}{
+        $i \in [ 1, 2, 3, 4, 5]$ \;
+            \lIf{$y_t[\vec{p}] = 1 \wedge y_s[\vec{p}] = i \wedge y_c[\vec{p}] = i$}{
+                $y_f[\vec{p}] \leftarrow i$ 
+            }
+            \lElse{
+                $y_f[\vec{p}] \leftarrow 0$ 
+            }
+        }
+    
+    $y_f \leftarrow ((y_f \circ \mathbf{B}) \bullet \mathbf{B}) \ominus \mathbf{B}$
+   \caption{Rule based combination of model results from three single dimension models\label{alg:combination}}
+\end{algorithm}
