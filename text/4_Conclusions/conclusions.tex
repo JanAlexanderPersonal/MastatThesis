@@ -17,15 +17,15 @@
     This combination step was proven to be a valuable step to increase the segmentation mask performance, measured with the weighted dice metric.
 }
 \par{
-    The result of this work indicated that the developed techniques allow to obtain a weighted dice score of xxx for a model trained with labels that represent 8 to 24 \% of the cost of full label masks.
-    This result should be compared to the weighted dice score of 0.76 for a model that was trained on full label masks.
+    The result of this work indicated that the developed techniques allow to obtain an inverse weighted dice score of 0.55 for a model trained with labels that represent 12 \% of the cost of full label masks.
+    This result should be compared to the inverse weighted dice score of 0.76 for a model that was trained on full label masks.
 }
 \par{
     The results in this thesis have demonstrated that well-chosen additional loss terms can improve the performance of the consistency loss model and 
     that the combination of the results of two-dimensional models trained on slices along a different dimensional axis can produce a three-dimensional segmentation mask of higher quality than the original masks.
 }
 
-\chapter{Remarks for future work}
+\chapter{Future work}
 The research presented in this work raises a number of unanswered questions and could inspire others to investigate this problem further.
 Personally, I believe the following subjects desirve further investigation and exploration:
 \begin{description}
@@ -43,4 +43,6 @@ Personally, I believe the following subjects desirve further investigation and e
     \item[Prior position loss:] One aspect of prior knowledge that has not been used in this work is the known sequence of the vertebrae. In \cite{Lessmann2018}, 
     the known anatomical sequence of vertebrae was used for vertebrae identification.
     Although this proved not to be necessary in this work, one can wonder if including this information, for example in a way similar to \cite{Lessmann2018}, could help to reduce the model training time.
+    \item[Post processing:] The results obtained with the model trained on pseudo masks showed to systematically underestimate the extend of the vertebrae.
+    It could be possible to remedy this in a post-processing step. 
 \end{description}
