@@ -143,7 +143,7 @@ class multi_dim_reconstructor(object):
                     loaders.update({split : DataLoader(ds,
                               sampler=sampler,
                               collate_fn=ut.collate_fn,
-                              batch_size=model_dict["batch_size"] + 6,
+                              batch_size=model_dict["batch_size"] + 4,
                               num_workers = 3,
                               drop_last=False)})
 
@@ -393,7 +393,7 @@ class multi_dim_reconstructor(object):
                     plt.imshow(image)
                     plt.title(f'Scan image\nslice along axis {j}')
                         
-            plt.suptitle(title)        
+            #plt.suptitle(title)        
             plt.tight_layout()
             plt.savefig(savename, bbox_inches='tight')
             plt.close('all')
