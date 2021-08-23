@@ -90,6 +90,7 @@
         Illustration of the difference in model performance between a weighted point loss function and the unweighted point loss function for point annotated models trained on frontal slices.
         The models are trained with point annotations extracted from the available ground truth masks. For these models, 
         5 points were extracted from the background mask and 5 points were extracted from each instance of each class in the slice. 
+        The bar in blue indicates the inverse weighted dice score, evaluated on the test set. The bar in green indicates the average dice score over the classes.
         \label{fig:weighted_vs_unweighted}}
 \end{SCfigure}
 
@@ -112,7 +113,8 @@ Remark that the number of class annotation points and background points is diffe
     \centering
     \includegraphics[width=.95\textwidth]{images/Losscomponents.pdf}
     \caption{Evaluation of the added value of loss components. 
-    The texture on the bars representing the transverse model performance help the reader remember the transverse model does not destinguish between the lumbar vertebrae.
+    The bar in blue indicates the inverse weighted dice score, evaluated on the test set. The bar in green indicates the average dice score over the classes.
+    The texture on the bars representing the transverse model performance help the reader remember the transverse model does not distinguish between the lumbar vertebrae.
     \label{fig:addedLossComponents}}
 \end{SCfigure}
 
@@ -126,12 +128,15 @@ Remark that the number of class annotation points and background points is diffe
 \begin{SCfigure}[][htb]
     \centering
     \includegraphics[width=.95\textwidth]{images/BlobPoints_influence.pdf}
-    \caption{Evolution of the weakly supervised model performance with increased number of annotation points.\label{fig:points_influence}}
+    \caption{Evolution of the weakly supervised model performance with increased number of annotation points on the inverse class weighted dice score of the point annotated models.
+    Eventhough increasing the number of class annotation points does not improve the model performance, there seems to be an increase in model performance possible by increasing the number of background points.
+    \label{fig:points_influence}}
 \end{SCfigure}
 
 \par{
     Figure \ref{fig:addedLossComponents} shows the weighted dice score decreases with more annotation points for models trained with unweighted point loss.
     The model becomes very eager to find class points. This causes many background pixels to be wrongly classified as class points.
     The resulting decrease in precision causes the F1 score to decrease.
+    It might be interesting for future researchers to investigate the influence of relative quantity of class and background annotation points.
+    The time (and computational power) to investigate this behaviour completely was not available in this thesis project.
 }
-\todo[inline]{Werk verder uit met afbeelding en tabel}
