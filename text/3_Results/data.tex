@@ -1,0 +1,98 @@
+\chapter{Datasets\label{sec:datasets}}\thispagestyle{empty}
+
+This thesis is based on five different existing publically available datasets.
+This chapter discusses these datasets based on different criteria:
+
+\begin{description}
+    \item[source:] reference of the owner of the dataset and brief description of the original purpose of the dataset.
+    \item[Patient sample:] statistics of the patients whose medical images were collected such as age, gender and possible spine pathologies.
+    \item[Technical information:] discusses the imaging technology, the image resolution and the spatial dimensions of the image. 
+\end{description}
+
+\section{Dataset overview}
+
+Table \ref{tab:datasetReferences} provides an overview of the 5 datasets sourced for this work.
+This table shows there are important differences between the datasets in imaging mode and dataset size.
+Figure \ref{fig:AllDataset_dims} also indicates the differences in image dimensions and resolutions.
+For more details on the data quantity, please consult chapter \ref{seg:datasetcomparison}. 
+Notably, the fact that some images were taken from the same patient is vital to recognize. It means the dataset is grouped. 
+
+
+\begin{SCtable}[\sidecaptionrelwidth][h]
+ 
+    \begin{tabular}{ l l l l l} 
+     \toprule
+     Name & reference & imaging & Quantity & Annotation \\
+          &           & technology & [images] & \\
+     \hline 
+    UWSpine & \cite{Glocker}  & \acrshort{ct} & 125 & point  \\ 
+    xVertSeg & \cite{Ibragimov2014, Korez2015} & \acrshort{ct} & 15 & full \\
+    UniSiegen  & \cite{Zukic2014} & \acrshort{mri} & 17 & full \\
+    PLoS & \cite{Chu2015} & \acrshort{mri} & 23 & semantic \\
+    MyoSegmenTUM & \cite{Burian2019} & \acrshort{mri} &  54 & full \\
+     \bottomrule
+    \end{tabular}
+    \caption{List of dataset references. 
+    The agreement with prof. T. Vrtovec regarding the xVertSeg dataset can be found in appendix \ref{seg:datasetagreement}.\label{tab:datasetReferences}}
+
+\end{SCtable}
+
+In table \ref{tab:dataOrientation} illustrates the difference in anatomical orientation of the volumes in the different datasets.
+To execute the modelling approach discussed in chapter \ref{sec:model_concept}, all volume orientations were uniformized to assure that for all datasets, the volume slices along dimension 0 represent the transverse slices, 
+the slices along dimension 1 represent the frontal slices, and the slices along dimension 2 are sagittal plane coupes of the volume.
+
+\begin{SCtable}[\sidecaptionrelwidth][h]
+ 
+    \begin{tabular}{ l l l l} 
+     \toprule
+     Name & X & Y & Z \\
+     \hline 
+    UWSpine & Left-right & Anteroposterior & Craniocaudal \\
+    xVertSeg & Left-right & Anteroposterior & Craniocaudal \\
+    UniSiegen  &  Anteroposterior & Craniocaudal & Left-right \\
+    PLoS & Left-right & Anteroposterior & Craniocaudal$^\dagger$ \\
+    MyoSegmenTUM &  Anteroposterior & Craniocaudal & Left-right \\
+     \bottomrule
+    \end{tabular}
+    \caption{List of dataset orientations. Clarification of the names of the anatomical axis is given in figure \ref{fig:anatomicalPlains}.
+    The names of the axis, $X$, $Y$ and $Z$ represent the \texttt{numpy} axis \texttt{0}, \texttt{1} and \texttt{2}.
+    $^\dagger$ The Craniocaudal axis in the PLoS dataset is inverted.\label{tab:dataOrientation}
+    }
+\end{SCtable}
+\begin{SCfigure}[][htb]
+    \centering
+    \begin{minipage}{.45\textwidth}
+        \includegraphics[width=.98\textwidth]{automated_graphs/AllDataset_DimensionsBoxplot.png}
+    \end{minipage}%
+    \begin{minipage}{0.45\textwidth}
+        \includegraphics[width=.98\textwidth]{automated_graphs/AllDataset_SpacingBoxplot.png}
+    \end{minipage}
+    \caption{Boxplots comparing the scan dimensions and initial resolution of the different datasets.
+    The left column indicates the volume dimensions (in mm) in the different datasets. 
+    The graphs indicate there are important differences between the datasets. Notice that both the USiegen and the MyoSegmenTUM dataset are cropped severely in the left-right direction.
+    The right column represents the vixel spacings in the different volumes of the different datasets.
+    In the preprocessing step all volumes are resampled on a $1mm \times 1mm \times 1mm$ grid, see page \pageref{sec:resampling}. \label{fig:AllDataset_dims} 
+    }
+\end{SCfigure}
+\FloatBarrier
+\begin{SCfigure}[][htb]
+    \centering
+    \includegraphics[width=10cm]{/home/thesis/images/Anatomical_Planes.png}
+    \caption{\label{fig:anatomicalPlains}Clarification of the anatomical planes. 
+    For some images further in this document, for example figure \ref{fig:comb1_1} at page \pageref{fig:comb1_1}, the anatomical axes will be referred to by numbering:
+    Slices perpendicular to dimension 0 are slices in the transverse plane.
+    Slices perpendicular to dimension 1 are slices in the frontal plane.
+    Slices perpendicular to dimension 2 are slices in the sagittal plane.  
+    }
+\end{SCfigure}
+\section{Comparison of the different datasets\label{seg:datasetcomparison}}
+\input{/home/thesis/3_Results/data_xVertSeg}
+\FloatBarrier
+\input{/home/thesis/3_Results/data_USiegen}
+\FloatBarrier
+\input{/home/thesis/3_Results/data_PLoS}
+\FloatBarrier
+\input{/home/thesis/3_Results/data_MyoSegmenTUM}
+\FloatBarrier
+\input{/home/thesis/3_Results/data_UWSpine}
+
