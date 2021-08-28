@@ -14,6 +14,8 @@ import numpy as np
 import math
 import warnings
 import tikzplotlib
+import cv2
+from PIL import Image
 from joblib import Parallel, delayed
 import shutil
 
@@ -196,7 +198,7 @@ class multi_dim_reconstructor(object):
             result.fill(np.nan)
             logger.debug(f'Result dimensions: {result.shape}')
 
-            plt.figure()
+            plt.figure(figsize=(16,16))
             # Crops only give partial information, each time a part of the results table stays low
             count = 0
             h, w = min(orig_shape[0], crop_dim[1]), min(orig_shape[1], crop_dim[2])
@@ -217,6 +219,8 @@ class multi_dim_reconstructor(object):
                 if slice_id%25 == 0:
                     plt.subplot(3,2,crop_nr+1)
                     plt.imshow(cm.gist_stern_r(np.argmax(im, axis=0) * 51))
+                    plt.xticks([])
+                    plt.yticks([])
                     plt.title(f'crop {crop_nr}')
 
             result = np.argmax(np.nanmean(result, axis=3), axis = 0)
@@ -224,8 +228,10 @@ class multi_dim_reconstructor(object):
             if slice_id%25 == 0:
                 plt.subplot(3,2,5)
                 plt.imshow(cm.gist_stern_r(result * 51))
-                plt.title(f'combination of crops')
-                plt.suptitle(f'{scan_id}_{slice_id}_crops')
+                plt.title(f'crop combination')
+                #plt.suptitle(f'{scan_id}_{slice_id}_crops')
+                plt.xticks([])
+                plt.yticks([])
                 plt.tight_layout()
                 plt.savefig(os.path.join(output_location,'', f'{scan_id}_{slice_id}_crops.pdf'))
                 plt.close('all')
@@ -357,6 +363,7 @@ class multi_dim_reconstructor(object):
                 fig_h += 4
                 rows += 1
 
+            
             logger.debug(f'figure height {fig_h}cm and rows : {rows}')
 
             plt.figure(figsize=(12,fig_h))
@@ -364,25 +371,43 @@ class multi_dim_reconstructor(object):
             for i in range(3):
                     for j in range(3):
                         plt.subplot(rows,3,i*3+j+1)
-                        plt.imshow(cm.gist_stern_r(np.take(volumes[i], volumes[i].shape[j]//2, axis=j)*51))
+                        mask = np.take(volumes[i], volumes[i].shape[j]//2, axis=j)
+                        image = Img.fromarray((np.take(volume_scan, volume_scan.shape[j]//2, axis=j)*255).astype('uint8')).convert('RGB')
+                        mask_im = Image.fromarray(np.uint8(cm.gist_stern_r(mask*51)*255)).convert('RGB')
+                        mask_im = cv2.addWeighted(np.array(image), 0.3,np.array(mask_im), 0.7, 0)
+                        plt.imshow(mask_im)
                         plt.title(f'model {i}\nslice along axis {j}')
+                        plt.yticks([])
+                        plt.xticks([])
             
             if combined_volume is not None:
                 i += 1
                 logger.debug(f'Starting image row {i}')
                 for j in range(3):
                     plt.subplot(rows,3,i*3+j+1)
-                    plt.imshow(cm.gist_stern_r(np.take(combined_volume, combined_volume.shape[j]//2, axis=j)*51))
+                    mask = np.take(combined_volume, combined_volume.shape[j]//2, axis=j)
+                    image = Img.fromarray((np.take(volume_scan, volume_scan.shape[j]//2, axis=j)*255).astype('uint8')).convert('RGB')
+                    mask_im = Image.fromarray(np.uint8(cm.gist_stern_r(mask*51)*255)).convert('RGB')
+                    mask_im = cv2.addWeighted(np.array(image), 0.3,np.array(mask_im), 0.7, 0)
+                    plt.imshow(mask_im)
                     plt.title(f'Combined extimated volumes\nslice along axis {j}')
+                    plt.yticks([])
+                    plt.xticks([])
             
             
             if ground_truth is not None:
                 i += 1
                 logger.debug(f'Starting image row {i}')
                 for j in range(3):
+                    mask = np.take(ground_truth, ground_truth.shape[j]//2, axis=j)
+                    image = Img.fromarray((np.take(volume_scan, volume_scan.shape[j]//2, axis=j)*255).astype('uint8')).convert('RGB')
+                    mask_im = Image.fromarray(np.uint8(cm.gist_stern_r(mask*51)*255)).convert('RGB')
+                    mask_im = cv2.addWeighted(np.array(image), 0.3,np.array(mask_im), 0.7, 0)
                     plt.subplot(rows,3,i*3+j+1)
-                    plt.imshow(cm.gist_stern_r(np.take(ground_truth, ground_truth.shape[j]//2, axis=j)*51))
+                    plt.imshow(mask_im)
                     plt.title(f'Ground truth\nslice along axis {j}')
+                    plt.yticks([])
+                    plt.xticks([])
 
             if volume_scan is not None:
                 i += 1
@@ -392,6 +417,8 @@ class multi_dim_reconstructor(object):
                     plt.subplot(rows,3,i*3+j+1)
                     plt.imshow(image)
                     plt.title(f'Scan image\nslice along axis {j}')
+                    plt.yticks([])
+                    plt.xticks([])
                         
             #plt.suptitle(title)        
             plt.tight_layout()
