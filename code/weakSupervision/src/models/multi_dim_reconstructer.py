@@ -216,7 +216,7 @@ class multi_dim_reconstructor(object):
                 else:
                     raise ValueError
                 count += 1
-                if slice_id%25 == 0:
+                if slice_id%5 == 0:
                     plt.subplot(3,2,crop_nr+1)
                     plt.imshow(cm.gist_stern_r(np.argmax(im, axis=0) * 51))
                     plt.xticks([])
@@ -225,7 +225,7 @@ class multi_dim_reconstructor(object):
 
             result = np.argmax(np.nanmean(result, axis=3), axis = 0)
             
-            if slice_id%25 == 0:
+            if slice_id%5 == 0:
                 plt.subplot(3,2,5)
                 plt.imshow(cm.gist_stern_r(result * 51))
                 plt.title(f'crop combination')
@@ -321,9 +321,12 @@ class multi_dim_reconstructor(object):
                         # add the previous slice to complete the previous scan
                         slice_dict[slice_id] = combine_crops(crops_dict, orig_shape, slice_id, scan_id, output_location)
                         logger.debug(f'Finish scan {scan_id} and save in file scan_{scan_id}')
-                        volume = combine_slices(slice_dict, stack_dim)
-                        # Start the saving processes in independend process
-                        np.save(os.path.join(output_location, f'scan_{scan_id}_res'), volume)
+                        try:
+                            volume = combine_slices(slice_dict, stack_dim)
+                            # Start the saving processes in independend process
+                            np.save(os.path.join(output_location, f'scan_{scan_id}_res'), volume)
+                        except :
+                            pass
 
                         # start a new scan and a new slice
                         slice_dict = dict()
@@ -335,9 +338,12 @@ class multi_dim_reconstructor(object):
             # Save the last scan
             slice_dict[slice_id] = combine_crops(crops_dict, orig_shape, slice_id, scan_id, output_location)
             logger.debug(f'Finish scan {scan_id} and save in file scan_{scan_id}')
-            volume = combine_slices(slice_dict, stack_dim)
-            # Start the saving processes in independend process
-            np.save(os.path.join(output_location, f'scan_{scan_id}_res'), volume)
+            try:
+                volume = combine_slices(slice_dict, stack_dim)
+                # Start the saving processes in independend process
+                np.save(os.path.join(output_location, f'scan_{scan_id}_res'), volume)
+            except :
+                pass
         
         
         for dim, model in self.models.items():

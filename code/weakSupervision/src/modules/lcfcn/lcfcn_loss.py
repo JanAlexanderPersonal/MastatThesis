@@ -290,11 +290,14 @@ def get_points_from_mask(mask, bg_points=0, n_classes = 6, blob_points=1, center
         logger.debug("extract background points")
         y_list, x_list = np.where(mask==0)
         with hu.random_seed(1):
-            for i in range(bg_points):
-                yi = np.random.choice(y_list)
-                x_tmp = x_list[y_list == yi]
-                xi = np.random.choice(x_tmp)
-                points[yi, xi] = 0
+            try:
+                for i in range(bg_points):
+                    yi = np.random.choice(y_list)
+                    x_tmp = x_list[y_list == yi]
+                    xi = np.random.choice(x_tmp)
+                    points[yi, xi] = 0
+            except:
+                pass
 
     logger.debug(f'Point extraction done. Result : {np.unique(points, return_counts = True)}')
 

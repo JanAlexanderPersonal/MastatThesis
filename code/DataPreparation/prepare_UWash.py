@@ -36,7 +36,12 @@ logging.basicConfig(level=logging.WARNING)
 
 
 # The following regex will parse "mask002.raw" to "mask002" "002" "raw"
-MASK_NR = re.compile(r'(^[a-zA-Z]+(\d+)).(\w+)')
+L1_coord = re.compile(r'200\tL1_center\t(\d+).?\d+\t(\d+).?\d+\t(\d+).?\d+', re.MULTILINE)
+L2_coord = re.compile(r'210\tL2_center\t(\d+).?\d+\t(\d+).?\d+\t(\d+).?\d+', re.MULTILINE)
+L3_coord = re.compile(r'220\tL3_center\t(\d+).?\d+\t(\d+).?\d+\t(\d+).?\d+', re.MULTILINE)
+L4_coord = re.compile(r'230\tL4_center\t(\d+).?\d+\t(\d+).?\d+\t(\d+).?\d+', re.MULTILINE)
+L5_coord = re.compile(r'240\tL5_center\t(\d+).?\d+\t(\d+).?\d+\t(\d+).?\d+', re.MULTILINE)
+
 
 
 XVERTSEG_ENCODING = {200 + (i-1) * 10 : i for i in range(1,6)}
@@ -76,7 +81,7 @@ if __name__ == '__main__':
     dimensions_dict = dict()
 
 
-    for nr, filename in enumerate(os.listdir(image_filedir)):
+    for nr, filename in tqdm(enumerate(os.listdir(image_filedir))):
 
         for patient in os.listdir(os.path.join(image_filedir, filename)):
             for scan in os.listdir(os.path.join(image_filedir, filename, patient)):
@@ -84,9 +89,56 @@ if __name__ == '__main__':
                     continue
                 scan_filename = os.path.join(image_filedir, filename, patient, scan)
                 
-                logging.debug(f'folder name : {scan_filename}')
+                logging.info(f'folder name : {scan_filename}')
 
                 arr, minimum, maximum = ut.array_from_file(scan_filename)
+                #print(arr.shape)
+                mask = np.zeros_like(arr, dtype=int) 
+                with open(scan_filename.replace('.nii.gz', '.lml'), 'r') as f:
+                    text = f.read()
+                    print(text)
+                    if len(L1_coord.findall(text)) == 1:
+                        xx, yy, zz = L1_coord.findall(text)[0]
+                        print(f'L1 -x : {xx}, y: {yy}, z: {zz}')
+                        try:
+                            mask[int(xx), int(yy), int(zz)] = 1
+                        except:
+                            pass
+                    if len(L2_coord.findall(text)) == 1:
+                        xx, yy, zz = L2_coord.findall(text)[0]
+                        print(f'L2 -x : {xx}, y: {yy}, z: {zz}')
+                        try:
+                            mask[int(xx), int(yy), int(zz)] = 2
+                        except:
+                            pass
+                    if len(L3_coord.findall(text)) == 1:
+                        xx, yy, zz = L3_coord.findall(text)[0]
+                        print(f'L3 -x : {xx}, y: {yy}, z: {zz}')
+                        try:
+                            mask[int(xx), int(yy), int(zz)] = 3
+                        except:
+                            pass
+                    if len(L4_coord.findall(text)) == 1:
+                        xx, yy, zz = L4_coord.findall(text)[0]
+                        print(f'L4 -x : {xx}, y: {yy}, z: {zz}')
+                        try:
+                            mask[int(xx), int(yy), int(zz)] = 4
+                        except:
+                            pass
+                    if len(L5_coord.findall(text)) == 1:
+                        
+                        xx, yy, zz = L5_coord.findall(text)[0]
+                        print(f'L5 -x : {xx}, y: {yy}, z: {zz}')
+                        try:
+                            mask[int(xx), int(yy), int(zz)] = 5
+                        except:
+                            pass
+                arr = np.rot90(arr, k=2, axes=(0, 1))
+                arr = np.rot90(arr, k=2, axes=(1, 2))
+                mask = np.rot90(mask, k=2, axes=(0, 1))
+                mask = np.rot90(mask, k=2, axes=(1, 2))
+
+                print(np.unique(mask, return_counts = True))
 
                 dimensions_dict[filename] = {'image' : arr.shape}
                 
@@ -99,60 +151,12 @@ if __name__ == '__main__':
                 # For each slice along the asked dimension, convert to a numpy.ndarray and save this.
                 # Preprocessing the slices before loading into pyTorch should speed up the training in the end.
 
-                fn = os.path.join(image_slices_filedir, filename.split('.')[0])
+                fn = os.path.join(image_slices_filedir, f'image{nr:03d}')
                 Path(fn).mkdir(parents=True, exist_ok=True)
                 np.save(os.path.join(fn, 'image_array'), arr)
                 ut.arr_slices_save(arr, dim_slice, fn, args.contrast, save_jpeg = True)
+                fn = os.path.join(mask_slices_filedir, f'image{nr:03d}')
+                Path(fn).mkdir(parents=True, exist_ok=True)
+                np.save(os.path.join(fn, 'mask_array'), mask)
+                ut.mask_to_slices_save(mask, dim_slice, fn)
 
-    # Process the mask files and change the filenames
-    logging.info('start copy of label files')
-    logging.info(f'dimensions dictionary so far : {dimensions_dict}')
-    
-    unique_values = dict()
-    for filename in tqdm(os.listdir(mask_filedir), desc = "Mask files"):
-        if filename.endswith('.raw'):
-            continue
-        logging.debug(f'filename : {filename}')
-        ms = MASK_NR.findall(filename)[0]
-        source_filename = os.path.join(mask_filedir, filename)
-        target_folder = os.path.join(mask_slices_filedir, f'image{ms[1]}')
-        Path(target_folder).mkdir(parents=True, exist_ok=True)
-        
-        logging.debug(f'source : {source_filename}')
-        logging.debug(f'target : {target_folder}')
-
-        image =  sitk.ReadImage(source_filename)
-        # No rescaling -> mask will be transformed with XVERTSEG_ENCODING
-
-        # resample on isotropic 1 mm × 1 mm × 1 mm grid
-        image = ut.resampler(image, imposed_size = dimensions_dict[f'image{ms[1]}.mhd']['image'],mask=True)
-        arr = sitk.GetArrayFromImage(image)
-
-        # The labels in the xVertSeg dataset follow (http://lit.fe.uni-lj.si/xVertSeg/database.php)
-        #   L1 : 200
-        #   L2 : 210
-        #   ...
-        #   L5 : 240
-        # This will be converted to labels 1 -> 5 representing L1 -> L5.
-        # The background will be encoded as value 0
-        for encoding, vert  in XVERTSEG_ENCODING.items():
-            arr[arr==encoding] = vert
-
-        dimensions_dict[f'image{ms[1]}.mhd']['mask'] = arr.shape
-
-        vals, counts = np.unique(arr, return_counts=True)
-        for val, count in zip(vals.tolist(), counts.tolist()):
-            unique_values[val] = unique_values.get(val, 0) + count
-        logging.debug(f'source : {filename}, shape {arr.shape}')
-        logging.debug(f'min : {np.min(arr)} ** max : {np.max(arr)}')
-        np.save(os.path.join(target_folder, 'mask_array'), arr)
-        ut.mask_to_slices_save(arr, dim_slice, target_folder)
-
-    logging.info(f'List of unique values in the masks : {unique_values}')
-    logging.info(f'min and max values in the complete dataset : {dataset_min} & {dataset_max}.')
-
-    with open(os.path.join(output_filedir, 'mask_counts_xVertSeg.json'), 'w') as mask_counts_file:
-        json.dump(unique_values, mask_counts_file)
-
-    with open(os.path.join(output_filedir, 'dimensions_xVertSeg.json'), 'w') as mask_dim_file:
-        json.dump(dimensions_dict, mask_dim_file)
