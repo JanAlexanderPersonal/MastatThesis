@@ -231,8 +231,8 @@ With the pseudo masks obtained from combining the three model results, a new mod
 This last model is only trained on the sagittal slice stack.
 The final results obtained with this model are illustrated in figure \ref{fig:fullvsPseudo}.
 The hyperparameters of this model were optimized in the same way as the reference model.
-It is remarkable that for this model, the weighted cross entropy loss proves to yield better results than the non-weighted cross entropy loss.
-For the reference model, the opposite result was observed.
+The unweighted cross entropy loss proves to yield better results than the weighted cross entropy loss.
+For the reference model, the same result was observed.
 
 The confusion matrix of the model trained with pseudo mask labels (table \ref{tab:pseudo_confusionMatrix}) shows the model performance is clearly inferiour to the model performance of the fully supervised model.
 Mind however that this model is trained based on data of which the labelling only costs about 12\% of the labelling cost of the fully supervised model for the train set scans.
@@ -269,38 +269,68 @@ One could also look at it in another way: for fixed cross validation and test se
 % Please add the following required packages to your document preamble:
 % \usepackage{multirow}
 
-\begin{tabular}{cl|llllll}
+\begin{tabular}{ll|llllll}
     \toprule
-    \multicolumn{2}{l|}{\multirow{2}{*}{values in {[}\%{]}}} & \multicolumn{6}{c}{\textbf{Predicted}}                                            \\
-    \multicolumn{2}{l|}{}                                    & \textbf{BG} & \textbf{L1} & \textbf{L2} & \textbf{L3} & \textbf{L4} & \textbf{L5} \\ \hline
-    \multirow{6}{*}{\textbf{Actual}}      & \textbf{BG}      & 99.5        & 85.39        & 23.63        & 25.36        & 24.87        & 41.04        \\
-     & \textbf{L1} & 0.09 & 59.87 & 2.96  & 0.07  & 0  & 0    \\
-     & \textbf{L2} & 0.11 & 5.68  & 50.22 & 2.08  & 0  & 0    \\
-     & \textbf{L3} & 0.11 & 0    & 2.46  & 54.57 & 2.48  & 0    \\
-     & \textbf{L4} & 0.11 & 0    & 0    & 3.87    & 56.09 & 1.81  \\
-     & \textbf{L5} & 0.11 & 0.05    & 0    & 0    & 1.67  & 55.07 \\ \bottomrule
+    \multicolumn{2}{l|}{\multirow{2}{*}{\textbf{values in {[}\%{]}}}} & \multicolumn{6}{l}{\textbf{Predicted}}                                            \\
+    \multicolumn{2}{l|}{}                                             & \textbf{BG} & \textbf{L1} & \textbf{L2} & \textbf{L3} & \textbf{L4} & \textbf{L5} \\ \hline
+    \multirow{6}{*}{\textbf{Actual}}           & \textbf{BG}          & 99.48       & 56.56       & 29.81       & 29.5        & 29.22       & 41.93       \\
+     & \textbf{L1} & 0.09 & 39.65 & 3.73  & 0.08  & 0     & 0     \\
+     & \textbf{L2} & 0.11 & 3.76  & 63.36 & 2.42  & 0     & 0     \\
+     & \textbf{L3} & 0.11 & 0     & 3.1   & 63.49 & 2.91  & 0     \\
+     & \textbf{L4} & 0.11 & 0     & 0     & 4.5   & 65.91 & 1.85  \\
+     & \textbf{L5} & 0.11 & 0.03  & 0     & 0     & 1.96  & 56.22 \\ \bottomrule
     \end{tabular}
 
     \caption{Confusion matrix for the model trained with pseudo label masks (network VGG16-FCN8 and cross-correlation loss), evaluated on the test set.
-    The values have been normalized by the total number of voxels classified in each class.
+    The values have been normalized by the total number of voxels predicted in each class.
     \label{tab:pseudo_confusionMatrix}
     }
 \end{SCtable}
 
-\marginpar{
-        \includegraphics[width=5cm]{images/PseudoSupervised.pdf}
-        \captionof{figure}{Class-weighted dice score for models trained on pseudo-masks. }
-        \label{fig:PseudoSupervised_dice}
-    }
+\begin{SCfigure}[][htb]
+        \includegraphics[width=.99\textwidth]{images/PseudoSupervised.pdf}
+        \caption{Class-weighted dice score for models trained on pseudo-masks. \label{fig:PseudoSupervised_dice}}
+        
+\end{SCfigure}
 
-Since the final model is exactly the same network as the reference model, only trianed with pseudo masks instead of full masks, the inference time is exactly the same.
-To preproces the 105 images in the 4 datasets used for training, 
+\par{
+    Since the final model is exactly the same network as the reference model, only trianed with pseudo masks instead of full masks, the inference time is exactly the same.
+Preprocesing of one volume was observed to take 3.9 seconds on average (see appendix \ref{sec:hardware} for details on the hardware used).
+After this, evaluation of one volume and recombination of the crops takes, on average, 8,3 seconds.
+The segmentation masks illustrated in figure \ref{fig:fullvsPseudo} can both be generated in 12,2 seconds.
+}
+\par{
+    The obtained segmentation masks are too restricted.
+    While the position of the vertebrae seems to be predicted correctly, the model does not predict the full extend of the vertebra and many vertebra voxels are classified as background, hence the low recall.
+    The ground cause of this phenomenon could not be discovered.
+    No post-processing steps (dilation, watershed) to remedy this a-postiori were intended. 
+}
 
+\par{
+    To investigate the performance difference observed between the different datasets, models were trained using only data from a single data source.
+    Due to small differences between the datasets, both in labelling (some dataset include the laminae in the labels while others do not) and the imaging techniques used to obtain the dataset (\acrshort{ct} or \acrshort{mri}),
+    one could believe that combining these datasets could cause one to influence the network performance on the other.
+    After training these single source models, large differences between the performances of these single source models were observed.
+    The latter calls for concluding that there are factors within each dataset determining how well the model can generalize.
+}
 
 \begin{SCtable}[\sidecaptionrelwidth][h]
 
     \input{tables/Summary_final.tex}
-    \caption{Summary
+    \caption{Summary table.
     }
 
 \end{SCtable}
+
+\begin{SCfigure}[][htb]
+    \centering
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/pointAnnotated_perClass_perSource_point_precision.pdf}
+    \end{minipage} 
+    \vspace{2 mm}
+    \begin{minipage}{.99\textwidth}
+        \includegraphics[width=.99\textwidth]{images/pointAnnotated_perClass_perSource_point_recall.pdf}
+    \end{minipage} 
+    \caption{Precision and recall for the final model. From this image and from the illustrations shown in figure \ref{fig:fullvsPseudo}, 
+    it is clear that the obtained model does not seem to be able to predict the full extend of the vertebrae. The inferred masks are too restricted in dimensions.}
+\end{SCfigure}

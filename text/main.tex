@@ -1,6 +1,6 @@
 \documentclass[
     a4paper, % Stock and paper size.
-    9pt, % Type size.
+    10pt, % Type size.
     %article,
     oneside, 
     onecolumn, % Only one column of text on a page.
@@ -69,12 +69,12 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 
 % GEOMETRY
 \settrims{0pt}{0pt}
-\settypeblocksize{50\baselineskip}{107mm}{*}
-\setlrmargins{20.0mm}{*}{*} % 24.8 mm
+\settypeblocksize{50\baselineskip}{120mm}{*}
+\setlrmargins{16.0mm}{*}{*} % 24.8 mm
 \setulmargins{25.0mm}{*}{*} % 27.4 mm
 \setheadfoot{\baselineskip}{\baselineskip}
 \setheaderspaces{*}{2\baselineskip}{*}
-\setmarginnotes{8.2mm}{49.4mm}{\onelineskip}
+\setmarginnotes{11.3mm}{49mm}{\onelineskip} % was 8.2 and 49.4
 \checkandfixthelayout
 
 
@@ -90,7 +90,7 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 \linespread{1.17}
 
 % text styling of all side footnotes
-\renewcommand{\footnotesize}{\fontsize{8pt}{10pt}\selectfont}
+\renewcommand{\footnotesize}{\fontsize{8pt}{8pt}\selectfont}
 \renewcommand{\foottextfont}{\footnotesize}
 % styling and placement of mark
 \footmarkstyle{{#1. }}
@@ -105,7 +105,7 @@ bookmarks=true,bookmarksopenlevel=2]{hyperref}
 \sidecapmargin{outer}
 \setsidecappos{t}
 \renewcommand*{\sidecapstyle}{%
-\captionnamefont{\foottextfont\scshape}
+\captionnamefont{\foottextfont\scshape\footnotesize}
 \ifscapmargleft
 \captionstyle{\RaggedLeft\footnotesize\foottextfont}%
 \else
@@ -281,7 +281,7 @@ explicitly the source when using results of this master dissertation.}
 \end{partwithabstract}
 \restoregeometry
 
-\input{/home/thesis/2_Analysis/data}
+
 
 \input{/home/thesis/2_Analysis/Model}
 
