@@ -27,7 +27,7 @@
     Even though delineating a vertebra on a transverse slice is possible, identifying which vertebra is presented is challenging for a human.
     Supported by a brief test, it was confirmed that trying to estimate five vertebra classes from the transverse slices only provides very confusing results.
     The models trained on the transverse slices only intend to label the slice pixels as either background (0) or vertebra (1), 
-    whereas the models trained on the sagittal and frontal slices intend to indicate which of 6 classes\footnote{0 for background and $i\in [1,2,3,4,5]$ for the corresponding $L i \in [L1,L2, L3, L4, L5]$.} the pixel belongs to.
+    whereas the models trained on the sagittal and frontal slices intend to indicate which of 6 classes\footnote{0 for background and $i\in [1,2,3,4,5]$ for the corresponding $L i $.} the pixel belongs to.
 }
 \par{
     The models trained to segment sagittal and frontal slices were trained on datasets xVertSeg, UniSiegen and MyoSegmenTUM.
@@ -56,20 +56,16 @@
         In principle, this information is not necessarily available when only point level annotation is available. In this work, it is considered that (at least an approximation) of the ratios can be available as prior knowledge.
     }. In the unweighted case, $w_{\cdot} = 1$.
 }
-
-
-
 \par{
     In figure \ref{fig:weighted_vs_unweighted}, the difference between the weighted dice score \& the average dice score on the test set is compared for two models trained on the transverse slices.
     This result shows that the result of the non-weighted segmentation is better than the result of the model trained with weighted loss.
     At first, this seemed surprising.
-    Contrary to fully supervised models, in the weakly supervised case, the ratio between \textit{labelled} points is not as unbalanced as the ratio between the actual class pixels in the result.
-    This explains the weighted point loss performance compared to the unweighted point loss performance.
+    Contrary to fully supervised models, in the weakly supervised case, the ratio between \textit{labelled} points is not as unbalanced as the ratio between the actual class pixels in the result, which explains the weighted point loss performance compared to the unweighted point loss performance.
     An approach that is not tested in this work is to weigh proportional to the inverse of the number of \textit{annotation} points per class instead of weighing proportional to the number of \textit{ground truth} pixels\footnote{
         It seems worthwhile for future researchers to investigate such an approach deeper. 
         As it is clear from this chapter and chapter \ref{sec:numberofpoints}, extracting more annotation points (or asking the expert to provide more annotation points) does not necessarily guarantee a better model performance.
     }.
-    The disappointing performance of the model trained with a weighted point loss compared to the model trained with the unweighted point loss was  investigated deeper.
+    The disappointing performance of the model trained with a weighted point loss compared to the model trained with the unweighted point loss was investigated deeper.
     Due to the overweighing of the classes, the model trained with the weighted point loss does not predict the background class anymore! 
     This results in a recall score of 0.00 for this class.
     Based on these observations, the subsequent models in this work are trained with the non-weighted point loss component.
@@ -81,6 +77,7 @@
     \includegraphics[width=.95\textwidth]{images/weightedvsnonweighted_transverse.pdf}
     \caption{
         Illustration of the difference in model performance (inverse class weighted dice score) between a weighted point loss function and the unweighted point loss function for point annotated models trained on transverse slices.
+        \input{tables/colourlegend_short.tex}
     \label{fig:weighted_vs_unweighted_transverse}}
 \end{SCfigure}%
 \begin{SCfigure}[][htb]
@@ -89,14 +86,15 @@
     \caption{
         Illustration of the difference in model performance between a weighted point loss function and the unweighted point loss function for point annotated models trained on frontal slices.
         The models are trained with point annotations extracted from the available ground truth masks. For these models, 
-        5 points were extracted from the background mask and 5 points were extracted from each instance of each class in the slice. 
-        The bar in blue indicates the inverse weighted dice score, evaluated on the test set. The bar in green indicates the average dice score over the classes.
+        5 points were extracted from the background mask and 5 points from each instance of each class in the slice. 
+        The bar in blue indicates the inversely weighted dice score evaluated on the test set. The bar in green indicates the average dice score over the classes.
+        \input{tables/colourlegend_short.tex}
         \label{fig:weighted_vs_unweighted}}
 \end{SCfigure}
 
 Figure \ref{fig:weighted_vs_unweighted_transverse} shows the result of models trained on the same datasets of transverse slices.
 These models are trained with point annotations extracted from the available ground truth masks. For these models, 
-10 points were extracted from the background mask, and 3 points from each instance of each class in the slice. 
+10 points were extracted from the background mask and 3 points from each instance of each class in the slice. 
 The texture on the plots of the transverse model performance bars tries to help the reader identify that these models do not distinguish the vertebrae from each other but only predict a voxel to be a vertebra or not.
 Figure \ref{fig:weighted_vs_unweighted} shows the result for transverse slices.
 Remark that the number of class annotation points and background points is different between figure \ref{fig:weighted_vs_unweighted_transverse} and figure \ref{fig:weighted_vs_unweighted}.
@@ -115,6 +113,7 @@ Remark that the number of class annotation points and background points is diffe
     \caption{Evaluation of the added value of loss components. 
     The bar in blue indicates the inverse weighted dice score, evaluated on the test set. The bar in green indicates the average dice score over the classes.
     The texture on the bars representing the transverse model performance help the reader remember the transverse model does not distinguish between the lumbar vertebrae.
+    \input{tables/colourlegend_short.tex}
     \label{fig:addedLossComponents}}
 \end{SCfigure}
 
@@ -128,15 +127,15 @@ Remark that the number of class annotation points and background points is diffe
 \begin{SCfigure}[][htb]
     \centering
     \includegraphics[width=.95\textwidth]{images/BlobPoints_influence.pdf}
-    \caption{Evolution of the weakly supervised model performance with increased number of annotation points on the inverse class weighted dice score of the point annotated models.
-    Eventhough increasing the number of class annotation points does not improve the model performance, there seems to be an increase in model performance possible by increasing the number of background points.
+    \caption{Evolution of the weakly supervised model performance with an increasing number of annotation points on the inverse class weighted dice score of the point annotated models.
+    Even though increasing the number of class annotation points does not improve the model performance, there seems to be an increase in model performance by increasing the number of background points.
     \label{fig:points_influence}}
 \end{SCfigure}
 
 \par{
     Figure \ref{fig:addedLossComponents} shows the weighted dice score decreases with more annotation points for models trained with unweighted point loss.
-    The model becomes very eager to find class points. This causes many background pixels to be wrongly classified as class points.
+    The model becomes eager to find class points, causing many background pixels to be wrongly classified as class points.
     The resulting decrease in precision causes the F1 score to decrease.
-    It might be interesting for future researchers to investigate the influence of relative quantity of class and background annotation points.
-    The time (and computational power) to investigate this behaviour completely was not available in this thesis project.
+    It might be interesting for future researchers to investigate the influence of the relative quantity of class and background annotation points.
+    The time (and computational power) to investigate this behaviour further was not available in this thesis project.
 }

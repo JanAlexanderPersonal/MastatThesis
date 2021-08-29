@@ -3,7 +3,7 @@
 To allow evaluation of the models produced, a test set is split from the development set.
 The objective is to evaluate how well a model generalizes to new data\footnote{
     New data is to be interpreted here as a new sample from \textit{the same population} as the development sample.
-    Unfortunately, I cannot claim that the different datasets I collected indeed form a perfect representation of the population of medical images of the lumbar spine.}. 
+    Unfortunately, it cannot be claimed that the different datasets I collected indeed form a perfect representation of the population of medical images of the lumbar spine.}. 
 To provide an honest estimate of the out-of-sample performance, the test dataset should represent the investigated population and (hidden) correlations with elements of the development sample should be avoided.
 
 This is done\footnote{
@@ -27,10 +27,10 @@ This distribution is not perfect but acceptable, as is indicated by the values i
   \begin{SCtable}[\sidecaptionrelwidth][h]
  
     \input{tables/summary_split_slices.tex}
-    \caption{Number of slices by datasource and by split.
-    These values might seem high, yet, the reader should not forget these image slices are highly correlated. 
+    \caption{Number of slices by data source and by split.
+    These values might seem high, yet, the reader should not forget that these image slices are highly correlated. 
     There is very little additional independent information comparing one slice with a slice taken just 1mm further.
-    On top of this, there are many slices which only contain the background class and do not provide much information for the model to train on the lumbar vertebrae classes. 
+    On top of this, many slices only contain the background class without providing the model information to train on the lumbar vertebrae classes. 
     \label{tab:summary_split_slices}}
   
   \end{SCtable}

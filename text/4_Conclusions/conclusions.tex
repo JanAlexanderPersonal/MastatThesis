@@ -1,48 +1,50 @@
 \newgeometry{total={210mm,297mm},left=20mm,right=20mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
 \begin{partwithabstract}{Conclusions}
-    This part of the document summarizes the most important conclusions from this work and possible ideas as a way forward after this work.
+    This part of the document summarizes the most important conclusions and possible ideas as a way forward after this work.
     The part starts with an evaluation and discussion of the labelling cost necessary to make the final model. 
-    Finally, the lessons learned from this project are laid out and some ideas for further development of weakly supervised models for medical applications are presented. 
+    Finally, the lessons learned from this project are laid out, and some ideas for further development of weakly supervised models for medical applications are presented. 
 \end{partwithabstract}
 \restoregeometry
 
 \chapter{Conclusions}
 \par{
     This research aimed to identify techniques for multi-label segmentation of volumetric scans of the human lumbar vertebra.
-    The research was based on 5 publically available datasets, containing both \acrshort{ct} and \acrshort{mri} scans.
+    The research was based on 5 publically available datasets containing both \acrshort{ct} and \acrshort{mri} scans.
     The solution proposed in this document is based on previous research, the consistency loss introduced in\cite{Laradji2021}, extended with two new loss function components.  
 }
 \par{
-    Further, the resulting models, trained with this technique are combined with a new algorithm to obtain pseudo masks with which the final model can be trained.
-    This combination step was proven to be a valuable step to increase the segmentation mask performance, measured with the weighted dice metric.
+    Further, the resulting models trained with this technique are combined with a new algorithm to obtain pseudo masks with which the final model can be trained.
+    This combination step was proven valuable to increase the segmentation mask performance, measured with the inversely weighted dice metric.
+    This metric considers this problem data to be unbalanced since the background volume is far more extensive than the vertebra volumes. 
+    It increases the weight of the underrepresented class' dice score in the final result.
 }
 \par{
-    The result of this work indicated that the developed techniques allow to obtain an inverse weighted dice score of 0.55 for a model trained with labels that represent 12 \% of the cost of full label masks.
-    This result should be compared to the inverse weighted dice score of 0.76 for a model that was trained on full label masks.
+    The result of this work indicated that the developed techniques allow obtaining an inversely weighted dice score of 0.55 for a model trained with labels that represent 12 \% of the cost of full label masks.
+    This result should be compared to the inversely weighted dice score of 0.76 for a model trained on full label masks.
+    Several images also visually indicate that the result of the weakly supervised procedure is inferior but approximates the ground truth without requiring this full ground truth for training.
 }
 \par{
-    The results in this thesis have demonstrated that well-chosen additional loss terms can improve the performance of the consistency loss model and 
-    that the combination of the results of two-dimensional models trained on slices along a different dimensional axis can produce a three-dimensional segmentation mask of higher quality than the original masks.
+    The results in this thesis have demonstrated that well-chosen additional loss terms can improve the performance of the consistency loss model and that the combination of the results of two-dimensional models trained on slices along a different dimensional axis can produce a three-dimensional segmentation mask of higher quality than the original masks.
 }
 
 \chapter{Future work}
-The research presented in this work raises a number of unanswered questions and could inspire others to investigate this problem further.
-Personally, I believe the following subjects desirve further investigation and exploration:
+The research presented in this work raises several unanswered questions and could inspire others to investigate this problem further.
+I believe the following subjects deserve further investigation and exploration:
 \begin{description}
-    \item[Finer prior extrend:] The prior extend loss introduced in this work\footnote{The prior extent loss is introduced on page \pageref{fig:prior_extent}} is based on a single maximal radius $r=110mm$ 
-    of the lumbar vertebrae. This could be refined by imposing a different $r$ value per vertebra or even by imposing different values along different axis of the vertebrae.
+    \item[Finer prior extend:] The prior extend loss introduced in this work\footnote{The prior extent loss is introduced on page \pageref{fig:prior_extent}} is based on a single maximal radius $r=110mm$ 
+    of the lumbar vertebrae. This maximal radius could be refined by imposing a different $r$ value per vertebra or even by imposing different values along the different axis of the vertebrae.
     \item[dataset difference:] This work makes use of a collection of different publically available datasets. The difference in performance between these is striking.
-    The developed model performance is unequal for the different datasets. This means that one cannot claim this model is generally applicable. It is only suitable for a limited range of scan types.
-    It would be interesting to investigate how the model could be trained that is more generally applicable. Are there fundamental differences between the datasets that can be adressed with improved pre-processing?
+    The developed model performance is unequal for the different datasets, so one cannot claim that this model is generally applicable. It is only suitable for a limited range of scan types.
+    It would be interesting to investigate how the model could be trained that is more generally applicable. Are there fundamental differences between the datasets that can be addressed with improved pre-processing?
     Can an adapted sampling scheme (under- or oversampling) help? 
     \item[Weights for the point loss:] This work demonstrated that a weighted point loss function does not improve the model performance. One could argue that the chosen weighing strategy was not optimal.
-    Could it be a better idea to choose weights inverse proportional to the number of annotation points per class? Can another weighing scheme be conceived? 
+    Could it be better to choose weights inverse proportional to the number of annotation points per class? Can another weighing scheme be conceived? 
     \item[Optimal number of annotation points:] This research did not conclude on determining the optimal number of class instance annotation points. There are two contradicting observations.
     First, there is the observation that the performance of the single dimension models decreases with more annotation points per class instance. 
     On the other hand, decreasing the annotation points decreases the number of training slices for the other two slice dimensions on which no expert annotation was provided.
     \item[Prior position loss:] One aspect of prior knowledge that has not been used in this work is the known sequence of the vertebrae. In \cite{Lessmann2018}, 
     the known anatomical sequence of vertebrae was used for vertebrae identification.
-    Although this proved not to be necessary in this work, one can wonder if including this information, for example in a way similar to \cite{Lessmann2018}, could help to reduce the model training time.
-    \item[Post processing:] The results obtained with the model trained on pseudo masks showed to systematically underestimate the extend of the vertebrae.
+    Although this proved not to be necessary in this work, one can wonder if including this information, for example, in a way similar to \cite{Lessmann2018}, could help to reduce the model training time.
+    \item[Post processing:] The results obtained with the model trained on pseudo masks showed to underestimate the extent of the vertebrae systematically.
     It could be possible to remedy this in a post-processing step. 
 \end{description}

@@ -10,8 +10,8 @@ This dataset does not contain full mask labels, only centroid point annotations.
 To investigate the relative performance of a weakly supervised model compared to the performance of a fully supervised model, both will be trained on the same dataset\footnote{The modelling concept is further discussed in chapter \ref{sec:model_concept}.}.
 Furthermore, the evaluation of the models is based on the full annotations.
 Thus, the UWSpine dataset will not be used for model training.
-It will only be used for visual evaluation of the model on a completely new dataset\footnote{The UWSpine dataset is \textit{completely} new in the sense that no samples from this dataset (this \textit{population}, so to speak) are present in the train or validation set.
-For the \textit{normal} test set, other samples from the same datasets where present in the train and validation sets.}.
+It will only be used for visual evaluation of the model on an entirely new dataset\footnote{The UWSpine dataset is \textit{completely} new in the sense that no samples from this dataset (this \textit{population}, so to speak) are present in the train or validation set.
+For the \textit{regular} test set, other samples from the same datasets were present in the train and validation sets.}.
 
 
 \subsubsection{Original Objective of the Dataset}
@@ -27,8 +27,9 @@ The highest number of scans taken from a single patient is 5.
 
 \subsubsection{Technical information}
 
-Only point annotations are available for the \textit{UWSpine} dataset. 
-This means this dataset can only be used for weakly supervised model training.
+Only volume centre point annotations are available for the \textit{UWSpine} dataset. 
+This dataset is thus annotated even more sparsely than what is considered as weak supervision in this work.
+Instead of providing an annotation point per slice, one annotation point per vertebra volume is provided and not annotation points for the background class.
 
 The scans in the \textit{UWSpine} dataset are strongly cropped around the spine, both in the left-right direction and the anteroposterior direction.
 

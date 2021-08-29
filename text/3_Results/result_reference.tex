@@ -1,34 +1,10 @@
 \chapter{Reference model\label{sec:reference_model}}\thispagestyle{empty}
 \par{
-    As a reference to compare the models trained on weakly-supervised data with, the model performance of a model trained on the same fully supervised data is taken as a reference.
+    As a reference to compare the models trained on weakly supervised data with, the model performance of a model trained on the same fully supervised data is taken as a reference.
     In this chapter, the results of these fully supervised reference experiments are discussed.
     The metric based on which the experiment results are compared is the inverse class weighted dice score, see equation \ref{eq:weighted_dice} on page \pageref{eq:weighted_dice}.
 }
-\begin{SCtable}[\sidecaptionrelwidth][h]
- 
-    % Please add the following required packages to your document preamble:
-% \usepackage{multirow}
-% Please add the following required packages to your document preamble:
-% \usepackage{multirow}
 
-\begin{tabular}{cl|llllll}
-    \toprule
-    \multicolumn{2}{l|}{\multirow{2}{*}{values in {[}\%{]}}} & \multicolumn{6}{c}{\textbf{Predicted}}                                            \\
-    \multicolumn{2}{l|}{}                                    & \textbf{BG} & \textbf{L1} & \textbf{L2} & \textbf{L3} & \textbf{L4} & \textbf{L5} \\ \hline
-    \multirow{6}{*}{\textbf{Actual}}      & \textbf{BG}      & 99.9        & 13.2        & 14.5        & 14.2        & 12.9        & 12.1        \\
-     & \textbf{L1} & 0 & 86.6 & 2.1  & 0.1  & 0.2  & 0    \\
-     & \textbf{L2} & 0 & 0.2  & 83.4 & 0.9  & 0.1  & 0    \\
-     & \textbf{L3} & 0 & 0    & 0.1  & 83.9 & 0.4  & 0    \\
-     & \textbf{L4} & 0 & 0    & 0    & 1    & 86.1 & 0.7  \\
-     & \textbf{L5} & 0 & 0    & 0    & 0    & 0.3  & 87.2 \\ \bottomrule
-    \end{tabular}
-
-    \caption{Confusion matrix for the model trained with full label masks (network VGG16-FCN8 and cross-correlation loss), evaluated on the test set.
-    The values have been normalized by the total number of voxels predicted in each class.
-    The diagonal elements are thus the class precisions: $\mathcal{P}(C = L1 \mid pred = L1) = 0.866$ while $\mathcal{P}(C = L2 \mid pred = L1) = 0.132$.
-    \label{tab:full_confusionMatrix}
-    }
-\end{SCtable}
 
 \section{Experiment results}
 \par{
@@ -43,7 +19,7 @@
 
 \par{
     In figure \ref{fig:referenceExperiments}, the results of the reference experiments are shown.
-    These results show the network based on VGG16 yields better results than the alternatives based on RESNET50 and U-Net.
+    These results show that the network based on VGG16 yields better results than the alternatives based on RESNET50 and U-Net.
     Despite what was hoped for, the context slices do not seem to increase the model performance.
     Remarkably, there is little difference between the models trained with a weighted cross-entropy loss and the non-weighted cross-entropy loss\footnote{
         The weighted cross-entropy loss is defined in chapter \ref{sec:crossentropy} on page \pageref{sec:crossentropy}. 
@@ -73,7 +49,7 @@
         \end{tabular}
     
         \caption{Per class metric results for the reference model. 
-        The performance metrics on the background class are invariably excellent. This is caused by the unbalance in the data.
+        The performance metrics on the background class are invariably excellent. There are about 500 background pixels for each class pixel. The data is not balanced.
         Using the inversely weighted dice score gives more weight to the underrepresented classes, which are more of interest.
         \label{tab:full_performanceTable}
         }
@@ -100,9 +76,30 @@ For the other classes, the conclusion based on the inverse weighted dice score h
     \end{minipage}
     \caption{Detailed result for the fully supervised model trained without context slices and with a weighted cross entropy loss function.
     The model trained with the unweighted loss performs better than the result shown in figure \ref{fig:referenceWeighted} for the weighted cross entropy loss function.
+    \input{tables/colourlegend_long.tex}
     \label{fig:referenceWeighted} 
     }
 \end{SCfigure}
+\begin{SCtable}[\sidecaptionrelwidth][h]
+ 
+\begin{tabular}{cl|llllll}
+    \toprule
+    \multicolumn{2}{l|}{\multirow{2}{*}{values in {[}\%{]}}} & \multicolumn{6}{c}{\textbf{Predicted}}                                            \\
+    \multicolumn{2}{l|}{}                                    & \textbf{BG} & \textbf{L1} & \textbf{L2} & \textbf{L3} & \textbf{L4} & \textbf{L5} \\ \hline
+    \multirow{6}{*}{\textbf{Actual}}      & \textbf{BG}      & 99.9        & 13.2        & 14.5        & 14.2        & 12.9        & 12.1        \\
+     & \textbf{L1} & 0 & 86.6 & 2.1  & 0.1  & 0.2  & 0    \\
+     & \textbf{L2} & 0 & 0.2  & 83.4 & 0.9  & 0.1  & 0    \\
+     & \textbf{L3} & 0 & 0    & 0.1  & 83.9 & 0.4  & 0    \\
+     & \textbf{L4} & 0 & 0    & 0    & 1    & 86.1 & 0.7  \\
+     & \textbf{L5} & 0 & 0    & 0    & 0    & 0.3  & 87.2 \\ \bottomrule
+    \end{tabular}
+
+    \caption{Confusion matrix for the model trained with full label masks (network VGG16-FCN8 and cross-correlation loss), evaluated on the test set.
+    The values have been normalized by the total number of voxels predicted in each class.
+    The diagonal elements are thus the class precisions: $\mathcal{P}(C = L1 \mid pred = L1) = 0.866$ while $\mathcal{P}(C = L2 \mid pred = L1) = 0.132$.
+    \label{tab:full_confusionMatrix}
+    }
+\end{SCtable}
 
 \section{Conclusion}
 \par{

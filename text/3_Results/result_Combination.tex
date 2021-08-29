@@ -38,25 +38,35 @@ The pseudo mask volume performs better than the single dimension model results a
     the algorithm is evaluated with a matrix of these hyperparameters to choose the optimal hyperparameter set to construct the pseudo masks for the test set.
     In figure \ref{fig:hyperparameter_combination_1}, this obtimization procedure is illustrated.
     The optimal hyperparameter set in this case was 2 denoise iterations and 1 erosion iteration.
+    From this figure, it is clear that the discussed hyperparameters do not have a large impact on the final result.
+    The small difference in performance between the pseudo masks generated with increasing number of denoise iteration is arguably not worth the computational effort.
+}
+\par{
+    It might be interesting to note that \textit{0} iterations indicates the morphological operation is repeated until the result converges.
+    For the erosion operation, it is trivial this results in zero performance, all class segments are eroded away. 
+}
+
+\par{
+    The result of this procedure is illustrated in figures \ref{fig:comb1_1}, \ref{fig:comb1_2} and \ref{fig:comb1_3}.
+    These images illustrate that the result of the combination procedure is an improvement compared to the results of the individual models.
+    Now, it is possible to train a network with only point annotated labels by using the results of the pseudo mask volume.
+    Mind however that the results in chapter \ref{sec:singleDimension} and the results combined in this chapter were obtained with a different set of point annotations for each dimension.
+    This was done to make comparison between different models and between models trained on slices taken over a single dimension possible. The next chapter discusses a more realistic scenario.
+}
+\par{
+    In a realistic scenario, the expert will not annotated three stacks of slices from the same volume.
+    Doing this would mean the expert would generate information with a high level of correlated and redundant information, 
+    while the objective of weakly supervised learning is exactly to increase the efficiency of the label generation and information extraction.
+    In the following chapter, a set of pseudo masks will be generated based on a single stack of annotated sagittal slices.
 }
 \marginpar{
         \includegraphics[width=5cm]{images/combination_optimization_1.pdf}
         \captionof{figure}{Illustration of the hyperparameter optimization procedure for the combination detailed in \ref{tab:combination_1}}
         \label{fig:hyperparameter_combination_1}
     }
-\par{
-    The result of this procedure is illustrated in figures \ref{fig:comb1_1}, \ref{fig:comb1_2} and \ref{fig:comb1_3}.
-    These images illustrate that the result of the combination procedure is an improvement compared to the results of the individual models.
-}   
-\par{
-    The procedure described in the last two chapters now allows to train a network with only point annotated labels by using the results of the pseudo mask volume.
-    Mind however that the results in chapter \ref{sec:singleDimension} and the results combined in this chapter were obtained with a different set of point annotations for each dimension.
-    This was done to make comparison possible. The next chapter discusses a more realistic scenario.
-}
-
 \begin{SCfigure}[][htb]
     \centering
-    \includegraphics[width=.95\textwidth]{images/comb1_denoise2_erode1_MyoSegmenTUM_036.pdf}
+    \includegraphics[width=.90\textwidth]{images/comb1_denoise2_erode1_MyoSegmenTUM_036.pdf}
     \caption{
         Result of the combination of the three single dimension model results for volume MyoSegmenTUM nr 36.
         The colours indicate the vertebra classes. Only one semantic class is estimated in the first row, illustrating the model trained on transversal slices.
@@ -72,7 +82,7 @@ The pseudo mask volume performs better than the single dimension model results a
 \end{SCfigure}
 \begin{SCfigure}[][htb]
     \centering
-    \includegraphics[width=.95\textwidth]{images/comb1_denoise2_erode1_xVertSeg_009.pdf}
+    \includegraphics[width=.90\textwidth]{images/comb1_denoise2_erode1_xVertSeg_009.pdf}
     \caption{
         Result of the combination of the three single dimension model results for volume xVertSeg 009. The layout of this picture is identical to figure \ref{fig:comb1_1}.
         \protect\input{tables/colourlegend.tex}
@@ -93,7 +103,7 @@ The pseudo mask volume performs better than the single dimension model results a
 \par{
     In reality, an expert will generate a single stack of annotations, not three.
     As described in chapter \ref{sec:annotationPoints} on page \pageref{sec:annotationPoints}, one of the single dimensional models will be trained on this stack of annotated slices.
-    The other two however, will be trained on stacks where the same annotation points are used, but now as these are found back when slicing in the two other dimensions.
+    The other two however, will be trained on stacks where the same annotation points are used, but now as these are found when slicing in the two other dimensions.
     This means that for the slices along one of the geometric dimensions, a known number of annotation points will be provided.
     For the slices perpendicular to the other two geometric axis, the annotation points will have to be deduced from this original stack.
     Figures \ref{fig:inferepoints_1} and \ref{fig:inferepoints_2} illustrate this.
@@ -113,14 +123,14 @@ The pseudo mask volume performs better than the single dimension model results a
             \textbf{frontal}    & 2627 & 4507 \\
             \textbf{sagittal}   & 7939 & 7939
             \end{tabular}
-        \captionof{table}{Available labelled slices from labelling the sagittal slice stack.}
+        \captionof{table}{Available labelled slices from labelling the sagittal slice stack.\label{tab:inferredLabels}}
     }
 \par{
     Inferring annotation points from labels provided for slices taken in another direction implies the number of annotation points will vary.
     For some slices, no annotation points will be available.
     As a first test, point annotations in the sagittal slices with 1 class point per class instance and 1 background point were created.
-    This showed to decrease the number of labelled strongly. When training with these slices, the segmentation networks showed to perform very poorly
-    (inverse weighted dice scores of 0.22, 0.23 and 0.33 for the models trained respectively on the transverse, frontal and sagittal slice stacks).
+    This showed to decrease the number of labelled slices strongly (table \ref{tab:inferredLabels}). When training with these slices, the segmentation networks showed to perform very poorly
+    (inversely weighted dice scores of 0.22, 0.23 and 0.33 for the models trained respectively on the transverse, frontal and sagittal slice stacks).
     As is discussed on page \pageref{sec:trainingData} the cost of additional data points when the first point is provided is very low.
     When generating 3 labels per class instance and 5 background labels, the estimated cost is only increased to about $\frac{22,1 + 6.0,9}{239.7}=11,5\%$ of the cost of a full mask label.
     It is clear that this type of reasoning cannot be stretched to extremes (100 points or such), yet, the numbers of 3 and 5 seem perfectly reasonable.
@@ -132,7 +142,7 @@ The pseudo mask volume performs better than the single dimension model results a
         \includegraphics[width=.99\textwidth]{images/MyoSegmenTUM020_s21_points.pdf}
     \end{minipage} 
     \vspace{1 mm}
-    \begin{minipage}{.75\textwidth}
+    \begin{minipage}{.60\textwidth}
         \includegraphics[width=.99\textwidth]{images/MyoSegmenTUM020_s75_front_points.pdf}
     \end{minipage} 
     \vspace{2 mm}
@@ -149,7 +159,7 @@ The pseudo mask volume performs better than the single dimension model results a
         \includegraphics[width=.99\textwidth]{images/USiegen004_s20_points.pdf}
     \end{minipage} 
     \vspace{1 mm}
-    \begin{minipage}{.75\textwidth}
+    \begin{minipage}{.60\textwidth}
         \includegraphics[width=.99\textwidth]{images/USiegen004_s250_front_points.pdf}
     \end{minipage} 
     \vspace{2 mm}
@@ -159,39 +169,7 @@ The pseudo mask volume performs better than the single dimension model results a
     \protect\input{tables/colourlegend.tex}\label{fig:inferepoints_2}}
 \end{SCfigure}
 
-% \begin{SCfigure}[][htb]
-%     \centering
-%     \centering
-%     \begin{minipage}{.99\textwidth}
-%         \includegraphics[width=.99\textwidth]{images/GroundTruth_morphComb_USiegen_007.pdf}
-%     \end{minipage} 
-%     \vspace{1 mm}
-%     \begin{minipage}{.99\textwidth}
-%         \includegraphics[width=.99\textwidth]{images/SingleDims_USiegen_007.pdf}
-%     \end{minipage} 
-%     \vspace{2 mm}
-%     \caption{Thee dimensional render to visualize the combination of single-dimensional model results to form the pseudo masks.
-%     The upper two figures show the ground truth volumes (as a reference, not used in training) and the pseudo mask volumes which have been constructed by comining the results of the three single dimensional models illustrated on the bottom row of images.
-%     The scan illustrated here is USiegen 007.
-%     \protect\input{tables/colourlegend.tex}}
-% \end{SCfigure}
 
-% \begin{SCfigure}[][htb]
-%     \centering
-%     \centering
-%     \begin{minipage}{.99\textwidth}
-%         \includegraphics[width=.99\textwidth]{images/GroundTruth_morphComb_MyoSegmenTUM_034.pdf}
-%     \end{minipage} 
-%     \vspace{2 mm}
-%     \begin{minipage}{.99\textwidth}
-%         \includegraphics[width=.99\textwidth]{images/SingleDims_MyoSegmenTUM_034.pdf}
-%     \end{minipage} 
-%     \vspace{2 mm}
-%     \caption{Thee dimensional render to visualize the combination of single-dimensional model results to form the pseudo masks.
-%     The upper two figures show the ground truth volumes (as a reference, not used in training) and the pseudo mask volumes which have been constructed by comining the results of the three single dimensional models illustrated on the bottom row of images.
-%     The scan illustrated here is MyoSegmenTUM 34.
-%     \protect\input{tables/colourlegend.tex}}
-% \end{SCfigure}
 
 Table \ref{tab:combination_precalc} illustrates how the performance of the combination of models trained on different slice stacks results in pseudo masks which prove to be an improvement compared to the individual models.
 It is remarkable how high the performance of the models trained on \textit{inferred} annotation points proves to be.
@@ -289,7 +267,7 @@ One could also look at it in another way: for fixed cross validation and test se
 
 \begin{SCfigure}[][htb]
         \includegraphics[width=.99\textwidth]{images/PseudoSupervised.pdf}
-        \caption{Class-weighted dice score for models trained on pseudo-masks. \label{fig:PseudoSupervised_dice}}
+        \caption{Inversely weighted dice score for models trained on pseudo-masks. \label{fig:PseudoSupervised_dice}}
         
 \end{SCfigure}
 
@@ -332,5 +310,7 @@ The segmentation masks illustrated in figure \ref{fig:fullvsPseudo} can both be 
         \includegraphics[width=.99\textwidth]{images/pointAnnotated_perClass_perSource_point_recall.pdf}
     \end{minipage} 
     \caption{Precision and recall for the final model. From this image and from the illustrations shown in figure \ref{fig:fullvsPseudo}, 
-    it is clear that the obtained model does not seem to be able to predict the full extend of the vertebrae. The inferred masks are too restricted in dimensions.}
+    it is clear that the obtained model does not seem to be able to predict the full extend of the vertebrae. The inferred masks are too restricted in dimensions.
+    \input{tables/colourlegend_long.tex}
+    }
 \end{SCfigure}
