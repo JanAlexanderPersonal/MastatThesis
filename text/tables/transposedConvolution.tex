@@ -1,0 +1,155 @@
+\begin{SCtable}[\sidecaptionrelwidth][h]
+    \begin{tabular}{llllllllllllllllllll}
+        \toprule
+        \multicolumn{2}{l}{Input} &
+           &
+          \multicolumn{7}{l}{Input (add zeros)} &
+           &
+          \multicolumn{3}{l}{kernel} &
+           &
+          \multicolumn{5}{l}{output} \\ \cline{4-6}
+         &
+           &
+          \multicolumn{1}{l|}{} &
+          0 &
+          0 &
+          \multicolumn{1}{l|}{0} &
+          0 &
+          0 &
+          0 &
+          0 &
+           &
+           &
+           &
+           &
+           &
+           &
+           &
+           &
+           &
+           \\ \cline{16-16}
+         &
+           &
+          \multicolumn{1}{l|}{} &
+          0 &
+          0 &
+          \multicolumn{1}{l|}{0} &
+          0 &
+          0 &
+          0 &
+          0 &
+           &
+           &
+           &
+           &
+          \multicolumn{1}{l|}{} &
+          \multicolumn{1}{l|}{3} &
+          6 &
+          12 &
+          6 &
+          9 \\ \cline{12-14} \cline{16-16}
+        3 &
+          3 &
+          \multicolumn{1}{l|}{} &
+          0 &
+          0 &
+          \multicolumn{1}{l|}{\textbf{3}} &
+          0 &
+          \textbf{3} &
+          0 &
+          0 &
+          \multicolumn{1}{l|}{} &
+          2 &
+          1 &
+          \multicolumn{1}{l|}{2} &
+           &
+          0 &
+          3 &
+          0 &
+          3 &
+          0 \\ \cline{4-6}
+        1 &
+          1 &
+           &
+          0 &
+          0 &
+          0 &
+          0 &
+          0 &
+          0 &
+          0 &
+          \multicolumn{1}{l|}{} &
+          0 &
+          1 &
+          \multicolumn{1}{l|}{0} &
+           &
+          7 &
+          5 &
+          16 &
+          5 &
+          9 \\
+         &
+           &
+           &
+          0 &
+          0 &
+          \textbf{1} &
+          0 &
+          \textbf{1} &
+          0 &
+          0 &
+          \multicolumn{1}{l|}{} &
+          3 &
+          2 &
+          \multicolumn{1}{l|}{1} &
+           &
+          0 &
+          1 &
+          0 &
+          1 &
+          0 \\ \cline{12-14}
+         &
+           &
+           &
+          0 &
+          0 &
+          0 &
+          0 &
+          0 &
+          0 &
+          0 &
+           &
+           &
+           &
+           &
+           &
+          2 &
+          1 &
+          4 &
+          1 &
+          2 \\
+         &
+           &
+           &
+          0 &
+          0 &
+          0 &
+          0 &
+          0 &
+          0 &
+          0 &
+           &
+           &
+           &
+           &
+           &
+           &
+           &
+           &
+           & \\ \bottomrule
+          
+        \end{tabular}
+\caption{Transposed convolution to upsample a $2\times 2$ input image with a $3\times 3$ kernel and stride 2. 
+The indicated value of the output feature map is calculated as the scalar product of the indicated part of the input and the kernel.
+Example inspired by \texttt{https://medium.com/apache-mxnet/ transposed-convolutions- explained-with-ms-excel-52d13030c7e8}.}
+\end{SCtable}

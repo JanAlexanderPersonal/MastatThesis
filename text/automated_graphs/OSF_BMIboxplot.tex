@@ -5,20 +5,22 @@
 \definecolor{color1}{rgb}{0.835294117647059,0.368627450980392,0}
 
 \begin{axis}[
+axis line style={white!15!black},
 height=5cm,
 tick align=outside,
-tick pos=left,
 width=5cm,
-x grid style={white!69.0196078431373!black},
+x grid style={white!80!black},
 xlabel={Gender},
+xmajorticks=false,
 xmin=0.5, xmax=2.5,
-xtick style={color=black},
+xtick style={color=white!15!black},
 xtick={1,2},
 xticklabels={F(39),M(15)},
-y grid style={white!69.0196078431373!black},
+y grid style={white!80!black},
 ylabel={Patient BMI},
+ymajorticks=false,
 ymin=18.0024047239566, ymax=36.1459436746559,
-ytick style={color=black}
+ytick style={color=white!15!black}
 ]
 \addplot [color0, opacity=1]
 table {%
@@ -30,12 +32,12 @@ table {%
 1 27.624520195661
 1 31.2809218296147
 };
-\addplot [black, opacity=1]
+\addplot [white!10!black, opacity=1]
 table {%
 0.9625 18.8271110398975
 1.0375 18.8271110398975
 };
-\addplot [black, opacity=1]
+\addplot [white!10!black, opacity=1]
 table {%
 0.9625 31.2809218296147
 1.0375 31.2809218296147
@@ -54,12 +56,12 @@ table {%
 2 30.1080510764016
 2 32.4584126587809
 };
-\addplot [black, opacity=1]
+\addplot [white!10!black, opacity=1]
 table {%
 1.9625 24.3024870597147
 2.0375 24.3024870597147
 };
-\addplot [black, opacity=1]
+\addplot [white!10!black, opacity=1]
 table {%
 1.9625 32.4584126587809
 2.0375 32.4584126587809

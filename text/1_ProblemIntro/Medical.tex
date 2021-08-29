@@ -8,7 +8,7 @@
 \section{Anatomy of the human spine}
 
 \par{
-    The spinal column, vertebral column or backbone \footnote{NL: \textit{wervelkolom}} is a structure of 34 bones. 
+    The spinal column, vertebral column or backbone\footnote{NL: \textit{wervelkolom}} is a structure of 34 bones. 
     It holds the body upright while providing it with the mobility to bend and twist.
     the \textit{intervertebral discs} make this possible. These consist of a ring of fibrocartilage and an inner gel-like centre and form an articulation between two vertebrae.
     Moreover, the vertebral column serves as a conduit for significant nerves running from the brain to the toes.
@@ -26,13 +26,13 @@
 \begin{SCfigure}[][h!]
     \centering
     \includegraphics[width=10cm]{/home/thesis/images/SpineModel.jpeg}
-    \caption{\label{fig:spineimage}Model of the human spine. The five vertebrae in green form the lumbar spine. They are referred to as \textit{L1} to \textit{L5} from top to bottom. Photo source: \url{shutterstock.com}}
+    \caption{\label{fig:spineimage}Model of the human spine. The five vertebrae in green form the lumbar spine. They are referred to as \textit{L1} to \textit{L5} from top to bottom. Image source: \url{shutterstock.com}}
 \end{SCfigure}
 
 \section{Pathologies of the human spine}
 \par{
     This document does not aim to provide an exhaustive list of all human spinal pathologies. 
-    Two pathologies are interesting to discuss further as an introduction to this work since they occur in the data used in this project, see page \pageref{sec:datasets} for further details.
+    Two pathologies are interesting to discuss further as an introduction to this work since they occur in the data used in this project (see page \pageref{sec:datasets} for further details).
 }
 \begin{SCfigure}[][h!]
     \centering
@@ -58,8 +58,8 @@
 \par{
     In image \ref{fig:REISS_procedure}, the start of the surgical treatment procedure for a lumbar hernia is illustrated.
     One possible benefit of improved automatic interpretation of \acrshort{mri} and \acrshort{ct} scans is providing support for this procedure.
-    This delicate procedure requires interpretation and registration of information from both scan types (at different times). 
-    This is a demanding task for which automated support could be useful.
+    This delicate procedure requires interpreting and registering information from both scan types (at different times), a demanding task for which automated support could be helpful.
+    Image registration of the pre-operative \acrshort{mri} scan with the operation planning to the imaging of the situation on the operation table starts by segmentation of the affected vertebrae.
 }
 
 \section{Medical imaging of the human spine\label{sec:medical_imaging}}
@@ -71,25 +71,24 @@
 \par{
     For diagnosis and visualization of spinal pathology several medical imaging techniques are used: \acrfull{ct}, \acrfull{us} and \acrfull{mri}. 
     These techniques allow non-invasive visualization of the spine and discs in three dimensions.
-    Two dimensional slices from volumetric scans (\acrshort{mri} and \acrshort{ct}) are illustrated in \ref{fig:mri_ct}.
+    Slices from volumetric scans (\acrshort{mri} and \acrshort{ct}) are illustrated in \ref{fig:mri_ct}.
 }
-\newpage
+
 \subsection{CT scan}
 \par{
     The \acrfull{ct}\footnote{Also known as CAT-scan, for Computed Axial Tomography or Computer-assisted Tomography.} is a non-invasive medical imaging procedure
     \footnote{\Gls{tomography} scans are primarily used for medical purposes. 
-    It is also used in industry for non-destructive component and assembly inspection.
+    It is also used in the industry for non-destructive inspection of components and assemblies.
     In geology, it is used to identify materials in a drill core quickly. In archaeology, it is used for the non-destructive investigation of artefacts. } 
     for diagnostic purposes. 
     A \acrlong{ct} procedure consists of the combination of an array of X-ray attenuation images taken with a rotating X-ray tube as illustrated in figure \ref{fig:CT_principle}. 
-    These images can be combined with a tomography algorithm to reconstruct a volumetric representation of the radiographic density.
+    These images can be combined with a \Gls{tomography} algorithm to reconstruct a volumetric representation of the radiographic density.
 }
 \par{
-    \acrshort{ct} is a versatile technique with various medical diagnostic applications. 
     Contrary to \acrfull{mri} imaging, this technique is suitable for patients with a pacemaker or insulin pump since there are no magnetic fields involved.
-    The main disadvantage of \acrshort{ct} is the exposure to ionizing radiation of the patient and the risk of exposure of the medical professional to the same radiation.
-    The image quality increases with radiation dose, but so does the probability of radiation-induced cancer.
-    Improving the reconstruction algorithms to obtain higher-resolution images without reducing the radiation dose is an ongoing area of research. 
+    The main disadvantage of \acrshort{ct} is the exposure to ionizing radiation\footnote{Radiation exposure increases the probability of cancer.} of the patient and the risk of exposure of the medical professional to the same radiation.
+    The image quality increases with radiation dose, but so does the radiation exposure.
+    Improving the reconstruction algorithms to obtain higher-resolution images while reducing radiation is an ongoing area of research. 
 }
 \marginpar{
         \includegraphics[width=5cm]{images/FDA_CT_Scan.png}
@@ -100,20 +99,22 @@
 \subsection{MRI scan}
 \par{
     The \acrfull{mri} scan is a medical imaging technique that is not based on ionizing radiation\footnote{Eventhough the alternative name \textit{nuclear} magnetic resonance (NMR) might confuse.}.
-    \acrshort{mri} imaging will visualize the concentration of hydrogen\footnote{In theory, other atoms than hydrogen can be excited by adapting the excitation frequency. This is rarely done.} atoms.
-    The patient is positioned in a tunnel where a high (up to several Tesla) constant magnetic field is applied. A temporary oscillating signal is applied with the resonance frequency corresponding to hydrogen atoms is superposed on the static magnetic field.
-    The hydrogen atoms will fall back to the equilibrium state, emitting radiofrequency (RF) signals. These can be measured by receiving coils.
-    After excitation, the hydrogen in the water atoms in the patient's body tissues returns to equilibrium. \acrlong{mri} is particularly suitable for visualization of tissue with higher water content, such as tumours and infections, and to visualize fat.
+    \acrshort{mri} imaging will visualize the concentration of hydrogen\footnote{In theory, other atoms than hydrogen can be excited by adapting the excitation frequency.} atoms.
+    The patient is positioned in a tunnel where a high constant magnetic field is applied. 
+    A temporary oscillating signal is applied with the resonance frequency corresponding to hydrogen atoms is superposed on the static magnetic field.
+    The hydrogen atoms will fall back to the equilibrium state, emitting radiofrequency (RF) signals, measured by receiving coils.
+    \acrlong{mri} is particularly suitable for visualization of tissue with higher water content, such as tumours and infections, and to visualize fat.
 }
 \par{
     An \acrshort{mri} scan can be \textit{T1 weighted} or \textit{T2 weighted}. 
-    The difference between these two techniques lies in whether the image is constructed based on the relaxation time of the magnetization is colinear with the direction of the static field (T1) or the magnetization perpendicular to the static field (T2).
+    A T1 weighted image is constructed based on the relaxation time of the magnetization is colinear with the direction of the static field
+    while T2 weighted images are based on the magnetization perpendicular to the static field.
     While areas with higher water content, such as infected areas, will release a higher signal on a T2-weighted \acrshort{mri} scan, the same images will show a lower signal strength for T1-weighted scans.
-    The use of these different techniques of \acrshort{mri} scans is application-dependent.  
 }
 \par{
-    Contrary to \acrfull{ct} scans, the \acrlong{mri} procedure does not expose the patient of radiation. Due to the high magnetic fields, the technology cannot be used for patients with pacemakers, cochlear implants or other metallic objects in the body.
+    Contrary to \acrfull{ct} scans, the \acrlong{mri} procedure does not expose the patient of radiation. 
+    Due to the high magnetic fields, the technology cannot be used for patients with pacemakers, cochlear implants or other metallic objects in the body.
     \acrshort{mri} allows to visualize soft tissue better than \acrshort{ct} images. An \acrshort{mri} image allows visualizing both the grey and white brain matter, while this is not possible with \acrshort{ct} images.
-    Although both techniques produce images that resemble each other, none of both techniques can replace the other one completely.
+    Although both techniques produce images that resemble each other, none can replace the other one completely.
 }
 

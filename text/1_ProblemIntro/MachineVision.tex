@@ -1,13 +1,13 @@
 \chapter{Artificial intelligence \& Machine Learning\label{sec:ai_and_ml}}\thispagestyle{empty}
 \par{
-    Machine learning is a branch of \Gls{ai}, The study of using computers to automatically perform tasks that once were considered only humans could do. This includes, but is not restricted to, the interpretation of speech and images. 
+    Machine learning is a branch of \Gls{ai}, The study of using computers to automatically perform tasks that once were considered only humans could do. It includes, but is not restricted to, the interpretation of speech and images. 
     The field of \Gls{machinevision} is a branch of machine learning.
-    Some impressive steps forward have been made in the past decade, mainly thanks to the emergence of \Gls{deepl}.
+    Impressive steps forward were made in the past decade, among others, thanks to the emergence of \Gls{deepl}.
 }
 \par{
     \Gls{ai} is showing promising results for various tasks in society.
     New research results ranging from self-driving cars to automated translation is regularly published in mainstream media.
-    The aim of this chapter is not to provide a complete overview of the machine learning field.
+    The aim of this chapter is not to provide a complete overview of the field.
     Instead, the objective is to highlight concepts meaningful for this work.\footnote{
         \textbf{Remark:} this work does not cover the social, legal and ethical questions \Gls{ai} evokes.
     }
@@ -24,8 +24,9 @@
     This engineering discipline has advanced considerably in the past decades, driven by leaps forward in the available hardware and new algorithms and models. 
 }
 \par{
-    First, the availability and reliability of hardware components such as sensors, cameras, digital storage and calculation power have increased exponentially\footnote{ \textit{Moore's law} states that the number of transistors on an integrated circuit doubles every two years. This rate of progress has held more or less for a wide range of digital components in the past decades.}.
-    The size and price of these components decreased equally dramatically. }
+    First, availability and reliability of hardware components such as sensors, cameras, digital storage and calculation power have increased exponentially\footnote{ 
+        \textit{Moore's law} states that the number of transistors on an integrated circuit doubles every two years. This rate of progress has held more or less for a wide range of digital components in the past decades.}.
+    Size and price of these components decreased equally dramatically. }
 \par{
     Second, progress has been made in developing algorithms to use this available data and computation power to solve problems and perform tasks.
     This text does not provide a complete overview of all existing machine learning models. 
@@ -43,8 +44,8 @@
     \caption{
         Concept of an Artificial (feed-forward) Neural Network. 
         The illustrated network has 4 layers: the input layer, two hidden layers and the output layer.
-        The hidden layers first perform a feature extraction transformation on the input data.
-        Based on these features, the output layer generates the model result.
+        The hidden layers first perform a feature extraction transformation on the input data $\vec{I}$.
+        Based on these features, the output layer generates the model result $\vec{O}$.
         \label{fig:ann}
         }
 \end{SCfigure}
@@ -70,7 +71,7 @@
     Architectures with more than two hidden layers are common. 
     The number of neurons in the hidden layers is another degree of flexibility. 
     Second, a neural network has a high number of parameters. This small network consists of $n\times m + m \times t + t \times k$ weights $w$ and the activation functions in each layer.
-    The concept of a \acrfull{cnn} is to reduce the number of weights in specific layers by imposing these to represent a single convolution filter.
+    The concept of a \acrfull{cnn} is to reduce the number of weights in specific layers by imposing these to represent a single filter.
 }
 \par{
     The parameters defining the architecture of the network, such as the number of hidden layers, the number of nodes per layer and the design of possible convolution layers, are called the model \textit{hyperparameters}.
@@ -80,20 +81,18 @@
 \subsubsection{Convolution neural network}
 
 \acrshort{ann} models can be trained to perform numerous different tasks due to the high number of degrees of freedom in the model\footnote{
-    An in-depth discussion of neural network theory is outside of the scope of this book.
-    This text aims to reiterate critical concepts the reader is assumed to have some prior familiarity with.
-    There are several valuable sources available for readers who are not satisfied with the level of detail provided here.
+    This book assumes the reader has some prior familiarity with the subject.
+    There are other sources available for readers who are not satisfied with the level of detail provided.
     Books such as \texttt{Hands-on Machine Learning with Scikit-Learn, Keras \& Tensorflow} by Aurélien Géron or \texttt{Deep Learning with PyTorch} by Eli Stevens, Luca Antiga and Thomas Viehmann offer valuable insights and explanations.
 }.
 However, this high number of degrees of freedom also entails some problems and difficulties:
 
 \begin{itemize}
-    \item The model weights have to be stored in computer memory. 
-    This is limited and restricts how deep\footnote{The depth of a network is the number of hidden layers.} the network can be.
-    A deeper network can be beneficial because it can extract more high-level \Gls{features} by combining the lower level features in the preceding layers. 
-    \item An over-parametrized network is very prone to overfitting on the train set. 
-    An overfitted model has not learned the generalizing relationship between the input and the labels but rather the quirks of the specific train set used.
-    \item There are some more technical problems, such as \textit{vanishing gradients} that are associated with naively copying the network shown in figure \ref{fig:ann}. 
+    \item The model weights have to be stored in computer memory, which is limited and restricts how deep\footnote{The depth of a network is the number of layers.} the network can be.
+    A deeper network can be beneficial because it can extract more high-level features by combining the preceding layers' lower-level features. 
+    \item An over-parametrised network is very prone to overfitting on the train set. 
+    An overfitted model has not learned the generalising relationship between the input and the labels but rather the quirks of the specific train set used.
+    \item There are some more technical problems, such as \textit{vanishing gradients} that are associated with the network shown in figure \ref{fig:ann}. 
 \end{itemize}
 \begin{SCfigure}[][h!]
     \centering
@@ -103,6 +102,7 @@ However, this high number of degrees of freedom also entails some problems and d
         Image is taken from the famous paper \texttt{Gradient-Based Learning Applied to Document Recognition} by Yann LeCun, Léon Battou, Yoshua Bengio and Patrick Haffner. \label{fig:LeNet}
         }
 \end{SCfigure}
+
 \par{
     In search of solutions to these difficulties, Y. LeCun et al. proved the benefit the \Gls{cnn} concept (figure \ref{fig:LeNet}).
     The convolution layer is suitable for data with a grid-like structure, such as images or volumes.
@@ -112,247 +112,96 @@ However, this high number of degrees of freedom also entails some problems and d
     If the input of the layer is an \acrshort{rgb} image with three channels, this sums to 75 parameters. A $5\times 5$ filter is larger than usual.
     The number of pixels processed by the filter is called the \textit{kernel size}. 
     Typical kernel sizes are $2\times 2$ pixels or $3\times 3$ pixels.
-    One can choose to ignore pixels within a kernel. A dilution of 1 on a $3\times 3$ kernel expands this kernel to cover a $5\times 5$ patch, processing 9 evenly spaced pixel values. 
+    One can choose to skip pixels to enlarge a kernel's receptive field. 
+    A dilution of 1 on a $3\times 3$ kernel expands this kernel to cover a $5\times 5$ patch, processing 9 evenly spaced pixel values. 
 }
+
 \par{
     In figure \ref{fig:LeNet} this idea is illustrated. 
     The nodes of the feature maps in stack $C1$ are all constructed based on a small filter kernel shaped patch of the input image.
     By systematically applying the same filter to each overlapping filter size patch of the input a feature map is created. 
     Figure \ref{fig:FeatureMap} illustrates the procedure. 
+    \marginpar{
+        \includegraphics[width=3.5cm]{images/RepeatedFilterApplication.pdf}
+        \captionof{figure}{Repeated filter application to produce feature map. Image inspired by \url{www.machinelearningmastery.com}}
+        \label{fig:FeatureMap}
+    }
     Each node of the feature map is the scalar product\footnote{The scalar product or dot product is the element-wise product of the arrays followed by the sum of the elements. The result is a scalar.} 
     of an image patch and the convolution filter followed by the activation function.
-    A filter can detect a specific feature in the input, a horizontal line for example. 
+    A filter can detect a specific feature in the input, a horizontal line, for example. 
     Convolution layer $C1$ has different filters. 
     It will produce different feature maps.
-    This means that 6 different basic features can be extracted by this layer, e.g. horizontal lines, vertical lines and right or left slanted lines\footnote{
+    This means this layer can extract different basic features, e.g. horizontal lines, vertical lines and right or left slanted lines\footnote{
         These filter kernels are trained on the train data by the backpropagation algorithm. The mentioned features can result from this training procedure but will not be imposed by the engineer.
         }.
     By stacking different convolution layers, the network can learn higher-level features by combining the lower-level features.
-    Combination of low level features such as lines can allow the network to detect higher-level features such as shapes (circle, rectangle, ...).
-    These higher level features can be combined to detect even higher-level features such as a house or a face.
+    A combination of low-level features such as lines can allow the network to detect higher-level features such as shapes (circle, rectangle, ...).
+    These higher-level features can be combined to detect even higher-level features such as a house or a face.
 }
 \par{
     A convolution layer in a \Gls{cnn} can train a high number of filters in parallel.
-    It is common a convolution layer learns 32, or even 512, filters in parallel, extracting as many different features from the input. 
+    Commonly, a convolution layer learns 32, or even 512, filters in parallel, extracting as many different features from the input. 
 }
 \par{
     Hyperparameters defining the size of the output of a convolution layer are the depth, the stride and the padding size.
     Figure \ref{fig:FeatureMap} illustrates how the filter is applied to overlapping regions of the input. When the stride is 1, the filter is moved a single pixel.
     Larger stride values reduce the dimensions of the output and the overlap because the filter is translated further.
-    In some cases, it is convenient to pad the input with zeros (or other values) to give further control of the output size.}
+    In some cases, it is convenient to pad the input with zeros (or other values) to control the output size further.}
 
 \par{
     Often, a convolution layer is followed by a \textit{pooling} layer as a dimension reduction step.
     Pooling layers do not contain learnable parameters.
 }
-\marginpar{
-        \includegraphics[width=3.5cm]{images/RepeatedFilterApplication.pdf}
-        \captionof{figure}{Repeated filter application to produce feature map. Image inspired by \url{www.machinelearningmastery.com}}
-        \label{fig:FeatureMap}
-    }
+
 \par{
-    Many segmentation networks consist of en encoder and a decoder part\footnote{examples of such architectures are the VGG16-FCN8 or the UNet architecture, illlustrated on page \pageref{fig:vgg16}.}.
+    Many segmentation networks consist of an encoder and a decoder part\footnote{examples of such architectures are the VGG16-FCN8 or the UNet architecture, illustrated on page \pageref{fig:vgg16}.}.
     The encoder part consists of a sequence of convolution layers and pooling layers. 
     This part of the network calculates the image \textit{encodings} deep feature maps with dimensions lower than the input image dimensions.
-    The second part of the network is the decoder. This part of the network will decode the encodings to a segmentation mask with the same dimensions as the input image.
+    The second part of the network is the decoder. This part of the network will decode the encodings to a segmentation mask with the exact dimensions as the input image.
     Simple techniques for upsampling such as \textit{nearest-neighbour} or \textit{interpolation} are sometimes used.
-    A more interesting technique is the \textit{transposed convolution}\footnote{Sometimes, the transposed convolution is referred to as the \textit{deconvolution}. This is not an exact formulation. It is not intended to reverse the effect of any convolution operator.}. 
+    An interesting technique is the \textit{transposed convolution}\footnote{Sometimes, the transposed convolution is referred to as the \textit{deconvolution}. This is not an exact formulation as it is not intended to reverse the effect of any convolution operator.}. 
     This technique is very similar to a regular convolution operator. It is based on a filter with trainable weights \textit{sliding} over the input.
     Output node values are again calculated as the scalar product of the input and the filter values.
     Below, one can see how some convolution parameters are interpreted just the other way around for this operation.
-    Where a convolution layer with stride two will result in an output with lower dimensions than the input, a transverse convolution will expand the input.
+    A convolution layer with stride two will result in an output with lower dimensions than the input, a transverse convolution will expand the input.
     To calculate a transverse convolution with stride $>1$, one will add empty cells between the input values. 
     One could say the filter steps are in this case $\frac{1}{2}$ cell.
     This operation results in an output feature map with higher dimensions than the input feature map. In the case below, the $2\times 2$ input is upsampled to a $5\times 5$ feature map.
 }
-\begin{SCtable}[\sidecaptionrelwidth][h]
-    \begin{tabular}{llllllllllllllllllll}
-        \toprule
-        \multicolumn{2}{l}{Input} &
-           &
-          \multicolumn{7}{l}{Input (add zeros)} &
-           &
-          \multicolumn{3}{l}{kernel} &
-           &
-          \multicolumn{5}{l}{output} \\ \cline{4-6}
-         &
-           &
-          \multicolumn{1}{l|}{} &
-          0 &
-          0 &
-          \multicolumn{1}{l|}{0} &
-          0 &
-          0 &
-          0 &
-          0 &
-           &
-           &
-           &
-           &
-           &
-           &
-           &
-           &
-           &
-           \\ \cline{16-16}
-         &
-           &
-          \multicolumn{1}{l|}{} &
-          0 &
-          0 &
-          \multicolumn{1}{l|}{0} &
-          0 &
-          0 &
-          0 &
-          0 &
-           &
-           &
-           &
-           &
-          \multicolumn{1}{l|}{} &
-          \multicolumn{1}{l|}{3} &
-          6 &
-          12 &
-          6 &
-          9 \\ \cline{12-14} \cline{16-16}
-        3 &
-          3 &
-          \multicolumn{1}{l|}{} &
-          0 &
-          0 &
-          \multicolumn{1}{l|}{\textbf{3}} &
-          0 &
-          \textbf{3} &
-          0 &
-          0 &
-          \multicolumn{1}{l|}{} &
-          2 &
-          1 &
-          \multicolumn{1}{l|}{2} &
-           &
-          0 &
-          3 &
-          0 &
-          3 &
-          0 \\ \cline{4-6}
-        1 &
-          1 &
-           &
-          0 &
-          0 &
-          0 &
-          0 &
-          0 &
-          0 &
-          0 &
-          \multicolumn{1}{l|}{} &
-          0 &
-          1 &
-          \multicolumn{1}{l|}{0} &
-           &
-          7 &
-          5 &
-          16 &
-          5 &
-          9 \\
-         &
-           &
-           &
-          0 &
-          0 &
-          \textbf{1} &
-          0 &
-          \textbf{1} &
-          0 &
-          0 &
-          \multicolumn{1}{l|}{} &
-          3 &
-          2 &
-          \multicolumn{1}{l|}{1} &
-           &
-          0 &
-          1 &
-          0 &
-          1 &
-          0 \\ \cline{12-14}
-         &
-           &
-           &
-          0 &
-          0 &
-          0 &
-          0 &
-          0 &
-          0 &
-          0 &
-           &
-           &
-           &
-           &
-           &
-          2 &
-          1 &
-          4 &
-          1 &
-          2 \\
-         &
-           &
-           &
-          0 &
-          0 &
-          0 &
-          0 &
-          0 &
-          0 &
-          0 &
-           &
-           &
-           &
-           &
-           &
-           &
-           &
-           &
-           & \\ \bottomrule
-          
-        \end{tabular}
-\caption{Transposed convolution to upsample a $2\times 2$ input image with a $3\times 3$ kernel and stride 2. 
-The indicated value of the output feature map is calculated as the scalar product of the indicated part of the input and the kernel.
-Example inspired by \texttt{https://medium.com/apache-mxnet/ transposed-convolutions- explained-with-ms-excel-52d13030c7e8}.}
-\end{SCtable}
+\input{tables/transposedConvolution.tex}
 
 \subsubsection{Training a neural network}
 
 \par{
     Constructing a network requires evaluating it, comparing the evaluation output to a known desired output, and taking steps to bring the model output closer to the desired output. 
-    The procedure used to fit the weights of a neural network to the training data is the optimization algorithm.
-    A network is fitted to the \textit{train set} by the optimization algorithm, based on the \textbf{loss}.
-    This optimization algorithm for a neural network is based on the gradient descent algorithm. 
-    By iterated step in the opposite direction of the gradient, this algorithm is capable to approximate a (local) minimum of a differentiable function.
+    The optimisation algorithm is used to fit a neural network's weights to the training data.
+    A network is fitted to the \textit{train set} by the optimisation algorithm, based on the \textbf{loss}.
+    This optimisation algorithm for a neural network is based on the gradient descent algorithm. 
+    This algorithm can approximate a (local) minimum of a differentiable function by iterated steps in the opposite direction of the gradient.
     Thus, the model loss is required to be a differentiable function.
     To minimize the loss function $F$, the network parameters $\theta$ are updated in the direction of the negative gradient $-\nabla F(\theta_n)$:
     \begin{equation}
         \theta_{n+1} = \theta_n - \gamma \nabla F(\theta_n) \label{eq:gradDesc}
     \end{equation}
-    To optimize the weights of the hidden layers, the gradients have to be \textit{propagated back} through the network layers.
+    To optimise the weights of the hidden layers, the gradients have to be \textit{propagated back} through the network layers.
     This operation can be iterated until the solution converges. Often, the procedure is stopped earlier.
     The \acrshort{ml} engineer wants to judge the performance of the model based on one or several \textbf{metrics}, calculated on the \textit{train set}, 
     the \textit{cross-validation set} and eventually on the \textit{test set}.
 }
 \par{
     The evaluation on the test set, separated from the train set on which the model is fitted, is done to provide the best possible estimation of the model performance on unseen data.
-    When training a model, the objective is to obtain a model which generalizes well to future problems\footnote{
+    When training a model, the objective is to obtain a model which generalises well to future problems\footnote{
         Provided these future problems are samples from the same population as the train set.
     }. One wants the model to learn the general relationship between the input data and the output.
     A model which is capable of producing the outputs for the specific set it is trained on but is not capable of doing this for new data is \textit{overtrained}.
-    It has learned the specific quirks of the train set rather than the generalizing relationship\footnote{
+    It has learned the specific quirks of the train set rather than the generalising relationship between input and desired output\footnote{
         It is also possible that the new data is sampled from a different population than the train data.
         In this case, the model might have learned the desired relationship for the original population, but this relationship turns out to be different for the population in practice.
         }.
     To avoid this, or at least identify the problem, the evaluation on the cross-validation set is necessary.
-    To avoid overfitting, the model, while training with gradient descent optimization (equation \ref{eq:gradDesc}), is evaluated on the cross-validation set.
-    Once the training of the model on the train set is not improving the metric performance on the cross-validation set, the model is being overtrained.
-    Further reducing the loss does not result in a better generalizing model.
+    To avoid overfitting, the model, while training with gradient descent optimisation (equation \ref{eq:gradDesc}), is evaluated on the cross-validation set.
+    Once the training of the model on the train set stops improving the metric performance on the cross-validation set, the model is being overtrained.
+    Further reducing the loss does not result in a better generalising model.
 }
 \par{
     The gradient descent step in equation \ref{eq:gradDesc} can be evaluated after every individual sample.
@@ -360,40 +209,37 @@ Example inspired by \texttt{https://medium.com/apache-mxnet/ transposed-convolut
     This approach is called \textit{stochastic} gradient descent. The model weights are updated very often, but possibly not always in the most optimal direction.
     One can also choose to update the model weights only once all the images in the train set have been evaluated (one \textit{epoch}), accumulating the gradient direction.
     In this case, there is less stochastic variation on the gradient direction, but the network weights are updated very slowly.
-    This work uses \textit{batch} gradient descent, updating the model weights every 6-image batch\footnote{The 6-image batch size is based on the restriction on internal memory of the used GPU}.
+    This work uses \textit{batch} gradient descent, updating the model weights every 6-image batch\footnote{The 6-image batch size is based on the internal memory of the used GPU.}.
 }
-
+\marginpar{
+        \includegraphics[width=4.5cm]{/home/thesis/images/ppg_verhaert.jpg}
+        \captionof{figure}{Several commercial sports watches already use a \acrshort{ppg} sensor to measure athletes heart rate. 
+        Apart from the heart rate measurement, this signal can be used to estimate the patients blood pressure without much effort from the medical staff or inconvenience for the patient. 
+        Image provided by \textit{Verhaert NP\&S}}
+        \label{fig:xVertSeg_Age}
+    }
 \subsection{Artificial intelligence for healthcare applications}
 \par{
-    Various researchers are exploring the opportunities of \Gls{ai} in medical practice.
-    This could reduce the burden of repetitive tasks on medical caregivers and support both medical diagnosis and procedures.
+    Various researchers are exploring the opportunities of \Gls{ai} in medical practice to reduce the burden of repetitive tasks on medical caregivers and support both medical diagnosis and procedures.
 }
 \par{
-    \Gls{ai} applications can support medical professionals by allowing more cost-effective solutions to monitors patient's condition.
+    \Gls{ai} applications can support medical professionals by allowing more cost-effective solutions to monitor the patient's condition.
     One example is the use of a \acrfull{ppg} signals to estimate a patient's blood pressure.
     Blood pressure is a valuable indicator of the patient's condition for the medical staff.
     Measuring blood pressure is time-consuming and disturbing for the patient. 
-    However, the \acrshort{ppg} signal is relatively easy to measure. This only requires a watch-size sensor\footnote{Several commercial sports watches already use a \acrshort{ppg} sensor to measure athletes hear rate.} 
-    around the wrist, that can be worn continuously.
+    However, the \acrshort{ppg} signal is relatively easy to measure. This only requires a watch-size sensor around the wrist that can be worn continuously.
     Inferring the blood pressure from such a \acrshort{ppg} signal\cite{Khalid2018} allows the healthcare worker to access valuable information continuously, cheaper and without much inconvenience for the patient.
 }
 \par{
     Different researchers investigate \Gls{machinevision} applications for medical applications. 
     Research on image classification for medical diagnosis is conducted among others for melanoma (skin cancer) diagnosis on camera (\acrshort{rgb}) images \cite{Vocaturo2019}.
 }
-\marginpar{
-        \includegraphics[width=5cm]{/home/thesis/images/ppg_verhaert.jpg}
-        \captionof{figure}{Illustration of a ppg sensor, typically worn around the wrist. 
-        Apart from the heart rate measurement, this signal can be used to estimate the patients blood pressure without much effort from the medical staff or inconvenience for the patient. 
-        Image provided by \textit{Verhaert NP\&S}}
-        \label{fig:xVertSeg_Age}
-    }
+
 \section{Machine vision}
 \par{
     \Gls{machinevision} is the branch of \Gls{ai} focussed on image processing.
-    The machine vision task performed in this work is called (instance) \Gls{segmentation}.
-    This chapter explains what this means. 
-    The segmentation task is compared to other machine vision tasks.
+    The machine vision task performed in this work is called \Gls{segmentation}.
+    This chapter explains what the segmentation task is and compares it to other machine vision tasks.
 }
 
 \subsection{Machine vision tasks \label{sec:machinevisiontasks}}
@@ -401,7 +247,7 @@ Example inspired by \texttt{https://medium.com/apache-mxnet/ transposed-convolut
     \Gls{machinevision} is a broad discipline. 
     Humans extract information from images almost subconsciously, and we are often not aware of the different tasks we perform on images.
     The objective of this section is to briefly define different machine vision tasks discussed further in this book. 
-    Several machine vision tasks consist of \textit{recognizing} objects, animals or humans in an image.
+    Several machine vision tasks consist of \textit{recognising} objects, animals or humans in an image.
     A model is built for a finite list of \textit{categories} that can be present in an image.
     Depending on the question asked ad inference time, one can distinguish the following tasks, which are also illustrated in figure \ref{fig:machinevisiontasks}.
 }
@@ -410,15 +256,15 @@ Example inspired by \texttt{https://medium.com/apache-mxnet/ transposed-convolut
     \item[Object counting] is the task of counting how many instances of each category are in the image, e.g. \textit{How many sheep are there in this picture?} 
     \item[Object detection] consists not only of identification of the object. Also, the spatial position is requested, for example, in the form of a bounding box. \textit{Where is the sheep in this picture if a sheep is present?}
     \item[Semantic segmentation] requires a class estimation for each image pixel. Pixels that do not belong to a specific class are called the \textit{background}.
-    \item[Instance segmentation] requires not only that the semantic class is determined for each pixel, but also that two individuals of the same class\footnote{For each pixel, the model predicts not only if it belongs to a sheep, but also which of several possible sheep it belongs to.} are distinguished.   
+    \item[Instance segmentation] requires not only that the semantic class is determined for each pixel, but also that two individuals of the same class\footnote{For each pixel, the model predicts not only if it belongs to a sheep, but also which of several sheep it belongs to.} are distinguished.   
 \end{description}
 \par{
     The different machine vision tasks above are ranked in order of how informative the model output is.
-    It is clear that only saying if a cat is present in an image is less informative than indicating pixel-per-pixel where this cat is in the image.
+    It is clear that only saying if a cat is present in an image is less informative than indicating pixel-per-pixel where this cat is.
 }
 \begin{SCfigure}[][h!]
     \centering
-    \includegraphics[width=10cm]{/home/thesis/images/Classification_vs_Segmentation.jpg}
+    \includegraphics[width=11cm]{/home/thesis/images/Classification_vs_Segmentation.jpg}
     \caption{Illustration to compare different Machine vision tasks \cite{SemTorch76:online}. 
     Object detection means that the location of several objects is estimated by the model. This is indicated by the \textit{bounding boxes}.
     Segmentation of an image is classifying each pixel in the correct class or assigning it to the \textit{background} class.
@@ -433,24 +279,24 @@ Example inspired by \texttt{https://medium.com/apache-mxnet/ transposed-convolut
     For \Gls{machinevision} tasks\footnote{and many other tasks.}, the current standard approach is \Gls{deepl}.
     The cost to generate, store and communicate images and computation power has dropped in the past decades.
     This evolution allows to train a model  on previously unimaginable quantities of data\footnote{The \textit{ImageNet} database (\url{http://image-net.org/challenges/LSVRC/index}) consists of more than $14.10^6$ images.}.
-    This technique allows a model with a high number of degrees of freedom to be trainded without the need for expert-crafted \Gls{features}. 
+    This technique allows a model with a high number of degrees of freedom to be trained without the need for expert-crafted \Gls{features}. 
 }
 \subsubsection{Weak supervision types\label{sec:weak_supervision}}
 \par{
-    To build a model to perform the tasks discussed in \ref{sec:machinevisiontasks}, this model needs to be trained.
+    To build a model to perform the tasks discussed in \ref{sec:machinevisiontasks}, it needs to be trained.
     This requires a set of \textit{labelled} images.
-    Collection of this dataset - and the dataset labels - proves to be a challenge. 
+    Collection of this dataset - and the dataset labels - is costly and time-consuming. 
     Training a model with \textit{weak labels} compared to \textit{strong labels} could help to mitigate the labelling cost problem.
 }
 \par{
     In the classic approach, the supervision type closely resembles the intended model output, the \Gls{groundtruth}.
     To train a model that can classify an image\footnote{Given an image, the model outputs if this picture is a representation of class \textit{cat}, \textit{dog} or another animal or object. }, 
-    one has to \textit{train} the model on a set of labelled images where a human indicated the class.
-    To train a model to perform image segmentation\footnote{segmentation means that the model classifies each pixel.}, an expert needs to provide a set of images where for each picture, the objects are delineated.  
+    one has to \textit{train} the model on a set of labelled images where a human indicates the class.
+    To train a model to perform image segmentation\footnote{segmentation means that the model classifies each pixel.}, an expert needs to provide a set of images where for each picture, the objects are carefully delineated.  
 }
 \par{
     The idea behind \Gls{weaklysupervisedl} is to train a model with cheaper annotations that contain less information than the desired model output, 
-    making use of the latest information available in the labels without explicit indication.
+    making use of the latent information available in the labels without explicit indication.
     Figure \ref{fig:ImageLabelTypes} illustrates several types of image supervision : 
     From left to right on the top row, this shows point supervision and squiggle annotation, common annotation types for weak supervision.
     On the second row, bounding box annotation and complete mask annotation are illustrated.
@@ -462,7 +308,7 @@ Example inspired by \texttt{https://medium.com/apache-mxnet/ transposed-convolut
     \caption{Four different annotation types \cite{McEver2020}: 
     On the top left the picture is point level annotated. The points are inflated for visibility.
     On the top right, squiggle annotation is used.
-    The bottom left shows bounding box supervion.
+    The bottom left shows bounding box supervision.
     While the bottom right image is fully annotated.
     An image level label would indicate that there are multiple instances of \textit{person} and \textit{bike} in the image.
     \label{fig:ImageLabelTypes}}
@@ -471,10 +317,10 @@ Example inspired by \texttt{https://medium.com/apache-mxnet/ transposed-convolut
 \par{
     The objective of \Gls{weaklysupervisedl} is to construct a robust model based on \textit{cheap} (incomplete, noisy or imprecise) labels, sometimes described as \textit{indirect supervision}.
     Numerous creative approaches have been conceived.
-    Since the provided annotations in \Gls{weaklysupervisedl} are not full labels, these are sometimes described as \textit{hints} instead \cite{ECCV2020}.
+    Since the provided annotations in \Gls{weaklysupervisedl} are not full labels, these are sometimes described as \textit{hints} instead\cite{ECCV2020}.
     The basic concept of \Gls{weaklysupervisedl} is that there are two sources of information to draw from: The hints and the prior knowledge about the problem (Priors).
     These \textit{Priors} can be any form of prior knowledge about the object to be segmented\footnote{or any other machine vision task.}.
-    Priors can be the object size, shape or location, the number of instances, the similarity across images or the similarity with external images.
+    Priors can be the object size, shape or location, the number of instances, the similarity across images or the similarity with external images\cite{ECCV2020}.
 }
 \par{
     Whether an annotation is considered a \textit{weak label} or a \textit{strong label} depends more on the modeller's intention than on the annotation itself. 
@@ -485,12 +331,14 @@ Example inspired by \texttt{https://medium.com/apache-mxnet/ transposed-convolut
 For a segmentation task, weak labels can be:
 \begin{description}
     \item[Image level labels]: In this case, only the object's class in the image is provided. 
-    This would be a full label for a classification task, but it is a weak label for a segmentation task\footnote{Image with image-level annotation can, for some problems, be obtained in large numbers by web-scraping\cite{Shen}.}.
-    \item[Point annotation]: This annotation technique, the subject of this work, consists of asking the expert to indicate the classes with one or several points. This technique is used in \cite{Laradji2020, Laradji2018, McEver2020}.
-    In \cite{Maninis2018}, instead of \textit{random} point annotation, the author makes use of \textit{extreme} point annotation. This work chooses to investigate random point annotation.
+    This would be a full label for a classification task, but it is a weak label for a segmentation task\footnote{
+        Image with image-level annotation can, for some problems, be obtained cheaply in large numbers by web-scraping\cite{Shen}.}.
+    \item[Point annotation]: This annotation technique, the subject of this work, consists of asking the expert to indicate the classes with one or several points. This technique is used in \cite{Laradji2020, Laradji2021, McEver2020}.
+    In \cite{Maninis2018}, instead of \textit{random} point annotation, the author makes use of \textit{extreme} point annotation. 
+    This work chooses to investigate random point annotation.
     This is believed to approximate the fastest and most natural action of simply pointing at an object best.
     \item[Squiggles]: This annotation technique is related to the point annotation technique. Instead of points, the expert is asked to indicate the classes with a squiggly line.
-    \item[Bounding boxes]: A bounding box (a rectangle circumscribing the object) is a less precise form of object localization than pixel-wise segmentation.
+    \item[Bounding boxes]: A bounding box (a rectangle circumscribing the object) is a less precise form of object localisation than pixel-wise segmentation.
     \item[Image description]: This task combines the problem of \acrlong{nlp} with the problem of image segmentation. The annotation of the image is derived from a verbal or written description of the image. 
     This annotation type has not yet been used by many researchers. 
     It might be promising since large bodies of datasets could be available from, for example, medical files where a medical expert has provided a written diagnosis based on available medical images. 
@@ -503,28 +351,26 @@ For a segmentation task, weak labels can be:
     Bearman et al.\cite{Bearman2015} compare the annotation time required for images from the PASCAL VOC 2012 dataset.
     The authors report an average time per image of 239.7 seconds per image for full image pixel annotation, 20.0 seconds per image for image-level labels and 22.1 seconds per image for point annotation.
     As is repeated in \ref{sec:PreviousWork_weaklySupervised}, point level annotation is attractive since it barely requires more of the expert's time while delivering more precise information.
-    The point label contains valuable localization information, absent from the image level annotation.
-    Besides this, the reported cost for labelling additional instances of the same class is only 0.9s per addition instance.
+    The point label contains valuable localisation information, absent from the image level annotation.
+    Besides this, the reported cost for labelling additional instances of the same class is only 0.9s per additional instance.
     The image labelling time consists of a \textit{startup cost} of 18,5s followed by the time to annotate the first instance of the first labelled class of 2.4s.
     This means that the time to label the 2,8 class instances that are on average present in an image from the PASCAL VOC 2012 dataset takes 23,3 s per image.
     The observation that labelling additional instances of a class results in such a low increase in labelling time is used in this work.
-    In chapter \ref{sec:combination} on page \pageref{sec:combination}, the time to provide multiple labels for the \textit{same} class instance will be estimated based on the same addition of 0,9 s.
+    In chapter \ref{sec:combination} on page \pageref{sec:combination}, the time to provide multiple labels for the \textit{same} class instance will be estimated based on the same addition of 0,9 s per extra annotation point.
 }
-\\[5pt]
 \par{
-    Techniques to train models on weakly supervised data are often based on the construction of a \textit{pseudo} mask.
+    Techniques to train models on weakly-supervised data are often based on the construction of a \textit{pseudo} mask.
     This pseudo-mask is then used as a label to train the network.
     This involves an extra step in the training process.
-    These techniques are more computationally intensive than those on fully \Gls{supervisedl} data, since the construction of the pseudo mask involves an additional computational step.
+    These techniques are more computationally intensive than those on fully \Gls{supervisedl} data since the construction of the pseudo mask involves an additional computational step.
     Apart from this, the loss function can consist of multiple parts and might involve repeated evaluation of the model on the same batch\footnote{
-        The consistency loss used in this work requires to evaluate the model both on the input image and the rotated version of this input image.
+        The consistency loss used in this work requires evaluating the model both on the input image and the rotated version of this input image.
         }. 
     Weakly supervised learning is based on the idea that the cost of human experts is fixed or even increasing while the cost of computation power is decreasing.
-    Besides this, the ability to label more data at the same labelling price point can increase the variability of the data on which the model is trained. 
-    This can increase the robustness of the final model obtained.
+    Besides this, the ability to label more data at the same labelling price point can increase the variability of the data on which the model is trained, increasing the robustness of the final model obtained.
 }
 \par{
     Whether a network is trained on pseudo labels or on fully supervised labels does not change the evaluation effort for that model.
-    Some extra steps might be required to train a model on weakly supervised data compared to training a model on full labels, 
-    but the model evaluation at inference time is therefor not more computationally intensive.
+    Some extra steps might be required to train a model on weakly-supervised data compared to training a model on full labels, 
+    but the model evaluation at inference time is therefore not more computationally intensive.
 }
