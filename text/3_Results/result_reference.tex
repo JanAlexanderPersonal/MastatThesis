@@ -76,10 +76,11 @@ For the other classes, the conclusion based on the inverse weighted dice score h
     \end{minipage}
     \caption{Detailed result for the fully supervised model trained without context slices and with a weighted cross entropy loss function.
     The model trained with the unweighted loss performs better than the result shown in figure \ref{fig:referenceWeighted} for the weighted cross entropy loss function.
-    \input{tables/colourlegend_long.tex}
+    \protect\input{tables/colourlegend_long.tex}
     \label{fig:referenceWeighted} 
     }
 \end{SCfigure}
+
 \begin{SCtable}[\sidecaptionrelwidth][h]
  
 \begin{tabular}{cl|llllll}
@@ -97,8 +98,7 @@ For the other classes, the conclusion based on the inverse weighted dice score h
     \caption{Confusion matrix for the model trained with full label masks (network VGG16-FCN8 and cross-correlation loss), evaluated on the test set.
     The values have been normalized by the total number of voxels predicted in each class.
     The diagonal elements are thus the class precisions: $\mathcal{P}(C = L1 \mid pred = L1) = 0.866$ while $\mathcal{P}(C = L2 \mid pred = L1) = 0.132$.
-    \label{tab:full_confusionMatrix}
-    }
+    \label{tab:full_confusionMatrix}}
 \end{SCtable}
 
 \section{Conclusion}

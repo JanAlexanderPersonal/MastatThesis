@@ -77,7 +77,7 @@
     \includegraphics[width=.95\textwidth]{images/weightedvsnonweighted_transverse.pdf}
     \caption{
         Illustration of the difference in model performance (inverse class weighted dice score) between a weighted point loss function and the unweighted point loss function for point annotated models trained on transverse slices.
-        \input{tables/colourlegend_short.tex}
+        \protect\input{tables/colourlegend_short.tex}
     \label{fig:weighted_vs_unweighted_transverse}}
 \end{SCfigure}%
 \begin{SCfigure}[][htb]
@@ -88,7 +88,7 @@
         The models are trained with point annotations extracted from the available ground truth masks. For these models, 
         5 points were extracted from the background mask and 5 points from each instance of each class in the slice. 
         The bar in blue indicates the inversely weighted dice score evaluated on the test set. The bar in green indicates the average dice score over the classes.
-        \input{tables/colourlegend_short.tex}
+        \protect\input{tables/colourlegend_short.tex}
         \label{fig:weighted_vs_unweighted}}
 \end{SCfigure}
 
@@ -113,7 +113,7 @@ Remark that the number of class annotation points and background points is diffe
     \caption{Evaluation of the added value of loss components. 
     The bar in blue indicates the inverse weighted dice score, evaluated on the test set. The bar in green indicates the average dice score over the classes.
     The texture on the bars representing the transverse model performance help the reader remember the transverse model does not distinguish between the lumbar vertebrae.
-    \input{tables/colourlegend_short.tex}
+    \protect\input{tables/colourlegend_short.tex}
     \label{fig:addedLossComponents}}
 \end{SCfigure}
 

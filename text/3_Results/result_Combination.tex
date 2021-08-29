@@ -202,8 +202,6 @@ Seemingly, randomizing the number of annotation points could have a positive inf
 
 \end{SCtable}
 
-\FloatBarrier
-
 Illustration \ref{fig:fullvsPseudo} shows the final result of the procedure.
 With the pseudo masks obtained from combining the three model results, a new model is trained.
 This last model is only trained on the sagittal slice stack.
@@ -221,21 +219,24 @@ One could also look at it in another way: for fixed cross validation and test se
 
 \begin{SCfigure}[][htb]
     \centering
-    \begin{minipage}{.99\textwidth}
         \includegraphics[width=.99\textwidth]{images/fullvsPseudo_MyoSegmenTUM_024_023.pdf}
-    \end{minipage} 
-    \vspace{2 mm}
-    \begin{minipage}{.99\textwidth}
-        \includegraphics[width=.99\textwidth]{images/fullvsPseudo_USiegen_012_024.pdf}
-    \end{minipage} 
-    \vspace{2 mm}
-    \begin{minipage}{.99\textwidth}
-        \includegraphics[width=.99\textwidth]{images/fullvsPseudo_xVertSeg_014_260.pdf}
-    \end{minipage}
     \caption{These images illustrate the difference in performance for the two models generated. On the top row, an image slice is shown next to the ground truth annotation mask.
     Two models were trained: the reference model, shown left on the second row and a model trained on pseudo masks of which the result is shown on the right side. 
     These images show the final result of the procedure described in this thesis. The shown masks are not the pseudo masks themselves, they are the results obtained from the final model trained on these pseudo masks.
-    From top to bottom, the image shows these results for slice 23 of MyoSegmenTUM volume 24, slice 24 of USiegen volume 12 and slice 260 of xVertSeg volume 14. 
+    This first image shows these results for slice 23 of MyoSegmenTUM volume 24, slice 24 of USiegen volume 12 and slice 260 of xVertSeg volume 14. 
+    \protect\input{tables/colourlegend.tex}
+    \label{fig:fullvsPseudo}}
+\end{SCfigure}
+\begin{SCfigure}[][htb]
+    \centering
+        \includegraphics[width=.99\textwidth]{images/fullvsPseudo_USiegen_012_024.pdf}
+    \caption{This image follows figure \ref{fig:fullvsPseudo}. It shows slice 24 of USiegen volume 12. 
+    \protect\input{tables/colourlegend.tex}}
+\end{SCfigure}
+\begin{SCfigure}[][htb]
+    \centering
+        \includegraphics[width=.99\textwidth]{images/fullvsPseudo_xVertSeg_014_260.pdf}
+    \caption{This image follows figure \ref{fig:fullvsPseudo}. It shows slice 260 of xVertSeg volume 14. 
     \protect\input{tables/colourlegend.tex}
     \label{fig:fullvsPseudo}}
 \end{SCfigure}
@@ -311,6 +312,6 @@ The segmentation masks illustrated in figure \ref{fig:fullvsPseudo} can both be 
     \end{minipage} 
     \caption{Precision and recall for the final model. From this image and from the illustrations shown in figure \ref{fig:fullvsPseudo}, 
     it is clear that the obtained model does not seem to be able to predict the full extend of the vertebrae. The inferred masks are too restricted in dimensions.
-    \input{tables/colourlegend_long.tex}
+    \protect\input{tables/colourlegend_long.tex}
     }
 \end{SCfigure}
