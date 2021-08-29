@@ -1,23 +1,19 @@
 \chapter{Datasets\label{sec:datasets}}\thispagestyle{empty}
-
-This thesis is based on five different existing publically available datasets.
-This chapter discusses these datasets based on different criteria:
-
-\begin{description}
-    \item[source:] reference of the owner of the dataset and brief description of the original purpose of the dataset.
-    \item[Patient sample:] statistics of the patients whose medical images were collected such as age, gender and possible spine pathologies.
-    \item[Technical information:] discusses the imaging technology, the image resolution and the spatial dimensions of the image. 
-\end{description}
-
+\par{
+    This thesis is based on five different existing publically available datasets.
+    This chapter discusses these datasets based on different criteria: \newline
+    \textbf{Source:} reference of the owner of the dataset and brief description of the original purpose of the dataset.\newline
+    \textbf{Patient sample:} statistics of the patients whose medical images were collected such as age, gender and possible spine pathologies.\newline
+    \textbf{Technical information:} discusses the imaging technology, the image resolution and the spatial dimensions of the image. 
+}
 \section{Dataset overview}
-
-Table \ref{tab:datasetReferences} provides an overview of the 5 datasets sourced for this work.
-This table shows there are important differences between the datasets in imaging mode and dataset size.
-Figure \ref{fig:AllDataset_dims} also indicates the differences in image dimensions and resolutions.
-For more details on the data quantity, please consult chapter \ref{seg:datasetcomparison}. 
-Notably, the fact that some images were taken from the same patient is vital to recognize. It means the dataset is grouped. 
-
-
+\par{
+    Table \ref{tab:datasetReferences} provides an overview of the 5 datasets sourced for this work.
+    This table shows there are important differences between the datasets in imaging mode and dataset size.
+    Figure \ref{fig:AllDataset_dims} also indicates the differences in image dimensions and resolutions.
+    For more details on the data quantity, please consult chapter \ref{seg:datasetcomparison}. 
+    Notably, the fact that some images were taken from the same patient is vital to recognize. It means the dataset is grouped. 
+}
 \begin{SCtable}[\sidecaptionrelwidth][h]
  
     \begin{tabular}{ l l l l l} 
@@ -36,11 +32,11 @@ Notably, the fact that some images were taken from the same patient is vital to 
     The agreement with prof. T. Vrtovec regarding the xVertSeg dataset can be found in appendix \ref{seg:datasetagreement}.\label{tab:datasetReferences}}
 
 \end{SCtable}
-
-In table \ref{tab:dataOrientation} illustrates the difference in anatomical orientation of the volumes in the different datasets.
-To execute the modelling approach discussed in chapter \ref{sec:model_concept}, all volume orientations were uniformized to assure that for all datasets, the volume slices along dimension 0 represent the transverse slices, 
-the slices along dimension 1 represent the frontal slices, and the slices along dimension 2 are sagittal plane coupes of the volume.
-
+\par{
+    In table \ref{tab:dataOrientation} illustrates the difference in anatomical orientation of the volumes in the different datasets.
+    To execute the modelling approach discussed in chapter \ref{sec:model_concept}, all volume orientations were uniformized to assure that for all datasets, the volume slices along dimension 0 represent the transverse slices, 
+    the slices along dimension 1 represent the frontal slices, and the slices along dimension 2 are sagittal plane coupes of the volume.
+}
 \begin{SCtable}[\sidecaptionrelwidth][h]
  
     \begin{tabular}{ l l l l} 
@@ -61,10 +57,10 @@ the slices along dimension 1 represent the frontal slices, and the slices along 
 \end{SCtable}
 \begin{SCfigure}[][htb]
     \centering
-    \begin{minipage}{.45\textwidth}
+    \begin{minipage}{.4\textwidth}
         \includegraphics[width=.98\textwidth]{automated_graphs/AllDataset_DimensionsBoxplot.png}
     \end{minipage}%
-    \begin{minipage}{0.45\textwidth}
+    \begin{minipage}{0.4\textwidth}
         \includegraphics[width=.98\textwidth]{automated_graphs/AllDataset_SpacingBoxplot.png}
     \end{minipage}
     \caption{Boxplots comparing the scan dimensions and initial resolution of the different datasets.

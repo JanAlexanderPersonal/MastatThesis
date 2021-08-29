@@ -3,32 +3,28 @@
 
 \begin{groupplot}[group style={group size=2 by 1}]
 \nextgroupplot[
-axis line style={white!15!black},
 height=5cm,
+tick pos=left,
 width=9cm,
 xlabel={Left-right axis (x)},
-xmajorticks=false,
 xmin=-0.5, xmax=442.5,
 y dir=reverse,
 ylabel={Anteroposterior axis (y)},
-ymajorticks=false,
 ymin=-0.5, ymax=442.5
 ]
-\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=442.5, ymin=442.5, ymax=-0.5] {xVertSeg_image002-048.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=442.5, ymin=442.5, ymax=-0.5] {xVertSeg_image002-050.png};
 
 \nextgroupplot[
-axis line style={white!15!black},
 height=5cm,
+tick pos=left,
 width=9cm,
 xlabel={Anteroposterior axis (y)},
-xmajorticks=false,
 xmin=-0.5, xmax=442.5,
 y dir=reverse,
 ylabel={Craniocaudal axis (z)},
-ymajorticks=false,
 ymin=-0.5, ymax=322.5
 ]
-\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=442.5, ymin=322.5, ymax=-0.5] {xVertSeg_image002-049.png};
+\addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=442.5, ymin=322.5, ymax=-0.5] {xVertSeg_image002-051.png};
 \end{groupplot}
 
 \end{tikzpicture}

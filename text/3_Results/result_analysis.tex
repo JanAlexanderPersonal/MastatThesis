@@ -6,11 +6,14 @@
     based on point annotation of these 6 classes ($L1$ to $L5$ and 1 background class).
 }
 \par{
-    First, as described in chapter \ref{sec:reference_model}, a reference is calculated with which to compare the performance of the weakly supervised models.
+    This part first provides a description of the datasets used in this research. Then, the model results obtained with these datasets are discussed.
+}
+\par{
+    As described in chapter \ref{sec:reference_model}, a reference is calculated with which to compare the performance of the weakly supervised models.
     The reference models have the same architecture and are trained with full annotation on the same dataset as the weakly supervised models. 
 }
 \par{
-    The first step in the modelling procedure based on point annotation masks is the construction of \textit{single-dimension} models.
+    The first step in the weakly-supervised modelling procedure based on point annotation masks is the construction of \textit{single-dimension} models.
     Single-dimension indicates that these models investigate the performance of a model that outputs 2D segmentation masks based on 2D input images.
     By slicing the scan volumes along one of three central dimensional axes, a stack of two-dimensional images is created together with the point annotation maps extracted from the segmentation masks of these images.
     Chapter \ref{sec:singleDimension} presents the results of several experiments. 
@@ -20,7 +23,7 @@
 \par{
     the second step in the modelling procedure is the combination of the single-dimension models to estimate pseudo-masks.
     These pseudo masks can finally be used to train a model as pseudo full annotation masks.
-    Chapter \ref{sec:combination} first discusses the technique used to combine single-dimension models and then concludes with the results obtained by training a final model on the pseudo masks resulting from the combination.
+    Chapter \ref{sec:combination} concludes with the results obtained by training a final model on the pseudo masks resulting from the combination of three single-dimension models.
 }
 \end{partwithabstract}
 \restoregeometry

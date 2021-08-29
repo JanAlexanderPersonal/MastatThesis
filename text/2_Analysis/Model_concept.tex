@@ -66,8 +66,8 @@ The inferred class is then obtained from the resulting average $z_i$ values for 
 \begin{minipage}{.99\textwidth}
     \includegraphics[width=0.95\textwidth]{images/USiegen_004_50_crops.pdf}
 \end{minipage}
-\begin{minipage}{.99\textwidth}
-    \includegraphics[width=0.60\textwidth]{images/cropping_slice050.pdf}
+\begin{minipage}{.61\textwidth}
+    \includegraphics[width=0.99\textwidth]{images/cropping_slice050.pdf}
 \end{minipage}
     \caption{Sagittal slice 50 of the USiegen 04 volume has to be evaluated in 4 crops due to its dimensions. The recombination of these crops to form the mask for the slice is illustrated in this figure. As a reference, the corresponding images are provided.}
 \end{SCfigure}
@@ -122,9 +122,7 @@ These filters are combinations of the morphological \textit{erosion} and \textit
     The procedure mentioned above has two hyperparameters: the number of iterations for the denoising filters and the number of iterations for the erosion filter.
     Both hyperparameters are estimated by calculating the same evaluation metric, the weighted dice score on the validation set, as for the single-dimensional model evaluation. 
     
-    The combination of the rules and morphological smoothing operations discussed above results in the following algorithm to combine the segmentation volumes from the single dimension models\footnote{
-        The algorithm shown here is based on the two observations mentioned.
-    }:
+    The combination of the rules and morphological smoothing operations discussed above results in the following algorithm to combine the segmentation volumes from the single dimension models:
 }
 \newline
 \begin{algorithm}[H]

@@ -68,7 +68,7 @@ This stack of 3 slices is then passed through the network, as illustrated in fig
 \begin{SCfigure}[][htb]
 \centering
     \includegraphics[width=.49\textwidth]{images/Context_slices.pdf}
-    \caption{Illustration of the \textit{context slice} concept. Together with the image slice crop in the middle, the model input consists of the two slices at $k=3mm$ from the middle slice.}
+    \caption{Illustration of the \textit{context slice} concept. Together with the image slice crop in the middle, the model input consists of the two slices at $k=3mm$ from the middle slice and the middle slice itself.}
 \end{SCfigure}
 
 \subsection{Annotation points\label{sec:annotationPoints}}
@@ -102,9 +102,8 @@ This stack of 3 slices is then passed through the network, as illustrated in fig
 
 \subsection{Model training strategy}
 
-To optimize the model weights, the optimization scheme in algorithm \ref{alg:model_training} is executed.
-The goal is to obtain model weights $\theta_b$ which show the best model performance, measured with metric $\mathcal{M}$ on the validation set $\mathcal{S}_{val}$.
-This is done by evaluating the model with a pre-defined set of learning late reduction factors $\vec{f}_{LR}$ until the chosen metric $\mathcal{M}$ does not decrease anymore with decreasing training loss\footnote{
+The optimization scheme in algorithm \ref{alg:model_training} is executed to train the model weights.
+The goal is to obtain weights $\theta_b$ which show the best model performance, measured with metric $\mathcal{M}$ on the validation set $\mathcal{S}_{val}$ by training the model with a pre-defined set of learning rate reduction factors $\vec{f}_{LR}$ until the chosen metric $\mathcal{M}$ does not decrease anymore with decreasing training loss\footnote{
     This is tracked with the counter $T_\mathcal{M}$. Every time a training loss $\mathcal{L}_n$ is obtained lower than the best training loss $\mathcal{L}_b$ obtained up to that point, 
     the performance metric is compared to the best performance metric obtained up to that point. 
     If not improvement of the model performance metric can be observed $T_{\mathcal{M}, max}$ times in a row, the model training is halted, and the model weights are restored to $\theta_b$, the best performing set of weights.
@@ -164,7 +163,6 @@ This is done by evaluating the model with a pre-defined set of learning late red
 \par{
     The used optimization algorithm is \textit{Adam}, or Adaptive Moment estimating.
     This is a widely used and performant optimizer that has proven to work well in practice.
-    This optimizer is started with a learning rate of $10^{-4}$.
     The learning rate can be reduced several times during the optimization procedure.
     In algorithm \ref{alg:model_training}, the full optimization procedure is described.
 }
