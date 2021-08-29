@@ -31,7 +31,7 @@ rm *.toc
 rm *.log
 rm *.fls
 rm *.dvi
-# rm *.blg
+rm *.blg
 rm *.acn
 rm *.alg
 rm *.glg
