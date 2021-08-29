@@ -268,15 +268,8 @@ explicitly the source when using results of this master dissertation.}
 
 \newgeometry{total={210mm,297mm},left=30mm,right=30mm,bindingoffset=5mm, top=25mm,bottom=25mm} 
 \begin{partwithabstract}{Modelling methods \& Analysis}
-  \par{
-    This part of the document details the used datasets and the modelling and evaluation methodology.
-    First, and overview is provided of the 5 datasets used in this work.
-    Statistics regarding the patient's age and gender are documented for the sets for which this metadata is available. 
-    The aim is to investigate possible biases in the data.
-  }
-  \par{
-    Second, the data preparation steps are explained, before describing the modelling approach, the network architectures and the model loss functions.
-  }
+  This part of the document intends to clarify the procedure used to build a segmentation model with weakly supervised data. First, the preprocessing steps on the data are discussed. The input slices to train the model are prepared before being sent to the model. This work makes use of several datasets and thus requires some data uniformisation steps. The image contrast is also increased. 
+Second, the high-level approach of the model building strategy is detailed. Like other weak supervision modelling techniques, a two-stop procedure is used where first a pseudo mask is made to train the final network subsequently. 
     
 \end{partwithabstract}
 \restoregeometry

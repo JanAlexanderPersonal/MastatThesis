@@ -16,7 +16,7 @@ However, there are advantages to choosing 2D networks over 3D networks:
     These datasets indeed do not contain the specific classes nor the specific datatype investigated in this project. 
     However, the different convolution layers have proven to extract useful general features that allow the network to distinguish an extensive range of categories. 
     These features have proven to be sufficiently general to apply to new machine vision applications. This practice is called transfer learning.
-    \item Although consecutive slices are strongly correlated, one has more data\footnote{There are more slices than volume segments in 1 image volume.} to train the networks. Certainly when considered in proportion to the number of weights to be trained.
+    \item Although consecutive slices are strongly correlated, there is more data\footnote{There are more slices than volume segments in 1 image volume.} to train the networks, certainly when considered in proportion to the number of weights to be trained.
 \end{enumerate}
 
 \subsection{Model training approach}
@@ -24,9 +24,8 @@ However, there are advantages to choosing 2D networks over 3D networks:
 An approach used often in weakly supervised learning is the generation of \textit{ersatz} or \textit{pseudo} mask labels\cite{Laradji2019,Laradji2019a, Ahn2019,McEver2020}, see page \pageref{sec:PreviousWork_weaklySupervised}.
 This project intends to use this approach too.
 
-A scan volume can be sliced along 3 different axes: the transverse axis, the coronal axis and the sagittal axis (see figure \ref{fig:anatomicalPlains}). 
-This means that 3 different models can be trained with the available point annotated data. 
-Each of these 3 networks will have different context elements to segment the sliced images on.
+A scan volume can be sliced along 3 different axes: the transverse axis, the coronal axis and the sagittal axis (see figure \ref{fig:anatomicalPlains}), meaning that 3 different models can be trained with the available point annotated data. 
+Each of these 3 networks will have different context elements to segment the sliced images.
 The resulting segmentation volumes\footnote{The segmentation results of a stack of 2D slices can be combined to form a 3D segmentation volume.} of these three networks can then be combined to obtain a final segmentation volume.
 This final segmentation mask, which should be as least as good as the best of the 3 individual model results, can then be used as pseudo masks to train a final \textit{fully supervised} network. 
 
@@ -37,7 +36,7 @@ This final segmentation mask, which should be as least as good as the best of th
     This is based on the conbination of 3 different models based on different volume slices.}
 \end{SCfigure}
 
-When the segmentation masks of a new, unknown volume need to be inferred, only this final model needs to be evaluated.
+When the segmentation masks of a new, unknown volume need to be inferred, only this final model must be evaluated.
 Only one set of slices along a single dimension needs to be generated and preprocessed to perform this evaluation.
 
 \begin{SCfigure}[][htb]
@@ -47,26 +46,31 @@ Only one set of slices along a single dimension needs to be generated and prepro
 \end{SCfigure}
 
 \section{Volume combination procedure\label{sec:combinationProcedure}}
-To construct one pseudo mask volume, first, three single dimension model are evaluated to form three stacks of two dimensional estimated segmentation masks, which are then combined to form three segmentation volumes. 
+To construct one pseudo mask volume, three single dimension models are first evaluated to form three stacks of two-dimensional estimated segmentation masks, and the obtained results are combined to form three segmentation volumes. 
 The resulting set of three segmentation volumes is then combined to form a new segmentation volume.
-It is this last segmentation volume, made out of the combination, that is sliced again to obtain the pseudo masks for the final model.
-The procedure described here was only devised after observation of the single dimensional model results.
+This last segmentation volume, made out of the combination, is sliced again to obtain the pseudo masks for the final model.
+The procedure described here was only devised after observation of the single-dimensional model results.
 
 \subsection{Recombination of the crops to slices}
 All models are designed for $352 \times 352$ crops of the 2D slices\footnote{More information on the cropping of the slices can be found in chapter \ref{sec:cropping} on page \pageref{sec:cropping}.}.
 To construct a segmentation volume from a single dimensional model, all relevant\footnote{Some slices have dimensions that do not allow to extract 5 different $352 \times 352$ crops. See for example figure \ref{fig:smallcrop} on page \pageref{fig:smallcrop}.} crops of each volume slice are evaluated.
-First the segmentation results on these crops have to be combined again to obtain a segmentation mask of the whole slice.
+First, the segmentation results on these crops have to be combined again to obtain a segmentation mask of the whole slice.
 Due to the cropping procedure, different crops of the same slice always partly overlap.
 The crops are combined by averaging the logits $z_i$ for the overlapping positions.
 The inferred class is then obtained from the resulting average $z_i$ values for that position. 
 
 \begin{SCfigure}[][htb]
-    \includegraphics[width=0.95\textwidth]{images/USiegen_004_50_crops.png}
-    \caption{Sagittal slice 50 of the USiegen 04 volume has to be evaluated in 4 crops due to its dimensions. The recombination of these crops to form the mask for the slice is illustrated in this figure.}
+\begin{minipage}{.99\textwidth}
+    \includegraphics[width=0.95\textwidth]{images/USiegen_004_50_crops.pdf}
+\end{minipage}
+\begin{minipage}{.99\textwidth}
+    \includegraphics[width=0.95\textwidth]{images/cropping_slice050.pdf}
+\end{minipage}
+    \caption{Sagittal slice 50 of the USiegen 04 volume has to be evaluated in 4 crops due to its dimensions. The recombination of these crops to form the mask for the slice is illustrated in this figure. As a reference, the corresponding images are provided.}
 \end{SCfigure}
 
 \subsection{Rule based result combination}
-Once a stack of class segmentation masks for all slices of a volume are obtained, these can be combined to form a segmentation volumes.
+Once a stack of class segmentation masks for all volume slices are obtained, these can be combined to form a segmentation volume.
 Combining the results of three different single dimension models is performed in two steps:
 \begin{enumerate}
     \item The resulting classification volumes are first combined with a rule-based method.
@@ -78,7 +82,7 @@ Three single dimension models are trained:
     \item[Transverse slices] offer little context to indicate which of the lumbar vertebrae they contain. 
     It does not seem easy even for a human expert to indicate which vertebra is visible on the slice.
     The model trained on these slices is intended only for semantic segmentation.
-    Each pixel is inferred only if it represents a vertebra, without distinction between the different lumbar vertebrae. 
+    For each pixel is inferred only if it represents a vertebra, without distinction between the different lumbar vertebrae. 
     \item[Sagittal \& Coronal slices] do offer the necessary context to distinguish between $L_1$ to $L_5$. 
     The models trained on these slices do indicate the specific lumbar vertebra index. 
 \end{description}
@@ -89,8 +93,8 @@ The volume combination rules are based on two observations:\footnote{
 \begin{enumerate}
     \item The precision (see equation \ref{eq:precision_i} on page \pageref{eq:precision_i}) with which the background class is predicted in all models is very high.
             This means $\mathcal{P} \left( label = background \mid prediction = background \right)$ is high for all models. 
-            If there is one model that indicates a position is background, this position could be estimated to be background with high probability.
-    \item All models tend to over-estimate the extend of the vertebrae. This causes a low recall score. The direction in which the predictions tend to \textit{bleed out} is different for the different models. 
+            If one model indicates a position is background, this position could be estimated to be background with high probability.
+    \item All models tend to overestimate the extent of the vertebrae, which causes a low recall score. The direction in which the predictions tend to \textit{bleed out} is different for the different models. 
 \end{enumerate}
 The observations mentioned above can be combined in algorithm \ref{alg:combination}.
 
@@ -117,7 +121,7 @@ The procedure mentioned above has two hyperparameters: the number of iterations 
 Both hyperparameters are estimated by calculating the same evaluation metric, the weighted dice score on the validation set, as for the single-dimensional model evaluation. 
 
 \subsection{Volume combination algorithm}
-The combination of the rules and morphological smoothing operations discussed above result in the following algorithm to combine the segmentation volumes from the single dimension models\footnote{
+The combination of the rules and morphological smoothing operations discussed above results in the following algorithm to combine the segmentation volumes from the single dimension models\footnote{
     The algorithm shown here is based on the two observations mentioned.
 }:
 

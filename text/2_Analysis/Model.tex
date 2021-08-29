@@ -5,16 +5,12 @@
 \chapter{Modelling methods \& evaluation protocols}\thispagestyle{empty}
 \par{
     This chapter introduces the high-level model concept of this work.
-    This consists of producing a set of pseudo masks from three weakly supervised models trained on different sets of slices obtained from the same volume.
-}
-\par{
+    This consists of producing pseudo masks from three weakly supervised models trained on different sets of slices obtained from the same volume.
     Next, the construction, training and evaluation of these weakly supervised models are covered in more detail.
     Attention is given to the model loss function, including two loss components that add to the consistency loss framework\cite{Laradji2021}.
     Finally, the model evaluation metrics are described.
-}
-\par{
     These metrics will be used to compare the result of the \Gls{weaklysupervisedl} model with the result of a model trained on fully supervised labels.
-    Both models will be trained on the same test scans and the model performances will be evaluated on the same test scans.
+    Both models will be trained on the same test scans, and the model performances will be evaluated on the same test scans.
 }
 \input{/home/thesis/2_Analysis/Model_concept.tex}
 \FloatBarrier

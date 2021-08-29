@@ -11,15 +11,14 @@ All three of these networks are based on the encoder-decoder principle where a c
 \begin{description}
     \item[VGG16 network: ] This is a classic classification network, developed by K. Simonyan \& A. Zimmerman. 
     The used network is illustrated in figure \ref{fig:vgg16}. 
-    Inspired by \cite{Laradji2021}, the network is adapted for segmentation (This segmentation architecture is called VGG16 FCN8) by omitting the flattining layer for image level classification and 
-    replacing it with an upsampling path. In this upsampling path, the (expanded) pooling layers after conv3 and conv4 are added to the results with element-wise summation.
+    Inspired by \cite{Laradji2021}, the network is adapted for segmentation (This segmentation architecture is called VGG16 FCN8) by omitting the flattening layer for image-level classification and replacing it with an upsampling path. In this upsampling path, the (expanded) pooling layers after conv3 and conv4 are added to the results with an element-wise summation.
     \item[U-Net network: ] The U-Net is a network specifically designed for segmentation tasks. As was already described in chapter \ref{sec:MachineVisionMedical} on page \pageref{sec:MachineVisionMedical}, 
     this network architecture was originally published in \cite{Ronneberger2015}.
     \item[RESNET50 network:] The \Gls{resnet} (Kaiming He et al.) is a classification architecture that can be made very deep (more than 150 layers).
-    This depth is possible thanks to the skip connections. The network tested in this work is an implementation of the RESNET50 architecture, adapted with a FCN8 upsampling segmentation part.
+    This depth is possible thanks to the skip connections. The network tested in this work implements the RESNET50 architecture, adapted with an FCN8 upsampling segmentation part.
     The RESNET50 architecture can be seen as a stack of \textit{residual units}. In figure \ref{fig:vgg16}, four such a residual block is illustrated.
-    Every few residual units, the number of feature maps is doubled while the height and width are halved. When this happens, the input cannot be added directly to the output of the residual unit.
-    To solve this problem, the inputs are passed through a $1\times 1$ convolution layer with stride 2 and the right number of output feature maps (the blue layer in figure \ref{fig:vgg16}).
+    The number of feature maps is doubled every few residual units, while the height and width are halved. When this happens, the input cannot be added directly to the output of the residual unit.
+    To solve this problem, the inputs are passed through a $1\times 1$ convolution layer with stride 2 and the correct number of output feature maps (the blue layer in figure \ref{fig:vgg16}).
 \end{description}
 
 \begin{SCfigure}[][htb]
@@ -32,16 +31,20 @@ All three of these networks are based on the encoder-decoder principle where a c
     \begin{minipage}{.99\textwidth}
         \includegraphics[width=.99\textwidth]{images/UNET.pdf}
     \end{minipage} 
-    \vspace{2 mm}
-    \begin{minipage}{.99\textwidth}
-        \includegraphics[width=.7\textwidth]{images/RESNET.pdf}
-    \end{minipage} 
+     
     \caption{Illustrations of the tested network architectures.
     The first network is the VGG16-FCN8 network. \newline
-    Then the U-Net architecture is illustrated. \newline
-    Finally, one residual unit of the RESNET50 architecture is illustrated.
-    Due to the size of the RESNET50 network, only one \textit{residual block} is illustrated.
+    Then the U-Net architecture is illustrated. 
     \label{fig:vgg16}}
+\end{SCfigure}
+\begin{SCfigure}[][htb]
+\begin{minipage}{.99\textwidth}
+        \includegraphics[width=.7\textwidth]{images/RESNET.pdf}
+    \end{minipage}
+    \caption{
+One residual unit of the RESNET50 architecture.
+    Due to the size of the RESNET50 network, only one \textit{residual block} is illustrated.
+    }
 \end{SCfigure}
 
 
@@ -51,21 +54,20 @@ As discussed in section \ref{sec:network_types}, all used networks have a 3 chan
 352$\times$352 pixel input. 
 The input images for the network only have 1 channel component. 
 The other two channels were used to pass \textit{context} information to the network in the form of the neighbouring slices of the slice under investigation.
-This combines an essentially 2D approach with a third dimensional element in the form of the extra information of the parallel slices. Thus, this is called the $2D+$ approach.
+This combines an essentially 2D approach with a third-dimensional element in the form of the extra information of the parallel slices. Thus, this is called the $2D+$ approach.
 
 The hyperparameter to be set $k$ is the index offset for the context slices.
 When evaluating slice with index $n$ the slices with indices $\left[n-k; n+k\right]$ are passed as context slices
 \footnote{For the edge cases ($n<k$ or $n+k>$ image dimension) when these slices do not exist, slice $n$ is passed as context slice.}.
 
 Several values for $k$ are tested. When $k=0$, no extra slices are taken. The same slice is just entered in all 3 network channels. When $k=1$, the indices directly next to the investigated slices are taken.
-Due to the isotropic resampling (see section \ref{sec:resampling}), these slices are physically at 1 mm distance from the centre slice. When $k=5$, the slices at $5 mm$ distance from the centre slice are used.
+Due to the isotropic resampling (see section \ref{sec:resampling}), these slices are physically at a 1 mm distance from the centre slice. When $k=5$, the slices at $5 mm$ distance from the centre slice are used.
 
 This stack of 3 slices is then passed through the network, as illustrated in figure \ref{fig:vgg16}.
 
 \begin{SCfigure}[][htb]
-    \includegraphics[width=.99\textwidth]{images/Context_slices.png}
-    \caption{Comparison and image slice (MyoSegmenTUM dataset) with its context slices at 3mm distance. The 4$^th$ image shows the combination of the three first as R, G and B channels of a colour image to illustrate the local difference.
-    It is clear that these images are highly correlated but do hold some additional information.}
+    \includegraphics[width=.99\textwidth]{images/Context_slices.pdf}
+    \caption{Illustration of the \textit{context slice} concept. Together with the image slice crop in the middle, the model input consists of the two slices at $k=3mm$ from the middle slice.}
 \end{SCfigure}
 
 \subsection{Annotation points\label{sec:annotationPoints}}
@@ -76,7 +78,7 @@ This stack of 3 slices is then passed through the network, as illustrated in fig
     In every slice, annotation points are samples from the available masks in this slice.
 }
 \par{
-    This project aims to investigate how the performance of a segmentation model trained on fully supervised data can be approximated with a model trained on weakly supervised (point annotated) data.
+    This project aims to investigate how the performance of a segmentation model trained on fully supervised data can be approximated with a model trained on weakly-supervised (point annotated) data.
     In the first place, this will be investigated by comparing models trained on the fully annotated data to models trained only with point labels generated based on the full masks.
     The generation of these point labels is automated. 
     The desired number of point labels is generated from the full segmentation ground by random selection of points from these masks.
@@ -91,12 +93,11 @@ This stack of 3 slices is then passed through the network, as illustrated in fig
 \par{
     In the first part of the research, the aim is to evaluate the difference between a model trained on a fully labelled set of images and a model trained on the same set of images for which only weak labels are provided.
     For this purpose, annotation points are generated for each slice.
-    The individual models are thus trained with a fixed number of points per class instance in each slice. 
-    This approximates the situation where an expert annotates not one but three piles of slices, one for each dimension. This is not the final objective of this research.
+    The individual models are thus trained with a fixed number of points per class instance in each slice,  approximating the situation where an expert annotates not one but three piles of slices, one for each dimension. The latter is not the final objective of this research.
     Based on the results obtained from this first step, three models are now trained based on a single set of annotation points, obtained from the annotation of slices along one dimension of the volume.
-    Apart from the slices along the chosen dimension, the number of annotation points in the slices along the other two dimensions are not fixed.
+    Apart from the slices along the chosen dimension, the number of annotation points in the other two dimensions is not fixed.
 }
-\FloatBarrier
+%\FloatBarrier
 
 \subsection{Model training strategy}
 
