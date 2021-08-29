@@ -64,10 +64,10 @@ To compare the network output with the labels, first, the (weighted) cross entro
 \end{equation}
 
 This loss term is minimized when the network output $z_i(\vec{p})[k]$ with $k=\mathcal{Y}_i(\vec{p})$ the class label for $\vec{p}$ is maximal while the other logits for this position are minimal.
-In the fully supervised case, this loss function is called the cross entropy loss. 
+In the fully supervised case, this loss function is called the cross-entropy loss. 
 When training a model with point supervision, this is only one of multiple loss components. 
 In the case of point supervised data, $\mathcal{I}_i$ only consists of a handful of points.
-This loss component is in this case called the point loss component $\mathcal{L}_P$.
+This loss component is, in this case, called the point loss component $\mathcal{L}_P$.
 
 \subsubsection{Prior extend loss}
 The second \Gls{supervisedl} loss function used is the \textit{prior extend} loss.
@@ -119,11 +119,11 @@ Then the consistency loss function $\mathcal{L}_C$ is defined as
 \end{equation}.
 
 In this project, two transformations are combined: rotations of $[90^{\circ}, 180^{\circ}, 270^{\circ}]$ and the horizontal flip.
-Each time the loss is called, 1 transformation $t$ is randomly selected from the list, and the transformation consistency loss is calculated using this transformation.
+Each time the loss is called, one transformation $t$ is randomly selected from the list, and the transformation consistency loss is calculated using this transformation.
 
 \subsubsection{Separation loss}
 As mentioned when discussing the cross-entropy loss in §\ref{sec:crossentropy}, this loss encourages the model to output the correct label and to decrease the output values for the other labels.
-As discussed, the right label is often not know for most of the locations in a weakly supervised problem.
+As discussed, the correct label is not known for most of the locations in a weakly supervised problem.
 Apart from a limited number of points, there is no such incentive for weakly supervised networks.
 For this reason, the separation loss $\mathcal{L}_S$ is introduced.
 This loss component consists of the negative sum of the absolute difference of the class segmentation masks\footnote{$z_i[m]$ denotes the $m^{th}$ model output channel.}:

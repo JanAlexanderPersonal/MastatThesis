@@ -50,7 +50,7 @@ Based on the confusion matrix, 3 metrics can be calculated: the model \textit{pr
     A model can now quickly obtain 95\% accuracy by predicting every pixel as \textit{background}. This is not a metric suitable for the problem.
 }
 \par{
-    For an evaluation metric to be useful, it has to avoid the kind this kind of pitfall.
+    For an evaluation metric to be valid, it has to avoid the kind this kind of pitfall.
     In this work, I investigate a problem where most of the image under investigation is \textit{background}. 
     There is about 1 pixel of each of the lumbar vertebra classes for 500 background pixels.
     The different performance metrics for the different classes are weighted with the inverse of their relative occurrence to evaluate the model's performance correctly.
@@ -81,8 +81,8 @@ Based on the confusion matrix, 3 metrics can be calculated: the model \textit{pr
 }
 \par{
     One can thus calculate the precision metric for each class. 
-    To calculate a precision metric for the complete multi-label classifier
-    , one can either aggregate the class precisions by taking the arithmetic mean (this is called the Macro-precision: $Precision_M$) or by taking the weighted mean (this is called the weighted-mean precision: $Precision_w$).
+    To calculate a precision metric for the complete multi-label classifier,
+    one can either aggregate the class precisions by taking the arithmetic mean (the Macro-precision: $Precision_M$) or the weighted mean (the weighted-mean precision: $Precision_w$).
     To take the weighted mean, each precision term $Precision_i$ is weighted by the number of observations with label $C_i$. Thus, more importance is given to classes with higher occurrence. 
     \begin{eqnarray}
         \text{Precision}_M &=& \frac{\sum_{i=0}^{k-1} \text{Precision}_i}{k}  \label{eq:macro_metric}\\
@@ -129,7 +129,7 @@ Based on the confusion matrix, 3 metrics can be calculated: the model \textit{pr
     Now, there are several options for aggregation in the multi-class case:
     There are two macro F1-scores in use:
     \begin{description}
-        \item[macro F1-score]: Calculate the F1-score for each class and take the arithmatic mean of the $k$ class F1-scores. As discussed in §\ref{sec:class_imbalance}, for inbalanced problems, a weighted mean can help to more acurately describe the model quality.
+        \item[macro F1-score]: Calculate the F1-score for each class and take the arithmetic mean of the $k$ class F1-scores. As discussed in §\ref{sec:class_imbalance}, for unbalanced problems, a weighted mean can help to more accurately describe the model quality.
         \item[macro F1*-score]: Calculate the class precision and recall scores. From these class precision and recall scores, calculate the macro precision and macro recall score. 
         The macro F1*-score is given by\\ $F1_M^*=2 . \frac{precision_M \times recall_M }{precision_M + recall_M }$
         \item[weighted F1-score]: Calculate the F1 score for all classes and calculated the weighted average as is done in equation \ref{eq:weighted_metric} to calculate the weighted precision.
@@ -145,7 +145,7 @@ The objective of using the inverse of the label occurrence is to increase the im
 \subsection{Intersection over Union}
 
 The \textbf{\acrfull{iou}}\footnote{The \acrshort{iou} is also known as the Jaccard score.} is closely related to the Dice score.
-IoU is the area of overlap between the predicted segmentation and the ground truth divided by the area of union between the predicted segmentation and the ground truth.
+IoU is the area of overlap between the predicted segmentation and the ground truth divided by the union area between the predicted segmentation and the ground truth.
 In the given example, the \acrshort{iou} score for $C_1$ is:
 \begin{equation}
     \text{IoU}_1 = \frac{a_{1,1}}{a_{0,1}+a_{1,1}+a_{2,1}+a_{1,0}+a_{1,2}} \tag{IoU$_1$ in the table \ref{tab:confusionMatrix}}
@@ -160,7 +160,7 @@ Again, a macro IoU score can be calculated by taking the arithmetic mean of the 
 
 \subsubsection{Classifier accuracy}
 
-Finally, the classifier accuracy is defined as the proportion of the observations that is correcly classified:
+Finally, the classifier accuracy is defined as the proportion of the observations that are correctly classified:
 \begin{equation}
     \text{accuracy} = \frac{a_{0,0} + a_{1,1} + a_{2,2}}{\sum_{i=0}^{2} \sum_{j=0}^{2} a_{i,j}   } \tag{table \ref{tab:confusionMatrix} classifier accuracy}
 \end{equation}
