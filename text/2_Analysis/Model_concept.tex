@@ -87,11 +87,9 @@ Three single dimension models are trained:
     The models trained on these slices do indicate the specific lumbar vertebra index. 
 \end{description}
 
-The volume combination rules are based on two observations:\footnote{
-    The resulting estimations from a model for an input volume is again a three-dimensional volume ($\in \mathbb{N}^3$) with the same dimensions.
-}.
+The volume combination rules are based on two observations:
 \begin{enumerate}
-    \item The precision (see equation \ref{eq:precision_i} on page \pageref{eq:precision_i}) with which the background class is predicted in all models is very high.
+    \item The precision (see equation \ref{eq:precision_i} on page \pageref{eq:precision_i}) with which the background class is predicted in all models is very high.\newline
             This means $\mathcal{P} \left( label = background \mid prediction = background \right)$ is high for all models. 
             If one model indicates a position is background, this position could be estimated to be background with high probability.
     \item All models tend to overestimate the extent of the vertebrae, which causes a low recall score. The direction in which the predictions tend to \textit{bleed out} is different for the different models. 
@@ -110,21 +108,19 @@ These filters are combinations of the morphological \textit{erosion} and \textit
         \item[Closing] of set $\mathbf{A}$ by structural element $\mathbf{B}$ : $\mathbf{A} \bullet \mathbf{B} = (\mathbf{A} \oplus \mathbf{B}) \ominus \mathbf{B}$
     \end{description}
 }.
-
-\begin{itemize}
-    \item Noise in the single dimension segmentation masks is suppressed with an opening operation on the individual segmentation volumes of the single dimension models.
-    \item Noise in the combined volumes is suppressed by first opening and then closing the volumes.
-    \item The estimated volumes are observed to overestimate the extent of the vertebrae. For this reason, an erosion step is performed to decrease the overall extent of the class masks.
-\end{itemize}
-
-The procedure mentioned above has two hyperparameters: the number of iterations for the denoising filters and the number of iterations for the erosion filter.
-Both hyperparameters are estimated by calculating the same evaluation metric, the weighted dice score on the validation set, as for the single-dimensional model evaluation. 
-
-\subsection{Volume combination algorithm}
-The combination of the rules and morphological smoothing operations discussed above results in the following algorithm to combine the segmentation volumes from the single dimension models\footnote{
-    The algorithm shown here is based on the two observations mentioned.
-}:
-
+\par{
+    Noise in the single dimension segmentation masks is suppressed with an opening operation on the individual segmentation volumes of the single dimension models.
+    Noise in the combined volumes is suppressed by first opening and then closing the volumes.
+    The estimated volumes are observed to overestimate the extent of the vertebrae. For this reason, an erosion step is performed to decrease the overall extent of the class masks.
+}
+\par{
+    The procedure mentioned above has two hyperparameters: the number of iterations for the denoising filters and the number of iterations for the erosion filter.
+    Both hyperparameters are estimated by calculating the same evaluation metric, the weighted dice score on the validation set, as for the single-dimensional model evaluation. 
+    
+    The combination of the rules and morphological smoothing operations discussed above results in the following algorithm to combine the segmentation volumes from the single dimension models\footnote{
+        The algorithm shown here is based on the two observations mentioned.
+    }:
+}
 \begin{algorithm}[H]
     \SetAlgoLined
     \KwData{
