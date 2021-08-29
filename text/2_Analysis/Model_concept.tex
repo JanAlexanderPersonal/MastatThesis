@@ -12,22 +12,24 @@
 However, there are advantages to choosing 2D networks over 3D networks:
 \begin{enumerate}
     \item Since the number of parameters (weights) to train scales exponentially with the kernel dimension, the number of parameters to train is considerably higher for a 3D \acrshort{cnn} compared to a corresponding 2D \acrshort{cnn}.
-    \item The academic community has investigated 2D \acrlong{cnn}s for several years. The networks can be initialised with weights pre-trained on vast and diverse datasets (see remark \ref{footnote:Imagenet} on ImageNet). 
-    These datasets indeed do not contain the specific classes nor the specific datatype investigated in this project. 
-    However, the different convolution layers have proven to extract useful general features that allow the network to distinguish an extensive range of categories. 
-    These features have proven to be sufficiently general to apply to new machine vision applications. This practice is called transfer learning.
+    \item 2D \acrlong{cnn}s have been investigated thoroughly. The networks can be initialised with weights pre-trained on vast and diverse datasets (see remark \ref{footnote:Imagenet} on ImageNet). 
+    These datasets indeed do not contain the specific classes or datatype investigated in this project. 
+    However, the different convolution layers have proven to extract useful general features that have proven to be sufficiently general to apply to new machine vision applications. This practice is called transfer learning.
     \item Although consecutive slices are strongly correlated, there is more data\footnote{There are more slices than volume segments in 1 image volume.} to train the networks, certainly when considered in proportion to the number of weights to be trained.
 \end{enumerate}
 
 \subsection{Model training approach}
-
-An approach used often in weakly supervised learning is the generation of \textit{ersatz} or \textit{pseudo} mask labels\cite{Laradji2019,Laradji2019a, Ahn2019,McEver2020}, see page \pageref{sec:PreviousWork_weaklySupervised}.
-This project intends to use this approach too.
-
+\par{
+An approach used often in weakly supervised learning is the generation of \textit{pseudo} mask labels\cite{Laradji2019,Laradji2019a, Ahn2019,McEver2020}, see page \pageref{sec:PreviousWork_weaklySupervised}.
+This project uses this approach too.
+}
+\par{
 A scan volume can be sliced along 3 different axes: the transverse axis, the coronal axis and the sagittal axis (see figure \ref{fig:anatomicalPlains}), meaning that 3 different models can be trained with the available point annotated data. 
 Each of these 3 networks will have different context elements to segment the sliced images.
 The resulting segmentation volumes\footnote{The segmentation results of a stack of 2D slices can be combined to form a 3D segmentation volume.} of these three networks can then be combined to obtain a final segmentation volume.
-This final segmentation mask, which should be as least as good as the best of the 3 individual model results, can then be used as pseudo masks to train a final \textit{fully supervised} network. 
+This final segmentation mask can then be used as pseudo masks to train a final \textit{fully supervised} network. 
+}
+
 
 \begin{SCfigure}[][htb]
     \centering
@@ -53,29 +55,31 @@ The procedure described here was only devised after observation of the single-di
 
 \subsection{Recombination of the crops to slices}
 All models are designed for $352 \times 352$ crops of the 2D slices\footnote{More information on the cropping of the slices can be found in chapter \ref{sec:cropping} on page \pageref{sec:cropping}.}.
-To construct a segmentation volume from a single dimensional model, all relevant\footnote{Some slices have dimensions that do not allow to extract 5 different $352 \times 352$ crops. See for example figure \ref{fig:smallcrop} on page \pageref{fig:smallcrop}.} crops of each volume slice are evaluated.
+To construct a segmentation volume from a single dimensional model, all relevant\footnote{Some slices have dimensions that do not allow to extract four different $352 \times 352$ crops. See for example figure \ref{fig:smallcrop} on page \pageref{fig:smallcrop}.} crops of each volume slice are evaluated.
 First, the segmentation results on these crops have to be combined again to obtain a segmentation mask of the whole slice.
 Due to the cropping procedure, different crops of the same slice always partly overlap.
 The crops are combined by averaging the logits $z_i$ for the overlapping positions.
 The inferred class is then obtained from the resulting average $z_i$ values for that position. 
 
 \begin{SCfigure}[][htb]
+\centering
 \begin{minipage}{.99\textwidth}
     \includegraphics[width=0.95\textwidth]{images/USiegen_004_50_crops.pdf}
 \end{minipage}
 \begin{minipage}{.99\textwidth}
-    \includegraphics[width=0.95\textwidth]{images/cropping_slice050.pdf}
+    \includegraphics[width=0.60\textwidth]{images/cropping_slice050.pdf}
 \end{minipage}
     \caption{Sagittal slice 50 of the USiegen 04 volume has to be evaluated in 4 crops due to its dimensions. The recombination of these crops to form the mask for the slice is illustrated in this figure. As a reference, the corresponding images are provided.}
 \end{SCfigure}
 
 \subsection{Rule based result combination}
+\par{
 Once a stack of class segmentation masks for all volume slices are obtained, these can be combined to form a segmentation volume.
 Combining the results of three different single dimension models is performed in two steps:
-\begin{enumerate}
-    \item The resulting classification volumes are first combined with a rule-based method.
-    \item After this rule-based combination, the resulting segmentation estimation is smoothened with a morphological filter.
-\end{enumerate}
+The resulting classification volumes are first combined with a rule-based method.
+After this rule-based combination, the resulting segmentation estimation is smoothened with a morphological filter.
+}
+
 
 Three single dimension models are trained:
 \begin{description}
@@ -87,14 +91,15 @@ Three single dimension models are trained:
     The models trained on these slices do indicate the specific lumbar vertebra index. 
 \end{description}
 
+\par{
 The volume combination rules are based on two observations:
-\begin{enumerate}
-    \item The precision (see equation \ref{eq:precision_i} on page \pageref{eq:precision_i}) with which the background class is predicted in all models is very high.\newline
+First, the precision (see equation \ref{eq:precision_i} on page \pageref{eq:precision_i}) with which the background class is predicted in all models is very high.\newline
             This means $\mathcal{P} \left( label = background \mid prediction = background \right)$ is high for all models. 
             If one model indicates a position is background, this position could be estimated to be background with high probability.
-    \item All models tend to overestimate the extent of the vertebrae, which causes a low recall score. The direction in which the predictions tend to \textit{bleed out} is different for the different models. 
-\end{enumerate}
+Second, all models tend to overestimate the extent of the vertebrae, which causes a low recall score. The direction in which the predictions tend to \textit{bleed out} is different for the different models. 
 The observations mentioned above can be combined in algorithm \ref{alg:combination}.
+}
+
 
 \subsection{Morphological smoothing}
 After the rule-based combination of estimations from different single dimension models, the result is smoothened with standard morphological filters.
@@ -121,6 +126,7 @@ These filters are combinations of the morphological \textit{erosion} and \textit
         The algorithm shown here is based on the two observations mentioned.
     }:
 }
+\newline
 \begin{algorithm}[H]
     \SetAlgoLined
     \KwData{
