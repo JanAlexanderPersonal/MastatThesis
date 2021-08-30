@@ -169,12 +169,11 @@ The pseudo mask volume performs better than the single dimension model results a
     \protect\input{tables/colourlegend.tex}\label{fig:inferepoints_2}}
 \end{SCfigure}
 
-
-
-Table \ref{tab:combination_precalc} illustrates how the performance of the combination of models trained on different slice stacks results in pseudo masks which prove to be an improvement compared to the individual models.
-It is remarkable how high the performance of the models trained on \textit{inferred} annotation points proves to be.
-Seemingly, randomizing the number of annotation points could have a positive influence on the model performance.
-
+\par{
+    Table \ref{tab:combination_precalc} illustrates how the performance of the combination of models trained on different slice stacks results in pseudo masks which prove to be an improvement compared to the individual models.
+    It is remarkable how high the performance of the models trained on \textit{inferred} annotation points proves to be.
+    Seemingly, randomizing the number of annotation points could have a positive influence on the model performance.
+}
 \begin{SCtable}[\sidecaptionrelwidth][h]
 
     \begin{tabular}{l|lll}
@@ -202,24 +201,23 @@ Seemingly, randomizing the number of annotation points could have a positive inf
 
 \end{SCtable}
 
-Illustration \ref{fig:fullvsPseudo} shows the final result of the procedure.
-With the pseudo masks obtained from combining the three model results, a new model is trained.
-This last model is only trained on the sagittal slice stack.
-The final results obtained with this model are illustrated in figure \ref{fig:fullvsPseudo}.
-The hyperparameters of this model were optimized in the same way as the reference model.
-The unweighted cross entropy loss proves to yield better results than the weighted cross entropy loss.
-For the reference model, the same result was observed.
-
-The confusion matrix of the model trained with pseudo mask labels (table \ref{tab:pseudo_confusionMatrix}) shows the model performance is clearly inferiour to the model performance of the fully supervised model.
-Mind however that this model is trained based on data of which the labelling only costs about 12\% of the labelling cost of the fully supervised model for the train set scans.
-The total labelling cost will be higher since the procedure requires full labels for the model evaluation in the cross validation and the test set. 
-If one takes, is was done in this thesis, both the cross validation and test set to be $\frac{1}{6}$ of the total volumes, the total cost is about 41 \% of the cost for full labels.
-One could also look at it in another way: for fixed cross validation and test set, the train set can be made 8,3$\times$ larger with the same labelling cost.
-
+\par{
+    Illustration \ref{fig:fullvsPseudo} shows the final result of the procedure.
+    With the pseudo masks obtained from combining the three model results, a new model is trained.
+    This last model is only trained on the sagittal slice stack.
+    The final results are illustrated in figure \ref{fig:fullvsPseudo}.
+    The hyperparameters of this model were optimized in the same way as the reference model.
+    Just like for the reference model, the unweighted cross entropy loss proves to yield better results than the weighted cross entropy loss.
+    The confusion matrix of the model trained with pseudo mask labels (table \ref{tab:pseudo_confusionMatrix}) shows the model performance is clearly inferiour to the model performance of the fully supervised model.
+    Mind however that this model is trained based on data of which the labelling only costs about 12\% of the labelling cost of the fully supervised model for the train set scans.
+    The total labelling cost will be higher since the procedure requires full labels for the model evaluation in the cross validation and the test set. 
+    If one takes, is was done in this thesis, both the cross validation and test set to be $\frac{1}{6}$ of the total volumes, the total cost is about 41 \% of the cost for full labels.
+    One could also look at it in another way: for fixed cross validation and test set, the train set can be made 8,3$\times$ larger with the same labelling cost.
+}
 
 \begin{SCfigure}[][htb]
     \centering
-        \includegraphics[width=.99\textwidth]{images/fullvsPseudo_MyoSegmenTUM_024_023.pdf}
+        \includegraphics[width=.90\textwidth]{images/fullvsPseudo_MyoSegmenTUM_024_023.pdf}
     \caption{These images illustrate the difference in performance for the two models generated. On the top row, an image slice is shown next to the ground truth annotation mask.
     Two models were trained: the reference model, shown left on the second row and a model trained on pseudo masks of which the result is shown on the right side. 
     These images show the final result of the procedure described in this thesis. The shown masks are not the pseudo masks themselves, they are the results obtained from the final model trained on these pseudo masks.
@@ -229,13 +227,13 @@ One could also look at it in another way: for fixed cross validation and test se
 \end{SCfigure}
 \begin{SCfigure}[][htb]
     \centering
-        \includegraphics[width=.99\textwidth]{images/fullvsPseudo_USiegen_012_024.pdf}
+        \includegraphics[width=.90\textwidth]{images/fullvsPseudo_USiegen_012_024.pdf}
     \caption{This image follows figure \ref{fig:fullvsPseudo}. It shows slice 24 of USiegen volume 12. 
     \protect\input{tables/colourlegend.tex}}
 \end{SCfigure}
 \begin{SCfigure}[][htb]
     \centering
-        \includegraphics[width=.99\textwidth]{images/fullvsPseudo_xVertSeg_014_260.pdf}
+        \includegraphics[width=.90\textwidth]{images/fullvsPseudo_xVertSeg_014_260.pdf}
     \caption{This image follows figure \ref{fig:fullvsPseudo}. It shows slice 260 of xVertSeg volume 14. 
     \protect\input{tables/colourlegend.tex}
     \label{fig:fullvsPseudo}}
@@ -293,15 +291,13 @@ The segmentation masks illustrated in figure \ref{fig:fullvsPseudo} can both be 
         \end{tabular}
     
         \caption{Per class metric results for the model trained on pseudo labels. 
-        The performance metrics on the background class are invariably excellent. There are about 500 background pixels for each class pixel. The data is not balanced.
-        Using the inversely weighted dice score gives more weight to the underrepresented classes, which are more of interest.
         This table should be compared to table \ref{tab:full_performanceTable} on page \pageref{tab:full_performanceTable}, which lists the same results for the reference model.
         }
     \end{SCtable}
 
 \par{
     The obtained segmentation masks are too restricted.
-    While the position of the vertebrae seems to be predicted correctly, the model does not predict the full extend of the vertebra and many vertebra voxels are classified as background, hence the low recall.
+    While the position of the vertebrae is predicted correctly, the model does not predict the full extend of the vertebra and many vertebra voxels are classified as background, hence the low recall.
     The ground cause of this phenomenon could not be discovered.
     No post-processing steps (dilation, watershed) to remedy this a-postiori were tested.
     Future research might investigate how these post-processing steps could benefit the model performance. 
@@ -318,18 +314,19 @@ The segmentation masks illustrated in figure \ref{fig:fullvsPseudo} can both be 
 \begin{SCtable}[\sidecaptionrelwidth][h]
 
     \input{tables/Summary_final.tex}
-    \caption{Summary table.
+    \caption{Summary table of the model building procedure. Both the combination procedure and the pseudo mask training increase the model quality. 
+    Yet, there is a large difference between the model performance for different datasets.
     }
 
 \end{SCtable}
 
 \begin{SCfigure}[][htb]
     \centering
-    \begin{minipage}{.99\textwidth}
+    \begin{minipage}{.80\textwidth}
         \includegraphics[width=.99\textwidth]{images/pointAnnotated_perClass_perSource_point_precision.pdf}
     \end{minipage} 
     \vspace{2 mm}
-    \begin{minipage}{.99\textwidth}
+    \begin{minipage}{.80\textwidth}
         \includegraphics[width=.99\textwidth]{images/pointAnnotated_perClass_perSource_point_recall.pdf}
     \end{minipage} 
     \caption{Precision and recall for the final model. From this image and from the illustrations shown in figure \ref{fig:fullvsPseudo}, 
@@ -339,26 +336,22 @@ The segmentation masks illustrated in figure \ref{fig:fullvsPseudo} can both be 
 \end{SCfigure}
 
 \par{
-Finally, it was also observed that the model does not generalize very well to the one dataset that was not used for training the model.
-Due to the lack of full annotation masks, the UWspine dataset (see page \pageref{sec:UWspine}) could not be used to construct the reference model.
-This means it was not used to construct the weakly supervised model either. 
-The dataset does not contain labels except for the vertebra volume centers, it would not have increased the training dataset strongly.
-When evaluation the constructed model on this dataset, the model estimations do not approximate a spine segmentation.
-About 50\% of the estimation volumes are empty, when the model does make an estimation, it is patchy as best.
-This leads to the conclusion that the model performance depends strongly on the dataset. 
+Finally, the model does not generalize very well to the one dataset that was not used for training the model.
+Due to the lack of full annotation masks, the UWspine dataset (see page \pageref{sec:UWspine}) only containing labels for the vertebra volume center points,  could not be used to construct the reference model.
+When evaluation the constructed model on this dataset, only about 50\% of the volumes contain a (patchy) estimation other than background.
+The model performance depends strongly on the dataset. 
 }
-
-
 
 \begin{SCfigure}[][htb]
     \centering
-    \begin{minipage}{.49\textwidth}
+    \begin{minipage}{.45\textwidth}
         \includegraphics[width=.99\textwidth]{images/UW_result.pdf}
     \end{minipage}%
-    \begin{minipage}{.49\textwidth}
+    \begin{minipage}{.45\textwidth}
         \includegraphics[width=.99\textwidth]{images/fullvsPseudo_UW_062_103.pdf}
     \end{minipage} 
     \caption{Model estimation for the UWspine volume 62. The 3D visualization of the estimation is shown on the left, while the 103$^{th}$ slice of this volume is illustrated on the right.
+    Although the patches roughly lie around the vertebrae location, this estimation is clearly worse than the results for datasets on which the model was trained.
     \protect\input{tables/colourlegend_long.tex}
     }
 \end{SCfigure}
