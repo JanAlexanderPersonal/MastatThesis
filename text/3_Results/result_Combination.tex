@@ -278,6 +278,27 @@ Preprocesing of one volume was observed to take 3.9 seconds on average (see appe
 After this, evaluation of one volume and recombination of the crops takes, on average, 8,3 seconds.
 The segmentation masks illustrated in figure \ref{fig:fullvsPseudo} can both be generated in 12,2 seconds.
 }
+
+\begin{SCtable}[\sidecaptionrelwidth][h]
+    \begin{tabular}{l|llll}
+        \toprule
+                            & \textbf{precision} & \textbf{recall} & \textbf{dice} & \textbf{iou} \\ \hline
+\textbf{Background} & 99.52\%            & 99.59\%         & 99.56\%       & 99.12\%      \\
+\textbf{L1}         & 61.26\%            & 35.47\%         & 44.93\%       & 28.97\%      \\
+\textbf{L2}         & 52.31\%            & 59.77\%         & 55.79\%       & 38.69\%      \\
+\textbf{L3}         & 52.04\%            & 60.74\%         & 56.05\%       & 38.94\%      \\
+\textbf{L4}         & 56.37\%            & 61.39\%         & 58.77\%       & 41.62\%      \\
+\textbf{L5}         & 55.46\%            & 55.86\%         & 55.66\%       & 38.56\%       \\
+        \bottomrule
+        \end{tabular}
+    
+        \caption{Per class metric results for the model trained on pseudo labels. 
+        The performance metrics on the background class are invariably excellent. There are about 500 background pixels for each class pixel. The data is not balanced.
+        Using the inversely weighted dice score gives more weight to the underrepresented classes, which are more of interest.
+        This table should be compared to table \ref{tab:full_performanceTable} on page \pageref{tab:full_performanceTable}, which lists the same results for the reference model.
+        }
+    \end{SCtable}
+
 \par{
     The obtained segmentation masks are too restricted.
     While the position of the vertebrae seems to be predicted correctly, the model does not predict the full extend of the vertebra and many vertebra voxels are classified as background, hence the low recall.
