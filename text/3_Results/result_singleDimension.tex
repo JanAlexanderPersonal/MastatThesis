@@ -1,10 +1,10 @@
-\chapter{Single dimension experiments \label{sec:singleDimension}}\thispagestyle{empty}
+\chapter{Single dimension slice experiments \label{sec:singleDimension}}\thispagestyle{empty}
 \par{
-    This chapter discusses the results of several experiments in the construction of single-dimensional models.
+    This chapter discusses the results of several experiments in the construction of single-dimension slice stack models.
     The objective of these experiments is to investigate the influence different model hyperparameters have on the model performance.
-    Based on this investigation, the hyperparameters for the single-dimensional models in the final step can be chosen.  
+    Based on this investigation, the hyperparameters for the single-dimension stack models in the final step can be chosen.  
 }
-\section{Single dimension weakly supervised models}
+\section{Single dimension stack weakly supervised models}
 \par{
     In this section, the results of experiments with different model hyperparameters are compared to each other.
     The point annotation sets are generated from the available full annotation masks for each slice.
@@ -106,6 +106,8 @@ Remark that the number of class annotation points and background points is diffe
     Where \cite{Laradji2021} is based only on the point loss $\mathcal{L}_P$, and the consistency loss $\mathcal{L}_C$, this work makes use of two extra loss components:
     the prior extend loss $\mathcal{L}_E$ and the separation loss $\mathcal{L}_S$. The four-loss components used in this work are described in more detail in \ref{sec:LossFunctions}.
     Figure \ref{fig:addedLossComponents} shows experimental results validating the positive influence these added loss terms have on the model performance.
+    For the weakly supervised model trained on the transversal slices, this performance increase is very clear.
+    The performance does not improve as much for the model trained on sagittal slices.
 }
 \begin{SCfigure}[][htb]
     \centering

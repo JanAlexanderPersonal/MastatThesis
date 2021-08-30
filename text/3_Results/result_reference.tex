@@ -1,7 +1,7 @@
 \chapter{Reference model\label{sec:reference_model}}\thispagestyle{empty}
 \par{
-    As a reference to compare the models trained on weakly supervised data with, the model performance of a model trained on the same fully supervised data is taken as a reference.
-    In this chapter, the results of these fully supervised reference experiments are discussed.
+    To compare the models trained on weakly supervised data with, the model performance of a model trained on the same fully supervised data is taken as a reference.
+    In this chapter, the results of these fully supervised experiments are discussed.
     The metric based on which the experiment results are compared is the inverse class weighted dice score, see equation \ref{eq:weighted_dice} on page \pageref{eq:weighted_dice}.
 }
 
@@ -25,6 +25,7 @@
         The weighted cross-entropy loss is defined in chapter \ref{sec:crossentropy} on page \pageref{sec:crossentropy}. 
         The objective of a weighted cross-entropy is to improve the model performance for under-represented classes in an unbalanced dataset by adding a factor inverse proportional to the class prevalence to the cross-entropy loss.
     } when considering the weighted dice score.
+    Weighing the loss with the inverse of the respective class occurrence was hoped to increase the model performance on this unbalanced data.
     In figure \ref{fig:referenceWeighted}, the model result based on the FCN8 VGG16 model without context slices is compared in detail for the models trained with weighted and the unweighted cross-entropy function.
     Based on these images, some conclusions can be drawn:
     \begin{enumerate}
