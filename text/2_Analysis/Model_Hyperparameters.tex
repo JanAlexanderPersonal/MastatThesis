@@ -37,18 +37,15 @@ All three of these networks are based on the encoder-decoder principle where a c
     Then the U-Net architecture is illustrated. 
     \label{fig:vgg16}}
 \end{SCfigure}
-\begin{SCfigure}[][htb]
-\begin{minipage}{.99\textwidth}
-        \includegraphics[width=.7\textwidth]{images/RESNET.pdf}
-    \end{minipage}
-    \caption{
-One residual unit of the RESNET50 architecture.
-    Due to the size of the RESNET50 network, only one \textit{residual block} is illustrated.
-    }
-\end{SCfigure}
+
 
 
 \subsection{2D+ approach and \textit{context slices}\label{section:twoDplus}}
+
+\marginpar{
+        \includegraphics[width=5cm]{images/Context_slices.pdf}
+        \captionof{figure}{Illustration of the \textit{context slice} concept. Together with the image slice crop in the middle, the model input consists of the two slices at $k=3mm$ from the middle slice and the middle slice itself.}
+    }
 
 As discussed in section \ref{sec:network_types}, all used networks have a 3 channel\footnote{The networks were designed initially for \textit{RGB}-images with a red, a green and a blue channel.}, 
 352$\times$352 pixel input. 
@@ -65,11 +62,12 @@ Due to the isotropic resampling (see section \ref{sec:resampling}), these slices
 
 This stack of 3 slices is then passed through the network, as illustrated in figure \ref{fig:vgg16}.
 
-\begin{SCfigure}[][htb]
-\centering
-    \includegraphics[width=.49\textwidth]{images/Context_slices.pdf}
-    \caption{Illustration of the \textit{context slice} concept. Together with the image slice crop in the middle, the model input consists of the two slices at $k=3mm$ from the middle slice and the middle slice itself.}
-\end{SCfigure}
+%\begin{SCfigure}[][htb]
+%\centering
+%    \includegraphics[width=.49\textwidth]{images/Context_slices.pdf}
+%    \caption{Illustration of the \textit{context slice} concept. Together with the image slice crop in the middle, the model input consists of the two slices at $k=3mm$ from the middle slice and the middle slice itself.}
+%\end{SCfigure}
+
 
 \subsection{Annotation points\label{sec:annotationPoints}}
 \par{
@@ -91,6 +89,15 @@ This stack of 3 slices is then passed through the network, as illustrated in fig
     \protect\input{tables/colourlegend.tex}
     }
 \end{SCfigure}
+\begin{SCfigure}[][hb]
+\begin{minipage}{.99\textwidth}
+        \includegraphics[width=.7\textwidth]{images/RESNET.pdf}
+    \end{minipage}
+    \caption{
+One residual unit of the RESNET50 architecture.
+    Due to the size of the RESNET50 network, only one \textit{residual block} is illustrated.
+    }
+\end{SCfigure}
 \par{
     In the first part of the research, the aim is to evaluate the difference between a model trained on a fully labelled set of images and a model trained on the same set of images for which only weak labels are provided.
     For this purpose, annotation points are generated for each slice.
@@ -99,7 +106,7 @@ This stack of 3 slices is then passed through the network, as illustrated in fig
     Apart from the slices along the chosen dimension, the number of annotation points in the other two dimensions is not fixed.
 }
 %\FloatBarrier
-
+\newpage
 \subsection{Model training strategy}
 
 The optimization scheme in algorithm \ref{alg:model_training} is executed to train the model weights.

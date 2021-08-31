@@ -132,3 +132,10 @@ This loss component consists of the negative sum of the absolute difference of t
 \end{equation}
 
 This loss component thus provides an incentive to the network to make a decision, even in areas where few annotation points are available.
+
+\begin{SCfigure}[][htb]
+\centering
+    \includegraphics[width=.95\textwidth]{images/Loss_combination.png}
+    \caption{Illustration of the loss term combination. The image slice crop is evaluated twice to calculate the consistency loss $\mathcal{L}_C$. For the unsupervised loss terms, only the logits produced by the network are used.
+    The supervised loss terms make use of the point annotations.}
+\end{SCfigure}
